@@ -1,5 +1,6 @@
 package ru.sm.poker.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,6 +12,7 @@ import ru.sm.poker.model.action.Wait;
 
 @Getter
 @ToString
+@EqualsAndHashCode(of = "name")
 public class Player {
     private String name;
     private CardType[] cardTypes = new CardType[2];

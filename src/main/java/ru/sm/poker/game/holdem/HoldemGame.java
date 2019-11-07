@@ -3,19 +3,20 @@ package ru.sm.poker.game.holdem;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.model.action.Bet;
+import ru.sm.poker.service.ActionService;
+import ru.sm.poker.service.BroadCastService;
 import ru.sm.poker.util.ThreadUtil;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import static java.lang.String.format;
 
 @Component
 @RequiredArgsConstructor
@@ -25,7 +26,8 @@ public class HoldemGame implements Game {
     private final List<Player> players = new ArrayList<>();
     private HoldemRound round;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private final SimpMessagingTemplate simpMessagingTemplate;
+    private final BroadCastService broadCastService;
+    private final ActionService actionService;
     private final static int MAX_PLAYERS = 9;
     private final static int MIN_PLAYER = 4;
     private volatile boolean isRunning;
@@ -47,7 +49,8 @@ public class HoldemGame implements Game {
                     log.info("Game was started with size of players:" + getPlayers().size());
                     this.round = new HoldemRound(
                             players,
-                            simpMessagingTemplate,
+                            broadCastService,
+                            actionService,
                             smallBlindBet,
                             bigBlindBet);
                     this.round.startRound();
@@ -85,6 +88,13 @@ public class HoldemGame implements Game {
     }
 
 
+    public boolean playerExistByName(String name){
+        return getPlayers()
+                .stream()
+                .anyMatch(exist->exist.getName().equals(name));
+    }
+
+
     @Override
     public void addPlayers(List<Player> players) {
         players.forEach(this::addPlayer);
@@ -96,12 +106,11 @@ public class HoldemGame implements Game {
     }
 
     @Override
-    public Player getPlayerByName(String name) {
+    public Optional<Player> getPlayerByName(String name) {
         return players
                 .stream()
                 .filter(player -> player.getName().contains(name))
-                .findFirst()
-                .orElseThrow(()-> new RuntimeException(format("cannot find player with name=%s", name)));
+                .findFirst();
     }
 
     @Override

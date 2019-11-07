@@ -28,6 +28,8 @@ dependencies {
     compile group: 'org.aspectj', name: 'aspectjrt', version: '1.7.3'
 //    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-eureka-server', version: "2.1.2.RELEASE"
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-websocket', version: "${springVersion}"
+    compileOnly("org.springframework.boot:spring-boot-configuration-processor")
+
 
 }
 version 'unspecified'

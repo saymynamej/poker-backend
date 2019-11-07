@@ -13,14 +13,14 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/poker/game");
+        config.enableSimpleBroker("/poker/game", "/poker/error");
         config.setUserDestinationPrefix("/user");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/connect").setAllowedOrigins("http://127.0.0.1:8080")
-                .setHandshakeHandler(new SimpleHandShake())
+//                .setHandshakeHandler(new SimpleHandShake())
                 .withSockJS();
     }
 }

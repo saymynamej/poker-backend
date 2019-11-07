@@ -1,40 +1,49 @@
 package ru.sm.poker.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.sm.poker.game.Game;
-import ru.sm.poker.model.Player;
+import ru.sm.poker.model.action.Bet;
+import ru.sm.poker.model.action.Call;
+import ru.sm.poker.model.action.Fold;
+import ru.sm.poker.model.action.Raise;
 import ru.sm.poker.service.ActionService;
-import java.util.List;
+import ru.sm.poker.service.PlayerService;
+
+import java.security.Principal;
 
 @RequestMapping("/game")
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class GameController {
-    private final Game game;
-    private final SimpMessagingTemplate simpMessagingTemplate;
     private final ActionService actionService;
-
-
+    private final PlayerService playerService;
 
     @MessageMapping("/addPlayer")
-    @SendTo("/poker/game/ready/players")
-    public ResponseEntity<List<Player>> addUser(SimpMessageHeaderAccessor messageHeaderAccessor) {
-        if (game.addPlayer(new Player(messageHeaderAccessor.getSessionId(), 5000))) {
-            return new ResponseEntity<>(game.getPlayers(), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(null, HttpStatus.OK);
+    public void addUser(Principal principal) {
+        playerService.addPlayer(principal.getName());
     }
 
-    @MessageMapping("/sendAction")
-    public void action(SimpMessageHeaderAccessor messageHeaderAccessor, String json) {
-        actionService.parseAction(messageHeaderAccessor.getSessionId(), json);
+    @MessageMapping("/bet")
+    public void bet(Principal principal, Bet bet) {
+        actionService.setAction(principal.getName(), bet);
+    }
+
+    @MessageMapping("/raise")
+    public void raise(Principal principal, Raise raise) {
+        actionService.setAction(principal.getName(), raise);
+    }
+
+    @MessageMapping("/raise")
+    public void call(Principal principal, Call call) {
+        actionService.setAction(principal.getName(), call);
+    }
+
+    @MessageMapping("/raise")
+    public void fold(Principal principal, Fold fold) {
+        actionService.setAction(principal.getName(), fold);
     }
 }

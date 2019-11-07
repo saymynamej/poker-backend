@@ -6,19 +6,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.sm.poker.enums.ActionType;
 
-
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Bet implements Action {
-
+public class Call implements Action {
     private long count;
 
     @Override
     public ActionType getActionType() {
-        return ActionType.BET;
+        return ActionType.CALL;
     }
-
 }

@@ -4,6 +4,7 @@ import ru.sm.poker.model.Player;
 import ru.sm.poker.model.action.Bet;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface Game {
 
@@ -19,10 +20,12 @@ public interface Game {
 
     boolean isRunning();
 
-    Player getPlayerByName(String name);
+    Optional<Player> getPlayerByName(String name);
 
     Player getActivePlayer();
 
     Bet getLastBet();
+
+    boolean playerExistByName(String name);
 
 }

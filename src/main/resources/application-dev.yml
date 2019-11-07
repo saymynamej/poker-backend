@@ -32,3 +32,9 @@ service:
     rootPath: http://email-service
     sendPath: http://email-service/api/mail/send
     savePath: http://email-service/api/mail/save
+
+config:
+  socket:
+    poker-game-path: "/poker/game"
+    ready-players-path: "/poker/game/ready/players"
+    error-path: "/poker/error"

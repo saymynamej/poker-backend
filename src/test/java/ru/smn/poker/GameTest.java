@@ -10,4 +10,8 @@ import java.util.UUID;
 
 public class GameTest {
 
+    @Test
+    public void test(){
+
+    }
 }

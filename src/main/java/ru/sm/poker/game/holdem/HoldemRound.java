@@ -1,13 +1,14 @@
 package ru.sm.poker.game.holdem;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.PlayerType;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.model.action.Action;
-import ru.sm.poker.model.action.Bet;
-import ru.sm.poker.model.action.Wait;
+import ru.sm.poker.model.action.*;
+import ru.sm.poker.service.ActionService;
+import ru.sm.poker.service.BroadCastService;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -24,7 +25,8 @@ public class HoldemRound extends Round {
     private final List<CardType> flop = new ArrayList<>();
     private final long bigBlindBet;
     private final long smallBlindBet;
-    private final SimpMessagingTemplate simpMessagingTemplate;
+    private final BroadCastService broadCastService;
+    private final ActionService actionService;
     private long bank = 0;
     private Player activePlayer;
     private CardType tern;
@@ -32,12 +34,13 @@ public class HoldemRound extends Round {
     private Bet lastBet;
 
     HoldemRound(List<Player> players,
-                SimpMessagingTemplate simpMessagingTemplate, long smallBlindBet,
+                BroadCastService broadCastService, ActionService actionService, long smallBlindBet,
                 long bigBlindBet) {
         super(players);
         this.bigBlindBet = bigBlindBet;
         this.smallBlindBet = smallBlindBet;
-        this.simpMessagingTemplate = simpMessagingTemplate;
+        this.broadCastService = broadCastService;
+        this.actionService = actionService;
     }
 
     protected void startRound() {
@@ -56,29 +59,56 @@ public class HoldemRound extends Round {
         final List<Player> players = actionPreflopList();
         for (Player player : players) {
             this.activePlayer = player;
-            simpMessagingTemplate.convertAndSend("/poker/game/start", getPlayers());
+            broadCastService.sendToAll(getPlayers());
             waitPlayerAction(player);
         }
     }
 
-    private void setLastBet(long count){
-        this.lastBet = new Bet(count);
+    private void setLastBet(long count) {
+        this.lastBet = new Bet();
+        this.lastBet.setCount(count);
     }
 
-    private void waitPlayerAction(Player player){
+    private void waitPlayerAction(Player player) {
         while (true) {
             if (player.getAction().getClass() != Wait.class) {
-                final Action action = player.getAction();
-                if (action instanceof Bet) {
-                    final Bet bet = (Bet) action;
-                    removeChipsPlayerAndAddToBank(player, bet.getCount());
-                }
-                player.setAction(null);
+                parseAction(player);
                 break;
             }
         }
     }
 
+    private void parseAction(Player player) {
+        final Action action = player.getAction();
+
+        if (action instanceof Call) {
+            call(player, (Call) action);
+        } else if (action instanceof Fold) {
+            fold(player, (Fold) action);
+        } else if (action instanceof Raise) {
+            raise(player, (Raise) action);
+        }
+        player.setAction(new Wait());
+    }
+
+    private void raise(Player player, Raise raise) {
+        if (raise.getCount() < lastBet.getCount() * 2) {
+            return;
+        }
+        removeChipsPlayerAndAddToBank(player, raise.getCount());
+        setLastBet(raise.getCount());
+    }
+
+    private void fold(Player player, Fold bet) {
+        player.setAction(bet);
+    }
+
+    private void call(Player player, Call call) {
+        if (call.getCount() != lastBet.getCount()) {
+            return;
+        }
+        removeChipsPlayerAndAddToBank(player, call.getCount());
+    }
 
 
     private List<Player> actionPreflopList() {
