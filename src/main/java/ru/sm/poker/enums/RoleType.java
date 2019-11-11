@@ -1,6 +1,6 @@
 package ru.sm.poker.enums;
 
-public enum  PlayerType {
+public enum RoleType {
     PLAYER,
     SMALL_BLIND,
     BIG_BLIND,

@@ -23,4 +23,16 @@ public class SocketMappingConfig {
     @NotNull
     private String errorPath;
 
+    @NotNull
+    private String flopPath;
+
+    @NotNull
+    private String ternPath;
+
+    @NotNull
+    private String riverPath;
+
+    @NotNull
+    private String bankPath;
+
 }

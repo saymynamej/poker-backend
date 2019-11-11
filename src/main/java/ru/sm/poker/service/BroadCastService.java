@@ -8,6 +8,7 @@ import ru.sm.poker.config.SocketMappingConfig;
 @Service
 @RequiredArgsConstructor
 public class BroadCastService {
+
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final SocketMappingConfig socketMappingConfig;
 
@@ -25,5 +26,21 @@ public class BroadCastService {
 
     public void sendToAll(Object message){
         simpMessagingTemplate.convertAndSend(socketMappingConfig.getPokerGamePath(), message);
+    }
+
+    public void sendFlopToAll(Object flop){
+        simpMessagingTemplate.convertAndSend(socketMappingConfig.getFlopPath(), flop);
+    }
+
+    public void sendTernToAll(Object tern){
+        simpMessagingTemplate.convertAndSend(socketMappingConfig.getTernPath(), tern);
+    }
+
+    public void sendRiverToAll(Object river){
+        simpMessagingTemplate.convertAndSend(socketMappingConfig.getRiverPath(), river);
+    }
+
+    public void sendBankToAll(Object bank){
+        simpMessagingTemplate.convertAndSend(socketMappingConfig.getBankPath(), bank);
     }
 }

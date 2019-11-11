@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import ru.sm.poker.enums.CardType;
-import ru.sm.poker.enums.PlayerType;
+import ru.sm.poker.enums.RoleType;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.model.action.Action;
 import ru.sm.poker.model.action.Wait;
@@ -16,7 +16,7 @@ import ru.sm.poker.model.action.Wait;
 public class Player {
     private String name;
     private CardType[] cardTypes = new CardType[2];
-    private PlayerType playerType = PlayerType.PLAYER;
+    private RoleType roleType = RoleType.PLAYER;
     private long chipsCount;
     @Setter
     private StateType stateType = StateType.IN_GAME;
@@ -25,33 +25,37 @@ public class Player {
     @Setter
     private Action action = new Wait();
 
+    @Setter
+    @Getter
+    private boolean active = false;
+
     public Player(String name, long chipsCount) {
         this.name = name;
         this.chipsCount = chipsCount;
     }
 
     public boolean isButton() {
-        return playerType == PlayerType.BUTTON;
+        return roleType == RoleType.BUTTON;
     }
 
     public boolean isBigBlind() {
-        return playerType == PlayerType.BIG_BLIND;
+        return roleType == RoleType.BIG_BLIND;
     }
 
     public boolean isSmallBlind() {
-        return playerType == PlayerType.SMALL_BLIND;
+        return roleType == RoleType.SMALL_BLIND;
     }
 
     public void setButton() {
-        this.playerType = PlayerType.BUTTON;
+        this.roleType = RoleType.BUTTON;
     }
 
-    public void setRole(PlayerType playerType) {
-        this.playerType = playerType;
+    public void setRole(RoleType roleType) {
+        this.roleType = roleType;
     }
 
     public void removeRole() {
-        this.playerType = PlayerType.PLAYER;
+        this.roleType = RoleType.PLAYER;
     }
 
     public void addChips(long chips) {

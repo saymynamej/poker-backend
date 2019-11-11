@@ -1,6 +1,7 @@
 package ru.sm.poker.game;
 
 import ru.sm.poker.model.Player;
+import ru.sm.poker.model.RoundSettings;
 import ru.sm.poker.model.action.Bet;
 
 import java.util.List;
@@ -27,5 +28,9 @@ public interface Game {
     Bet getLastBet();
 
     boolean playerExistByName(String name);
+
+    void reload();
+
+    RoundSettings getRoundSettings();
 
 }

@@ -38,3 +38,7 @@ config:
     poker-game-path: "/poker/game"
     ready-players-path: "/poker/game/ready/players"
     error-path: "/poker/error"
+    flop-path: "/poker/game/flop"
+    tern-path: "/poker/game/tern"
+    river-path: "/poker/game/river"
+    bank-path: "/poker/game/bank"

@@ -10,7 +10,7 @@ import ru.sm.poker.enums.ActionType;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Raise implements Action {
+public class Raise implements Action, CountAction {
     private long count;
 
     @Override

@@ -1,32 +1,27 @@
 package ru.sm.poker.game.holdem;
 
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import ru.sm.poker.enums.ActionType;
+import lombok.Getter;
 import ru.sm.poker.enums.CardType;
-import ru.sm.poker.enums.PlayerType;
+import ru.sm.poker.enums.RoleType;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.model.action.*;
-import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.BroadCastService;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
+@Getter
 public class HoldemRound extends Round {
 
     private final List<CardType> allCards = Arrays.stream(CardType.values()).collect(Collectors.toList());
-    private final ExecutorService executors = Executors.newFixedThreadPool(getPlayers().size());
     private final Random random = new Random();
     private final List<CardType> flop = new ArrayList<>();
     private final long bigBlindBet;
     private final long smallBlindBet;
     private final BroadCastService broadCastService;
-    private final ActionService actionService;
     private long bank = 0;
     private Player activePlayer;
     private CardType tern;
@@ -34,13 +29,12 @@ public class HoldemRound extends Round {
     private Bet lastBet;
 
     HoldemRound(List<Player> players,
-                BroadCastService broadCastService, ActionService actionService, long smallBlindBet,
+                BroadCastService broadCastService, long smallBlindBet,
                 long bigBlindBet) {
         super(players);
         this.bigBlindBet = bigBlindBet;
         this.smallBlindBet = smallBlindBet;
         this.broadCastService = broadCastService;
-        this.actionService = actionService;
     }
 
     protected void startRound() {
@@ -52,16 +46,81 @@ public class HoldemRound extends Round {
         setSmallBlind();
         setBigBlind();
         setLastBet(bigBlindBet);
+        sendBank();
         setActionsPreflop();
+        sendFlop();
+        setActionPostFlop();
+        sendTern();
+        setActionPostFlop();
+        sendRiver();
+        setActionPostFlop();
+    }
+
+
+    private void setActionPostFlop() {
+        final List<Player> playerInGame = getPlayerInGame();
+        setAllWait(playerInGame);
+        setActions(sortPostFlop(playerInGame));
+    }
+
+    private List<Player> getPlayerInGame() {
+        return getPlayers()
+                .stream()
+                .filter(player -> player.getAction() instanceof Call || player.getAction() instanceof Raise)
+                .collect(Collectors.toList());
+    }
+
+    private List<Player> sortPostFlop(List<Player> players) {
+        List<Player> sortedList = new ArrayList<>();
+        final Optional<Player> smallBlind = getPlayerByRole(players, RoleType.SMALL_BLIND);
+        smallBlind.ifPresent(sortedList::add);
+        final Optional<Player> bigBlind = getPlayerByRole(players, RoleType.BIG_BLIND);
+        bigBlind.ifPresent(sortedList::add);
+        return sortedList;
+    }
+
+
+    private void sendFlop() {
+        this.broadCastService.sendToAll(getFlop());
+    }
+
+    private void sendTern() {
+        this.broadCastService.sendToAll(getTern());
+    }
+
+    private void sendRiver() {
+        this.broadCastService.sendToAll(getTern());
+    }
+
+    private void sendBank() {
+        this.broadCastService.sendBankToAll(getBank());
+    }
+
+    private void setAllWait(List<Player> players) {
+        players.forEach(player -> player.setAction(new Wait()));
     }
 
     private void setActionsPreflop() {
-        final List<Player> players = actionPreflopList();
+        setActions(actionPreflopList());
+    }
+
+    private void setActions(List<Player> players) {
         for (Player player : players) {
-            this.activePlayer = player;
-            broadCastService.sendToAll(getPlayers());
+            setActivePlayer(player);
+            broadCastService.sendToAll(players);
             waitPlayerAction(player);
+            sendBank();
+            removeActivePlayer(player);
         }
+    }
+
+    private void setActivePlayer(Player player) {
+        this.activePlayer = player;
+        this.activePlayer.setActive(true);
+    }
+
+    private void removeActivePlayer(Player player) {
+        this.activePlayer.setActive(false);
     }
 
     private void setLastBet(long count) {
@@ -71,7 +130,8 @@ public class HoldemRound extends Round {
 
     private void waitPlayerAction(Player player) {
         while (true) {
-            if (player.getAction().getClass() != Wait.class) {
+            if (player.getAction()
+                    .getClass() != Wait.class) {
                 parseAction(player);
                 break;
             }
@@ -80,7 +140,6 @@ public class HoldemRound extends Round {
 
     private void parseAction(Player player) {
         final Action action = player.getAction();
-
         if (action instanceof Call) {
             call(player, (Call) action);
         } else if (action instanceof Fold) {
@@ -88,7 +147,6 @@ public class HoldemRound extends Round {
         } else if (action instanceof Raise) {
             raise(player, (Raise) action);
         }
-        player.setAction(new Wait());
     }
 
     private void raise(Player player, Raise raise) {
@@ -99,8 +157,8 @@ public class HoldemRound extends Round {
         setLastBet(raise.getCount());
     }
 
-    private void fold(Player player, Fold bet) {
-        player.setAction(bet);
+    private void fold(Player player, Fold fold) {
+        player.setAction(fold);
     }
 
     private void call(Player player, Call call) {
@@ -113,9 +171,9 @@ public class HoldemRound extends Round {
 
     private List<Player> actionPreflopList() {
         final List<Player> sortedPlayers = new ArrayList<>();
-        final Player bigBlind = getPlayerByRole(PlayerType.BIG_BLIND);
-        final Player smallBlind = getPlayerByRole(PlayerType.SMALL_BLIND);
-        final Player button = getPlayerByRole(PlayerType.BUTTON);
+        final Player bigBlind = getPlayerByRole(RoleType.BIG_BLIND);
+        final Player smallBlind = getPlayerByRole(RoleType.SMALL_BLIND);
+        final Player button = getPlayerByRole(RoleType.BUTTON);
         final List<Player> afterBigBlind = takeAllAfterBigBlind();
         final List<Player> beforeButton = takeAllBeforeButton();
         sortedPlayers.addAll(afterBigBlind);
@@ -134,10 +192,10 @@ public class HoldemRound extends Round {
         List<Player> players = getPlayers();
         List<Player> beforeButtonList = new ArrayList<>();
         for (Player player : players) {
-            if (player.getPlayerType() != PlayerType.SMALL_BLIND
-                    && player.getPlayerType() != PlayerType.BIG_BLIND && player.getPlayerType() != PlayerType.BUTTON)
+            if (player.getRoleType() != RoleType.SMALL_BLIND
+                    && player.getRoleType() != RoleType.BIG_BLIND && player.getRoleType() != RoleType.BUTTON)
                 beforeButtonList.add(player);
-            if (player.getPlayerType() == PlayerType.BUTTON) {
+            if (player.getRoleType() == RoleType.BUTTON) {
                 break;
             }
         }
@@ -149,13 +207,13 @@ public class HoldemRound extends Round {
         List<Player> afterBigBlindList = new ArrayList<>();
         boolean startCollect = false;
         for (Player player : players) {
-            if (player.getPlayerType() == PlayerType.BIG_BLIND) {
+            if (player.getRoleType() == RoleType.BIG_BLIND) {
                 startCollect = true;
                 continue;
             }
             if (startCollect
-                    && player.getPlayerType() != PlayerType.BUTTON
-                    && player.getPlayerType() != PlayerType.SMALL_BLIND) {
+                    && player.getRoleType() != RoleType.BUTTON
+                    && player.getRoleType() != RoleType.SMALL_BLIND) {
                 afterBigBlindList.add(player);
             }
         }
@@ -164,7 +222,7 @@ public class HoldemRound extends Round {
 
 
     private void setSmallBlind() {
-        clearRole(PlayerType.SMALL_BLIND);
+        clearRole(RoleType.SMALL_BLIND);
         final int indexOfButton = getIndexOfButton();
         int indexOfSmallBlind = 0;
         Player smallBlind;
@@ -174,12 +232,12 @@ public class HoldemRound extends Round {
             indexOfSmallBlind = indexOfButton + 1;
             smallBlind = getPlayers().get(indexOfSmallBlind);
         }
-        smallBlind.setRole(PlayerType.SMALL_BLIND);
+        smallBlind.setRole(RoleType.SMALL_BLIND);
         removeChipsPlayerAndAddToBank(smallBlind, smallBlindBet);
     }
 
     private void setBigBlind() {
-        clearRole(PlayerType.BIG_BLIND);
+        clearRole(RoleType.BIG_BLIND);
         final int indexOfSmallBlind = getIndexOfSmallBlind();
         int indexOfBigBlind = 0;
         Player bigBlind;
@@ -189,36 +247,43 @@ public class HoldemRound extends Round {
             indexOfBigBlind = indexOfSmallBlind + 1;
             bigBlind = getPlayers().get(indexOfBigBlind);
         }
-        bigBlind.setRole(PlayerType.BIG_BLIND);
+        bigBlind.setRole(RoleType.BIG_BLIND);
         removeChipsPlayerAndAddToBank(bigBlind, bigBlindBet);
     }
 
     private int getIndexOfSmallBlind() {
-        return getPlayers().indexOf(getPlayerByRole(PlayerType.SMALL_BLIND));
+        return getPlayers().indexOf(getPlayerByRole(RoleType.SMALL_BLIND));
     }
 
     private int getIndexOfBlindBlind() {
-        return getPlayers().indexOf(getPlayerByRole(PlayerType.BIG_BLIND));
+        return getPlayers().indexOf(getPlayerByRole(RoleType.BIG_BLIND));
     }
 
     private int getIndexOfButton() {
-        return getPlayers().indexOf(getPlayerByRole(PlayerType.BUTTON));
+        return getPlayers().indexOf(getPlayerByRole(RoleType.BUTTON));
     }
 
-    private Player getPlayerByRole(PlayerType playerType) {
+    Player getPlayerByRole(RoleType roleType) {
         return this
                 .getPlayers()
                 .stream()
-                .filter(player -> player.getPlayerType() == playerType)
+                .filter(player -> player.getRoleType() == roleType)
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException(format("Cannot find role:%s", playerType)));
+                .orElseThrow(() -> new RuntimeException(format("Cannot find role:%s", roleType)));
     }
 
-    private void clearRole(PlayerType playerType) {
+    Optional<Player> getPlayerByRole(List<Player> players, RoleType roleType) {
+        return players
+                .stream()
+                .filter(player -> player.getRoleType() == roleType)
+                .findFirst();
+    }
+
+    private void clearRole(RoleType roleType) {
         final Optional<Player> playerByRole = getPlayers()
                 .stream()
                 .filter(
-                        player -> player.getPlayerType() == playerType)
+                        player -> player.getRoleType() == roleType)
                 .findAny();
         playerByRole.ifPresent(Player::removeRole);
     }
@@ -244,6 +309,9 @@ public class HoldemRound extends Round {
         }
     }
 
+    public List<Player> getAllPlayers() {
+        return getPlayers();
+    }
 
     private void setFlop() {
         for (int i = 0; i < 3; i++) {
@@ -306,4 +374,6 @@ public class HoldemRound extends Round {
     public Bet getLastBet() {
         return lastBet;
     }
+
+
 }

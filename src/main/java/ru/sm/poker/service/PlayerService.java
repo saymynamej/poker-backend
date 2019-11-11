@@ -9,12 +9,11 @@ import ru.sm.poker.model.Player;
 @RequiredArgsConstructor
 public class PlayerService {
     private final Game game;
-    private final CheckService checkService;
+    private final SecurityService securityService;
     private final BroadCastService broadCastService;
 
-
     public void addPlayer(String name) {
-        if (!checkService.isExist(name)) {
+        if (!securityService.isExist(name)) {
             game.addPlayer(new Player(name, 5000));
             broadCastService.sendToAllPlayerReadyMessage(game.getPlayers());
         } else {
