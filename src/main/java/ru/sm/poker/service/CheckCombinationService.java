@@ -1,11 +1,14 @@
 package ru.sm.poker.service;
 
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.Combination;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Service
 public class CheckCombinationService {
 
     private final static int A_POWER = 14;
@@ -14,10 +17,19 @@ public class CheckCombinationService {
     private final static int J_POWER = 11;
     private final static int TEN_POWER = 10;
     private final static int COMBINATION_SIZE = 5;
+    private final static int FULL_COMBINATION_SIZE = 7;
     private final static int KARE_SIZE = 4;
     private final static int PAIR_SIZE = 2;
 
+
+
+
     public Map<Combination, List<CardType>> findCombination(List<CardType> cards) {
+
+        if (cards.size() != FULL_COMBINATION_SIZE) {
+            throw new RuntimeException("cards size must be 7");
+        }
+
         final Map<Combination, List<CardType>> combinations = new HashMap<>();
 
         //FLUSH ROYAL
@@ -43,6 +55,14 @@ public class CheckCombinationService {
         }
 
         //FULL-HOUSE
+
+        final List<CardType> fullHouse = findFullHouse(new ArrayList<>(cards));
+
+
+        if (!fullHouse.isEmpty() && checkSize(fullHouse) && checkDuplicate(fullHouse)) {
+            combinations.put(Combination.FULL_HOUSE, fullHouse);
+            return combinations;
+        }
 
         //FLUSH
         final List<CardType> flush = findFlush(new ArrayList<>(cards));
@@ -125,6 +145,56 @@ public class CheckCombinationService {
 
     }
 
+    private List<CardType> findFullHouse(List<CardType> cards) {
+
+        final List<CardType> foundThree = new ArrayList<>();
+        final List<CardType> foundTwo = new ArrayList<>();
+        final List<CardType> copySorted = new ArrayList<>(cards).stream()
+                .sorted(Comparator.comparingInt(CardType::getPower).reversed())
+                .collect(Collectors.toList());
+
+
+        for (CardType card : copySorted) {
+            final List<CardType> three = cards
+                    .stream()
+                    .filter(cardType -> cardType.getPower() == card.getPower())
+                    .collect(Collectors.toList());
+            if (three.size() == 3) {
+                foundThree.addAll(three);
+                cards.removeAll(three);
+                break;
+            }
+        }
+
+        for (CardType card : copySorted) {
+            final List<CardType> two = cards
+                    .stream()
+                    .filter(cardType -> cardType.getPower() == card.getPower())
+                    .collect(Collectors.toList());
+            if (two.size() == 2){
+                foundTwo.addAll(two);
+                cards.removeAll(two);
+                break;
+            }
+            if (two.size() > 2){
+                foundTwo.add(two.get(0));
+                foundTwo.add(two.get(1));
+                break;
+            }
+        }
+
+        if (!foundTwo.isEmpty() && !foundThree.isEmpty()){
+            final List<CardType> fullHouse = new ArrayList<>();
+            fullHouse.addAll(foundTwo);
+            fullHouse.addAll(foundThree);
+            return fullHouse.stream()
+                    .distinct()
+                    .collect(Collectors.toList());
+        }
+
+        return Collections.emptyList();
+    }
+
 
     private List<CardType> findTwoPair(List<CardType> cards) {
         final int size = cards.size();
@@ -169,7 +239,7 @@ public class CheckCombinationService {
         final List<CardType> foundThree = new ArrayList<>();
 
         for (CardType card : cards) {
-            List<CardType> three = cards
+            final List<CardType> three = cards
                     .stream()
                     .filter(cardType -> cardType.getPower() == card.getPower())
                     .collect(Collectors.toList());
@@ -179,16 +249,16 @@ public class CheckCombinationService {
         }
         if (!foundThree.isEmpty()) {
             for (int i = 0; i < 2; i++) {
-                CardType biggerCard = findBiggerCardWithFilter(cards, foundThree.get(0).getPower());
+                final CardType biggerCard = findBiggerCardWithFilter(cards, foundThree.get(0).getPower());
                 foundThree.add(biggerCard);
                 cards.remove(biggerCard);
             }
+            return foundThree
+                    .stream()
+                    .distinct()
+                    .collect(Collectors.toList());
         }
-
-        return foundThree
-                .stream()
-                .distinct()
-                .collect(Collectors.toList());
+        return Collections.emptyList();
     }
 
 
