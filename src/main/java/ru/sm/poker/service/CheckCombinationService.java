@@ -1,6 +1,5 @@
 package ru.sm.poker.service;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.Combination;
@@ -218,7 +217,6 @@ public class CheckCombinationService {
                 copyList.removeAll(pair);
             }
             if (!firstPair.isEmpty() && !secondPair.isEmpty()) {
-                ;
                 break;
             }
             cards.remove(biggerCard);
@@ -335,22 +333,28 @@ public class CheckCombinationService {
         return Collections.emptyList();
     }
 
+
+    //TODO не правильно определяем стрит!!!
     private boolean checkStrait(List<CardType> cards) {
         final List<CardType> strait = cards
                 .stream()
                 .sorted(Comparator.comparingInt(CardType::getPower))
                 .collect(Collectors.toList());
-        boolean isStrait = false;
+
+        int repeat = 0;
 
         for (int i = 0; i < strait.size(); i++) {
             if (i + 1 != strait.size()) {
-                isStrait = strait.get(i).getPower() + 1 == strait.get(i + 1).getPower();
-                if (!isStrait) {
-                    break;
+                boolean isStrait = strait.get(i).getPower() + 1 == strait.get(i + 1).getPower();
+                if (isStrait) {
+                    repeat++;
+                }
+                else {
+                    repeat = 0;
                 }
             }
         }
-        return isStrait;
+        return repeat >= 4;
     }
 
 
