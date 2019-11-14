@@ -51,18 +51,6 @@ public class HoldemRound implements Round {
     }
 
 
-    private void setSettings(){
-        dealCards();
-        setFlop();
-        setTern();
-        setRiver();
-        setButton();
-        setSmallBlind();
-        System.out.println(getBank());
-        setBigBlind();
-        setLastBet(bigBlindBet);
-    }
-
     @Override
     public void stopRound() {
 
@@ -70,7 +58,8 @@ public class HoldemRound implements Round {
 
     @Override
     public RoundSettings getRoundSettings() {
-        return RoundSettings.builder()
+        return RoundSettings
+                .builder()
                 .flop(getFlop())
                 .tern(getTern())
                 .river(getRiver())
@@ -81,6 +70,18 @@ public class HoldemRound implements Round {
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
                 .players(getAllPlayers())
                 .build();
+    }
+
+
+    private void setSettings(){
+        dealCards();
+        setFlop();
+        setTern();
+        setRiver();
+        setButton();
+        setSmallBlind();
+        setBigBlind();
+        setLastBet(bigBlindBet);
     }
 
 
@@ -134,8 +135,7 @@ public class HoldemRound implements Round {
     private void setActions(List<Player> players) {
         for (Player player : players) {
             setActivePlayer(player);
-            System.out.println("Ожидаем");
-            broadCastService.sendToAll(players);
+            broadCastService.sendToAll(getRoundSettings());
             waitPlayerAction(player);
             sendBank();
             removeActivePlayer(player);
@@ -267,6 +267,12 @@ public class HoldemRound implements Round {
     private void setBigBlind() {
         clearRole(RoleType.BIG_BLIND);
         final int indexOfSmallBlind = getIndexOfSmallBlind();
+        Player bigBlind = getPlayer(indexOfSmallBlind);
+        bigBlind.setRole(RoleType.BIG_BLIND);
+        removeChipsPlayerAndAddToBank(bigBlind, bigBlindBet);
+    }
+
+    private Player getPlayer(int indexOfSmallBlind) {
         int indexOfBigBlind = 0;
         Player bigBlind;
         if (indexOfSmallBlind + 1 >= getPlayers().size()) {
@@ -275,8 +281,7 @@ public class HoldemRound implements Round {
             indexOfBigBlind = indexOfSmallBlind + 1;
             bigBlind = getPlayers().get(indexOfBigBlind);
         }
-        bigBlind.setRole(RoleType.BIG_BLIND);
-        removeChipsPlayerAndAddToBank(bigBlind, bigBlindBet);
+        return bigBlind;
     }
 
     private int getIndexOfSmallBlind() {
@@ -291,7 +296,7 @@ public class HoldemRound implements Round {
         return getPlayers().indexOf(getPlayerByRole(RoleType.BUTTON));
     }
 
-    Player getPlayerByRole(RoleType roleType) {
+    private Player getPlayerByRole(RoleType roleType) {
         return this
                 .getPlayers()
                 .stream()
@@ -300,7 +305,7 @@ public class HoldemRound implements Round {
                 .orElseThrow(() -> new RuntimeException(format("Cannot find role:%s", roleType)));
     }
 
-    Optional<Player> getPlayerByRole(List<Player> players, RoleType roleType) {
+    private Optional<Player> getPlayerByRole(List<Player> players, RoleType roleType) {
         return players
                 .stream()
                 .filter(player -> player.getRoleType() == roleType)
@@ -337,8 +342,8 @@ public class HoldemRound implements Round {
         }
     }
 
-    public List<Player> getAllPlayers() {
-        return getPlayers();
+    private List<Player> getAllPlayers() {
+        return players;
     }
 
     private void setFlop() {

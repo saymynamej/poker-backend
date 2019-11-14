@@ -8,6 +8,7 @@ import ru.sm.poker.game.holdem.HoldemGame;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.service.BroadCastService;
 import ru.sm.poker.util.ThreadUtil;
+
 import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -26,7 +27,7 @@ public class GameListeners {
     private final List<Player> players;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         enable();
         enableClearListener();
     }
@@ -34,20 +35,22 @@ public class GameListeners {
     private void enable() {
         executorServiceForStart.submit(() -> {
             while (true) {
-                ThreadUtil.sleep(3);
-                if (players.size() == 4) {
+                ThreadUtil.sleep(1);
+                if (players.size() >= 4) {
+                    final List<Player> players = new ArrayList<>(this.players);
                     final HoldemGame game = new HoldemGame(getRandomGameName(), 9, players, broadCastService);
-                    game.start();
+                    players.forEach(player -> player.setGameName(game.getName()));
                     games.put(getRandomGameName(), game);
-                    players.clear();
+                    log.info("game was started, because found 4 person");
+                    game.start();
                 }
             }
         });
     }
 
-    private void enableClearListener(){
+    private void enableClearListener() {
         executorServiceForClear.submit(() -> {
-            while (true){
+            while (true) {
                 ThreadUtil.sleep(10);
                 final List<Game> allEmptyGame = findAllEmptyGame();
                 clearGame(allEmptyGame);
@@ -55,13 +58,13 @@ public class GameListeners {
         });
     }
 
-    private void clearGame(List<Game> games){
-        if (games != null && !games.isEmpty()){
+    private void clearGame(List<Game> games) {
+        if (games != null && !games.isEmpty()) {
             games.forEach(game -> this.games.remove(game.getName()));
         }
     }
 
-    private List<Game> findAllEmptyGame(){
+    private List<Game> findAllEmptyGame() {
         return games
                 .values()
                 .stream()
@@ -72,4 +75,5 @@ public class GameListeners {
     private String getRandomGameName() {
         return UUID.randomUUID().toString();
     }
+
 }

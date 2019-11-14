@@ -28,8 +28,6 @@ public class HoldemGame implements Game {
 
     private boolean isStarted = false;
 
-
-
     @Builder
     public HoldemGame(String name, int maxPlayersSize, List<Player> players, BroadCastService broadCastService) {
         this.name = name;
@@ -41,7 +39,6 @@ public class HoldemGame implements Game {
     @Override
     public void start() {
         while (players.size() >= 4 || !isStarted) {
-            System.out.println("ууу");
             isStarted = true;
             round.startRound();
         }

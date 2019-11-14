@@ -5,12 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.sm.poker.game.ActionHandler;
 import ru.sm.poker.game.holdem.HoldemActionHandler;
 import ru.sm.poker.game.holdem.HoldemManager;
 import ru.sm.poker.model.Message;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.model.action.Call;
+import ru.sm.poker.model.action.Bet;
+import ru.sm.poker.model.action.Fold;
+import ru.sm.poker.model.action.Raise;
 import ru.sm.poker.service.BroadCastService;
 
 import java.security.Principal;
@@ -34,38 +35,39 @@ public class GameController {
     }
 
     @MessageMapping("/raise")
-    public void raise(Principal principal, long raise) {
-
+    public void raise(Principal principal, Message message) {
+        holdemActionHandler.setAction(principal.getName(), new Raise(Long.parseLong(message.getCount()), message.getGameName()));
     }
 
     @MessageMapping("/call")
-    public void call(Message message) {
-
+    public void call(Principal principal, Message message) {
+        holdemActionHandler.setAction(principal.getName(), new Bet(Long.parseLong(message.getCount()),message.getGameName()));
     }
 
     @MessageMapping("/fold")
-    public void fold(Message message) {
+    public void fold(Principal principal, Message message) {
+        holdemActionHandler.setAction(principal.getName(), new Fold(message.getGameName()));
     }
 
-    @MessageMapping("/reload")
-    public void reload(Principal principal){
-    }
-
-    @MessageMapping("/get/flop")
-    public void getFlop(Principal principal){
-
-    }
-
-    @MessageMapping("/get/tern")
-    public void getTern(Principal principal){
-    }
-
-
-    @MessageMapping("/get/river")
-    public void getRiver(Principal principal){
-    }
-
-    @MessageMapping("/get/bank")
-    public void getBank(Principal principal){
-    }
+//    @MessageMapping("/reload")
+//    public void reload(Principal principal){
+//    }
+//
+//    @MessageMapping("/get/flop")
+//    public void getFlop(Principal principal){
+//
+//    }
+//
+//    @MessageMapping("/get/tern")
+//    public void getTern(Principal principal){
+//    }
+//
+//
+//    @MessageMapping("/get/river")
+//    public void getRiver(Principal principal){
+//    }
+//
+//    @MessageMapping("/get/bank")
+//    public void getBank(Principal principal){
+//    }
 }

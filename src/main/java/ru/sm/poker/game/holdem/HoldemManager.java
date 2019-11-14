@@ -1,6 +1,7 @@
 package ru.sm.poker.game.holdem;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
@@ -13,9 +14,16 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class HoldemManager implements GameManager {
     private final Map<String, Game> games;
     private final List<Player> players;
+
+
+    public List<Game> getPlayerByName() {
+        return (List<Game>) games
+                .values();
+    }
 
     @Override
     public Map<String, Player> getPlayerByName(String name) {
@@ -27,10 +35,10 @@ public class HoldemManager implements GameManager {
                         .getRoundSettings()
                         .getPlayers()
                         .stream()
+                        .filter(player -> player.getName().equals(name))
                         .collect(Collectors.toMap(playerF -> entry.getKey(), playerF -> playerF))
                         .entrySet()
                         .stream()))
-                .filter(entry -> entry.getValue().getName().equals(name))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
@@ -49,6 +57,8 @@ public class HoldemManager implements GameManager {
         final Game game = games.get(gameName);
         if (game != null) {
             game.removePlayer(player);
+            log.info("Player removed :" + player.getName());
+            return;
         }
         throw new RuntimeException(String.format("could not found player in game =%s, player=%s", gameName, player.getName()));
     }
@@ -71,6 +81,5 @@ public class HoldemManager implements GameManager {
         players.add(Player.builder().name("Oleg").chipsCount(5000).build());
         players.add(Player.builder().name("Oleg1").chipsCount(5000).build());
         players.add(Player.builder().name("Oleg2").chipsCount(5000).build());
-        players.add(Player.builder().name("Oleg4").chipsCount(5000).build());
     }
 }

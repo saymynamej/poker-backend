@@ -9,4 +9,5 @@ import lombok.*;
 public class Message {
     private String name;
     private String count;
+    private String gameName;
 }

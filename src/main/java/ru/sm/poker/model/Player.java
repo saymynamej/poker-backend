@@ -26,6 +26,9 @@ public class Player {
     @Getter
     private boolean active = false;
 
+    @Getter
+    @Setter
+    private String gameName;
 
     @Builder
     public Player(String name, long chipsCount) {
