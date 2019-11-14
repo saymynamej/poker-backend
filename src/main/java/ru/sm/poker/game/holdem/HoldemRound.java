@@ -8,6 +8,7 @@ import ru.sm.poker.model.Player;
 import ru.sm.poker.model.action.*;
 import ru.sm.poker.service.BroadCastService;
 
+import java.security.SecureRandom;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -17,7 +18,7 @@ import static java.lang.String.format;
 public class HoldemRound extends Round {
 
     private final List<CardType> allCards = Arrays.stream(CardType.values()).collect(Collectors.toList());
-    private final Random random = new Random();
+    private final SecureRandom random = new SecureRandom();
     private final List<CardType> flop = new ArrayList<>();
     private final long bigBlindBet;
     private final long smallBlindBet;

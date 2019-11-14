@@ -12,9 +12,6 @@ public enum Combination {
     PAIR(2),
     HIGH_CARD(1);
 
-
-
-
     private final int power;
 
     Combination(int power) {

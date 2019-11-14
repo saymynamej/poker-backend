@@ -3,67 +3,71 @@ package ru.sm.poker.enums;
 import lombok.Getter;
 
 public enum CardType {
-    A_D(14, SuitType.DIAMOND),
-    K_D(13, SuitType.DIAMOND),
-    Q_D(12, SuitType.DIAMOND),
-    J_D(11, SuitType.DIAMOND),
-    TEN_D(10, SuitType.DIAMOND),
-    NINE_D(9, SuitType.DIAMOND),
-    EIGHT_D(8, SuitType.DIAMOND),
-    SEVEN_D(7, SuitType.DIAMOND),
-    SIX_D(6, SuitType.DIAMOND),
-    FIVE_D(5, SuitType.DIAMOND),
-    FOUR_D(4, SuitType.DIAMOND),
-    THREE_D(3, SuitType.DIAMOND),
-    TWO_D(2, SuitType.DIAMOND),
-    A_H(14, SuitType.HEART),
-    K_H(13, SuitType.HEART),
-    Q_H(12, SuitType.HEART),
-    J_H(11, SuitType.HEART),
-    TEN_H(10, SuitType.HEART),
-    NINE_H(9, SuitType.HEART),
-    EIGHT_H(8, SuitType.HEART),
-    SEVEN_H(7, SuitType.HEART),
-    SIX_H(6, SuitType.HEART),
-    FIVE_H(5, SuitType.HEART),
-    FOUR_H(4, SuitType.HEART),
-    THREE_H(3, SuitType.HEART),
-    TWO_H(2, SuitType.HEART),
-    A_S(14, SuitType.SPADE),
-    K_S(13, SuitType.SPADE),
-    Q_S(12, SuitType.SPADE),
-    J_S(11, SuitType.SPADE),
-    TEN_S(10, SuitType.SPADE),
-    NINE_S(9, SuitType.SPADE),
-    EIGHT_S(8, SuitType.SPADE),
-    SEVEN_S(7, SuitType.SPADE),
-    SIX_S(6, SuitType.SPADE),
-    FIVE_S(5, SuitType.SPADE),
-    FOUR_S(4, SuitType.SPADE),
-    THREE_S(3, SuitType.SPADE),
-    TWO_S(2, SuitType.SPADE),
-    A_C(14, SuitType.CLUB),
-    K_C(13, SuitType.CLUB),
-    Q_C(12, SuitType.CLUB),
-    J_C(11, SuitType.CLUB),
-    TEN_C(10, SuitType.CLUB),
-    NINE_C(9, SuitType.CLUB),
-    EIGHT_C(8, SuitType.CLUB),
-    SEVEN_C(7, SuitType.CLUB),
-    SIX_C(6, SuitType.CLUB),
-    FIVE_C(5, SuitType.CLUB),
-    FOUR_C(4, SuitType.CLUB),
-    THREE_C(3, SuitType.CLUB),
-    TWO_C(2, SuitType.CLUB);
+    A_D(PowerType.A_POWER, SuitType.DIAMOND),
+    K_D(PowerType.K_POWER, SuitType.DIAMOND),
+    Q_D(PowerType.Q_POWER, SuitType.DIAMOND),
+    J_D(PowerType.J_POWER, SuitType.DIAMOND),
+    TEN_D(PowerType.TEN_POWER, SuitType.DIAMOND),
+    NINE_D(PowerType.NINE_POWER, SuitType.DIAMOND),
+    EIGHT_D(PowerType.EIGHT_POWER, SuitType.DIAMOND),
+    SEVEN_D(PowerType.SEVEN_POWER, SuitType.DIAMOND),
+    SIX_D(PowerType.SIX_POWER, SuitType.DIAMOND),
+    FIVE_D(PowerType.FIVE_POWER, SuitType.DIAMOND),
+    FOUR_D(PowerType.FOUR_POWER, SuitType.DIAMOND),
+    THREE_D(PowerType.THREE_POWER, SuitType.DIAMOND),
+    TWO_D(PowerType.TWO_POWER, SuitType.DIAMOND),
+    A_H(PowerType.A_POWER, SuitType.HEART),
+    K_H(PowerType.K_POWER, SuitType.HEART),
+    Q_H(PowerType.Q_POWER, SuitType.HEART),
+    J_H(PowerType.J_POWER, SuitType.HEART),
+    TEN_H(PowerType.TEN_POWER, SuitType.HEART),
+    NINE_H(PowerType.NINE_POWER, SuitType.HEART),
+    EIGHT_H(PowerType.EIGHT_POWER, SuitType.HEART),
+    SEVEN_H(PowerType.SEVEN_POWER, SuitType.HEART),
+    SIX_H(PowerType.SIX_POWER, SuitType.HEART),
+    FIVE_H(PowerType.FIVE_POWER, SuitType.HEART),
+    FOUR_H(PowerType.FOUR_POWER, SuitType.HEART),
+    THREE_H(PowerType.THREE_POWER, SuitType.HEART),
+    TWO_H(PowerType.TWO_POWER, SuitType.HEART),
+    A_S(PowerType.A_POWER, SuitType.SPADE),
+    K_S(PowerType.K_POWER, SuitType.SPADE),
+    Q_S(PowerType.Q_POWER, SuitType.SPADE),
+    J_S(PowerType.J_POWER, SuitType.SPADE),
+    TEN_S(PowerType.TEN_POWER, SuitType.SPADE),
+    NINE_S(PowerType.NINE_POWER, SuitType.SPADE),
+    EIGHT_S(PowerType.EIGHT_POWER, SuitType.SPADE),
+    SEVEN_S(PowerType.SEVEN_POWER, SuitType.SPADE),
+    SIX_S(PowerType.SIX_POWER, SuitType.SPADE),
+    FIVE_S(PowerType.FIVE_POWER, SuitType.SPADE),
+    FOUR_S(PowerType.FOUR_POWER, SuitType.SPADE),
+    THREE_S(PowerType.THREE_POWER, SuitType.SPADE),
+    TWO_S(PowerType.TWO_POWER, SuitType.SPADE),
+    A_C(PowerType.A_POWER, SuitType.CLUB),
+    K_C(PowerType.K_POWER, SuitType.CLUB),
+    Q_C(PowerType.Q_POWER, SuitType.CLUB),
+    J_C(PowerType.J_POWER, SuitType.CLUB),
+    TEN_C(PowerType.TEN_POWER, SuitType.CLUB),
+    NINE_C(PowerType.NINE_POWER, SuitType.CLUB),
+    EIGHT_C(PowerType.EIGHT_POWER, SuitType.CLUB),
+    SEVEN_C(PowerType.SEVEN_POWER, SuitType.CLUB),
+    SIX_C(PowerType.SIX_POWER, SuitType.CLUB),
+    FIVE_C(PowerType.FIVE_POWER, SuitType.CLUB),
+    FOUR_C(PowerType.FOUR_POWER, SuitType.CLUB),
+    THREE_C(PowerType.THREE_POWER, SuitType.CLUB),
+    TWO_C(PowerType.TWO_POWER, SuitType.CLUB);
 
     @Getter
-    private final int power;
+    private final PowerType power;
     @Getter
     private final SuitType suitType;
 
-    CardType(int power, SuitType suitType) {
-        this.power = power;
+    CardType(PowerType powerType, SuitType suitType) {
+        this.power = powerType;
         this.suitType = suitType;
+    }
+
+    public int getPowerAsInt(){
+        return power.getPowerAsInt();
     }
 
 

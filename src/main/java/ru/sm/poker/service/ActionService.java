@@ -24,7 +24,6 @@ public class ActionService {
     public void setAction(String name, Action action) {
         final Optional<Player> player = game.getPlayerByName(name);
         if (player.isPresent()) {
-            System.out.println(player.get().getName() +" eee");
             final List<String> errors = securityService.check(player.get());
             if (!errors.isEmpty()) {
                 broadCastService.sendErrorToUser(name, errors.toString());
