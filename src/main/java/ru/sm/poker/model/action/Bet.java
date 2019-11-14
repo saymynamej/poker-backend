@@ -1,20 +1,17 @@
 package ru.sm.poker.model.action;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import ru.sm.poker.enums.ActionType;
 
-
-
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class Bet implements Action {
 
-    private long count;
+    private final long count;
+    private final String gameName;
 
     @Override
     public ActionType getActionType() {

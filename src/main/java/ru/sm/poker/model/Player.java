@@ -1,9 +1,6 @@
 package ru.sm.poker.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.RoleType;
 import ru.sm.poker.enums.StateType;
@@ -23,12 +20,14 @@ public class Player {
     @Setter
     private int timeBank = 60;
     @Setter
-    private Action action = new Wait();
+    private Action action = new Wait("null");
 
     @Setter
     @Getter
     private boolean active = false;
 
+
+    @Builder
     public Player(String name, long chipsCount) {
         this.name = name;
         this.chipsCount = chipsCount;

@@ -1,22 +1,13 @@
 package ru.sm.poker.game;
 
-import ru.sm.poker.model.Player;
+import ru.sm.poker.model.RoundSettings;
 
-import java.util.List;
+public interface Round {
 
-public abstract class Round {
+    void startRound();
 
-    private final List<Player> players;
+    void stopRound();
 
-    public Round(List<Player> players){
-        this.players = players;
-    }
+    RoundSettings getRoundSettings();
 
-    protected abstract void startRound();
-
-    protected List<Player> getPlayers(){
-        return this.players;
-    }
-
-    public abstract Player getActivePlayer();
 }

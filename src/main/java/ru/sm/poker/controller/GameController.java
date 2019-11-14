@@ -5,14 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.sm.poker.game.Game;
+import ru.sm.poker.game.ActionHandler;
+import ru.sm.poker.game.holdem.HoldemActionHandler;
+import ru.sm.poker.game.holdem.HoldemManager;
 import ru.sm.poker.model.Message;
+import ru.sm.poker.model.Player;
 import ru.sm.poker.model.action.Call;
-import ru.sm.poker.model.action.Fold;
-import ru.sm.poker.model.action.Raise;
-import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.BroadCastService;
-import ru.sm.poker.service.PlayerService;
+
 import java.security.Principal;
 
 @RequestMapping("/game")
@@ -20,34 +20,35 @@ import java.security.Principal;
 @RequiredArgsConstructor
 @Slf4j
 public class GameController {
-    private final ActionService actionService;
-    private final PlayerService playerService;
     private final BroadCastService broadCastService;
-    private final Game game;
+    private final HoldemManager holdemManager;
+    private final HoldemActionHandler holdemActionHandler;
 
     @MessageMapping("/addPlayer")
     public void addUser(Principal principal) {
-        playerService.addPlayer(principal.getName());
+        holdemManager
+                .addPlayer(Player.builder()
+                .name(principal.getName())
+                .chipsCount(5000)
+                .build());
     }
 
     @MessageMapping("/raise")
     public void raise(Principal principal, long raise) {
-        actionService.setAction(principal.getName(), new Raise(raise));
+
     }
 
     @MessageMapping("/call")
     public void call(Message message) {
-        actionService.setAction(message.getName(), new Call(Long.parseLong(message.getCount())));
+
     }
 
     @MessageMapping("/fold")
     public void fold(Message message) {
-        actionService.setAction(message.getName(), new Fold());
     }
 
     @MessageMapping("/reload")
     public void reload(Principal principal){
-        game.reload();
     }
 
     @MessageMapping("/get/flop")

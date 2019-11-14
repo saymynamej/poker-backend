@@ -1,52 +1,45 @@
 package ru.sm.poker.game.holdem;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.RoleType;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.model.Player;
+import ru.sm.poker.model.RoundSettings;
 import ru.sm.poker.model.action.*;
 import ru.sm.poker.service.BroadCastService;
 
 import java.security.SecureRandom;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
+@RequiredArgsConstructor
 @Getter
-public class HoldemRound extends Round {
-
+public class HoldemRound implements Round {
     private final List<CardType> allCards = Arrays.stream(CardType.values()).collect(Collectors.toList());
+    private final List<Player> players;
+    private final String gameName;
     private final SecureRandom random = new SecureRandom();
     private final List<CardType> flop = new ArrayList<>();
-    private final long bigBlindBet;
-    private final long smallBlindBet;
     private final BroadCastService broadCastService;
     private long bank = 0;
     private Player activePlayer;
     private CardType tern;
     private CardType river;
     private Bet lastBet;
+    private long bigBlindBet = 2;
+    private long smallBlindBet = 1;
 
-    HoldemRound(List<Player> players,
-                BroadCastService broadCastService, long smallBlindBet,
-                long bigBlindBet) {
-        super(players);
-        this.bigBlindBet = bigBlindBet;
-        this.smallBlindBet = smallBlindBet;
-        this.broadCastService = broadCastService;
-    }
 
-    protected void startRound() {
-        dealCards();
-        setFlop();
-        setTern();
-        setRiver();
-        setButton();
-        setSmallBlind();
-        setBigBlind();
-        setLastBet(bigBlindBet);
+    @Override
+    public void startRound() {
+        setSettings();
         sendBank();
         setActionsPreflop();
         sendFlop();
@@ -58,6 +51,39 @@ public class HoldemRound extends Round {
     }
 
 
+    private void setSettings(){
+        dealCards();
+        setFlop();
+        setTern();
+        setRiver();
+        setButton();
+        setSmallBlind();
+        System.out.println(getBank());
+        setBigBlind();
+        setLastBet(bigBlindBet);
+    }
+
+    @Override
+    public void stopRound() {
+
+    }
+
+    @Override
+    public RoundSettings getRoundSettings() {
+        return RoundSettings.builder()
+                .flop(getFlop())
+                .tern(getTern())
+                .river(getRiver())
+                .activePlayer(getActivePlayer())
+                .button(getPlayerByRole(RoleType.BUTTON))
+                .bank(getBank())
+                .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
+                .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
+                .players(getAllPlayers())
+                .build();
+    }
+
+
     private void setActionPostFlop() {
         final List<Player> playerInGame = getPlayerInGame();
         setAllWait(playerInGame);
@@ -65,7 +91,7 @@ public class HoldemRound extends Round {
     }
 
     private List<Player> getPlayerInGame() {
-        return getPlayers()
+        return players
                 .stream()
                 .filter(player -> player.getAction() instanceof Call || player.getAction() instanceof Raise)
                 .collect(Collectors.toList());
@@ -98,7 +124,7 @@ public class HoldemRound extends Round {
     }
 
     private void setAllWait(List<Player> players) {
-        players.forEach(player -> player.setAction(new Wait()));
+        players.forEach(player -> player.setAction(new Wait("test")));
     }
 
     private void setActionsPreflop() {
@@ -108,6 +134,7 @@ public class HoldemRound extends Round {
     private void setActions(List<Player> players) {
         for (Player player : players) {
             setActivePlayer(player);
+            System.out.println("Ожидаем");
             broadCastService.sendToAll(players);
             waitPlayerAction(player);
             sendBank();
@@ -125,8 +152,8 @@ public class HoldemRound extends Round {
     }
 
     private void setLastBet(long count) {
-        this.lastBet = new Bet();
-        this.lastBet.setCount(count);
+        this.lastBet = new Bet(count, getGameName());
+
     }
 
     private void waitPlayerAction(Player player) {
