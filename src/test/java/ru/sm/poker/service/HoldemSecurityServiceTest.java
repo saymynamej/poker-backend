@@ -39,7 +39,7 @@ class HoldemSecurityServiceTest {
 
 
     @BeforeEach
-    public void before() {
+    void before() {
         final Faker faker = new Faker();
         for (int i = 0; i < NINE_PLAYERS_TABLE; i++) {
             holdemManager.addPlayer((Player
