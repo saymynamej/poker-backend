@@ -7,9 +7,9 @@ import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.model.Player;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 @Component
@@ -17,13 +17,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class HoldemManager implements GameManager {
     private final Map<String, Game> games;
-    private final List<Player> players;
-
-
-    public List<Game> getPlayerByName() {
-        return (List<Game>) games
-                .values();
-    }
+    private final Queue<Player> players;
 
     @Override
     public Map<String, Player> getPlayerByName(String name) {
@@ -76,10 +70,10 @@ public class HoldemManager implements GameManager {
         players.add(player);
     }
 
-    @PostConstruct
-    public void init() {
-        players.add(Player.builder().name("Oleg").chipsCount(5000).build());
-        players.add(Player.builder().name("Oleg1").chipsCount(5000).build());
-        players.add(Player.builder().name("Oleg2").chipsCount(5000).build());
-    }
+//    @PostConstruct
+//    public void init() {
+//        players.add(Player.builder().name("Oleg").chipsCount(5000).build());
+//        players.add(Player.builder().name("Oleg1").chipsCount(5000).build());
+//        players.add(Player.builder().name("Oleg2").chipsCount(5000).build());
+//    }
 }

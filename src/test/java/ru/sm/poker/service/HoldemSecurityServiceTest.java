@@ -3,7 +3,7 @@ package ru.sm.poker.service;
 
 import com.github.javafaker.Faker;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ import java.util.Optional;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-public class HoldemSecurityServiceTest {
+class HoldemSecurityServiceTest {
     @Autowired
     private HoldemSecurityService holdemSecurityService;
 
@@ -38,7 +38,7 @@ public class HoldemSecurityServiceTest {
     private final static int CHIPS_COUNT = 5000;
 
 
-    @Before
+    @BeforeEach
     public void before() {
         final Faker faker = new Faker();
         for (int i = 0; i < NINE_PLAYERS_TABLE; i++) {
@@ -51,8 +51,13 @@ public class HoldemSecurityServiceTest {
     }
 
     @Test
-    public void testIsLegalPlayer() {
-        final Optional<Game> gameOptional = games.values().stream().findFirst();
+    void testIsLegalPlayer() {
+        ThreadUtil.sleep(2);
+        final Optional<Game> gameOptional = games
+                .values()
+                .stream()
+                .findFirst();
+
         if (gameOptional.isPresent()) {
             final Game game = gameOptional.get();
             final Player activePlayer = game
@@ -64,6 +69,8 @@ public class HoldemSecurityServiceTest {
                     .findFirst()
                     .orElseThrow(() -> new RuntimeException("cannot find game"));
             Assert.assertTrue(holdemSecurityService.isLegalPlayer(gameName, activePlayer));
+        } else {
+            throw new RuntimeException("cannot testing testIsLegalPlayer");
         }
     }
 }

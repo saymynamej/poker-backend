@@ -2,6 +2,10 @@ package ru.sm.poker.enums;
 
 import lombok.Getter;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public enum CardType {
     A_D(PowerType.A_POWER, SuitType.DIAMOND),
     K_D(PowerType.K_POWER, SuitType.DIAMOND),
@@ -66,8 +70,13 @@ public enum CardType {
         this.suitType = suitType;
     }
 
-    public int getPowerAsInt(){
+    public int getPowerAsInt() {
         return power.getPowerAsInt();
+    }
+
+
+    public static List<CardType> getAllCardsAsList() {
+        return Arrays.stream(values()).collect(Collectors.toList());
     }
 
 

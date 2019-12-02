@@ -1,6 +1,5 @@
 package ru.sm.poker.enums;
 
-import lombok.Getter;
 
 public enum PowerType {
     A_POWER(14),

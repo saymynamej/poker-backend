@@ -20,11 +20,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class GameListeners {
-    private final ExecutorService executorServiceForStart = Executors.newSingleThreadExecutor();
+    private final ExecutorService executorServiceForStart = Executors.newFixedThreadPool(10);
     private final ExecutorService executorServiceForClear = Executors.newSingleThreadExecutor();
     private final BroadCastService broadCastService;
     private final Map<String, Game> games;
-    private final List<Player> players;
+    private final Queue<Player> players;
 
     @PostConstruct
     public void init() {
@@ -37,15 +37,22 @@ public class GameListeners {
             while (true) {
                 ThreadUtil.sleep(1);
                 if (players.size() >= 4) {
-                    final List<Player> players = new ArrayList<>(this.players);
-                    final HoldemGame game = new HoldemGame(getRandomGameName(), 9, players, broadCastService);
-                    players.forEach(player -> player.setGameName(game.getName()));
-                    games.put(getRandomGameName(), game);
-                    log.info("game was started, because found 4 person");
-                    game.start();
+                    final String randomGameName = getRandomGameName();
+                    final HoldemGame holdemGame = new HoldemGame(randomGameName, 9, extractQueue(), broadCastService);
+                    games.put(randomGameName, holdemGame);
+                    holdemGame.start();
                 }
             }
         });
+    }
+
+    private List<Player> extractQueue() {
+        final List<Player> players = new ArrayList<>();
+        final int size = this.players.size();
+        for (int i = 0; i < size; i++) {
+            players.add(this.players.poll());
+        }
+        return players;
     }
 
     private void enableClearListener() {

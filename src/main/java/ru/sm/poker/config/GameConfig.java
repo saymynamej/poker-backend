@@ -5,21 +5,19 @@ import org.springframework.context.annotation.Configuration;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.model.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Configuration
 public class GameConfig {
 
     @Bean
     public Map<String, Game> getGames(){
-        return new HashMap<>();
+        return new ConcurrentHashMap<>();
     }
 
     @Bean
-    public List<Player> getPlayers(){
-        return new ArrayList<>();
+    public Queue<Player> getPlayers(){
+        return new LinkedList<>();
     }
 }

@@ -6,7 +6,7 @@ public interface Round {
 
     void startRound();
 
-    void stopRound();
+    void reloadRound();
 
     RoundSettings getRoundSettings();
 

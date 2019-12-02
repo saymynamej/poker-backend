@@ -33,8 +33,15 @@ public class HoldemGame implements Game {
         this.name = name;
         this.maxPlayersSize = maxPlayersSize;
         this.players = players;
-        this.round = new HoldemRound(players, name, broadCastService);
+        setAllPlayerGameName();
+        this.round = new HoldemRound(players, name, broadCastService, 1, 2);
     }
+
+
+    private void setAllPlayerGameName() {
+        this.players.forEach(player -> player.setGameName(name));
+    }
+
 
     @Override
     public void start() {
