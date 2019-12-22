@@ -356,32 +356,21 @@ public class CheckCombinationServiceHoldem implements CheckCombinationService {
 
     private boolean checkStrait(List<CardType> cards) {
 
-        List<CardType> copyList = new ArrayList<>();
+        final List<CardType> distinctList = removeCardsWithSamePower(cards);
         int i = 0;
 
-        for (CardType card : cards) {
-            if (copyList.isEmpty()){
-                copyList.add(card);
-                continue;
-            }
-            if (copyList.stream().noneMatch(cardType -> cardType.getPowerAsInt() == card.getPowerAsInt())){
-                copyList.add(card);
-            }
-        }
-
-        for (CardType card : copyList) {
-
-            for (CardType cardType : copyList) {
+        for (CardType card : distinctList) {
+            for (CardType cardType : distinctList) {
                 if (card.equals(cardType)) {
                     continue;
                 }
                 final int powerAsInt = card.getPowerAsInt();
                 final int powerAsInt1 = cardType.getPowerAsInt();
-                if (powerAsInt1 - powerAsInt == 1) {
+                if (powerAsInt1 - powerAsInt == ONE_POWER) {
                     i++;
                 }
             }
-            if (i >= 4) {
+            if (i >= NUMBER_OF_COMPARISONS) {
                 return true;
             }
         }
@@ -492,6 +481,21 @@ public class CheckCombinationServiceHoldem implements CheckCombinationService {
             return true;
         }
         throw new RuntimeException(String.format("Global warning, in process checking size must be: %s, but : %s", COMBINATION_SIZE, cards.size()));
+    }
+
+    private List<CardType> removeCardsWithSamePower(List<CardType> cards) {
+        final List<CardType> distinctList = new ArrayList<>();
+
+        for (CardType card : cards) {
+            if (distinctList.isEmpty()) {
+                distinctList.add(card);
+                continue;
+            }
+            if (distinctList.stream().noneMatch(cardType -> cardType.getPowerAsInt() == card.getPowerAsInt())) {
+                distinctList.add(card);
+            }
+        }
+        return distinctList;
     }
 
     private boolean checkDuplicate(List<CardType> cards) {
