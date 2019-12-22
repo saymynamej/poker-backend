@@ -2,8 +2,6 @@ package ru.sm.poker.game.holdem;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.game.Game;
@@ -16,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
@@ -115,8 +112,8 @@ public class HoldemManager implements GameManager {
 
     @PostConstruct
     public void init() {
-        players.add(Player.builder().name("Oleg1").chipsCount(5000).build());
-        players.add(Player.builder().name("Oleg2").chipsCount(5000).build());
-        players.add(Player.builder().name("Oleg4").chipsCount(5000).build());
+        players.add(Player.builder().name("1").chipsCount(5000).build());
+        players.add(Player.builder().name("2").chipsCount(5000).build());
+        players.add(Player.builder().name("3").chipsCount(5000).build());
     }
 }

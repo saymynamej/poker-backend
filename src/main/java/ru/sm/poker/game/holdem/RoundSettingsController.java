@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.RoleType;
+import ru.sm.poker.enums.StateType;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.model.RoundSettings;
 import ru.sm.poker.util.SortUtil;
@@ -12,6 +13,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -39,7 +41,6 @@ final class RoundSettingsController {
         setButton();
         setSmallBlind();
         setBigBlind();
-        SortUtil.sortPre(players);
         return toSettingsPreflop();
     }
 
@@ -50,16 +51,22 @@ final class RoundSettingsController {
                 .bank(bank)
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
-                .lastBet(lastBet)
                 .button(getPlayerByRole(RoleType.BUTTON))
-                .players(players)
+                .players(SortUtil.sortPreflop(players))
+                .lastBet(bigBlindBet)
                 .build();
     }
 
-
     RoundSettings getPostFlopSettings() {
-        SortUtil.sortPost(players);
+        SortUtil.sortPostflop(players);
         return toSettingsPostFlop();
+    }
+
+
+    private List<Player> getPlayersInGame() {
+        return this.players.stream()
+                .filter(player -> player.getStateType() == StateType.IN_GAME)
+                .collect(Collectors.toList());
     }
 
     private RoundSettings toSettingsPostFlop() {
@@ -70,19 +77,18 @@ final class RoundSettingsController {
                 .button(getPlayerByRole(RoleType.BUTTON))
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
-                .players(players)
-                .lastBet(0L)
+                .players(SortUtil.sortPostflop(players))
                 .build();
     }
 
 
     RoundSettings setPostTernSettings() {
-        SortUtil.sortPre(players);
+        SortUtil.sortPreflop(players);
         return getPostTernSettings();
     }
 
     RoundSettings setPostRiverSettings() {
-        SortUtil.sortPre(players);
+        SortUtil.sortPreflop(players);
         return getPostRiverSettings();
     }
 
@@ -96,7 +102,7 @@ final class RoundSettingsController {
                 .button(getPlayerByRole(RoleType.BUTTON))
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
-                .players(players)
+                .players(SortUtil.sortPostflop(players))
                 .build();
     }
 
@@ -111,7 +117,7 @@ final class RoundSettingsController {
                 .button(getPlayerByRole(RoleType.BUTTON))
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
-                .players(players)
+                .players(SortUtil.sortPostflop(players))
                 .build();
     }
 

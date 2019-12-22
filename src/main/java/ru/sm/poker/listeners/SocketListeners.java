@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.messaging.SessionConnectedEvent;
+import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.holdem.HoldemManager;
 import ru.sm.poker.model.Player;
@@ -21,14 +21,9 @@ public class SocketListeners {
     private final HoldemManager holdemManager;
     private final BroadCastService broadCastService;
 
-//    @EventListener(SessionDisconnectEvent.class)
-//    public void handleWebsocketDisconnectListener(SessionDisconnectEvent event) {
-////        final Optional<Pair<String, Player>> playerByName = holdemManager.getPlayerByName(Objects.requireNonNull(event.getUser()).getName());
-////        playerByName.ifPresent(stringPlayerPair -> holdemManager.removePlayer(stringPlayerPair.getRight()));
-//    }
 
-    @EventListener(SessionConnectedEvent.class)
-    public void handleWebsocketConnectListener(SessionConnectedEvent event) {
+    @EventListener(SessionSubscribeEvent.class)
+    public void handleWebsocketConnectListener(SessionSubscribeEvent event) {
         final Principal user = event.getUser();
         if (user != null) {
 

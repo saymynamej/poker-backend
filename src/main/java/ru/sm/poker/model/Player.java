@@ -7,9 +7,14 @@ import ru.sm.poker.enums.StateType;
 import ru.sm.poker.model.action.Action;
 import ru.sm.poker.model.action.Wait;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 @ToString
 @EqualsAndHashCode(of = "name")
+
 public class Player {
 
     private String name;
@@ -31,7 +36,20 @@ public class Player {
     @Setter
     private String gameName;
 
+
     @Builder
+    public Player(String name, CardType[] cardTypes, RoleType roleType, long chipsCount, StateType stateType, int timeBank, Action action, boolean active, String gameName) {
+        this.name = name;
+        this.cardTypes = cardTypes;
+        this.roleType = roleType;
+        this.chipsCount = chipsCount;
+        this.stateType = stateType;
+        this.timeBank = timeBank;
+        this.action = action;
+        this.active = active;
+        this.gameName = gameName;
+    }
+
     public Player(String name, long chipsCount) {
         this.name = name;
         this.chipsCount = chipsCount;
@@ -63,6 +81,10 @@ public class Player {
 
     public void addChips(long chips) {
         this.chipsCount += chips;
+    }
+
+    public List<CardType> getCardTypesAsList(){
+        return Arrays.stream(cardTypes).collect(Collectors.toList());
     }
 
     public void removeChips(long chips) {

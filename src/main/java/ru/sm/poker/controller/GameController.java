@@ -48,7 +48,7 @@ public class GameController {
 
     @MessageMapping("/fold")
     public void fold(Principal principal, Message message) {
-        holdemActionHandler.setAction(principal.getName(), new Fold(message.getGameName()));
+        holdemActionHandler.setAction(message.getName(), new Fold(message.getGameName()));
     }
 
     @MessageMapping("/bet")
@@ -59,7 +59,7 @@ public class GameController {
     @MessageMapping("/reload")
     public void reload(Principal principal) {
         final Optional<Pair<String, Player>> player = holdemManager.getPlayerByName(principal.getName());
-        if (player.isPresent()){
+        if (player.isPresent()) {
             final Pair<String, Player> playerPair = player.get();
             final Game game = holdemManager.getAllGames().get(playerPair.getLeft());
             game.reload();

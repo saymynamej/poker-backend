@@ -8,6 +8,7 @@ import ru.sm.poker.game.Game;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.model.RoundSettings;
+import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.BroadCastService;
 
 import java.util.List;
@@ -28,13 +29,16 @@ public class HoldemGame implements Game {
 
     private boolean isStarted = false;
 
+    private final ActionService actionService;
+
     @Builder
-    public HoldemGame(String name, int maxPlayersSize, List<Player> players, BroadCastService broadCastService) {
+    public HoldemGame(String name, int maxPlayersSize, List<Player> players, BroadCastService broadCastService, ActionService actionService) {
         this.name = name;
         this.maxPlayersSize = maxPlayersSize;
         this.players = players;
+        this.actionService = actionService;
         setAllPlayerGameName();
-        this.round = new HoldemRound(players, name, broadCastService, 1, 2);
+        this.round = new HoldemRound(players, name, broadCastService,actionService, 1, 2);
     }
 
 

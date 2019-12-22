@@ -7,7 +7,10 @@ import ru.sm.poker.game.Round;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.model.RoundSettings;
 import ru.sm.poker.model.action.*;
+import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.BroadCastService;
+import ru.sm.poker.service.CheckCombinationService;
+import ru.sm.poker.service.CheckCombinationServiceHoldem;
 
 import java.util.List;
 
@@ -18,10 +21,11 @@ public class HoldemRound implements Round {
     private final List<Player> players;
     private final String gameName;
     private final BroadCastService broadCastService;
-    private final int smallBlind;
-    private final int bigBlind;
+    private final ActionService actionService;
+    private final int smalBlindBet;
+    private final int bigBlindBet;
+    private final CheckCombinationService checkCombinationService = new CheckCombinationServiceHoldem();
     private RoundSettings roundSettings;
-    private CountAction lastBet;
 
     @Override
     public void startRound() {
@@ -30,7 +34,7 @@ public class HoldemRound implements Round {
         setAllActivePlayers();
 
         final RoundSettingsController roundSettingsController =
-                new RoundSettingsController(players, gameName, bigBlind, smallBlind);
+                new RoundSettingsController(players, gameName, bigBlindBet, smalBlindBet);
 
         this.roundSettings = roundSettingsController.getPreflopSettings();
         setActions(this.roundSettings.getPlayers());
@@ -45,17 +49,21 @@ public class HoldemRound implements Round {
         setActions(this.roundSettings.getPlayers());
     }
 
+
+
     private void setAllActivePlayers() {
         this.players.forEach(player -> player.setStateType(StateType.IN_GAME));
     }
 
     private void setActions(List<Player> players) {
-        for (Player player : players) {
-            setActivePlayer(player);
-            broadCastService.sendToAll(getRoundSettings());
-            waitPlayerAction(player);
-            setInActivePlayer(player);
-        }
+        players.forEach(player -> {
+            if (player.getStateType() == StateType.IN_GAME) {
+                setActivePlayer(player);
+                broadCastService.sendToAll(getRoundSettings());
+                waitPlayerAction(player);
+                setInActivePlayer(player);
+            }
+        });
     }
 
     private void waitPlayerAction(Player player) {
@@ -63,7 +71,6 @@ public class HoldemRound implements Round {
             if (checkAllAfk()) {
                 break;
             }
-
             if (player.getAction().getClass() != Wait.class) {
                 parseAction(player);
                 break;
@@ -92,29 +99,36 @@ public class HoldemRound implements Round {
         } else if (action instanceof Raise) {
             raise(player, (Raise) action);
         }
+
+        player.setAction(new Wait(this.gameName));
     }
 
     private void raise(Player player, Raise raise) {
-        if (raise.getCount() < lastBet.getCount() * 2) {
-            return;
+        if (raise.getCount() < roundSettings.getLastBet() * 2) {
+            player.setAction(new Wait(gameName));
+            waitPlayerAction(player);
         }
         removeChipsPlayerAndAddToBank(player, raise.getCount());
         setLastBet(raise.getCount());
     }
 
     private void setLastBet(long count) {
-        this.lastBet = new Bet(count, gameName);
+        this.roundSettings.setLastBet(count);
     }
 
     private void fold(Player player, Fold fold) {
         player.setAction(fold);
+        player.setStateType(StateType.WAIT);
     }
 
     private void call(Player player, Call call) {
         if (call.getCount() != roundSettings.getLastBet()) {
+            player.setAction(new Wait(gameName));
+            waitPlayerAction(player);
             return;
         }
         removeChipsPlayerAndAddToBank(player, call.getCount());
+        this.roundSettings.setLastBet(call.getCount());
     }
 
     private void removeChipsPlayerAndAddToBank(Player player, long chips) {
@@ -147,11 +161,10 @@ public class HoldemRound implements Round {
         this.roundSettings.setActivePlayer(player);
     }
 
-    private void setInActivePlayer(Player player){
+    private void setInActivePlayer(Player player) {
         player.setActive(false);
         this.roundSettings.setActivePlayer(null);
     }
-
 
     @Override
     public void reloadRound() {

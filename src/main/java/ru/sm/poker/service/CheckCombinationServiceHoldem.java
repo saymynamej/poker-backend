@@ -1,8 +1,10 @@
 package ru.sm.poker.service;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.enums.CardType;
-import ru.sm.poker.enums.Combination;
+import ru.sm.poker.enums.CombinationType;
 import ru.sm.poker.enums.PowerType;
 
 import java.util.*;
@@ -22,71 +24,63 @@ public class CheckCombinationServiceHoldem implements CheckCombinationService {
     private final static int NEXT_CARD_INDEX = 1;
     private final static int NUMBER_OF_COMPARISONS = 4;
 
+
     @Override
-    public Map<Combination, List<CardType>> findCombination(List<CardType> cards) {
+    public Pair<CombinationType, List<CardType>> findCombination(List<CardType> cards) {
 
         if (cards.size() != FULL_COMBINATION_SIZE) {
             throw new RuntimeException("cards size must be 7");
         }
 
-        final Map<Combination, List<CardType>> combinations = new HashMap<>();
 
         //FLUSH ROYAL
         final List<CardType> flushRoyal = findFlushRoyal(new ArrayList<>(cards));
         if (!flushRoyal.isEmpty() && checkSize(flushRoyal) && checkDuplicate(flushRoyal)) {
-            combinations.put(Combination.FLUSH_ROYAL, flushRoyal);
-            return combinations;
+            return ImmutablePair.of(CombinationType.FLUSH_ROYAL, flushRoyal);
         }
         //STRAIGHT FLUSH
 
         final List<CardType> straitFlush = findStraitFlush(new ArrayList<>(cards));
         if (!straitFlush.isEmpty() && checkSize(straitFlush) && checkDuplicate(straitFlush)) {
-            combinations.put(Combination.STRAIT_FLUSH, straitFlush);
-            return combinations;
+            return ImmutablePair.of(CombinationType.STRAIT_FLUSH, straitFlush);
         }
 
         //KARE
         final List<CardType> kare = findKare(new ArrayList<>(cards));
         if (!kare.isEmpty() && checkSize(kare) && checkDuplicate(kare)) {
-            combinations.put(Combination.KARE, kare);
-            return combinations;
+            return ImmutablePair.of(CombinationType.KARE, kare);
         }
 
         //FULL-HOUSE
 
         final List<CardType> fullHouse = findFullHouse(new ArrayList<>(cards));
         if (!fullHouse.isEmpty() && checkSize(fullHouse) && checkDuplicate(fullHouse)) {
-            combinations.put(Combination.FULL_HOUSE, fullHouse);
-            return combinations;
+            return ImmutablePair.of(CombinationType.FULL_HOUSE, fullHouse);
         }
 
         //FLUSH
         final List<CardType> flush = findFlush(new ArrayList<>(cards));
         if (!flush.isEmpty() && checkSize(flush) && checkDuplicate(flush)) {
-            combinations.put(Combination.FLUSH, flush);
-            return combinations;
+            return ImmutablePair.of(CombinationType.FLUSH, flush);
         }
 
         //STRAIT
         final List<CardType> strait = findStrait(new ArrayList<>(cards));
         if (!strait.isEmpty() && checkSize(strait) && checkDuplicate(strait)) {
-            combinations.put(Combination.STRAIT, strait);
-            return combinations;
+            return ImmutablePair.of(CombinationType.STRAIT, strait);
         }
 
         //THREE
         final List<CardType> three = findThree(new ArrayList<>(cards));
         if (!three.isEmpty() && checkSize(three) && checkDuplicate(three)) {
-            combinations.put(Combination.THREE, three);
-            return combinations;
+            return ImmutablePair.of(CombinationType.THREE, three);
         }
 
         //TWO PAIR
 
         final List<CardType> twoPair = findTwoPair(new ArrayList<>(cards));
         if (!twoPair.isEmpty() && checkSize(twoPair) && checkDuplicate(twoPair)) {
-            combinations.put(Combination.TWO_PAIR, twoPair);
-            return combinations;
+            return ImmutablePair.of(CombinationType.TWO_PAIR, twoPair);
         }
 
         //PAIR
@@ -94,16 +88,14 @@ public class CheckCombinationServiceHoldem implements CheckCombinationService {
         final List<CardType> pair = findPair(new ArrayList<>(cards));
 
         if (!pair.isEmpty() && checkSize(pair) && checkDuplicate(pair)) {
-            combinations.put(Combination.PAIR, pair);
-            return combinations;
+            return ImmutablePair.of(CombinationType.PAIR, pair);
         }
 
         //HIGH CARD
         final List<CardType> highCards = findHighCard(new ArrayList<>(cards));
 
         if (!highCards.isEmpty() && checkSize(highCards) && checkDuplicate(highCards)) {
-            combinations.put(Combination.HIGH_CARD, highCards);
-            return combinations;
+            return ImmutablePair.of(CombinationType.HIGH_CARD, highCards);
         }
 
         throw new RuntimeException("global error, could not found poker combination!");
@@ -349,43 +341,74 @@ public class CheckCombinationServiceHoldem implements CheckCombinationService {
     }
 
 
-
-
-
-    private List<CardType> sortByPowerDesc(List<CardType> cards){
+    private List<CardType> sortByPowerDesc(List<CardType> cards) {
         return cards.stream()
                 .sorted(Comparator.comparingInt(CardType::getPowerAsInt).reversed())
                 .collect(Collectors.toList());
     }
 
 
-    private List<CardType> sortByPowerAsc(List<CardType> cards){
+    private List<CardType> sortByPowerAsc(List<CardType> cards) {
         return cards.stream()
                 .sorted(Comparator.comparingInt(CardType::getPowerAsInt))
                 .collect(Collectors.toList());
     }
 
     private boolean checkStrait(List<CardType> cards) {
-        final List<CardType> strait = sortByPowerAsc(cards);
 
+        List<CardType> copyList = new ArrayList<>();
+        int i = 0;
 
-        int repeat = 0;
-
-        for (int i = 0; i < strait.size(); i++) {
-            if (i + NEXT_CARD_INDEX != strait.size()) {
-
-                boolean isNext = strait.get(i).getPower().getPowerAsInt() + ONE_POWER == strait.get(i + NEXT_CARD_INDEX).getPower().getPowerAsInt();
-                boolean isNext2 = strait.get(i).getPower().getPowerAsInt() + ONE_POWER - strait.get(i + NEXT_CARD_INDEX).getPower().getPowerAsInt() == 1;
-                if (isNext) {
-                    repeat++;
-                } else {
-                    if (!isNext2) {
-                        repeat = 0;
-                    }
-                }
+        for (CardType card : cards) {
+            if (copyList.isEmpty()){
+                copyList.add(card);
+                continue;
+            }
+            if (copyList.stream().noneMatch(cardType -> cardType.getPowerAsInt() == card.getPowerAsInt())){
+                copyList.add(card);
             }
         }
-        return repeat >= NUMBER_OF_COMPARISONS;
+
+        for (CardType card : copyList) {
+
+            for (CardType cardType : copyList) {
+                if (card.equals(cardType)) {
+                    continue;
+                }
+                final int powerAsInt = card.getPowerAsInt();
+                final int powerAsInt1 = cardType.getPowerAsInt();
+                if (powerAsInt1 - powerAsInt == 1) {
+                    i++;
+                }
+            }
+            if (i >= 4) {
+                return true;
+            }
+        }
+        return false;
+
+
+//        int repeat = 0;
+//
+//        for (int i = 0; i < strait.size(); i++) {
+//            if (i + NEXT_CARD_INDEX != strait.size()) {
+//
+//                boolean isNext = strait.get(i).getPower().getPowerAsInt()
+//                        + ONE_POWER == strait.get(i + NEXT_CARD_INDEX).getPower().getPowerAsInt();
+//
+//                boolean isNext2 = strait.get(i).getPower().getPowerAsInt()
+//                        + ONE_POWER - strait.get(i + NEXT_CARD_INDEX).getPower().getPowerAsInt() == 1;
+//
+//                if (isNext) {
+//                    repeat++;
+//                } else {
+//                    if (!isNext2) {
+//                        repeat = 0;
+//                    }
+//                }
+//            }
+//        }
+//        return repeat >= NUMBER_OF_COMPARISONS;
     }
 
 
@@ -475,8 +498,7 @@ public class CheckCombinationServiceHoldem implements CheckCombinationService {
         if (cards
                 .stream()
                 .distinct()
-                .collect(Collectors.toList())
-                .size() == COMBINATION_SIZE) {
+                .count() == COMBINATION_SIZE) {
             return true;
         }
         throw new RuntimeException("Global warning, in process checking duplicates cards");

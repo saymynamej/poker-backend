@@ -1,6 +1,6 @@
 package ru.sm.poker.enums;
 
-public enum Combination {
+public enum CombinationType {
     FLUSH_ROYAL(10),
     STRAIT_FLUSH(9),
     KARE(8),
@@ -14,7 +14,7 @@ public enum Combination {
 
     private final int power;
 
-    Combination(int power) {
+    CombinationType(int power) {
         this.power = power;
     }
 
