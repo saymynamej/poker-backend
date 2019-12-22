@@ -45,8 +45,6 @@ public class SortUtilTest {
 
         Collections.shuffle(playersForTestingPreflop);
 
-        System.out.println(playersForTestingPreflop);
-
         final List<Player> sortedPlayerWithShuffle = SortUtil.sortPreflop(playersForTestingPreflop);
 
         Assertions.assertEquals(sortedPlayerWithShuffle.get(0).getRoleType(), RoleType.PLAYER);
@@ -155,5 +153,37 @@ public class SortUtilTest {
         Assertions.assertEquals(sortedPlayersWithShuffle2.get(7).getRoleType(), RoleType.PLAYER);
         Assertions.assertEquals(sortedPlayersWithShuffle2.get(8).getRoleType(), RoleType.BUTTON);
 
+    }
+
+    @Test
+    public void loadTestShufflingPreflop(){
+
+        for (int i = 0; i < 1_000_000; i++) {
+            Collections.shuffle(playersForTestingPreflop);
+
+            final List<Player> players = SortUtil.sortPreflop(playersForTestingPreflop);
+
+            Assertions.assertEquals(players.get(0).getRoleType(), RoleType.PLAYER);
+            Assertions.assertEquals(players.get(1).getRoleType(), RoleType.BUTTON);
+            Assertions.assertEquals(players.get(2).getRoleType(), RoleType.SMALL_BLIND);
+            Assertions.assertEquals(players.get(3).getRoleType(), RoleType.BIG_BLIND);
+
+        }
+    }
+
+    @Test
+    public void loadTestShufflingPostFlop(){
+
+        for (int i = 0; i < 1_000_000; i++) {
+            Collections.shuffle(playerForTestingPostFlop);
+
+            final List<Player> players = SortUtil.sortPostflop(playerForTestingPostFlop);
+
+            Assertions.assertEquals(players.get(0).getRoleType(), RoleType.SMALL_BLIND);
+            Assertions.assertEquals(players.get(1).getRoleType(), RoleType.BIG_BLIND);
+            Assertions.assertEquals(players.get(2).getRoleType(), RoleType.PLAYER);
+            Assertions.assertEquals(players.get(3).getRoleType(), RoleType.BUTTON);
+
+        }
     }
 }
