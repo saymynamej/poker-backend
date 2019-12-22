@@ -13,6 +13,7 @@ import java.util.Map;
 public class HoldemSecurityService implements SecurityService {
 
     private final Map<String, Game> games;
+    private final HoldemManager holdemManager;
 
     @Override
     public boolean isLegalPlayer(String gameName, Player player) {
@@ -23,6 +24,11 @@ public class HoldemSecurityService implements SecurityService {
                     .getActivePlayer()
                     .equals(player);
         }
+        return false;
+    }
+
+    @Override
+    public boolean isLegalPlayer(Player player) {
         return false;
     }
 }

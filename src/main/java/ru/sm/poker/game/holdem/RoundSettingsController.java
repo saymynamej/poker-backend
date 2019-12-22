@@ -144,6 +144,7 @@ final class RoundSettingsController {
                 .stream()
                 .filter(Player::isButton)
                 .findAny();
+
         if (foundButton.isPresent()) {
             final Player button = foundButton.get();
             button.removeRole();

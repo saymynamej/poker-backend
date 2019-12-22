@@ -2,26 +2,35 @@ package ru.sm.poker.game.holdem;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.model.Player;
+import ru.sm.poker.service.BroadCastService;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Queue;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class HoldemManager implements GameManager {
+
     private final Map<String, Game> games;
     private final Queue<Player> players;
+    private final BroadCastService broadCastService;
 
     @Override
-    public Map<String, Player> getPlayerByName(String name) {
-        return games
+    public Optional<Pair<String, Player>> getPlayerByName(String name) {
+        final Optional<Map.Entry<String, Player>> gameAndPlayer = games
                 .entrySet()
                 .stream()
                 .flatMap((entry -> entry
@@ -33,8 +42,16 @@ public class HoldemManager implements GameManager {
                         .collect(Collectors.toMap(playerF -> entry.getKey(), playerF -> playerF))
                         .entrySet()
                         .stream()))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .findFirst();
+
+        if (gameAndPlayer.isPresent()) {
+            final Map.Entry<String, Player> player = gameAndPlayer.get();
+            return Optional.of(Pair.of(player.getKey(), player.getValue()));
+        }
+
+        return Optional.empty();
     }
+
 
     @Override
     public boolean playerExistByName(String gameName, String name) {
@@ -58,6 +75,16 @@ public class HoldemManager implements GameManager {
     }
 
     @Override
+    public boolean createNewGame(String name, Game game) {
+        if (checkGameName(name)) {
+            return false;
+        } else {
+            games.put(name, game);
+            return true;
+        }
+    }
+
+    @Override
     public void removePlayer(Player player) {
         games.forEach((name, game) -> {
             final List<Player> players = game.getRoundSettings().getPlayers();
@@ -67,13 +94,29 @@ public class HoldemManager implements GameManager {
 
     @Override
     public void addPlayer(Player player) {
-        players.add(player);
+        if (!players.contains(player)) {
+            players.add(player);
+            broadCastService.sendToAll(player.getName() + " is ready");
+        } else {
+            broadCastService.sendErrorToUser(player.getName(), " you have registration yet");
+            log.info("player already exist");
+        }
     }
 
-//    @PostConstruct
-//    public void init() {
-//        players.add(Player.builder().name("Oleg").chipsCount(5000).build());
-//        players.add(Player.builder().name("Oleg1").chipsCount(5000).build());
-//        players.add(Player.builder().name("Oleg2").chipsCount(5000).build());
-//    }
+    @Override
+    public Map<String, Game> getAllGames() {
+        return games;
+    }
+
+
+    private boolean checkGameName(String gameName) {
+        return games.containsKey(gameName);
+    }
+
+    @PostConstruct
+    public void init() {
+        players.add(Player.builder().name("Oleg1").chipsCount(5000).build());
+        players.add(Player.builder().name("Oleg2").chipsCount(5000).build());
+        players.add(Player.builder().name("Oleg4").chipsCount(5000).build());
+    }
 }

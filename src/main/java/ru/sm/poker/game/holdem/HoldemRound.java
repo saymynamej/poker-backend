@@ -2,6 +2,7 @@ package ru.sm.poker.game.holdem;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.model.RoundSettings;
@@ -28,13 +29,14 @@ public class HoldemRound implements Round {
     @Override
     public void startRound() {
         log.info("game was started, because found 4 person");
+        setAllActivePlayers();
         final RoundSettingsController roundSettingsController
                 = new RoundSettingsController(players, gameName, bigBlind, smallBlind);
 
         this.roundSettings = roundSettingsController.setPreflopSettings();
-//        lastBet = new Bet(2, gameName);
 
         this.bank = this.roundSettings.getBank();
+
         setActions(this.roundSettings.getPlayers());
 
         this.roundSettings = roundSettingsController.setPostflopSettings();
@@ -45,6 +47,10 @@ public class HoldemRound implements Round {
 
         this.roundSettings = roundSettingsController.setPostRiverSettings();
         setActions(this.roundSettings.getPlayers());
+    }
+
+    private void setAllActivePlayers() {
+        this.players.forEach(player -> player.setStateType(StateType.IN_GAME));
     }
 
     private void setActions(List<Player> players) {
@@ -59,12 +65,18 @@ public class HoldemRound implements Round {
 
     private void waitPlayerAction(Player player) {
         while (true) {
-            if (player.getAction()
-                    .getClass() != Wait.class) {
+            if (player.getAction().getClass() != Wait.class) {
                 parseAction(player);
                 break;
             }
+            if (checkAllAfk()) {
+                break;
+            }
         }
+    }
+
+    private boolean checkAllAfk() {
+        return players.stream().allMatch(player -> player.getStateType() == StateType.AFK);
     }
 
     private void parseAction(Player player) {
@@ -134,7 +146,7 @@ public class HoldemRound implements Round {
 
     @Override
     public void reloadRound() {
-
+        this.players.forEach(player -> player.setStateType(StateType.AFK));
     }
 
     @Override

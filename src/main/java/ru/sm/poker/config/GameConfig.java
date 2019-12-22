@@ -12,12 +12,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class GameConfig {
 
     @Bean
-    public Map<String, Game> getGames(){
+    public Map<String, Game> getGames() {
         return new ConcurrentHashMap<>();
     }
 
     @Bean
-    public Queue<Player> getPlayers(){
+    public Queue<Player> getPlayers() {
         return new LinkedList<>();
     }
 }

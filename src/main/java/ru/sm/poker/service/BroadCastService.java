@@ -20,6 +20,10 @@ public class BroadCastService {
         simpMessagingTemplate.convertAndSend(socketMappingConfig.getErrorPath(), message);
     }
 
+    public void sendToUser(String userName, Object message){
+        simpMessagingTemplate.convertAndSendToUser(userName, socketMappingConfig.getPokerGamePath(), message);
+    }
+
     public void sendToAllPlayerReadyMessage(Object message){
         simpMessagingTemplate.convertAndSend(socketMappingConfig.getReadyPlayersPath(), message);
     }

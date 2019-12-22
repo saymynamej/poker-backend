@@ -2,9 +2,11 @@ package ru.sm.poker.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.sm.poker.game.Game;
 import ru.sm.poker.game.holdem.HoldemActionHandler;
 import ru.sm.poker.game.holdem.HoldemManager;
 import ru.sm.poker.model.Message;
@@ -15,6 +17,7 @@ import ru.sm.poker.model.action.Fold;
 import ru.sm.poker.model.action.Raise;
 
 import java.security.Principal;
+import java.util.Optional;
 
 @RequestMapping("/game")
 @RestController
@@ -55,5 +58,11 @@ public class GameController {
 
     @MessageMapping("/reload")
     public void reload(Principal principal) {
+        final Optional<Pair<String, Player>> player = holdemManager.getPlayerByName(principal.getName());
+        if (player.isPresent()){
+            final Pair<String, Player> playerPair = player.get();
+            final Game game = holdemManager.getAllGames().get(playerPair.getLeft());
+            game.reload();
+        }
     }
 }

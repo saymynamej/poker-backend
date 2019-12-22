@@ -11,6 +11,7 @@ import ru.sm.poker.model.action.Wait;
 @ToString
 @EqualsAndHashCode(of = "name")
 public class Player {
+
     private String name;
     private CardType[] cardTypes = new CardType[2];
     private RoleType roleType = RoleType.PLAYER;

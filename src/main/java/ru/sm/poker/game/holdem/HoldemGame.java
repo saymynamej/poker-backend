@@ -8,6 +8,7 @@ import ru.sm.poker.game.Game;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.model.RoundSettings;
+import ru.sm.poker.model.action.Bet;
 import ru.sm.poker.service.BroadCastService;
 
 import java.util.List;
@@ -42,11 +43,10 @@ public class HoldemGame implements Game {
         this.players.forEach(player -> player.setGameName(name));
     }
 
-
     @Override
     public void start() {
+        isStarted = true;
         while (players.size() >= 4 || !isStarted) {
-            isStarted = true;
             round.startRound();
         }
     }
@@ -58,7 +58,7 @@ public class HoldemGame implements Game {
 
     @Override
     public void reload() {
-
+        this.round.reloadRound();
     }
 
     @Override
