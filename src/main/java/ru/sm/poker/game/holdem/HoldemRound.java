@@ -18,28 +18,24 @@ public class HoldemRound implements Round {
     private final List<Player> players;
     private final String gameName;
     private final BroadCastService broadCastService;
-
     private final int smallBlind;
     private final int bigBlind;
-
     private RoundSettings roundSettings;
     private CountAction lastBet;
-    private long bank = 0;
 
     @Override
     public void startRound() {
         log.info("game was started, because found 4 person");
+
         setAllActivePlayers();
-        final RoundSettingsController roundSettingsController
-                = new RoundSettingsController(players, gameName, bigBlind, smallBlind);
 
-        this.roundSettings = roundSettingsController.setPreflopSettings();
+        final RoundSettingsController roundSettingsController =
+                new RoundSettingsController(players, gameName, bigBlind, smallBlind);
 
-        this.bank = this.roundSettings.getBank();
-
+        this.roundSettings = roundSettingsController.getPreflopSettings();
         setActions(this.roundSettings.getPlayers());
 
-        this.roundSettings = roundSettingsController.setPostflopSettings();
+        this.roundSettings = roundSettingsController.getPostFlopSettings();
         setActions(this.roundSettings.getPlayers());
 
         this.roundSettings = roundSettingsController.setPostTernSettings();
@@ -56,27 +52,34 @@ public class HoldemRound implements Round {
     private void setActions(List<Player> players) {
         for (Player player : players) {
             setActivePlayer(player);
-            System.out.println("wait action");
             broadCastService.sendToAll(getRoundSettings());
             waitPlayerAction(player);
-            setActivePlayer(player);
+            setInActivePlayer(player);
         }
     }
 
     private void waitPlayerAction(Player player) {
         while (true) {
-            if (player.getAction().getClass() != Wait.class) {
-                parseAction(player);
+            if (checkAllAfk()) {
                 break;
             }
-            if (checkAllAfk()) {
+
+            if (player.getAction().getClass() != Wait.class) {
+                parseAction(player);
                 break;
             }
         }
     }
 
+
+    private boolean checkAllCall() {
+        return players.stream()
+                .allMatch(player -> player.getAction() instanceof Bet);
+    }
+
     private boolean checkAllAfk() {
-        return players.stream().allMatch(player -> player.getStateType() == StateType.AFK);
+        return players.stream()
+                .allMatch(player -> player.getStateType() == StateType.AFK);
     }
 
     private void parseAction(Player player) {
@@ -108,7 +111,7 @@ public class HoldemRound implements Round {
     }
 
     private void call(Player player, Call call) {
-        if (call.getCount() != lastBet.getCount()) {
+        if (call.getCount() != roundSettings.getLastBet()) {
             return;
         }
         removeChipsPlayerAndAddToBank(player, call.getCount());
@@ -136,11 +139,17 @@ public class HoldemRound implements Round {
     }
 
     private void addBank(long count) {
-        bank += count;
+        roundSettings.setBank(roundSettings.getBank() + count);
     }
 
     private void setActivePlayer(Player player) {
-        player.setActive(!player.isActive());
+        player.setActive(true);
+        this.roundSettings.setActivePlayer(player);
+    }
+
+    private void setInActivePlayer(Player player){
+        player.setActive(false);
+        this.roundSettings.setActivePlayer(null);
     }
 
 
@@ -151,17 +160,6 @@ public class HoldemRound implements Round {
 
     @Override
     public RoundSettings getRoundSettings() {
-        return RoundSettings
-                .builder()
-                .flop(roundSettings.getFlop())
-                .tern(roundSettings.getTern())
-                .river(roundSettings.getRiver())
-                .activePlayer(getActivePlayer())
-                .button(roundSettings.getButton())
-                .bank(bank)
-                .smallBlind(roundSettings.getSmallBlind())
-                .bigBlind(roundSettings.getBigBlind())
-                .players(roundSettings.getPlayers())
-                .build();
+        return this.roundSettings;
     }
 }

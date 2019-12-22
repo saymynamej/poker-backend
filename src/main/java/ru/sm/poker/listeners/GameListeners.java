@@ -46,11 +46,8 @@ public class GameListeners {
                 ThreadUtil.sleep(1);
                 if (players.size() > 3) {
                     final String randomGameName = getRandomGameName();
-
                     final HoldemGame holdemGame = new HoldemGame(randomGameName, 9, extractQueue(), broadCastService);
-
                     holdemManager.createNewGame(randomGameName, holdemGame);
-
                     holdemGame.start();
                 }
             }

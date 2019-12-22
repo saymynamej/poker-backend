@@ -17,6 +17,7 @@ import static java.lang.String.format;
 
 @RequiredArgsConstructor
 final class RoundSettingsController {
+
     private final SecureRandom random = new SecureRandom();
     private final List<CardType> allCards = CardType.getAllCardsAsList();
     private final List<Player> players;
@@ -30,20 +31,50 @@ final class RoundSettingsController {
     @Setter
     private long bank = 0;
 
+    private long lastBet = 0;
 
-    RoundSettings setPreflopSettings() {
+
+    RoundSettings getPreflopSettings() {
         dealCards();
         setButton();
         setSmallBlind();
         setBigBlind();
         SortUtil.sortPre(players);
-        return getPreflopSettings();
+        return toSettingsPreflop();
     }
 
-    RoundSettings setPostflopSettings() {
-        SortUtil.sortPre(players);
-        return getPostFlopSettings();
+    private RoundSettings toSettingsPreflop() {
+        return RoundSettings
+                .builder()
+                .gameName(gameName)
+                .bank(bank)
+                .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
+                .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
+                .lastBet(lastBet)
+                .button(getPlayerByRole(RoleType.BUTTON))
+                .players(players)
+                .build();
     }
+
+
+    RoundSettings getPostFlopSettings() {
+        SortUtil.sortPost(players);
+        return toSettingsPostFlop();
+    }
+
+    private RoundSettings toSettingsPostFlop() {
+        return RoundSettings
+                .builder()
+                .flop(flop)
+                .gameName(gameName)
+                .button(getPlayerByRole(RoleType.BUTTON))
+                .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
+                .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
+                .players(players)
+                .lastBet(0L)
+                .build();
+    }
+
 
     RoundSettings setPostTernSettings() {
         SortUtil.sortPre(players);
@@ -53,30 +84,6 @@ final class RoundSettingsController {
     RoundSettings setPostRiverSettings() {
         SortUtil.sortPre(players);
         return getPostRiverSettings();
-    }
-
-    private RoundSettings getPreflopSettings() {
-        return RoundSettings
-                .builder()
-                .gameName(gameName)
-                .bank(bank)
-                .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
-                .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
-                .button(getPlayerByRole(RoleType.BUTTON))
-                .players(players)
-                .build();
-    }
-
-    private RoundSettings getPostFlopSettings() {
-        return RoundSettings
-                .builder()
-                .flop(flop)
-                .gameName(gameName)
-                .button(getPlayerByRole(RoleType.BUTTON))
-                .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
-                .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
-                .players(players)
-                .build();
     }
 
 
@@ -186,6 +193,7 @@ final class RoundSettingsController {
         Player bigBlind = getPlayer(indexOfSmallBlind);
         bigBlind.setRole(RoleType.BIG_BLIND);
         removeChipsPlayerAndAddToBank(bigBlind, bigBlindBet);
+        this.lastBet = bigBlindBet;
     }
 
 
