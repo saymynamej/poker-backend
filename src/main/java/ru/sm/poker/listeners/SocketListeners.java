@@ -9,7 +9,7 @@ import ru.sm.poker.game.Game;
 import ru.sm.poker.game.holdem.HoldemManager;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.model.RoundSettings;
-import ru.sm.poker.service.BroadCastService;
+import ru.sm.poker.service.holdem.BroadCastService;
 
 import java.security.Principal;
 import java.util.Map;

@@ -11,6 +11,7 @@ import ru.sm.poker.util.SortUtil;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -123,7 +124,7 @@ final class RoundSettingsController {
 
 
     private void dealCards() {
-        players.forEach(player -> player.addCards(new CardType[]{getRandomCard(), getRandomCard()}));
+        players.forEach(player -> player.addCards(Arrays.asList(getRandomCard(), getRandomCard())));
     }
 
     private CardType getRandomCard() {

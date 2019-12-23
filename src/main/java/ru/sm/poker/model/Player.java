@@ -7,9 +7,8 @@ import ru.sm.poker.enums.StateType;
 import ru.sm.poker.model.action.Action;
 import ru.sm.poker.model.action.Wait;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @ToString
@@ -18,7 +17,7 @@ import java.util.stream.Collectors;
 public class Player {
 
     private String name;
-    private CardType[] cardTypes = new CardType[2];
+    private List<CardType> cards;
     private RoleType roleType = RoleType.PLAYER;
     private long chipsCount;
     @Setter
@@ -38,9 +37,9 @@ public class Player {
 
 
     @Builder
-    public Player(String name, CardType[] cardTypes, RoleType roleType, long chipsCount, StateType stateType, int timeBank, Action action, boolean active, String gameName) {
+    public Player(String name, List<CardType> cards, RoleType roleType, long chipsCount, StateType stateType, int timeBank, Action action, boolean active, String gameName) {
         this.name = name;
-        this.cardTypes = cardTypes;
+        this.cards = cards;
         this.roleType = roleType;
         this.chipsCount = chipsCount;
         this.stateType = stateType;
@@ -83,10 +82,6 @@ public class Player {
         this.chipsCount += chips;
     }
 
-    public List<CardType> getCardTypesAsList(){
-        return Arrays.stream(cardTypes).collect(Collectors.toList());
-    }
-
     public void removeChips(long chips) {
         if (chips > this.chipsCount) {
             this.chipsCount = 0;
@@ -95,11 +90,7 @@ public class Player {
         this.chipsCount -= chips;
     }
 
-    public void addCards(CardType[] cardTypes) {
-        if (cardTypes.length > 2) {
-            throw new RuntimeException("size of card type array must be2");
-        }
-        this.cardTypes[0] = cardTypes[0];
-        this.cardTypes[1] = cardTypes[1];
+    public void addCards(List<CardType> cards) {
+       this.cards = new ArrayList<>(cards);
     }
 }

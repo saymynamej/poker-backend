@@ -1,4 +1,4 @@
-package ru.sm.poker.service;
+package ru.sm.poker.service.holdem;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

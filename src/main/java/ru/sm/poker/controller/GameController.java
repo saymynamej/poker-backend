@@ -7,7 +7,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.sm.poker.game.Game;
-import ru.sm.poker.game.holdem.HoldemActionHandler;
+import ru.sm.poker.service.holdem.ActionServiceHoldem;
 import ru.sm.poker.game.holdem.HoldemManager;
 import ru.sm.poker.model.Message;
 import ru.sm.poker.model.Player;
@@ -25,7 +25,7 @@ import java.util.Optional;
 @Slf4j
 public class GameController {
     private final HoldemManager holdemManager;
-    private final HoldemActionHandler holdemActionHandler;
+    private final ActionServiceHoldem actionServiceHoldem;
 
     @MessageMapping("/addPlayer")
     public void addUser(Principal principal) {
@@ -38,22 +38,22 @@ public class GameController {
 
     @MessageMapping("/raise")
     public void raise(Principal principal, Message message) {
-        holdemActionHandler.setAction(principal.getName(), new Raise(Long.parseLong(message.getCount()), message.getGameName()));
+        actionServiceHoldem.setAction(principal.getName(), new Raise(Long.parseLong(message.getCount()), message.getGameName()));
     }
 
     @MessageMapping("/call")
     public void call(Principal principal, Message message) {
-        holdemActionHandler.setAction(message.getName(), new Call(Long.parseLong(message.getCount()), message.getGameName()));
+        actionServiceHoldem.setAction(message.getName(), new Call(Long.parseLong(message.getCount()), message.getGameName()));
     }
 
     @MessageMapping("/fold")
     public void fold(Principal principal, Message message) {
-        holdemActionHandler.setAction(message.getName(), new Fold(message.getGameName()));
+        actionServiceHoldem.setAction(message.getName(), new Fold(message.getGameName()));
     }
 
     @MessageMapping("/bet")
     public void bet(Principal principal, Message message) {
-        holdemActionHandler.setAction(principal.getName(), new Bet(Long.parseLong(message.getCount()), message.getGameName()));
+        actionServiceHoldem.setAction(principal.getName(), new Bet(Long.parseLong(message.getCount()), message.getGameName()));
     }
 
     @MessageMapping("/reload")

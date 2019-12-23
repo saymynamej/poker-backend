@@ -7,8 +7,8 @@ import ru.sm.poker.game.Game;
 import ru.sm.poker.game.holdem.HoldemGame;
 import ru.sm.poker.game.holdem.HoldemManager;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.service.ActionService;
-import ru.sm.poker.service.BroadCastService;
+import ru.sm.poker.service.holdem.WinnerServiceHoldem;
+import ru.sm.poker.service.holdem.ActionServiceHoldem;
 import ru.sm.poker.util.ThreadUtil;
 
 import javax.annotation.PostConstruct;
@@ -29,8 +29,8 @@ public class GameListeners {
 
     private final ExecutorService executorServiceForStart = Executors.newFixedThreadPool(10);
     private final ExecutorService executorServiceForClear = Executors.newSingleThreadExecutor();
-    private final BroadCastService broadCastService;
-    private final ActionService actionService;
+    private final WinnerServiceHoldem checkWinnerServiceHoldem;
+    private final ActionServiceHoldem actionServiceHoldem;
     private final HoldemManager holdemManager;
     private final Queue<Player> players;
     private boolean isEnable = true;
@@ -48,7 +48,13 @@ public class GameListeners {
                 ThreadUtil.sleep(1);
                 if (players.size() > 3) {
                     final String randomGameName = getRandomGameName();
-                    final HoldemGame holdemGame = new HoldemGame(randomGameName, 9, extractQueue(), broadCastService, actionService);
+                    final HoldemGame holdemGame = new HoldemGame(
+                            randomGameName,
+                            9,
+                            extractQueue(),
+                            checkWinnerServiceHoldem,
+                            actionServiceHoldem
+                    );
                     holdemManager.createNewGame(randomGameName, holdemGame);
                     holdemGame.start();
                 }

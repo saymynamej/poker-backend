@@ -6,7 +6,7 @@ import ru.sm.poker.enums.CombinationType;
 
 import java.util.List;
 
-public interface CheckCombinationService {
+public interface CombinationService {
 
     Pair<CombinationType, List<CardType>> findCombination(List<CardType> cards);
 }

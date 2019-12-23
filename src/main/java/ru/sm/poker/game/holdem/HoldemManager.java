@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.service.BroadCastService;
+import ru.sm.poker.service.holdem.BroadCastService;
 
 import javax.annotation.PostConstruct;
 import java.util.List;

@@ -1,4 +1,4 @@
-package ru.sm.poker.service;
+package ru.sm.poker.service.holdem;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -6,12 +6,13 @@ import org.springframework.stereotype.Service;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.CombinationType;
 import ru.sm.poker.enums.PowerType;
+import ru.sm.poker.service.CombinationService;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class CheckCombinationServiceHoldem implements CheckCombinationService {
+public class CombinationServiceHoldem implements CombinationService {
 
     private final static int ONE_POWER = 1;
     private final static int COMBINATION_SIZE = 5;
@@ -31,7 +32,6 @@ public class CheckCombinationServiceHoldem implements CheckCombinationService {
         if (cards.size() != FULL_COMBINATION_SIZE) {
             throw new RuntimeException("cards size must be 7");
         }
-
 
         //FLUSH ROYAL
         final List<CardType> flushRoyal = findFlushRoyal(new ArrayList<>(cards));
@@ -375,29 +375,6 @@ public class CheckCombinationServiceHoldem implements CheckCombinationService {
             }
         }
         return false;
-
-
-//        int repeat = 0;
-//
-//        for (int i = 0; i < strait.size(); i++) {
-//            if (i + NEXT_CARD_INDEX != strait.size()) {
-//
-//                boolean isNext = strait.get(i).getPower().getPowerAsInt()
-//                        + ONE_POWER == strait.get(i + NEXT_CARD_INDEX).getPower().getPowerAsInt();
-//
-//                boolean isNext2 = strait.get(i).getPower().getPowerAsInt()
-//                        + ONE_POWER - strait.get(i + NEXT_CARD_INDEX).getPower().getPowerAsInt() == 1;
-//
-//                if (isNext) {
-//                    repeat++;
-//                } else {
-//                    if (!isNext2) {
-//                        repeat = 0;
-//                    }
-//                }
-//            }
-//        }
-//        return repeat >= NUMBER_OF_COMPARISONS;
     }
 
 

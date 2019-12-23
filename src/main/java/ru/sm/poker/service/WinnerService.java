@@ -7,6 +7,6 @@ import ru.sm.poker.model.Player;
 
 import java.util.List;
 
-public interface CheckWinnerService {
+public interface WinnerService {
     List<Pair<Player, Combination>> findWinners(List<Player> players, List<CardType> flop, CardType tern, CardType river);
 }

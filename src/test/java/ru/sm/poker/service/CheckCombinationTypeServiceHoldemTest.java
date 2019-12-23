@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.CombinationType;
+import ru.sm.poker.service.holdem.CombinationServiceHoldem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,7 +13,7 @@ import java.util.List;
 
 public class CheckCombinationTypeServiceHoldemTest {
 
-    private final CheckCombinationServiceHoldem checkCombinationServiceHoldem = new CheckCombinationServiceHoldem();
+    private final CombinationServiceHoldem checkCombinationServiceHoldem = new CombinationServiceHoldem();
 
     private static final List<CardType> FLUSH_ROUAL_FULL = new ArrayList<>(Arrays.asList(CardType.A_H, CardType.K_H, CardType.Q_H, CardType.J_H, CardType.TEN_H, CardType.FOUR_H, CardType.K_S));
     private static final List<CardType> FLUSH_ROYAL_COMBINATION = new ArrayList<>(Arrays.asList(CardType.A_H, CardType.K_H, CardType.Q_H, CardType.J_H, CardType.TEN_H));
