@@ -8,13 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.dto.MessageDTO;
+import ru.sm.poker.model.action.*;
 import ru.sm.poker.service.holdem.ActionServiceHoldem;
 import ru.sm.poker.game.holdem.HoldemManager;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.model.action.Bet;
-import ru.sm.poker.model.action.Call;
-import ru.sm.poker.model.action.Fold;
-import ru.sm.poker.model.action.Raise;
 
 import java.security.Principal;
 import java.util.Optional;
@@ -24,6 +21,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class GameController {
+
     private final HoldemManager holdemManager;
     private final ActionServiceHoldem actionServiceHoldem;
 
@@ -54,6 +52,11 @@ public class GameController {
     @MessageMapping("/bet")
     public void bet(Principal principal, MessageDTO messageDTO) {
         actionServiceHoldem.setAction(principal.getName(), new Bet(Long.parseLong(messageDTO.getCount()), messageDTO.getGameName()));
+    }
+
+    @MessageMapping("/check")
+    public void check(Principal principal, MessageDTO messageDTO) {
+        actionServiceHoldem.setAction(principal.getName(), new Check(messageDTO.getGameName()));
     }
 
     @MessageMapping("/reload")

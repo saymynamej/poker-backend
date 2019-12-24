@@ -23,7 +23,6 @@ public class HoldemManager implements GameManager {
 
     private final Map<String, Game> games;
     private final Queue<Player> players;
-    private final BroadCastService broadCastService;
 
     @Override
     public Optional<Pair<String, Player>> getPlayerByName(String name) {
@@ -93,9 +92,7 @@ public class HoldemManager implements GameManager {
     public void addPlayer(Player player) {
         if (!players.contains(player)) {
             players.add(player);
-            broadCastService.sendToAll(player.getName() + " is ready");
         } else {
-            broadCastService.sendErrorToUser(player.getName(), " you have registration yet");
             log.info("player already exist");
         }
     }

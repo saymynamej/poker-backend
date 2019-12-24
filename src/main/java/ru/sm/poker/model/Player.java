@@ -93,4 +93,21 @@ public class Player {
     public void addCards(List<CardType> cards) {
        this.cards = new ArrayList<>(cards);
     }
+
+
+
+    public Player copy(){
+        return Player
+                .builder()
+                .name(name)
+                .action(action)
+                .active(active)
+                .cards(cards)
+                .chipsCount(chipsCount)
+                .gameName(gameName)
+                .timeBank(timeBank)
+                .roleType(roleType)
+                .stateType(stateType)
+                .build();
+    }
 }
