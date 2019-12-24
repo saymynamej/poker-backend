@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import ru.sm.poker.enums.CardType;
+import ru.sm.poker.enums.StageType;
 import ru.sm.poker.model.Player;
 
 import java.util.List;
@@ -20,8 +21,12 @@ public class RoundSettingsDTO {
     private final Player button;
     private final Player smallBlind;
     private final Player bigBlind;
-
+    private final StageType stageType;
     private Long lastBet;
     private long bank;
     private Player activePlayer;
+
+
+
+
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.RoleType;
+import ru.sm.poker.enums.StageType;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.dto.RoundSettingsDTO;
@@ -35,14 +36,12 @@ final class RoundSettingsController {
     @Setter
     private long bank = 0;
 
-
     public RoundSettingsDTO getPreflopSettings() {
         setAllActivePlayers();
         dealCards();
         setButton();
         setSmallBlind();
         setBigBlind();
-        SortUtil.sortPreflop(players);
 
         return RoundSettingsDTO
                 .builder()
@@ -51,14 +50,14 @@ final class RoundSettingsController {
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
                 .button(getPlayerByRole(RoleType.BUTTON))
-                .players(players)
+                .players(SortUtil.sortPreflop(players))
+                .stageType(StageType.PREFLOP)
                 .lastBet(bigBlindBet)
                 .build();
     }
 
 
     public RoundSettingsDTO getPostFlopSettings() {
-        SortUtil.sortPostflop(players);
 
         return RoundSettingsDTO
                 .builder()
@@ -67,12 +66,13 @@ final class RoundSettingsController {
                 .button(getPlayerByRole(RoleType.BUTTON))
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
-                .players(players)
+                .players(SortUtil.sortPostflop(players))
+                .lastBet(0L)
+                .stageType(StageType.FLOP)
                 .build();
     }
 
     public RoundSettingsDTO getPostFlopSettingsWithTern() {
-        SortUtil.sortPostflop(players);
 
         return RoundSettingsDTO
                 .builder()
@@ -82,7 +82,9 @@ final class RoundSettingsController {
                 .button(getPlayerByRole(RoleType.BUTTON))
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
-                .players(players)
+                .stageType(StageType.TERN)
+                .lastBet(0L)
+                .players(SortUtil.sortPostflop(players))
                 .build();
     }
 
@@ -96,10 +98,12 @@ final class RoundSettingsController {
                 .tern(tern)
                 .gameName(gameName)
                 .river(river)
+                .lastBet(0L)
+                .stageType(StageType.RIVER)
                 .button(getPlayerByRole(RoleType.BUTTON))
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
-                .players(players)
+                .players(SortUtil.sortPostflop(players))
                 .build();
     }
 
@@ -260,6 +264,7 @@ final class RoundSettingsController {
     }
 
     private void setAllActivePlayers() {
+        this.players.forEach(player -> player.setRole(RoleType.PLAYER));
         this.players.forEach(player -> player.setAction(new Wait(gameName)));
         this.players.forEach(player -> player.setStateType(StateType.IN_GAME));
     }

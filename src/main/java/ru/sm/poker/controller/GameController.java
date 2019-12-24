@@ -38,7 +38,7 @@ public class GameController {
 
     @MessageMapping("/raise")
     public void raise(Principal principal, MessageDTO messageDTO) {
-        actionServiceHoldem.setAction(principal.getName(), new Raise(Long.parseLong(messageDTO.getCount()), messageDTO.getGameName()));
+        actionServiceHoldem.setAction(messageDTO.getName(), new Raise(Long.parseLong(messageDTO.getCount()), messageDTO.getGameName()));
     }
 
     @MessageMapping("/call")

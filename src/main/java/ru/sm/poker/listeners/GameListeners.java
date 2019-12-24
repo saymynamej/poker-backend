@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.game.Game;
+import ru.sm.poker.game.Round;
 import ru.sm.poker.game.holdem.HoldemGame;
 import ru.sm.poker.game.holdem.HoldemManager;
+import ru.sm.poker.game.holdem.HoldemRound;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.service.holdem.WinnerServiceHoldem;
 import ru.sm.poker.service.holdem.ActionServiceHoldem;
@@ -29,7 +31,6 @@ public class GameListeners {
 
     private final ExecutorService executorServiceForStart = Executors.newFixedThreadPool(10);
     private final ExecutorService executorServiceForClear = Executors.newSingleThreadExecutor();
-    private final WinnerServiceHoldem checkWinnerServiceHoldem;
     private final ActionServiceHoldem actionServiceHoldem;
     private final HoldemManager holdemManager;
     private final Queue<Player> players;
@@ -48,13 +49,22 @@ public class GameListeners {
                 ThreadUtil.sleep(1);
                 if (players.size() > 3) {
                     final String randomGameName = getRandomGameName();
-                    final HoldemGame holdemGame = new HoldemGame(
+
+                    final List<Player> playersFromQueue = extractQueue();
+
+                    final Round round = new HoldemRound(
+                            playersFromQueue, randomGameName,
+                            actionServiceHoldem,
+                            1, 2);
+
+
+                    final Game holdemGame = new HoldemGame(
                             randomGameName,
                             9,
-                            extractQueue(),
-                            checkWinnerServiceHoldem,
-                            actionServiceHoldem
+                            playersFromQueue,
+                            round
                     );
+
                     holdemManager.createNewGame(randomGameName, holdemGame);
                     holdemGame.start();
                 }

@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
+import ru.sm.poker.dto.CombinationDTO;
+import ru.sm.poker.enums.StageType;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.holdem.HoldemManager;
 import ru.sm.poker.game.holdem.HoldemSecurityService;
@@ -12,6 +14,7 @@ import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.model.action.*;
 import ru.sm.poker.service.ActionService;
 
+import java.util.List;
 import java.util.Optional;
 
 import static java.lang.String.*;
@@ -23,8 +26,8 @@ public class ActionServiceHoldem implements ActionService {
 
     private final HoldemSecurityService holdemSecurityService;
     private final HoldemManager holdemManager;
-    private final WaitActionService waitActionService;
     private final BroadCastService broadCastService;
+    private final WinnerServiceHoldem winnerServiceHoldem;
 
     @Override
     public void setAction(String playerName, Action action) {
@@ -55,10 +58,15 @@ public class ActionServiceHoldem implements ActionService {
             if (player.getStateType() == StateType.IN_GAME) {
                 setActivePlayer(roundSettingsDTO, player);
                 broadCastService.sendToAll(roundSettingsDTO);
-                waitActionService.waitPlayerAction(player, roundSettingsDTO.getPlayers(), roundSettingsDTO);
+                waitPlayerAction(player, roundSettingsDTO.getPlayers(), roundSettingsDTO);
                 setInActivePlayer(roundSettingsDTO, player);
             }
         });
+
+        if (roundSettingsDTO.getStageType().equals(StageType.RIVER)){
+            final List<Pair<Player, CombinationDTO>> winners = checkWinner(roundSettingsDTO);
+            broadCastService.sendToAll(winners);
+        }
     }
 
     @Override
@@ -75,10 +83,38 @@ public class ActionServiceHoldem implements ActionService {
         player.setAction(new Wait(player.getGameName()));
     }
 
+
+    private void waitPlayerAction(Player player, List<Player> players, RoundSettingsDTO roundSettingsDTO) {
+        while (true) {
+            if (checkAllAfk(players)) {
+                break;
+            }
+            if (player.getAction().getClass() != Wait.class) {
+                parseAction(player, roundSettingsDTO);
+                break;
+            }
+        }
+    }
+
+    private boolean checkAllAfk(List<Player> players) {
+        return players.stream()
+                .allMatch(player -> player.getStateType() == StateType.AFK);
+    }
+
+    private List<Pair<Player, CombinationDTO>> checkWinner(RoundSettingsDTO roundSettingsDTO) {
+        return winnerServiceHoldem.findWinners(
+                roundSettingsDTO.getPlayers(),
+                roundSettingsDTO.getFlop(),
+                roundSettingsDTO.getTern(),
+                roundSettingsDTO.getRiver()
+        );
+    }
+
+
     private void raise(Player player, Raise raise, RoundSettingsDTO roundSettingsDTO) {
         if (raise.getCount() < roundSettingsDTO.getLastBet() * 2) {
             player.setAction(new Wait(player.getGameName()));
-            waitActionService.waitPlayerAction(player, roundSettingsDTO.getPlayers(), roundSettingsDTO);
+            waitPlayerAction(player, roundSettingsDTO.getPlayers(), roundSettingsDTO);
         }
         removeChipsPlayerAndAddToBank(player, raise.getCount(), roundSettingsDTO);
         setLastBet(roundSettingsDTO, raise.getCount());
@@ -99,12 +135,11 @@ public class ActionServiceHoldem implements ActionService {
     }
 
     private Player getActivePlayer(RoundSettingsDTO roundSettingsDTO) {
-        return
-                roundSettingsDTO.getPlayers()
-                        .stream()
-                        .filter(Player::isActive)
-                        .findFirst()
-                        .orElse(null);
+        return roundSettingsDTO.getPlayers()
+                .stream()
+                .filter(Player::isActive)
+                .findFirst()
+                .orElse(null);
     }
 
     private void removeChips(Player player, long chips) {
@@ -133,7 +168,7 @@ public class ActionServiceHoldem implements ActionService {
     private void call(Player player, Call call, RoundSettingsDTO roundSettingsDTO) {
         if (call.getCount() != roundSettingsDTO.getLastBet()) {
             player.setAction(new Wait(player.getGameName()));
-            waitActionService.waitPlayerAction(player, roundSettingsDTO.getPlayers(), roundSettingsDTO);
+            waitPlayerAction(player, roundSettingsDTO.getPlayers(), roundSettingsDTO);
             return;
         }
         removeChipsPlayerAndAddToBank(player, call.getCount(), roundSettingsDTO);

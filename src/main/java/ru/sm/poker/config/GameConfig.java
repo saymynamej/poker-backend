@@ -7,6 +7,7 @@ import ru.sm.poker.model.Player;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
 
 @Configuration
 public class GameConfig {
@@ -18,6 +19,6 @@ public class GameConfig {
 
     @Bean
     public Queue<Player> getPlayers() {
-        return new LinkedList<>();
+        return new LinkedBlockingQueue<>();
     }
 }

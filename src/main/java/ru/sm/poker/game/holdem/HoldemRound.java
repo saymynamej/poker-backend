@@ -3,14 +3,13 @@ package ru.sm.poker.game.holdem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
+import ru.sm.poker.dto.CombinationDTO;
+import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Round;
-import ru.sm.poker.dto.CombinationDTO;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.dto.RoundSettingsDTO;
-import ru.sm.poker.model.action.*;
-import ru.sm.poker.service.holdem.WinnerServiceHoldem;
 import ru.sm.poker.service.holdem.ActionServiceHoldem;
+import ru.sm.poker.service.holdem.WinnerServiceHoldem;
 
 import java.util.List;
 
@@ -20,7 +19,6 @@ public class HoldemRound implements Round {
 
     private final List<Player> players;
     private final String gameName;
-    private final WinnerServiceHoldem checkWinnerServiceHoldem;
     private final ActionServiceHoldem actionServiceHoldem;
     private final int smallBlindBet;
     private final int bigBlindBet;
@@ -29,7 +27,6 @@ public class HoldemRound implements Round {
     @Override
     public void startRound() {
         log.info("game was started, because found 4 person");
-
 
         final RoundSettingsController roundSettingsController =
                 new RoundSettingsController(players, gameName, bigBlindBet, smallBlindBet);
@@ -48,22 +45,7 @@ public class HoldemRound implements Round {
         this.roundSettingsDTO = roundSettingsController.getPostFlopSettingsWithRiver();
         actionServiceHoldem.setActions(roundSettingsDTO);
 
-        final List<Pair<Player, CombinationDTO>> winners = checkWinner();
-
     }
-
-
-    private List<Pair<Player, CombinationDTO>> checkWinner() {
-
-        return checkWinnerServiceHoldem.findWinners(
-                roundSettingsDTO.getPlayers(),
-                roundSettingsDTO.getFlop(),
-                roundSettingsDTO.getTern(),
-                roundSettingsDTO.getRiver()
-        );
-
-    }
-
 
     @Override
     public void reloadRound() {
