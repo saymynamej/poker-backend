@@ -1,4 +1,4 @@
-package ru.sm.poker.model;
+package ru.sm.poker.dto;
 
 import lombok.*;
 import ru.sm.poker.enums.CardType;
@@ -8,7 +8,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Data
-public class Combination {
+public class CombinationDTO {
     private final CombinationType combinationType;
     private final List<CardType> cards;
 }

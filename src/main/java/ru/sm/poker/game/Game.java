@@ -1,7 +1,7 @@
 package ru.sm.poker.game;
 
 import ru.sm.poker.model.Player;
-import ru.sm.poker.model.RoundSettings;
+import ru.sm.poker.dto.RoundSettingsDTO;
 
 public interface Game {
 
@@ -13,7 +13,7 @@ public interface Game {
 
     void reload();
 
-    RoundSettings getRoundSettings();
+    RoundSettingsDTO getRoundSettings();
 
     int getMaxPlayersSize();
 

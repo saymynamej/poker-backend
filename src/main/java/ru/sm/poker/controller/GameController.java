@@ -7,9 +7,9 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.sm.poker.game.Game;
+import ru.sm.poker.dto.MessageDTO;
 import ru.sm.poker.service.holdem.ActionServiceHoldem;
 import ru.sm.poker.game.holdem.HoldemManager;
-import ru.sm.poker.model.Message;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.model.action.Bet;
 import ru.sm.poker.model.action.Call;
@@ -37,23 +37,23 @@ public class GameController {
     }
 
     @MessageMapping("/raise")
-    public void raise(Principal principal, Message message) {
-        actionServiceHoldem.setAction(principal.getName(), new Raise(Long.parseLong(message.getCount()), message.getGameName()));
+    public void raise(Principal principal, MessageDTO messageDTO) {
+        actionServiceHoldem.setAction(principal.getName(), new Raise(Long.parseLong(messageDTO.getCount()), messageDTO.getGameName()));
     }
 
     @MessageMapping("/call")
-    public void call(Principal principal, Message message) {
-        actionServiceHoldem.setAction(message.getName(), new Call(Long.parseLong(message.getCount()), message.getGameName()));
+    public void call(Principal principal, MessageDTO messageDTO) {
+        actionServiceHoldem.setAction(messageDTO.getName(), new Call(Long.parseLong(messageDTO.getCount()), messageDTO.getGameName()));
     }
 
     @MessageMapping("/fold")
-    public void fold(Principal principal, Message message) {
-        actionServiceHoldem.setAction(message.getName(), new Fold(message.getGameName()));
+    public void fold(Principal principal, MessageDTO messageDTO) {
+        actionServiceHoldem.setAction(messageDTO.getName(), new Fold(messageDTO.getGameName()));
     }
 
     @MessageMapping("/bet")
-    public void bet(Principal principal, Message message) {
-        actionServiceHoldem.setAction(principal.getName(), new Bet(Long.parseLong(message.getCount()), message.getGameName()));
+    public void bet(Principal principal, MessageDTO messageDTO) {
+        actionServiceHoldem.setAction(principal.getName(), new Bet(Long.parseLong(messageDTO.getCount()), messageDTO.getGameName()));
     }
 
     @MessageMapping("/reload")

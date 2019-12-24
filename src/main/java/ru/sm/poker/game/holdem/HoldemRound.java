@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Round;
-import ru.sm.poker.model.Combination;
+import ru.sm.poker.dto.CombinationDTO;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.model.RoundSettings;
+import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.model.action.*;
 import ru.sm.poker.service.holdem.WinnerServiceHoldem;
 import ru.sm.poker.service.holdem.ActionServiceHoldem;
@@ -24,51 +24,46 @@ public class HoldemRound implements Round {
     private final ActionServiceHoldem actionServiceHoldem;
     private final int smallBlindBet;
     private final int bigBlindBet;
-    private RoundSettings roundSettings;
+    private RoundSettingsDTO roundSettingsDTO;
 
     @Override
     public void startRound() {
         log.info("game was started, because found 4 person");
 
-        setAllActivePlayers();
 
         final RoundSettingsController roundSettingsController =
                 new RoundSettingsController(players, gameName, bigBlindBet, smallBlindBet);
 
-        this.roundSettings = roundSettingsController.getPreflopSettings();
+        this.roundSettingsDTO = roundSettingsController.getPreflopSettings();
 
-        actionServiceHoldem.setActions(roundSettings);
+        actionServiceHoldem.setActions(roundSettingsDTO);
 
-        this.roundSettings = roundSettingsController.getPostFlopSettings();
+        this.roundSettingsDTO = roundSettingsController.getPostFlopSettings();
 
-        actionServiceHoldem.setActions(roundSettings);
+        actionServiceHoldem.setActions(roundSettingsDTO);
 
-        this.roundSettings = roundSettingsController.setPostTernSettings();
-        actionServiceHoldem.setActions(roundSettings);
+        this.roundSettingsDTO = roundSettingsController.getPostFlopSettingsWithTern();
+        actionServiceHoldem.setActions(roundSettingsDTO);
 
-        this.roundSettings = roundSettingsController.setPostRiverSettings();
-        actionServiceHoldem.setActions(roundSettings);
+        this.roundSettingsDTO = roundSettingsController.getPostFlopSettingsWithRiver();
+        actionServiceHoldem.setActions(roundSettingsDTO);
 
-        final List<Pair<Player, Combination>> winners = checkWinner();
+        final List<Pair<Player, CombinationDTO>> winners = checkWinner();
 
     }
 
 
-    private List<Pair<Player, Combination>> checkWinner() {
+    private List<Pair<Player, CombinationDTO>> checkWinner() {
 
         return checkWinnerServiceHoldem.findWinners(
-                roundSettings.getPlayers(),
-                roundSettings.getFlop(),
-                roundSettings.getTern(),
-                roundSettings.getRiver()
+                roundSettingsDTO.getPlayers(),
+                roundSettingsDTO.getFlop(),
+                roundSettingsDTO.getTern(),
+                roundSettingsDTO.getRiver()
         );
 
     }
 
-    private void setAllActivePlayers() {
-        this.players.forEach(player -> player.setAction(new Wait(gameName)));
-        this.players.forEach(player -> player.setStateType(StateType.IN_GAME));
-    }
 
     @Override
     public void reloadRound() {
@@ -76,7 +71,7 @@ public class HoldemRound implements Round {
     }
 
     @Override
-    public RoundSettings getRoundSettings() {
-        return this.roundSettings;
+    public RoundSettingsDTO getRoundSettingsDTO() {
+        return this.roundSettingsDTO;
     }
 }

@@ -8,7 +8,7 @@ import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.holdem.HoldemManager;
 import ru.sm.poker.game.holdem.HoldemSecurityService;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.model.RoundSettings;
+import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.model.action.*;
 import ru.sm.poker.service.ActionService;
 
@@ -50,42 +50,42 @@ public class ActionServiceHoldem implements ActionService {
 
 
     @Override
-    public void setActions(RoundSettings roundSettings) {
-        roundSettings.getPlayers().forEach(player -> {
+    public void setActions(RoundSettingsDTO roundSettingsDTO) {
+        roundSettingsDTO.getPlayers().forEach(player -> {
             if (player.getStateType() == StateType.IN_GAME) {
-                setActivePlayer(roundSettings, player);
-                broadCastService.sendToAll(roundSettings);
-                waitActionService.waitPlayerAction(player, roundSettings.getPlayers(), roundSettings);
-                setInActivePlayer(roundSettings, player);
+                setActivePlayer(roundSettingsDTO, player);
+                broadCastService.sendToAll(roundSettingsDTO);
+                waitActionService.waitPlayerAction(player, roundSettingsDTO.getPlayers(), roundSettingsDTO);
+                setInActivePlayer(roundSettingsDTO, player);
             }
         });
     }
 
     @Override
-    public void parseAction(Player player, RoundSettings roundSettings) {
+    public void parseAction(Player player, RoundSettingsDTO roundSettingsDTO) {
         final Action action = player.getAction();
         if (action instanceof Call) {
-            call(player, (Call) action, roundSettings);
+            call(player, (Call) action, roundSettingsDTO);
         } else if (action instanceof Fold) {
             fold(player, (Fold) action);
         } else if (action instanceof Raise) {
-            raise(player, (Raise) action, roundSettings);
+            raise(player, (Raise) action, roundSettingsDTO);
         }
 
         player.setAction(new Wait(player.getGameName()));
     }
 
-    private void raise(Player player, Raise raise, RoundSettings roundSettings) {
-        if (raise.getCount() < roundSettings.getLastBet() * 2) {
+    private void raise(Player player, Raise raise, RoundSettingsDTO roundSettingsDTO) {
+        if (raise.getCount() < roundSettingsDTO.getLastBet() * 2) {
             player.setAction(new Wait(player.getGameName()));
-            waitActionService.waitPlayerAction(player, roundSettings.getPlayers(), roundSettings);
+            waitActionService.waitPlayerAction(player, roundSettingsDTO.getPlayers(), roundSettingsDTO);
         }
-        removeChipsPlayerAndAddToBank(player, raise.getCount(), roundSettings);
-        setLastBet(roundSettings, raise.getCount());
+        removeChipsPlayerAndAddToBank(player, raise.getCount(), roundSettingsDTO);
+        setLastBet(roundSettingsDTO, raise.getCount());
     }
 
-    private void setLastBet(RoundSettings roundSettings, long count) {
-        roundSettings.setLastBet(count);
+    private void setLastBet(RoundSettingsDTO roundSettingsDTO, long count) {
+        roundSettingsDTO.setLastBet(count);
     }
 
     private void fold(Player player, Fold fold) {
@@ -93,14 +93,14 @@ public class ActionServiceHoldem implements ActionService {
         player.setStateType(StateType.WAIT);
     }
 
-    private void removeChipsPlayerAndAddToBank(Player player, long chips, RoundSettings roundSettings) {
+    private void removeChipsPlayerAndAddToBank(Player player, long chips, RoundSettingsDTO roundSettingsDTO) {
         removeChips(player, chips);
-        addBank(roundSettings, chips);
+        addBank(roundSettingsDTO, chips);
     }
 
-    private Player getActivePlayer(RoundSettings roundSettings) {
+    private Player getActivePlayer(RoundSettingsDTO roundSettingsDTO) {
         return
-                roundSettings.getPlayers()
+                roundSettingsDTO.getPlayers()
                         .stream()
                         .filter(Player::isActive)
                         .findFirst()
@@ -115,29 +115,29 @@ public class ActionServiceHoldem implements ActionService {
         player.addChips(chips);
     }
 
-    private void addBank(RoundSettings roundSettings, long count) {
-        roundSettings.setBank(roundSettings.getBank() + count);
+    private void addBank(RoundSettingsDTO roundSettingsDTO, long count) {
+        roundSettingsDTO.setBank(roundSettingsDTO.getBank() + count);
     }
 
-    private void setActivePlayer(RoundSettings roundSettings, Player player) {
+    private void setActivePlayer(RoundSettingsDTO roundSettingsDTO, Player player) {
         player.setActive(true);
-        roundSettings.setActivePlayer(player);
+        roundSettingsDTO.setActivePlayer(player);
     }
 
-    private void setInActivePlayer(RoundSettings roundSettings, Player player) {
+    private void setInActivePlayer(RoundSettingsDTO roundSettingsDTO, Player player) {
         player.setActive(false);
-        roundSettings.setActivePlayer(null);
+        roundSettingsDTO.setActivePlayer(null);
     }
 
 
-    private void call(Player player, Call call, RoundSettings roundSettings) {
-        if (call.getCount() != roundSettings.getLastBet()) {
+    private void call(Player player, Call call, RoundSettingsDTO roundSettingsDTO) {
+        if (call.getCount() != roundSettingsDTO.getLastBet()) {
             player.setAction(new Wait(player.getGameName()));
-            waitActionService.waitPlayerAction(player, roundSettings.getPlayers(), roundSettings);
+            waitActionService.waitPlayerAction(player, roundSettingsDTO.getPlayers(), roundSettingsDTO);
             return;
         }
-        removeChipsPlayerAndAddToBank(player, call.getCount(), roundSettings);
-        roundSettings.setLastBet(call.getCount());
+        removeChipsPlayerAndAddToBank(player, call.getCount(), roundSettingsDTO);
+        roundSettingsDTO.setLastBet(call.getCount());
     }
 
 }

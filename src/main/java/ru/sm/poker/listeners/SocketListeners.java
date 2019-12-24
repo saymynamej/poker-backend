@@ -8,7 +8,7 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.holdem.HoldemManager;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.model.RoundSettings;
+import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.service.holdem.BroadCastService;
 
 import java.security.Principal;
@@ -34,8 +34,8 @@ public class SocketListeners {
                 final Pair<String, Player> playerPair = playerByName.get();
                 final Map<String, Game> allGames = holdemManager.getAllGames();
                 final Game game = allGames.get(playerPair.getLeft());
-                final RoundSettings roundSettings = game.getRoundSettings();
-                broadCastService.sendToUser(playerPair.getRight().getName(), roundSettings);
+                final RoundSettingsDTO roundSettingsDTO = game.getRoundSettings();
+                broadCastService.sendToUser(playerPair.getRight().getName(), roundSettingsDTO);
             }
         }
     }

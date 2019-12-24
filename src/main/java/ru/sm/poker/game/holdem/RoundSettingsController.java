@@ -6,7 +6,8 @@ import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.RoleType;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.model.RoundSettings;
+import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.model.action.Wait;
 import ru.sm.poker.util.SortUtil;
 
 import java.security.SecureRandom;
@@ -25,8 +26,8 @@ final class RoundSettingsController {
     private final List<CardType> allCards = CardType.getAllCardsAsList();
     private final List<Player> players;
     private final List<CardType> flop = setFlop();
-    private final CardType tern = getTern();
-    private final CardType river = getRiver();
+    private final CardType tern = setTern();
+    private final CardType river = setRiver();
     private final String gameName;
     private final long bigBlindBet;
     private final long smallBlindBet;
@@ -34,68 +35,46 @@ final class RoundSettingsController {
     @Setter
     private long bank = 0;
 
-    private long lastBet = 0;
 
-
-    RoundSettings getPreflopSettings() {
+    public RoundSettingsDTO getPreflopSettings() {
+        setAllActivePlayers();
         dealCards();
         setButton();
         setSmallBlind();
         setBigBlind();
-        return toSettingsPreflop();
-    }
+        SortUtil.sortPreflop(players);
 
-    private RoundSettings toSettingsPreflop() {
-        return RoundSettings
+        return RoundSettingsDTO
                 .builder()
                 .gameName(gameName)
                 .bank(bank)
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
                 .button(getPlayerByRole(RoleType.BUTTON))
-                .players(SortUtil.sortPreflop(players))
+                .players(players)
                 .lastBet(bigBlindBet)
                 .build();
     }
 
-    RoundSettings getPostFlopSettings() {
+
+    public RoundSettingsDTO getPostFlopSettings() {
         SortUtil.sortPostflop(players);
-        return toSettingsPostFlop();
-    }
 
-
-    private List<Player> getPlayersInGame() {
-        return this.players.stream()
-                .filter(player -> player.getStateType() == StateType.IN_GAME)
-                .collect(Collectors.toList());
-    }
-
-    private RoundSettings toSettingsPostFlop() {
-        return RoundSettings
+        return RoundSettingsDTO
                 .builder()
                 .flop(flop)
                 .gameName(gameName)
                 .button(getPlayerByRole(RoleType.BUTTON))
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
-                .players(SortUtil.sortPostflop(players))
+                .players(players)
                 .build();
     }
 
+    public RoundSettingsDTO getPostFlopSettingsWithTern() {
+        SortUtil.sortPostflop(players);
 
-    RoundSettings setPostTernSettings() {
-        SortUtil.sortPreflop(players);
-        return getPostTernSettings();
-    }
-
-    RoundSettings setPostRiverSettings() {
-        SortUtil.sortPreflop(players);
-        return getPostRiverSettings();
-    }
-
-
-    private RoundSettings getPostTernSettings() {
-        return RoundSettings
+        return RoundSettingsDTO
                 .builder()
                 .flop(flop)
                 .tern(tern)
@@ -103,13 +82,15 @@ final class RoundSettingsController {
                 .button(getPlayerByRole(RoleType.BUTTON))
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
-                .players(SortUtil.sortPostflop(players))
+                .players(players)
                 .build();
     }
 
 
-    private RoundSettings getPostRiverSettings() {
-        return RoundSettings
+    public RoundSettingsDTO getPostFlopSettingsWithRiver() {
+        SortUtil.sortPostflop(players);
+
+        return RoundSettingsDTO
                 .builder()
                 .flop(flop)
                 .tern(tern)
@@ -118,7 +99,7 @@ final class RoundSettingsController {
                 .button(getPlayerByRole(RoleType.BUTTON))
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
-                .players(SortUtil.sortPostflop(players))
+                .players(players)
                 .build();
     }
 
@@ -143,11 +124,11 @@ final class RoundSettingsController {
     }
 
 
-    private CardType getTern() {
+    private CardType setTern() {
         return getRandomCard();
     }
 
-    private CardType getRiver() {
+    private CardType setRiver() {
         return getRandomCard();
     }
 
@@ -200,7 +181,6 @@ final class RoundSettingsController {
         Player bigBlind = getPlayer(indexOfSmallBlind);
         bigBlind.setRole(RoleType.BIG_BLIND);
         removeChipsPlayerAndAddToBank(bigBlind, bigBlindBet);
-        this.lastBet = bigBlindBet;
     }
 
 
@@ -261,6 +241,11 @@ final class RoundSettingsController {
         return bigBlind;
     }
 
+    private List<Player> getPlayersInGame() {
+        return this.players.stream()
+                .filter(player -> player.getStateType() == StateType.IN_GAME)
+                .collect(Collectors.toList());
+    }
 
     private void removeChips(Player player, long chips) {
         player.removeChips(chips);
@@ -272,5 +257,10 @@ final class RoundSettingsController {
 
     private void addBank(long count) {
         bank += count;
+    }
+
+    private void setAllActivePlayers() {
+        this.players.forEach(player -> player.setAction(new Wait(gameName)));
+        this.players.forEach(player -> player.setStateType(StateType.IN_GAME));
     }
 }

@@ -1,6 +1,6 @@
 package ru.sm.poker.game;
 
-import ru.sm.poker.model.RoundSettings;
+import ru.sm.poker.dto.RoundSettingsDTO;
 
 public interface Round {
 
@@ -8,6 +8,6 @@ public interface Round {
 
     void reloadRound();
 
-    RoundSettings getRoundSettings();
+    RoundSettingsDTO getRoundSettingsDTO();
 
 }

@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.model.RoundSettings;
+import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.service.holdem.WinnerServiceHoldem;
 import ru.sm.poker.service.holdem.ActionServiceHoldem;
 
@@ -72,8 +72,8 @@ public class HoldemGame implements Game {
     }
 
     @Override
-    public RoundSettings getRoundSettings() {
-        return round.getRoundSettings();
+    public RoundSettingsDTO getRoundSettings() {
+        return round.getRoundSettingsDTO();
     }
 
     @Override

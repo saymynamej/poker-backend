@@ -5,7 +5,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.CombinationType;
-import ru.sm.poker.model.Combination;
+import ru.sm.poker.dto.CombinationDTO;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.service.WinnerService;
 
@@ -22,9 +22,9 @@ public class WinnerServiceHoldem implements WinnerService {
     private final CombinationServiceHoldem checkCombinationServiceHoldem;
 
     @Override
-    public List<Pair<Player, Combination>> findWinners(List<Player> players, List<CardType> flop, CardType tern, CardType river) {
+    public List<Pair<Player, CombinationDTO>> findWinners(List<Player> players, List<CardType> flop, CardType tern, CardType river) {
 
-        final List<Pair<Player, Combination>> playersComb = new ArrayList<>();
+        final List<Pair<Player, CombinationDTO>> playersComb = new ArrayList<>();
 
         final List<CardType> allCards = players
                 .stream()
@@ -48,7 +48,7 @@ public class WinnerServiceHoldem implements WinnerService {
             final Pair<CombinationType, List<CardType>> combination =
                     checkCombinationServiceHoldem.findCombination(playersCards);
 
-            final Combination comboDTO = new Combination(combination.getLeft(), combination.getRight());
+            final CombinationDTO comboDTO = new CombinationDTO(combination.getLeft(), combination.getRight());
 
             playersComb.add(Pair.of(player, comboDTO));
         });

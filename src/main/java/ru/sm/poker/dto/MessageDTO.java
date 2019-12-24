@@ -1,4 +1,4 @@
-package ru.sm.poker.model;
+package ru.sm.poker.dto;
 
 import lombok.*;
 
@@ -6,7 +6,7 @@ import lombok.*;
 @Setter
 @RequiredArgsConstructor
 @ToString
-public class Message {
+public class MessageDTO {
     private String name;
     private String count;
     private String gameName;
