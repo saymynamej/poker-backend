@@ -16,7 +16,8 @@ spring:
           lob:
             non_contextual_creation: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
+  profiles:
+    include: enableInfoService
 #eureka:
 #  client:
 #    serviceUrl:
@@ -42,3 +43,4 @@ config:
     tern-path: "/poker/game/tern"
     river-path: "/poker/game/river"
     bank-path: "/poker/game/bank"
+    games-path: "/poker/games"
