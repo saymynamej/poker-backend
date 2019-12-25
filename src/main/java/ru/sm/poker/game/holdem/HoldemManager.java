@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.service.holdem.BroadCastService;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -15,6 +14,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.stream.Collectors;
+
+import static java.lang.String.*;
 
 @Component
 @RequiredArgsConstructor
@@ -48,6 +49,17 @@ public class HoldemManager implements GameManager {
         return Optional.empty();
     }
 
+    @Override
+    public void addPlayer(Player player, String gameName) {
+        if (!checkGameName(gameName)) {
+            throw new RuntimeException(format("game with name %s not exist", gameName));
+        }
+        final Game game = games.get(gameName);
+        if (game.getRoundSettings().getPlayers().contains(player)) {
+            throw new RuntimeException(format("player %s already playing", gameName));
+        }
+        game.addPlayer(player);
+    }
 
     @Override
     public boolean playerExistByName(String gameName, String name) {
@@ -67,7 +79,7 @@ public class HoldemManager implements GameManager {
             log.info("Player removed :" + player.getName());
             return;
         }
-        throw new RuntimeException(String.format("could not found player in game =%s, player=%s", gameName, player.getName()));
+        throw new RuntimeException(format("could not found player in game =%s, player=%s", gameName, player.getName()));
     }
 
     @Override
@@ -98,7 +110,7 @@ public class HoldemManager implements GameManager {
     }
 
     @Override
-    public Map<String, Game> getAllGames() {
+    public Map<String, Game> getGames() {
         return games;
     }
 

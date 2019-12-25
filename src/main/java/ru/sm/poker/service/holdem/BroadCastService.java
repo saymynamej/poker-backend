@@ -43,6 +43,10 @@ public class BroadCastService {
     }
 
 
+    public void sendGamesToAll(Object games) {
+        simpMessagingTemplate.convertAndSend(socketMappingConfig.getGamesPath(), games);
+    }
+
     public void sendFlopToAll(Object flop) {
         simpMessagingTemplate.convertAndSend(socketMappingConfig.getFlopPath(), flop);
     }

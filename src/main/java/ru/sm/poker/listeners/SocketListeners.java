@@ -32,7 +32,7 @@ public class SocketListeners {
 
             if (playerByName.isPresent()) {
                 final Pair<String, Player> playerPair = playerByName.get();
-                final Map<String, Game> allGames = holdemManager.getAllGames();
+                final Map<String, Game> allGames = holdemManager.getGames();
                 final Game game = allGames.get(playerPair.getLeft());
                 final RoundSettingsDTO roundSettingsDTO = game.getRoundSettings();
                 broadCastService.sendToUser(playerPair.getRight().getName(), roundSettingsDTO);

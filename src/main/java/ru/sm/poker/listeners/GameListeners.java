@@ -9,7 +9,6 @@ import ru.sm.poker.game.holdem.HoldemGame;
 import ru.sm.poker.game.holdem.HoldemManager;
 import ru.sm.poker.game.holdem.HoldemRound;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.service.holdem.WinnerServiceHoldem;
 import ru.sm.poker.service.holdem.ActionServiceHoldem;
 import ru.sm.poker.util.ThreadUtil;
 
@@ -93,12 +92,12 @@ public class GameListeners {
 
     private void clearGame(List<Game> games) {
         if (games != null && !games.isEmpty()) {
-            games.forEach(game -> holdemManager.getAllGames().remove(game.getName()));
+            games.forEach(game -> holdemManager.getGames().remove(game.getName()));
         }
     }
 
     private List<Game> findAllEmptyGame() {
-        return holdemManager.getAllGames()
+        return holdemManager.getGames()
                 .values()
                 .stream()
                 .filter(game -> game.getRoundSettings().getPlayers().size() == 0)

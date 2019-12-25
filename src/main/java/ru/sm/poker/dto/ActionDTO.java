@@ -6,7 +6,7 @@ import lombok.*;
 @Setter
 @RequiredArgsConstructor
 @ToString
-public class MessageDTO {
+public class ActionDTO {
     private String name;
     private String count;
     private String gameName;

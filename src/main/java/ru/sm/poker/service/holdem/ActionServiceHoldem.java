@@ -54,9 +54,12 @@ public class ActionServiceHoldem implements ActionService {
 
     @Override
     public void setActions(RoundSettingsDTO roundSettingsDTO) {
+
         roundSettingsDTO.getPlayers().forEach(player -> {
-            if (player.getStateType() == StateType.IN_GAME) {
+            if (player.getStateType() == StateType.IN_GAME && player.getAction().getClass() != Fold.class) {
+                log.info(roundSettingsDTO.getLastBet() + " is last bet");
                 setActivePlayer(roundSettingsDTO, player);
+                player.setAction(new Wait(player.getGameName()));
                 broadCastService.sendToAllWithSecure(roundSettingsDTO);
                 waitPlayerAction(player, roundSettingsDTO);
                 setInActivePlayer(roundSettingsDTO, player);
@@ -81,8 +84,6 @@ public class ActionServiceHoldem implements ActionService {
         } else if (action instanceof Check) {
             check(player, (Check) action, roundSettingsDTO);
         }
-
-        player.setAction(new Wait(player.getGameName()));
     }
 
 
@@ -91,7 +92,7 @@ public class ActionServiceHoldem implements ActionService {
             if (checkAllAfk(roundSettingsDTO.getPlayers())) {
                 break;
             }
-            if (player.getAction().getClass() != Wait.class) {
+            if (!(player.getAction() instanceof Wait)) {
                 parseAction(player, roundSettingsDTO);
                 break;
             }
@@ -112,10 +113,16 @@ public class ActionServiceHoldem implements ActionService {
         );
     }
 
+    private boolean isLonely(List<Player> players) {
+        return players.stream()
+                .filter(player -> !(player.getAction() instanceof Fold))
+                .count() == 1;
+    }
+
 
     private void raise(Player player, Raise raise, RoundSettingsDTO roundSettingsDTO) {
         if (raise.getCount() < roundSettingsDTO.getLastBet() * 2) {
-            player.setAction(new Wait(player.getGameName()));
+            setPlayerWait(player);
             waitPlayerAction(player, roundSettingsDTO);
         }
         removeChipsPlayerAndAddToBank(player, raise.getCount(), roundSettingsDTO);
@@ -128,7 +135,6 @@ public class ActionServiceHoldem implements ActionService {
 
     private void fold(Player player, Fold fold) {
         player.setAction(fold);
-        player.setStateType(StateType.WAIT);
     }
 
     private void removeChipsPlayerAndAddToBank(Player player, long chips, RoundSettingsDTO roundSettingsDTO) {
@@ -166,10 +172,9 @@ public class ActionServiceHoldem implements ActionService {
         roundSettingsDTO.setActivePlayer(null);
     }
 
-
     private void call(Player player, Call call, RoundSettingsDTO roundSettingsDTO) {
         if (call.getCount() != roundSettingsDTO.getLastBet()) {
-            player.setAction(new Wait(player.getGameName()));
+            setPlayerWait(player);
             waitPlayerAction(player, roundSettingsDTO);
             return;
         }
@@ -178,11 +183,15 @@ public class ActionServiceHoldem implements ActionService {
     }
 
     private void check(Player player, Check check, RoundSettingsDTO roundSettingsDTO) {
-        if (roundSettingsDTO.getLastBet() == roundSettingsDTO.getBigBlindBet() && player.isBigBlind()){
+        if (roundSettingsDTO.getLastBet() == roundSettingsDTO.getBigBlindBet() && player.isBigBlind()) {
+            setPlayerWait(player);
             player.setAction(check);
             return;
         }
-        player.setAction(new Wait(roundSettingsDTO.getGameName()));
         waitPlayerAction(player, roundSettingsDTO);
+    }
+
+    private void setPlayerWait(Player playerWait) {
+        playerWait.setAction(new Wait(playerWait.getGameName()));
     }
 }

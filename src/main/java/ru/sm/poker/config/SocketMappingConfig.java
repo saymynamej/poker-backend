@@ -35,4 +35,7 @@ public class SocketMappingConfig {
     @NotNull
     private String bankPath;
 
+    @NotNull
+    private String gamesPath;
+
 }

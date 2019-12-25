@@ -11,6 +11,7 @@ public interface GameManager {
     void removePlayer(String gameName, Player player);
     void removePlayer(Player player);
     void addPlayer(Player player);
-    Map<String, Game> getAllGames();
+    void addPlayer(Player player, String gameName);
+    Map<String, Game> getGames();
     boolean createNewGame(String name, Game game);
 }

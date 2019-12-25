@@ -6,11 +6,8 @@ import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.SecurityService;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.util.PlayerUtil;
 import ru.sm.poker.util.RoundSettingsUtil;
 
-import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -20,7 +17,7 @@ public class HoldemSecurityService implements SecurityService {
 
     @Override
     public boolean isLegalPlayer(String gameName, Player player) {
-        final Game game = holdemManager.getAllGames().get(gameName);
+        final Game game = holdemManager.getGames().get(gameName);
         if (game != null && player != null) {
             return game
                     .getRoundSettings()
@@ -30,19 +27,9 @@ public class HoldemSecurityService implements SecurityService {
         return false;
     }
 
-
     @Override
-    public RoundSettingsDTO secureCards(String name, RoundSettingsDTO roundSettingsDTO) {
-
-        final List<Player> playersWithSecureCards = PlayerUtil.copies(roundSettingsDTO.getPlayers());
-
-        playersWithSecureCards.forEach(player ->  {
-            if (!player.getName().equals(name)){
-                player.addCards(Collections.emptyList());
-            }
-        });
-
-        return RoundSettingsUtil.copyWithSecureCard(roundSettingsDTO, playersWithSecureCards);
+    public RoundSettingsDTO secureCards(String filterName, RoundSettingsDTO roundSettingsDTO) {
+        return RoundSettingsUtil.copyWithSecureCard(roundSettingsDTO, filterName);
     }
 
     @Override
