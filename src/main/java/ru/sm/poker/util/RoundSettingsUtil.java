@@ -9,7 +9,6 @@ import java.util.List;
 
 public class RoundSettingsUtil {
 
-
     public static RoundSettingsDTO copyWithNewPlayersAndReloadAction(RoundSettingsDTO roundSettingsDTO, List<Player> players) {
         final String gameName = players.get(0)
                 .getGameName();
