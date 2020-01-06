@@ -4,7 +4,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.CombinationType;
-import ru.sm.poker.model.Combination;
+import ru.sm.poker.dto.CombinationDTO;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.service.holdem.CombinationServiceHoldem;
 import ru.sm.poker.service.holdem.WinnerServiceHoldem;
@@ -65,7 +65,7 @@ public class WinnerServiceHoldemTest {
         players.add(looser3);
 
 
-        final List<Pair<Player, Combination>> winners =
+        final List<Pair<Player, CombinationDTO>> winners =
                 winnerService.findWinners(players, flop, tern, river);
 
         assertEquals(winners.get(0).getKey().getName(), winner.getName());

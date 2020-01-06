@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CheckCombinationTypeServiceHoldemTest {
+public class CheckCombinationDTOTypeServiceHoldemTest {
 
     private final CombinationServiceHoldem checkCombinationServiceHoldem = new CombinationServiceHoldem();
 
