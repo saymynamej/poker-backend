@@ -5,19 +5,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.dto.CombinationDTO;
+import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.enums.StageType;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.holdem.HoldemManager;
 import ru.sm.poker.game.holdem.HoldemSecurityService;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.model.action.*;
 import ru.sm.poker.service.ActionService;
 
 import java.util.List;
 import java.util.Optional;
 
-import static java.lang.String.*;
+import static java.lang.String.format;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -52,18 +52,28 @@ public class ActionServiceHoldem implements ActionService {
     }
 
 
+    public void setActions(Player player, RoundSettingsDTO roundSettingsDTO) {
+        if (player.getStateType() == StateType.IN_GAME) {
+            if (player.getAction() != null && player.getAction().getClass() != Fold.class) {
+                setActivePlayer(roundSettingsDTO, player);
+                broadCastService.sendToAllWithSecure(roundSettingsDTO);
+                waitPlayerAction(player, roundSettingsDTO);
+                if (player.getAction() instanceof CountAction) {
+                    log.info(roundSettingsDTO.getLastBet().toString());
+                    log.info("player action: " + player.getAction().getActionType() + ":"
+                            + ((CountAction) player.getAction()).getCount() + ", player name: " + player.getName());
+                }
+                setInActivePlayer(roundSettingsDTO, player);
+            }
+        }
+    }
+
+
     @Override
     public void setActions(RoundSettingsDTO roundSettingsDTO) {
 
         roundSettingsDTO.getPlayers().forEach(player -> {
-            if (player.getStateType() == StateType.IN_GAME && player.getAction().getClass() != Fold.class) {
-                log.info(roundSettingsDTO.getLastBet() + " is last bet");
-                setActivePlayer(roundSettingsDTO, player);
-                player.setAction(new Wait(player.getGameName()));
-                broadCastService.sendToAllWithSecure(roundSettingsDTO);
-                waitPlayerAction(player, roundSettingsDTO);
-                setInActivePlayer(roundSettingsDTO, player);
-            }
+            setActions(player, roundSettingsDTO);
         });
 
         if (roundSettingsDTO.getStageType().equals(StageType.RIVER)) {
@@ -112,13 +122,6 @@ public class ActionServiceHoldem implements ActionService {
                 roundSettingsDTO.getRiver()
         );
     }
-
-    private boolean isLonely(List<Player> players) {
-        return players.stream()
-                .filter(player -> !(player.getAction() instanceof Fold))
-                .count() == 1;
-    }
-
 
     private void raise(Player player, Raise raise, RoundSettingsDTO roundSettingsDTO) {
         if (raise.getCount() < roundSettingsDTO.getLastBet() * 2) {
@@ -179,7 +182,7 @@ public class ActionServiceHoldem implements ActionService {
             return;
         }
         removeChipsPlayerAndAddToBank(player, call.getCount(), roundSettingsDTO);
-        roundSettingsDTO.setLastBet(call.getCount());
+        setLastBet(roundSettingsDTO, call.getCount());
     }
 
     private void check(Player player, Check check, RoundSettingsDTO roundSettingsDTO) {

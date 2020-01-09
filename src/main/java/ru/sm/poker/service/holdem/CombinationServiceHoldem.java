@@ -359,13 +359,13 @@ public class CombinationServiceHoldem implements CombinationService {
         final List<CardType> distinctList = removeCardsWithSamePower(cards);
         int i = 0;
 
-        for (CardType card : distinctList) {
-            for (CardType cardType : distinctList) {
-                if (card.equals(cardType)) {
+        for (CardType cardFromFirstLoop : distinctList) {
+            for (CardType cardFromSecondLoop : distinctList) {
+                if (cardFromFirstLoop.equals(cardFromSecondLoop)) {
                     continue;
                 }
-                final int powerAsInt = card.getPowerAsInt();
-                final int powerAsInt1 = cardType.getPowerAsInt();
+                final int powerAsInt = cardFromFirstLoop.getPowerAsInt();
+                final int powerAsInt1 = cardFromSecondLoop.getPowerAsInt();
                 if (powerAsInt1 - powerAsInt == ONE_POWER) {
                     i++;
                 }

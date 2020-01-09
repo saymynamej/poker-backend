@@ -2,15 +2,12 @@ package ru.sm.poker.game.holdem;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
-import ru.sm.poker.dto.CombinationDTO;
+import ru.sm.poker.action.HoldemPipeline;
 import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.service.holdem.ActionServiceHoldem;
-import ru.sm.poker.service.holdem.WinnerServiceHoldem;
-
+import java.util.Collections;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -19,7 +16,7 @@ public class HoldemRound implements Round {
 
     private final List<Player> players;
     private final String gameName;
-    private final ActionServiceHoldem actionServiceHoldem;
+    private final HoldemPipeline holdemPipeline;
     private final int smallBlindBet;
     private final int bigBlindBet;
     private RoundSettingsDTO roundSettingsDTO;
@@ -33,17 +30,18 @@ public class HoldemRound implements Round {
 
         this.roundSettingsDTO = roundSettingsController.getPreflopSettings();
 
-        actionServiceHoldem.setActions(roundSettingsDTO);
+        log.info("flop start");
+        holdemPipeline.start(roundSettingsDTO, Collections.emptyList());
 
         this.roundSettingsDTO = roundSettingsController.getPostFlopSettings();
-
-        actionServiceHoldem.setActions(roundSettingsDTO);
+        log.info("postflop start");
+        holdemPipeline.start(roundSettingsDTO, Collections.emptyList());
 
         this.roundSettingsDTO = roundSettingsController.getPostFlopSettingsWithTern();
-        actionServiceHoldem.setActions(roundSettingsDTO);
+        holdemPipeline.start(roundSettingsDTO, Collections.emptyList());
 
         this.roundSettingsDTO = roundSettingsController.getPostFlopSettingsWithRiver();
-        actionServiceHoldem.setActions(roundSettingsDTO);
+        holdemPipeline.start(roundSettingsDTO, Collections.emptyList());
 
     }
 

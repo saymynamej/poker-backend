@@ -48,13 +48,15 @@ public class WinnerServiceHoldem implements WinnerService {
             final Pair<CombinationType, List<CardType>> combination =
                     checkCombinationServiceHoldem.findCombination(playersCards);
 
-            final CombinationDTO comboDTO = new CombinationDTO(combination.getLeft(), combination.getRight());
+            final CombinationDTO comboDTO = new CombinationDTO(
+                    combination.getLeft(),
+                    combination.getRight()
+            );
 
             playersComb.add(Pair.of(player, comboDTO));
         });
 
         playersComb.sort((o1, o2) -> o2.getValue().getCombinationType().getPower() - o1.getValue().getCombinationType().getPower());
-
 
         return playersComb;
     }

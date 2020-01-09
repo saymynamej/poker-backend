@@ -3,13 +3,13 @@ package ru.sm.poker.listeners;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.sm.poker.action.HoldemPipeline;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.game.holdem.HoldemGame;
 import ru.sm.poker.game.holdem.HoldemManager;
 import ru.sm.poker.game.holdem.HoldemRound;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.service.holdem.ActionServiceHoldem;
 import ru.sm.poker.util.ThreadUtil;
 
 import javax.annotation.PostConstruct;
@@ -30,7 +30,7 @@ public class GameListeners {
 
     private final ExecutorService executorServiceForStart = Executors.newFixedThreadPool(10);
     private final ExecutorService executorServiceForClear = Executors.newSingleThreadExecutor();
-    private final ActionServiceHoldem actionServiceHoldem;
+    private final HoldemPipeline holdemPipeline;
     private final HoldemManager holdemManager;
     private final Queue<Player> players;
     private boolean isEnable = true;
@@ -40,7 +40,6 @@ public class GameListeners {
         enable();
         enableClearListener();
     }
-
 
     private void enable() {
         executorServiceForStart.submit(() -> {
@@ -53,9 +52,8 @@ public class GameListeners {
 
                     final Round round = new HoldemRound(
                             playersFromQueue, randomGameName,
-                            actionServiceHoldem,
+                            holdemPipeline,
                             1, 2);
-
 
                     final Game holdemGame = new HoldemGame(
                             randomGameName,

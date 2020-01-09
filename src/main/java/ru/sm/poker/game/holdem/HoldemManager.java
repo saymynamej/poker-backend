@@ -49,15 +49,17 @@ public class HoldemManager implements GameManager {
         return Optional.empty();
     }
 
+
     @Override
-    public void addPlayer(Player player, String gameName) {
+    public void addPlayer(Player player, String gameName) throws RuntimeException {
         if (!checkGameName(gameName)) {
             throw new RuntimeException(format("game with name %s not exist", gameName));
         }
         final Game game = games.get(gameName);
-        if (game.getRoundSettings().getPlayers().contains(player)) {
-            throw new RuntimeException(format("player %s already playing", gameName));
+        if (game.getRoundSettings().getPlayers().size() == game.getMaxPlayersSize()) {
+            throw new RuntimeException(format("game with name %s not exist", gameName));
         }
+
         game.addPlayer(player);
     }
 

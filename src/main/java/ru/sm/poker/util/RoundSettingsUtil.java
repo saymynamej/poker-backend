@@ -33,7 +33,7 @@ public class RoundSettingsUtil {
     }
 
 
-    private static RoundSettingsDTO copy(RoundSettingsDTO roundSettingsDTO, List<Player> players) {
+    public static RoundSettingsDTO copy(RoundSettingsDTO roundSettingsDTO, List<Player> players) {
         return RoundSettingsDTO.builder()
                 .gameName(roundSettingsDTO.getGameName())
                 .bank(roundSettingsDTO.getBank())

@@ -8,6 +8,7 @@ import ru.sm.poker.enums.StageType;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.model.action.Fold;
 import ru.sm.poker.model.action.Wait;
 import ru.sm.poker.util.SortUtil;
 
@@ -60,7 +61,7 @@ final class RoundSettingsController {
 
 
     public RoundSettingsDTO getPostFlopSettings() {
-
+        setAllActivePlayersTest();
         return RoundSettingsDTO
                 .builder()
                 .flop(flop)
@@ -70,14 +71,14 @@ final class RoundSettingsController {
                 .smallBlindBet(smallBlindBet)
                 .bigBlindBet(bigBlindBet)
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
-                .players(SortUtil.sortPostflop(players))
+                .players(players)
                 .lastBet(0L)
                 .stageType(StageType.FLOP)
                 .build();
     }
 
     public RoundSettingsDTO getPostFlopSettingsWithTern() {
-
+        setAllActivePlayersTest();
         return RoundSettingsDTO
                 .builder()
                 .flop(flop)
@@ -90,14 +91,13 @@ final class RoundSettingsController {
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
                 .stageType(StageType.TERN)
                 .lastBet(0L)
-                .players(SortUtil.sortPostflop(players))
+                .players(players)
                 .build();
     }
 
 
     public RoundSettingsDTO getPostFlopSettingsWithRiver() {
-        SortUtil.sortPostflop(players);
-
+        setAllActivePlayersTest();
         return RoundSettingsDTO
                 .builder()
                 .flop(flop)
@@ -111,7 +111,7 @@ final class RoundSettingsController {
                 .button(getPlayerByRole(RoleType.BUTTON))
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
-                .players(SortUtil.sortPostflop(players))
+                .players(players)
                 .build();
     }
 
@@ -199,8 +199,7 @@ final class RoundSettingsController {
     private void clearRole(RoleType roleType) {
         final Optional<Player> playerByRole = players
                 .stream()
-                .filter(
-                        player -> player.getRoleType() == roleType)
+                .filter(player -> player.getRoleType() == roleType)
                 .findAny();
         playerByRole.ifPresent(Player::removeRole);
     }
@@ -272,8 +271,18 @@ final class RoundSettingsController {
     }
 
     private void setAllActivePlayers() {
-        this.players.forEach(player -> player.setRole(RoleType.PLAYER));
-        this.players.forEach(player -> player.setAction(new Wait(gameName)));
-        this.players.forEach(player -> player.setStateType(StateType.IN_GAME));
+        this.players.forEach(player -> {
+            player.setRole(RoleType.PLAYER);
+            player.setAction(new Wait(gameName));
+            player.setStateType(StateType.IN_GAME);
+        });
+    }
+
+    private void setAllActivePlayersTest() {
+        this.players.forEach(player -> {
+            if (!(player.getAction() instanceof Fold) && player.getStateType() == StateType.IN_GAME) {
+                player.setAction(new Wait(gameName));
+            }
+        });
     }
 }
