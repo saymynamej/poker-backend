@@ -8,10 +8,12 @@ import ru.sm.poker.dto.CombinationDTO;
 import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.enums.StageType;
 import ru.sm.poker.enums.StateType;
-import ru.sm.poker.game.holdem.HoldemManager;
+import ru.sm.poker.game.holdem.HoldemGameManager;
 import ru.sm.poker.game.holdem.HoldemSecurityService;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.model.action.*;
+import ru.sm.poker.model.action.holdem.Fold;
+import ru.sm.poker.model.action.holdem.Wait;
 import ru.sm.poker.service.ActionService;
 
 import java.util.List;
@@ -25,34 +27,57 @@ import static java.lang.String.format;
 public class ActionServiceHoldem implements ActionService {
 
     private final HoldemSecurityService holdemSecurityService;
-    private final HoldemManager holdemManager;
+    private final HoldemGameManager holdemGameManager;
     private final BroadCastService broadCastService;
     private final WinnerServiceHoldem winnerServiceHoldem;
 
     @Override
+    public void setActions(RoundSettingsDTO roundSettingsDTO) {
+        roundSettingsDTO.getPlayers().forEach(player -> setAction(player, roundSettingsDTO));
+        if (roundSettingsDTO.getStageType().equals(StageType.RIVER)) {
+            final List<Pair<Player, CombinationDTO>> winners = checkWinner(roundSettingsDTO);
+            broadCastService.sendToAllWithSecure(winners);
+        }
+    }
+
+
+    @Override
+    public void setUnSetAfkPlayer(String name) {
+        final Optional<Pair<String, Player>> optionalPlayer = holdemGameManager.getPlayerByName(name);
+        if (optionalPlayer.isPresent()) {
+            final Player player = optionalPlayer.get().getValue();
+            player.setStateType(player.getStateType() == StateType.AFK ? StateType.IN_GAME : StateType.AFK);
+        }
+    }
+
+    @Override
+    public void parseAction(Player player, RoundSettingsDTO roundSettingsDTO) {
+        final Action action = player.getAction();
+        if (action instanceof ExecutableAction) {
+            ((ExecutableAction) action).doAction(roundSettingsDTO, player, this);
+        }
+    }
+
+    @Override
     public void setAction(String playerName, Action action) {
-        final Optional<Pair<String, Player>> playerByName = holdemManager.getPlayerByName(playerName);
-
+        final Optional<Pair<String, Player>> playerByName = holdemGameManager.getPlayerByName(playerName);
         if (playerByName.isPresent()) {
-
             final Pair<String, Player> pairGameAndPlayer = playerByName.get();
-
             final String gameName = pairGameAndPlayer.getLeft();
             final Player player = pairGameAndPlayer.getRight();
-
             if (holdemSecurityService.isLegalPlayer(gameName, player)) {
                 player.setAction(action);
             } else {
                 log.info(format("player tried send bet to not own game. name:%s", player.getName()));
             }
-
         } else {
             log.info("cannot find player with playerName:" + playerName);
         }
     }
 
 
-    public void setActions(Player player, RoundSettingsDTO roundSettingsDTO) {
+    @Override
+    public void setAction(Player player, RoundSettingsDTO roundSettingsDTO) {
         if (player.getStateType() == StateType.IN_GAME) {
             if (player.getAction() != null && player.getAction().getClass() != Fold.class) {
                 setActivePlayer(roundSettingsDTO, player);
@@ -68,36 +93,8 @@ public class ActionServiceHoldem implements ActionService {
         }
     }
 
-
     @Override
-    public void setActions(RoundSettingsDTO roundSettingsDTO) {
-
-        roundSettingsDTO.getPlayers().forEach(player -> {
-            setActions(player, roundSettingsDTO);
-        });
-
-        if (roundSettingsDTO.getStageType().equals(StageType.RIVER)) {
-            final List<Pair<Player, CombinationDTO>> winners = checkWinner(roundSettingsDTO);
-            broadCastService.sendToAllWithSecure(winners);
-        }
-    }
-
-    @Override
-    public void parseAction(Player player, RoundSettingsDTO roundSettingsDTO) {
-        final Action action = player.getAction();
-        if (action instanceof Call) {
-            call(player, (Call) action, roundSettingsDTO);
-        } else if (action instanceof Fold) {
-            fold(player, (Fold) action);
-        } else if (action instanceof Raise) {
-            raise(player, (Raise) action, roundSettingsDTO);
-        } else if (action instanceof Check) {
-            check(player, (Check) action, roundSettingsDTO);
-        }
-    }
-
-
-    private void waitPlayerAction(Player player, RoundSettingsDTO roundSettingsDTO) {
+    public void waitPlayerAction(Player player, RoundSettingsDTO roundSettingsDTO) {
         while (true) {
             if (checkAllAfk(roundSettingsDTO.getPlayers())) {
                 break;
@@ -107,6 +104,20 @@ public class ActionServiceHoldem implements ActionService {
                 break;
             }
         }
+    }
+
+    @Override
+    public void setLastBet(RoundSettingsDTO roundSettingsDTO, long count) {
+        if (roundSettingsDTO.getLastBet() < count) {
+            log.info("prev last bet less than new last bet");
+        }
+        roundSettingsDTO.setLastBet(count);
+    }
+
+    @Override
+    public void removeChipsPlayerAndAddToBank(Player player, long chips, RoundSettingsDTO roundSettingsDTO) {
+        removeChips(player, chips);
+        addBank(roundSettingsDTO, chips);
     }
 
     private boolean checkAllAfk(List<Player> players) {
@@ -121,28 +132,6 @@ public class ActionServiceHoldem implements ActionService {
                 roundSettingsDTO.getTern(),
                 roundSettingsDTO.getRiver()
         );
-    }
-
-    private void raise(Player player, Raise raise, RoundSettingsDTO roundSettingsDTO) {
-        if (raise.getCount() < roundSettingsDTO.getLastBet() * 2) {
-            setPlayerWait(player);
-            waitPlayerAction(player, roundSettingsDTO);
-        }
-        removeChipsPlayerAndAddToBank(player, raise.getCount(), roundSettingsDTO);
-        setLastBet(roundSettingsDTO, raise.getCount());
-    }
-
-    private void setLastBet(RoundSettingsDTO roundSettingsDTO, long count) {
-        roundSettingsDTO.setLastBet(count);
-    }
-
-    private void fold(Player player, Fold fold) {
-        player.setAction(fold);
-    }
-
-    private void removeChipsPlayerAndAddToBank(Player player, long chips, RoundSettingsDTO roundSettingsDTO) {
-        removeChips(player, chips);
-        addBank(roundSettingsDTO, chips);
     }
 
     private Player getActivePlayer(RoundSettingsDTO roundSettingsDTO) {
@@ -175,26 +164,8 @@ public class ActionServiceHoldem implements ActionService {
         roundSettingsDTO.setActivePlayer(null);
     }
 
-    private void call(Player player, Call call, RoundSettingsDTO roundSettingsDTO) {
-        if (call.getCount() != roundSettingsDTO.getLastBet()) {
-            setPlayerWait(player);
-            waitPlayerAction(player, roundSettingsDTO);
-            return;
-        }
-        removeChipsPlayerAndAddToBank(player, call.getCount(), roundSettingsDTO);
-        setLastBet(roundSettingsDTO, call.getCount());
-    }
-
-    private void check(Player player, Check check, RoundSettingsDTO roundSettingsDTO) {
-        if (roundSettingsDTO.getLastBet() == roundSettingsDTO.getBigBlindBet() && player.isBigBlind()) {
-            setPlayerWait(player);
-            player.setAction(check);
-            return;
-        }
-        waitPlayerAction(player, roundSettingsDTO);
-    }
-
-    private void setPlayerWait(Player playerWait) {
+    @Override
+    public void setPlayerWait(Player playerWait) {
         playerWait.setAction(new Wait(playerWait.getGameName()));
     }
 }

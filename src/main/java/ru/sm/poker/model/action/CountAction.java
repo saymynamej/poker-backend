@@ -1,5 +1,5 @@
 package ru.sm.poker.model.action;
 
-public interface CountAction {
+public interface CountAction extends Action{
     long getCount();
 }

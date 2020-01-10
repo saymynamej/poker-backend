@@ -7,8 +7,8 @@ import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.model.action.CountAction;
-import ru.sm.poker.model.action.Fold;
-import ru.sm.poker.model.action.Wait;
+import ru.sm.poker.model.action.holdem.Fold;
+import ru.sm.poker.model.action.holdem.Wait;
 import ru.sm.poker.service.holdem.ActionServiceHoldem;
 
 import java.util.ArrayList;
@@ -21,37 +21,36 @@ public class HoldemPipeline implements Pipeline {
 
     private final ActionServiceHoldem actionServiceHoldem;
 
+
     @Override
     public void start(RoundSettingsDTO roundSettingsDTO, List<Player> filteredPlayers) {
-        for (Player player : roundSettingsDTO.getPlayers()) {
+        roundSettingsDTO.getPlayers().forEach(player -> {
             if (!(player.getAction() instanceof Fold) && player.getStateType() != StateType.AFK) {
                 if (filteredPlayers.size() > 0) {
                     if (filteredPlayers.stream().anyMatch(fp -> fp.equals(player))) {
-                        actionServiceHoldem.setActions(player, roundSettingsDTO);
+                        actionServiceHoldem.setAction(player, roundSettingsDTO);
                     }
                 } else {
-                    actionServiceHoldem.setActions(player, roundSettingsDTO);
+                    actionServiceHoldem.setAction(player, roundSettingsDTO);
                 }
             }
-        }
+        });
 
-
-        final List<Player> listWithNotSameCalls = getListWithNotSameCalls(roundSettingsDTO.getPlayers(), roundSettingsDTO.getLastBet());
+        final List<Player> listWithNotSameCalls = getListWithNotSameCalls(roundSettingsDTO);
         if (listWithNotSameCalls.size() != 0) {
             start(roundSettingsDTO, listWithNotSameCalls);
         }
-
     }
 
 
-    private List<Player> getListWithNotSameCalls(List<Player> players, long lastBet) {
+    private List<Player> getListWithNotSameCalls(RoundSettingsDTO roundSettingsDTO) {
         final List<Player> playersForCall = new ArrayList<>();
 
-        players.forEach(player -> {
+        roundSettingsDTO.getPlayers().forEach(player -> {
             if (player.getAction() instanceof CountAction) {
                 final CountAction countAction = (CountAction) player.getAction();
-                if (countAction.getCount() != lastBet) {
-                    log.info("last bet:" + lastBet + " count bet:" + countAction.getCount() + " : " + player.getName());
+                if (countAction.getCount() != roundSettingsDTO.getLastBet()) {
+                    log.info("last bet:" + roundSettingsDTO.getLastBet() + " count bet:" + countAction.getCount() + " : " + player.getName());
                     player.setAction(new Wait(player.getGameName()));
                     playersForCall.add(player);
                 }

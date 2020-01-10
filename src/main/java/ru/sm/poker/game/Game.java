@@ -22,7 +22,6 @@ public abstract class Game {
         this.round = round;
     }
 
-
     protected Round getRound(){
         return this.round;
     }

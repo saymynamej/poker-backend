@@ -8,8 +8,8 @@ import ru.sm.poker.enums.StageType;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.dto.RoundSettingsDTO;
-import ru.sm.poker.model.action.Fold;
-import ru.sm.poker.model.action.Wait;
+import ru.sm.poker.model.action.holdem.Fold;
+import ru.sm.poker.model.action.holdem.Wait;
 import ru.sm.poker.util.SortUtil;
 
 import java.security.SecureRandom;

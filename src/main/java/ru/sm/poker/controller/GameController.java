@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.sm.poker.dto.ActionDTO;
 import ru.sm.poker.game.Game;
-import ru.sm.poker.model.action.*;
+import ru.sm.poker.model.action.holdem.*;
 import ru.sm.poker.service.holdem.ActionServiceHoldem;
-import ru.sm.poker.game.holdem.HoldemManager;
+import ru.sm.poker.game.holdem.HoldemGameManager;
 import ru.sm.poker.model.Player;
 
 import java.security.Principal;
@@ -22,20 +22,25 @@ import java.util.Optional;
 @Slf4j
 public class GameController {
 
-    private final HoldemManager holdemManager;
+    private final HoldemGameManager holdemGameManager;
     private final ActionServiceHoldem actionServiceHoldem;
 
     @MessageMapping("/addPlayer")
     public void addUser(Principal principal) {
-        holdemManager.addPlayer(Player.builder()
+        holdemGameManager.addPlayer(Player.builder()
                 .name(principal.getName())
                 .chipsCount(5000)
                 .build());
     }
 
+    @MessageMapping
+    public void setUnsetAfk(Principal principal) {
+        actionServiceHoldem.setUnSetAfkPlayer(principal.getName());
+    }
+
     @MessageMapping("/addPlayerInGame")
     public void addUserInGame(Principal principal, String gameName) {
-        holdemManager.addPlayer(Player
+        holdemGameManager.addPlayer(Player
                 .builder()
                 .name(principal.getName())
                 .chipsCount(5000L)
@@ -64,15 +69,15 @@ public class GameController {
 
     @MessageMapping("/check")
     public void check(Principal principal, ActionDTO actionDTO) {
-        actionServiceHoldem.setAction(principal.getName(), new Check(actionDTO.getGameName()));
+        actionServiceHoldem.setAction(actionDTO.getName(), new Check(actionDTO.getGameName()));
     }
 
     @MessageMapping("/reload")
     public void reload(Principal principal) {
-        final Optional<Pair<String, Player>> player = holdemManager.getPlayerByName(principal.getName());
+        final Optional<Pair<String, Player>> player = holdemGameManager.getPlayerByName(principal.getName());
         if (player.isPresent()) {
             final Pair<String, Player> playerPair = player.get();
-            final Game game = holdemManager.getGames().get(playerPair.getLeft());
+            final Game game = holdemGameManager.getGames().get(playerPair.getLeft());
             game.reload();
         }
     }

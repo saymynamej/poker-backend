@@ -20,7 +20,7 @@ import static java.lang.String.*;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class HoldemManager implements GameManager {
+public class HoldemGameManager implements GameManager {
 
     private final Map<String, Game> games;
     private final Queue<Player> players;

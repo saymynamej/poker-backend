@@ -15,11 +15,11 @@ import ru.sm.poker.util.RoundSettingsUtil;
 @Slf4j
 public class HoldemSecurityService implements SecurityService {
 
-    private final HoldemManager holdemManager;
+    private final HoldemGameManager holdemGameManager;
 
     @Override
     public boolean isLegalPlayer(String gameName, Player player) {
-        final Game game = holdemManager.getGames().get(gameName);
+        final Game game = holdemGameManager.getGames().get(gameName);
         if (game != null && player != null
                 && game.getRoundSettings() != null && game.getRoundSettings().getActivePlayer() != null) {
 

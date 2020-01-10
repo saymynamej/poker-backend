@@ -30,11 +30,9 @@ public class HoldemRound implements Round {
 
         this.roundSettingsDTO = roundSettingsController.getPreflopSettings();
 
-        log.info("flop start");
         holdemPipeline.start(roundSettingsDTO, Collections.emptyList());
 
         this.roundSettingsDTO = roundSettingsController.getPostFlopSettings();
-        log.info("postflop start");
         holdemPipeline.start(roundSettingsDTO, Collections.emptyList());
 
         this.roundSettingsDTO = roundSettingsController.getPostFlopSettingsWithTern();

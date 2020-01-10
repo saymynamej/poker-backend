@@ -5,7 +5,7 @@ import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.RoleType;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.model.action.Action;
-import ru.sm.poker.model.action.Wait;
+import ru.sm.poker.model.action.holdem.Wait;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,8 +93,6 @@ public class Player {
     public void addCards(List<CardType> cards) {
        this.cards = new ArrayList<>(cards);
     }
-
-
 
     public Player copy(){
         return Player
