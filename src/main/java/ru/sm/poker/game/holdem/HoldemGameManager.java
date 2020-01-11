@@ -112,6 +112,16 @@ public class HoldemGameManager implements GameManager {
     }
 
     @Override
+    public void reload(String playerName) {
+        final Optional<Pair<String, Player>> player = getPlayerByName(playerName);
+        if (player.isPresent()) {
+            final Pair<String, Player> playerPair = player.get();
+            final Game game = getGames().get(playerPair.getLeft());
+            game.reload();
+        }
+    }
+
+    @Override
     public Map<String, Game> getGames() {
         return games;
     }

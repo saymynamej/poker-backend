@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.game.Game;
+import ru.sm.poker.game.GameManager;
 import ru.sm.poker.game.SecurityService;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.util.RoundSettingsUtil;
@@ -15,7 +16,7 @@ import ru.sm.poker.util.RoundSettingsUtil;
 @Slf4j
 public class HoldemSecurityService implements SecurityService {
 
-    private final HoldemGameManager holdemGameManager;
+    private final GameManager holdemGameManager;
 
     @Override
     public boolean isLegalPlayer(String gameName, Player player) {

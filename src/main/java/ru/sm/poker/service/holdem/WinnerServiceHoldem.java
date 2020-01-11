@@ -7,6 +7,7 @@ import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.CombinationType;
 import ru.sm.poker.dto.CombinationDTO;
 import ru.sm.poker.model.Player;
+import ru.sm.poker.service.CombinationService;
 import ru.sm.poker.service.WinnerService;
 
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import static java.lang.String.*;
 @RequiredArgsConstructor
 public class WinnerServiceHoldem implements WinnerService {
 
-    private final CombinationServiceHoldem checkCombinationServiceHoldem;
+    private final CombinationService combinationService;
 
     @Override
     public List<Pair<Player, CombinationDTO>> findWinners(List<Player> players, List<CardType> flop, CardType tern, CardType river) {
@@ -46,7 +47,7 @@ public class WinnerServiceHoldem implements WinnerService {
             playersCards.add(river);
 
             final Pair<CombinationType, List<CardType>> combination =
-                    checkCombinationServiceHoldem.findCombination(playersCards);
+                    combinationService.findCombination(playersCards);
 
             final CombinationDTO comboDTO = new CombinationDTO(
                     combination.getLeft(),

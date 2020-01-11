@@ -8,13 +8,16 @@ import ru.sm.poker.dto.CombinationDTO;
 import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.enums.StageType;
 import ru.sm.poker.enums.StateType;
-import ru.sm.poker.game.holdem.HoldemGameManager;
-import ru.sm.poker.game.holdem.HoldemSecurityService;
+import ru.sm.poker.game.GameManager;
+import ru.sm.poker.game.SecurityService;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.model.action.*;
-import ru.sm.poker.model.action.holdem.Fold;
-import ru.sm.poker.model.action.holdem.Wait;
+import ru.sm.poker.action.Action;
+import ru.sm.poker.action.CountAction;
+import ru.sm.poker.action.ExecutableAction;
+import ru.sm.poker.action.holdem.Fold;
+import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.service.ActionService;
+import ru.sm.poker.service.WinnerService;
 
 import java.util.List;
 import java.util.Optional;
@@ -26,10 +29,10 @@ import static java.lang.String.format;
 @Component
 public class ActionServiceHoldem implements ActionService {
 
-    private final HoldemSecurityService holdemSecurityService;
-    private final HoldemGameManager holdemGameManager;
+    private final SecurityService holdemSecurityService;
+    private final GameManager holdemGameManager;
     private final BroadCastService broadCastService;
-    private final WinnerServiceHoldem winnerServiceHoldem;
+    private final WinnerService winnerServiceHoldem;
 
     @Override
     public void setActions(RoundSettingsDTO roundSettingsDTO) {
@@ -51,7 +54,7 @@ public class ActionServiceHoldem implements ActionService {
     }
 
     @Override
-    public void parseAction(Player player, RoundSettingsDTO roundSettingsDTO) {
+    public void doAction(Player player, RoundSettingsDTO roundSettingsDTO) {
         final Action action = player.getAction();
         if (action instanceof ExecutableAction) {
             ((ExecutableAction) action).doAction(roundSettingsDTO, player, this);
@@ -68,13 +71,18 @@ public class ActionServiceHoldem implements ActionService {
             if (holdemSecurityService.isLegalPlayer(gameName, player)) {
                 player.setAction(action);
             } else {
-                log.info(format("player tried send bet to not own game. name:%s", player.getName()));
+                log.info(format("player  send bet to not own game. name:%s", player.getName()));
             }
         } else {
             log.info("cannot find player with playerName:" + playerName);
         }
     }
 
+    @Override
+    public void waitOneMoreAction(Player player, RoundSettingsDTO roundSettingsDTO) {
+        setPlayerWait(player);
+        waitPlayerAction(player, roundSettingsDTO);
+    }
 
     @Override
     public void setAction(Player player, RoundSettingsDTO roundSettingsDTO) {
@@ -100,7 +108,7 @@ public class ActionServiceHoldem implements ActionService {
                 break;
             }
             if (!(player.getAction() instanceof Wait)) {
-                parseAction(player, roundSettingsDTO);
+                doAction(player, roundSettingsDTO);
                 break;
             }
         }

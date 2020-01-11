@@ -2,16 +2,18 @@ package ru.sm.poker.service;
 
 import ru.sm.poker.model.Player;
 import ru.sm.poker.dto.RoundSettingsDTO;
-import ru.sm.poker.model.action.Action;
+import ru.sm.poker.action.Action;
 
 public interface ActionService {
     void setAction(String playerName, Action action);
 
     void setUnSetAfkPlayer(String name);
 
-    void parseAction(Player player, RoundSettingsDTO roundSettingsDTO);
+    void doAction(Player player, RoundSettingsDTO roundSettingsDTO);
 
     void setActions(RoundSettingsDTO roundSettingsDTO);
+
+    void waitOneMoreAction(Player player, RoundSettingsDTO roundSettingsDTO);
 
     void setAction(Player player, RoundSettingsDTO roundSettingsDTO);
 

@@ -4,8 +4,8 @@ import lombok.*;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.RoleType;
 import ru.sm.poker.enums.StateType;
-import ru.sm.poker.model.action.Action;
-import ru.sm.poker.model.action.holdem.Wait;
+import ru.sm.poker.action.Action;
+import ru.sm.poker.action.holdem.Wait;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +34,6 @@ public class Player {
     @Getter
     @Setter
     private String gameName;
-
 
     @Builder
     public Player(String name, List<CardType> cards, RoleType roleType, long chipsCount, StateType stateType, int timeBank, Action action, boolean active, String gameName) {

@@ -1,4 +1,4 @@
-package ru.sm.poker.model.action;
+package ru.sm.poker.action;
 
 import ru.sm.poker.enums.ActionType;
 

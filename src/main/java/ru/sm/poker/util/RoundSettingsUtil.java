@@ -2,7 +2,7 @@ package ru.sm.poker.util;
 
 import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.model.action.holdem.Wait;
+import ru.sm.poker.action.holdem.Wait;
 
 import java.util.Collections;
 import java.util.List;

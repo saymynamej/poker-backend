@@ -5,7 +5,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.config.SocketMappingConfig;
 import ru.sm.poker.dto.RoundSettingsDTO;
-import ru.sm.poker.game.holdem.HoldemSecurityService;
+import ru.sm.poker.game.SecurityService;
 
 @Service
 @RequiredArgsConstructor
@@ -13,7 +13,7 @@ public class BroadCastService {
 
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final SocketMappingConfig socketMappingConfig;
-    private final HoldemSecurityService holdemSecurityService;
+    private final SecurityService securityService;
 
     public void sendErrorToUser(String userName, Object message) {
         simpMessagingTemplate.convertAndSendToUser(userName, socketMappingConfig.getErrorPath(), message);
@@ -37,7 +37,7 @@ public class BroadCastService {
 
     public void sendToAllWithSecure(RoundSettingsDTO roundSettingsDTO) {
         roundSettingsDTO.getPlayers().forEach(player -> {
-            final RoundSettingsDTO secureRoundSettings = holdemSecurityService.secureCards(player.getName(), roundSettingsDTO);
+            final RoundSettingsDTO secureRoundSettings = securityService.secureCards(player.getName(), roundSettingsDTO);
             simpMessagingTemplate.convertAndSendToUser(player.getName(), socketMappingConfig.getPokerGamePath(), secureRoundSettings);
         });
     }

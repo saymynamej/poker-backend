@@ -3,12 +3,13 @@ package ru.sm.poker.action;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.sm.poker.action.holdem.Check;
 import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.enums.StageType;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.model.action.CountAction;
-import ru.sm.poker.model.action.holdem.Fold;
-import ru.sm.poker.model.action.holdem.Wait;
+import ru.sm.poker.action.holdem.Fold;
+import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.service.holdem.ActionServiceHoldem;
 
 import java.util.ArrayList;
@@ -20,7 +21,6 @@ import java.util.List;
 public class HoldemPipeline implements Pipeline {
 
     private final ActionServiceHoldem actionServiceHoldem;
-
 
     @Override
     public void start(RoundSettingsDTO roundSettingsDTO, List<Player> filteredPlayers) {
@@ -42,20 +42,33 @@ public class HoldemPipeline implements Pipeline {
         }
     }
 
-
     private List<Player> getListWithNotSameCalls(RoundSettingsDTO roundSettingsDTO) {
         final List<Player> playersForCall = new ArrayList<>();
 
-        roundSettingsDTO.getPlayers().forEach(player -> {
+        for (Player player : roundSettingsDTO.getPlayers()) {
             if (player.getAction() instanceof CountAction) {
                 final CountAction countAction = (CountAction) player.getAction();
+
                 if (countAction.getCount() != roundSettingsDTO.getLastBet()) {
+                    if (roundSettingsDTO.getStageType() == StageType.PREFLOP) {
+                        if (player.isSmallBlind() && countAction.getCount() + roundSettingsDTO.getSmallBlindBet() == roundSettingsDTO.getLastBet()) {
+                            continue;
+                        }
+                        if (player.isBigBlind() && roundSettingsDTO.getLastBet() == roundSettingsDTO.getBigBlindBet()) {
+                            continue;
+                        }
+                        if (player.isBigBlind() && roundSettingsDTO.getBigBlindBet() + countAction.getCount() == roundSettingsDTO.getLastBet()){
+                            continue;
+                        }
+                    }
+
                     log.info("last bet:" + roundSettingsDTO.getLastBet() + " count bet:" + countAction.getCount() + " : " + player.getName());
                     player.setAction(new Wait(player.getGameName()));
                     playersForCall.add(player);
                 }
+
             }
-        });
+        }
 
         return playersForCall;
     }

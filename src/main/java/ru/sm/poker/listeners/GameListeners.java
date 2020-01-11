@@ -3,11 +3,11 @@ package ru.sm.poker.listeners;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.sm.poker.action.HoldemPipeline;
+import ru.sm.poker.action.Pipeline;
 import ru.sm.poker.game.Game;
+import ru.sm.poker.game.GameManager;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.game.holdem.HoldemGame;
-import ru.sm.poker.game.holdem.HoldemGameManager;
 import ru.sm.poker.game.holdem.HoldemRound;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.util.ThreadUtil;
@@ -30,8 +30,8 @@ public class GameListeners {
 
     private final ExecutorService executorServiceForStart = Executors.newFixedThreadPool(10);
     private final ExecutorService executorServiceForClear = Executors.newSingleThreadExecutor();
-    private final HoldemPipeline holdemPipeline;
-    private final HoldemGameManager holdemGameManager;
+    private final Pipeline pipeline;
+    private final GameManager gameManager;
     private final Queue<Player> players;
     private boolean isEnable = true;
 
@@ -52,7 +52,7 @@ public class GameListeners {
 
                     final Round round = new HoldemRound(
                             playersFromQueue, randomGameName,
-                            holdemPipeline,
+                            pipeline,
                             1, 2);
 
                     final Game holdemGame = new HoldemGame(
@@ -62,7 +62,7 @@ public class GameListeners {
                             round
                     );
 
-                    holdemGameManager.createNewGame(randomGameName, holdemGame);
+                    gameManager.createNewGame(randomGameName, holdemGame);
                     holdemGame.start();
                 }
             }
@@ -90,12 +90,12 @@ public class GameListeners {
 
     private void clearGame(List<Game> games) {
         if (games != null && !games.isEmpty()) {
-            games.forEach(game -> holdemGameManager.getGames().remove(game.getName()));
+            games.forEach(game -> gameManager.getGames().remove(game.getName()));
         }
     }
 
     private List<Game> findAllEmptyGame() {
-        return holdemGameManager.getGames()
+        return gameManager.getGames()
                 .values()
                 .stream()
                 .filter(game -> game.getRoundSettings().getPlayers().size() == 0)
