@@ -11,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.sm.poker.game.Game;
-import ru.sm.poker.game.holdem.HoldemManager;
+import ru.sm.poker.game.holdem.HoldemGameManager;
 import ru.sm.poker.game.holdem.HoldemSecurityService;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.util.ThreadUtil;
@@ -20,15 +20,15 @@ import java.util.Map;
 import java.util.Optional;
 
 
-@SpringBootTest
 @ExtendWith(SpringExtension.class)
+@SpringBootTest
 @ActiveProfiles("test")
 class HoldemSecurityServiceTest {
     @Autowired
     private HoldemSecurityService holdemSecurityService;
 
     @Autowired
-    private HoldemManager holdemManager;
+    private HoldemGameManager holdemGameManager;
 
     @Autowired
     private Map<String, Game> games;
@@ -42,7 +42,7 @@ class HoldemSecurityServiceTest {
     void before() {
         final Faker faker = new Faker();
         for (int i = 0; i < NINE_PLAYERS_TABLE; i++) {
-            holdemManager.addPlayer((Player
+            holdemGameManager.addPlayer((Player
                     .builder()
                     .name(faker.name().firstName())
                     .chipsCount(CHIPS_COUNT)

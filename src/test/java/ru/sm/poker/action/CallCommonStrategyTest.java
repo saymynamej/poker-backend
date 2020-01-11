@@ -1,13 +1,13 @@
 package ru.sm.poker.action;
 
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.sm.poker.action.holdem.Call;
 import ru.sm.poker.action.strategy.ActionStrategy;
 import ru.sm.poker.action.strategy.call.CallCommonStrategy;
@@ -19,10 +19,10 @@ import ru.sm.poker.service.ActionService;
 import java.util.Collections;
 import java.util.Random;
 
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
-@RunWith(SpringRunner.class)
 @ActiveProfiles("test")
-public class CallCommonStrategyTest {
+class CallCommonStrategyTest {
 
     @SpyBean
     private ActionService actionService;
@@ -36,7 +36,7 @@ public class CallCommonStrategyTest {
     private final static long EXPECTED_CHIPS_COUNT_AFTER_BET = FULL_CHIPS_COUNT - BET;
 
     @Test
-    public void testSuccessStrategy() {
+    void testSuccessStrategy() {
         final RoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO();
         final Player player = getPlayer();
         actionStrategy.execute(player, actionService, new Call(BET, gameName), roundSettingsDTO);
@@ -45,7 +45,7 @@ public class CallCommonStrategyTest {
     }
 
     @Test
-    public void testFailStrategy() {
+    void testFailStrategy() {
         final RoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO();
         roundSettingsDTO.setLastBet(roundSettingsDTO.getLastBet() + new Random().nextInt(10));
         final Player player = getPlayer();

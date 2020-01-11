@@ -1,21 +1,21 @@
 package ru.sm.poker.service;
 
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.sm.poker.action.HoldemPipeline;
+import ru.sm.poker.action.holdem.Call;
+import ru.sm.poker.action.holdem.Fold;
+import ru.sm.poker.action.holdem.Raise;
 import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.model.action.Call;
-import ru.sm.poker.model.action.Fold;
-import ru.sm.poker.model.action.Raise;
 import ru.sm.poker.service.holdem.BroadCastService;
 import ru.sm.poker.util.GameUtil;
 import ru.sm.poker.util.ThreadUtil;
@@ -25,8 +25,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
-@RunWith(SpringRunner.class)
 @ActiveProfiles("test")
 public class HoldemPipelineTest {
 
@@ -68,7 +68,7 @@ public class HoldemPipelineTest {
 
     private List<Player> getPlayers() {
 
-        final String gameName = GameUtil.getRandomGameNameFromJavaFaker();
+        final String gameName = GameUtil.getRandomGOTCityName();
         return Arrays.asList(
                 Player
                         .builder()
