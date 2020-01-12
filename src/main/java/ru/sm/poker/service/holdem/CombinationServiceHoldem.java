@@ -22,7 +22,6 @@ public class CombinationServiceHoldem implements CombinationService {
     private final static int PAIR_SIZE = 2;
     private final static int THREE_SIZE = 3;
 
-    private final static int NEXT_CARD_INDEX = 1;
     private final static int NUMBER_OF_COMPARISONS = 4;
 
 
@@ -321,8 +320,7 @@ public class CombinationServiceHoldem implements CombinationService {
 
 
     private List<CardType> cutStraight(List<CardType> cards) {
-        List<CardType> copyList = new ArrayList<>(cards);
-
+        final List<CardType> copyList = new ArrayList<>(cards);
 
         //DELETE CARDS WITH SAME POWER
         for (CardType card : copyList) {

@@ -274,7 +274,6 @@ final class RoundSettingsController {
         this.players.forEach(player -> {
             player.setRole(RoleType.PLAYER);
             player.setAction(new Wait(gameName));
-            player.setStateType(StateType.IN_GAME);
         });
     }
 

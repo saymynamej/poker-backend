@@ -13,7 +13,6 @@ import java.util.List;
 @Getter
 @ToString
 @EqualsAndHashCode(of = "name")
-
 public class Player {
 
     private String name;
@@ -23,7 +22,7 @@ public class Player {
     @Setter
     private StateType stateType = StateType.IN_GAME;
     @Setter
-    private int timeBank = 60;
+    private long timeBank = 60L;
     @Setter
     private Action action = new Wait("null");
 
@@ -36,7 +35,7 @@ public class Player {
     private String gameName;
 
     @Builder
-    public Player(String name, List<CardType> cards, RoleType roleType, long chipsCount, StateType stateType, int timeBank, Action action, boolean active, String gameName) {
+    public Player(String name, List<CardType> cards, RoleType roleType, long chipsCount, StateType stateType, long timeBank, Action action, boolean active, String gameName) {
         this.name = name;
         this.cards = cards;
         this.roleType = roleType;
@@ -90,10 +89,10 @@ public class Player {
     }
 
     public void addCards(List<CardType> cards) {
-       this.cards = new ArrayList<>(cards);
+        this.cards = new ArrayList<>(cards);
     }
 
-    public Player copy(){
+    public Player copy() {
         return Player
                 .builder()
                 .name(name)

@@ -13,6 +13,10 @@ public class CallBigBlindStrategy implements ActionStrategy {
 
     @Override
     public void execute(Player player, ActionService actionService, CountAction countAction, RoundSettingsDTO roundSettingsDTO) {
+        if (!player.isBigBlind()){
+            throw new RuntimeException("player:" + player.getName() + ", must be big blind");
+        }
+
         if (roundSettingsDTO.getStageType() == StageType.PREFLOP) {
             long bet = countAction.getCount() + roundSettingsDTO.getBigBlindBet();
             if (bet == roundSettingsDTO.getLastBet()) {

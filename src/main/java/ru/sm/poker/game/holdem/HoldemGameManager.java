@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
+import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.model.Player;
@@ -63,6 +64,7 @@ public class HoldemGameManager implements GameManager {
             }
         }
 
+        player.setStateType(StateType.IN_GAME);
         game.addPlayer(player);
     }
 
@@ -108,6 +110,7 @@ public class HoldemGameManager implements GameManager {
     @Override
     public void addPlayer(Player player) {
         if (!players.contains(player)) {
+            player.setStateType(StateType.IN_GAME);
             players.add(player);
         } else {
             log.info("player already exist");
@@ -136,8 +139,8 @@ public class HoldemGameManager implements GameManager {
 
     @PostConstruct
     public void init() {
-        players.add(Player.builder().name("1").chipsCount(5000).build());
-        players.add(Player.builder().name("2").chipsCount(5000).build());
-        players.add(Player.builder().name("3").chipsCount(5000).build());
+        addPlayer(Player.builder().name("1").chipsCount(5000).build());
+        addPlayer(Player.builder().name("2").chipsCount(5000).build());
+        addPlayer(Player.builder().name("3").chipsCount(5000).build());
     }
 }

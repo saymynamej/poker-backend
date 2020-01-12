@@ -10,6 +10,7 @@ public class CallCommonStrategy implements ActionStrategy {
 
     @Override
     public void execute(Player player, ActionService actionService, CountAction countAction, RoundSettingsDTO roundSettingsDTO) {
+
         if (countAction.getCount() != roundSettingsDTO.getLastBet()) {
             actionService.waitOneMoreAction(player, roundSettingsDTO);
             return;

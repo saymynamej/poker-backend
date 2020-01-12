@@ -17,10 +17,12 @@ import ru.sm.poker.action.ExecutableAction;
 import ru.sm.poker.action.holdem.Fold;
 import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.service.ActionService;
+import ru.sm.poker.service.TimeBankService;
 import ru.sm.poker.service.WinnerService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Timer;
 
 import static java.lang.String.format;
 
@@ -33,6 +35,7 @@ public class ActionServiceHoldem implements ActionService {
     private final GameManager holdemGameManager;
     private final BroadCastService broadCastService;
     private final WinnerService winnerServiceHoldem;
+    private final TimeBankService timeBankService = new TimeBankService();
 
     @Override
     public void setActions(RoundSettingsDTO roundSettingsDTO) {
@@ -103,11 +106,16 @@ public class ActionServiceHoldem implements ActionService {
 
     @Override
     public void waitPlayerAction(Player player, RoundSettingsDTO roundSettingsDTO) {
+        final Timer timer = timeBankService.activateTimeBank(player);
         while (true) {
+            if (player.getStateType() == StateType.AFK){
+                break;
+            }
             if (checkAllAfk(roundSettingsDTO.getPlayers())) {
                 break;
             }
             if (!(player.getAction() instanceof Wait)) {
+                timer.cancel();
                 doAction(player, roundSettingsDTO);
                 break;
             }
