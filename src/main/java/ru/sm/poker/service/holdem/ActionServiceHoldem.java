@@ -23,6 +23,7 @@ import ru.sm.poker.service.WinnerService;
 import java.util.List;
 import java.util.Optional;
 import java.util.Timer;
+import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
@@ -95,7 +96,6 @@ public class ActionServiceHoldem implements ActionService {
                 broadCastService.sendToAllWithSecure(roundSettingsDTO);
                 waitPlayerAction(player, roundSettingsDTO);
                 if (player.getAction() instanceof CountAction) {
-                    log.info(roundSettingsDTO.getLastBet().toString());
                     log.info("player action: " + player.getAction().getActionType() + ":"
                             + ((CountAction) player.getAction()).getCount() + ", player name: " + player.getName());
                 }
@@ -108,7 +108,11 @@ public class ActionServiceHoldem implements ActionService {
     public void waitPlayerAction(Player player, RoundSettingsDTO roundSettingsDTO) {
         final Timer timer = timeBankService.activateTimeBank(player);
         while (true) {
-            if (player.getStateType() == StateType.AFK){
+            if (roundSettingsDTO.isNeedReload()){
+                roundSettingsDTO.setNeedReload(false);
+                break;
+            }
+            if (checkLastPlayer(roundSettingsDTO)) {
                 break;
             }
             if (checkAllAfk(roundSettingsDTO.getPlayers())) {
@@ -158,6 +162,19 @@ public class ActionServiceHoldem implements ActionService {
                 .orElse(null);
     }
 
+
+    private boolean checkLastPlayer(RoundSettingsDTO roundSettingsDTO) {
+        final List<Player> activePlayers = roundSettingsDTO.getPlayers().stream()
+                .filter(pl -> !(pl.getAction() instanceof Fold))
+                .collect(Collectors.toList());
+        if (activePlayers.size() == 1) {
+            addChips(activePlayers.get(0), roundSettingsDTO.getBank());
+            return true;
+        }
+        return false;
+    }
+
+
     private void removeChips(Player player, long chips) {
         player.removeChips(chips);
     }
@@ -182,6 +199,6 @@ public class ActionServiceHoldem implements ActionService {
 
     @Override
     public void setPlayerWait(Player playerWait) {
-        playerWait.setAction(new Wait(playerWait.getGameName()));
+        playerWait.setAction(new Wait());
     }
 }

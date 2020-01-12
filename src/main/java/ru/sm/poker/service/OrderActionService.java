@@ -1,8 +1,9 @@
-package ru.sm.poker.action;
+package ru.sm.poker.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.sm.poker.action.CountAction;
 import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.enums.StageType;
 import ru.sm.poker.enums.StateType;
@@ -17,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class HoldemPipeline implements Pipeline {
+public class OrderActionService implements OrderService {
 
     private final ActionServiceHoldem actionServiceHoldem;
 
@@ -62,7 +63,7 @@ public class HoldemPipeline implements Pipeline {
                     }
 
                     log.info("last bet:" + roundSettingsDTO.getLastBet() + " count bet:" + countAction.getCount() + " : " + player.getName());
-                    player.setAction(new Wait(player.getGameName()));
+                    player.setAction(new Wait());
                     playersForCall.add(player);
                 }
 

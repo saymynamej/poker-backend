@@ -9,7 +9,6 @@ import ru.sm.poker.action.Action;
 @Getter
 public class Fold implements Action {
 
-    private final String gameName;
 
     @Override
     public ActionType getActionType() {

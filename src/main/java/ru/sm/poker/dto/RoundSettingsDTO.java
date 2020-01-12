@@ -29,4 +29,5 @@ public class RoundSettingsDTO {
     private Long lastBet;
     private long bank;
     private Player activePlayer;
+    private boolean needReload;
 }

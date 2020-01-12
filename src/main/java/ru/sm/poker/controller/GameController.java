@@ -26,6 +26,7 @@ public class GameController {
     public void addUser(Principal principal) {
         gameManager.addPlayer(Player.builder()
                 .name(principal.getName())
+                .timeBank(60L)
                 .chipsCount(5000)
                 .build());
     }
@@ -46,27 +47,27 @@ public class GameController {
 
     @MessageMapping("/raise")
     public void raise(Principal principal, ActionDTO actionDTO) {
-        actionService.setAction(actionDTO.getName(), new Raise(Long.parseLong(actionDTO.getCount()), actionDTO.getGameName()));
+        actionService.setAction(actionDTO.getName(), new Raise(Long.parseLong(actionDTO.getCount())));
     }
 
     @MessageMapping("/call")
     public void call(Principal principal, ActionDTO actionDTO) {
-        actionService.setAction(actionDTO.getName(), new Call(Long.parseLong(actionDTO.getCount()), actionDTO.getGameName()));
+        actionService.setAction(actionDTO.getName(), new Call(Long.parseLong(actionDTO.getCount())));
     }
 
     @MessageMapping("/fold")
     public void fold(Principal principal, ActionDTO actionDTO) {
-        actionService.setAction(actionDTO.getName(), new Fold(actionDTO.getGameName()));
+        actionService.setAction(actionDTO.getName(), new Fold());
     }
 
     @MessageMapping("/bet")
     public void bet(Principal principal, ActionDTO actionDTO) {
-        actionService.setAction(principal.getName(), new Bet(Long.parseLong(actionDTO.getCount()), actionDTO.getGameName()));
+        actionService.setAction(principal.getName(), new Bet(Long.parseLong(actionDTO.getCount())));
     }
 
     @MessageMapping("/check")
     public void check(Principal principal, ActionDTO actionDTO) {
-        actionService.setAction(actionDTO.getName(), new Check(actionDTO.getGameName()));
+        actionService.setAction(actionDTO.getName(), new Check());
     }
 
     @MessageMapping("/reload")

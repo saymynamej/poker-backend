@@ -50,6 +50,7 @@ final class RoundSettingsController {
                 .bank(bank)
                 .smallBlindBet(smallBlindBet)
                 .bigBlindBet(bigBlindBet)
+                .needReload(false)
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
                 .button(getPlayerByRole(RoleType.BUTTON))
@@ -60,15 +61,17 @@ final class RoundSettingsController {
     }
 
 
-    public RoundSettingsDTO getPostFlopSettings() {
+    public RoundSettingsDTO getPostFlopSettings(long bank) {
         setAllActivePlayersTest();
         return RoundSettingsDTO
                 .builder()
                 .flop(flop)
                 .gameName(gameName)
                 .button(getPlayerByRole(RoleType.BUTTON))
+                .bank(bank)
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
                 .smallBlindBet(smallBlindBet)
+                .needReload(false)
                 .bigBlindBet(bigBlindBet)
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
                 .players(players)
@@ -77,7 +80,7 @@ final class RoundSettingsController {
                 .build();
     }
 
-    public RoundSettingsDTO getPostFlopSettingsWithTern() {
+    public RoundSettingsDTO getPostFlopSettingsWithTern(long bank) {
         setAllActivePlayersTest();
         return RoundSettingsDTO
                 .builder()
@@ -85,8 +88,10 @@ final class RoundSettingsController {
                 .tern(tern)
                 .gameName(gameName)
                 .button(getPlayerByRole(RoleType.BUTTON))
+                .bank(bank)
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
                 .smallBlindBet(smallBlindBet)
+                .needReload(false)
                 .bigBlindBet(bigBlindBet)
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
                 .stageType(StageType.TERN)
@@ -96,7 +101,7 @@ final class RoundSettingsController {
     }
 
 
-    public RoundSettingsDTO getPostFlopSettingsWithRiver() {
+    public RoundSettingsDTO getPostFlopSettingsWithRiver(long bank) {
         setAllActivePlayersTest();
         return RoundSettingsDTO
                 .builder()
@@ -105,6 +110,8 @@ final class RoundSettingsController {
                 .gameName(gameName)
                 .river(river)
                 .lastBet(0L)
+                .needReload(false)
+                .bank(bank)
                 .stageType(StageType.RIVER)
                 .smallBlindBet(smallBlindBet)
                 .bigBlindBet(bigBlindBet)
@@ -273,14 +280,14 @@ final class RoundSettingsController {
     private void setAllActivePlayers() {
         this.players.forEach(player -> {
             player.setRole(RoleType.PLAYER);
-            player.setAction(new Wait(gameName));
+            player.setAction(new Wait());
         });
     }
 
     private void setAllActivePlayersTest() {
         this.players.forEach(player -> {
             if (!(player.getAction() instanceof Fold) && player.getStateType() == StateType.IN_GAME) {
-                player.setAction(new Wait(gameName));
+                player.setAction(new Wait());
             }
         });
     }

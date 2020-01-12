@@ -17,7 +17,6 @@ import ru.sm.poker.service.ActionService;
 public class Raise implements ExecutableAction, CountAction {
 
     private final long count;
-    private final String gameName;
 
     @Override
     public ActionType getActionType() {

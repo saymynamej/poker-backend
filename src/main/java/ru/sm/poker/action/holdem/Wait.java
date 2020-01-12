@@ -9,8 +9,6 @@ import ru.sm.poker.action.Action;
 @RequiredArgsConstructor
 public class Wait implements Action {
 
-    private final String gameName;
-
     @Override
     public ActionType getActionType() {
         return ActionType.WAIT;

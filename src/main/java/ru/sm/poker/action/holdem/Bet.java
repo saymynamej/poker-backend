@@ -15,7 +15,6 @@ import ru.sm.poker.service.ActionService;
 public class Bet implements ExecutableAction {
 
     private final long count;
-    private final String gameName;
 
     @Override
     public ActionType getActionType() {

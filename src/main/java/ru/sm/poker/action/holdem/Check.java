@@ -10,19 +10,9 @@ import ru.sm.poker.service.ActionService;
 
 public class Check implements ExecutableAction {
 
-    private final String gameName;
-
     @Getter
     private final long count = 0;
 
-    public Check(String gameName) {
-        this.gameName = gameName;
-    }
-
-    @Override
-    public String getGameName() {
-        return gameName;
-    }
 
     @Override
     public ActionType getActionType() {

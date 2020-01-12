@@ -24,7 +24,6 @@ public class Call implements ExecutableAction {
 
     private final static Map<RoleType, ActionStrategy> strategies = new HashMap<>();
     private final long count;
-    private final String gameName;
 
     static {
         strategies.put(RoleType.BIG_BLIND, new CallBigBlindStrategy());

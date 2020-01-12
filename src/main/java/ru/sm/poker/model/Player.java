@@ -24,7 +24,7 @@ public class Player {
     @Setter
     private long timeBank = 60L;
     @Setter
-    private Action action = new Wait("null");
+    private Action action = new Wait();
 
     @Setter
     @Getter
@@ -80,6 +80,9 @@ public class Player {
         this.chipsCount += chips;
     }
 
+    public void setChipsCount(long chipsCount){
+        this.chipsCount = chipsCount;
+    }
     public void removeChips(long chips) {
         if (chips > this.chipsCount) {
             this.chipsCount = 0;

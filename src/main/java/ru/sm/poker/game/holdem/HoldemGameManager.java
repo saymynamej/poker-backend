@@ -113,7 +113,7 @@ public class HoldemGameManager implements GameManager {
             player.setStateType(StateType.IN_GAME);
             players.add(player);
         } else {
-            log.info("player already exist");
+            log.info("player al6ready exist");
         }
     }
 
@@ -139,8 +139,20 @@ public class HoldemGameManager implements GameManager {
 
     @PostConstruct
     public void init() {
-        addPlayer(Player.builder().name("1").chipsCount(5000).build());
-        addPlayer(Player.builder().name("2").chipsCount(5000).build());
-        addPlayer(Player.builder().name("3").chipsCount(5000).build());
+        addPlayer(Player.builder()
+                .name("1")
+                .chipsCount(5000)
+                .timeBank(60L)
+                .build());
+        addPlayer(Player.builder()
+                .name("2")
+                .chipsCount(5000)
+                .timeBank(60L)
+                .build());
+        addPlayer(Player.builder()
+                .name("3")
+                .chipsCount(5000)
+                .timeBank(60L)
+                .build());
     }
 }

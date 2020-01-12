@@ -1,10 +1,10 @@
-package ru.sm.poker.action;
+package ru.sm.poker.service;
 
 import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.model.Player;
 
 import java.util.List;
 
-public interface Pipeline {
+public interface OrderService {
     void start(RoundSettingsDTO roundSettingsDTO, List<Player> filterPlayers);
 }

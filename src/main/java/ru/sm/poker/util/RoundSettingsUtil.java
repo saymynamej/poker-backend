@@ -13,7 +13,7 @@ public class RoundSettingsUtil {
         final String gameName = players.get(0)
                 .getGameName();
 
-        players.forEach(player -> player.setAction(new Wait(gameName)));
+        players.forEach(player -> player.setAction(new Wait()));
 
         return copy(roundSettingsDTO, players);
     }

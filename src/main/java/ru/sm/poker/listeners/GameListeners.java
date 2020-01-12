@@ -3,7 +3,7 @@ package ru.sm.poker.listeners;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.sm.poker.action.Pipeline;
+import ru.sm.poker.service.OrderService;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.game.Round;
@@ -30,7 +30,7 @@ public class GameListeners {
 
     private final ExecutorService executorServiceForStart = Executors.newFixedThreadPool(10);
     private final ExecutorService executorServiceForClear = Executors.newSingleThreadExecutor();
-    private final Pipeline pipeline;
+    private final OrderService orderService;
     private final GameManager gameManager;
     private final Queue<Player> players;
     private boolean isEnable = true;
@@ -52,7 +52,7 @@ public class GameListeners {
 
                     final Round round = new HoldemRound(
                             playersFromQueue, randomGameName,
-                            pipeline,
+                            orderService,
                             1, 2);
 
                     final Game holdemGame = new HoldemGame(
