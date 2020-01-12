@@ -56,8 +56,11 @@ public class HoldemGameManager implements GameManager {
             throw new RuntimeException(format("game with name %s not exist", gameName));
         }
         final Game game = games.get(gameName);
-        if (game.getRoundSettings().getPlayers().size() == game.getMaxPlayersSize()) {
-            throw new RuntimeException(format("game with name %s not exist", gameName));
+
+        synchronized (this) {
+            if (game.getRoundSettings().getPlayers().size() == game.getMaxPlayersSize()) {
+                throw new RuntimeException(format("game with name %s not exist", gameName));
+            }
         }
 
         game.addPlayer(player);
