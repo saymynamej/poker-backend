@@ -38,21 +38,21 @@ public class CallBigBlindStrategyTest {
 
         final RuntimeException exceptionWithPlayer = Assertions.assertThrows(
                 RuntimeException.class,
-                () -> actionStrategy.execute(player, actionService, new Call(LAST_BET, player.getGameName()), roundSettingsDTO)
+                () -> actionStrategy.execute(player, actionService, new Call(LAST_BET), roundSettingsDTO)
         );
         Assertions.assertEquals(RuntimeException.class, exceptionWithPlayer.getClass());
 
         player.setRole(RoleType.BUTTON);
         final RuntimeException exceptionWithButton = Assertions.assertThrows(
                 RuntimeException.class,
-                () -> actionStrategy.execute(player, actionService, new Call(LAST_BET, player.getGameName()), roundSettingsDTO)
+                () -> actionStrategy.execute(player, actionService, new Call(LAST_BET), roundSettingsDTO)
         );
         Assertions.assertEquals(RuntimeException.class, exceptionWithButton.getClass());
 
         player.setRole(RoleType.SMALL_BLIND);
         final RuntimeException exceptionSmallBlind = Assertions.assertThrows(
                 RuntimeException.class,
-                () -> actionStrategy.execute(player, actionService, new Call(LAST_BET, player.getGameName()), roundSettingsDTO)
+                () -> actionStrategy.execute(player, actionService, new Call(LAST_BET), roundSettingsDTO)
         );
         Assertions.assertEquals(RuntimeException.class, exceptionSmallBlind.getClass());
     }
@@ -61,7 +61,7 @@ public class CallBigBlindStrategyTest {
     public void testWhenWasRaiseAndCallIsIncorrectOnPreflop() {
         final Player player = DTOUtilTest.getPlayer(RoleType.BIG_BLIND);
         final RoundSettingsDTO roundSettingsDTO = DTOUtilTest.getRoundSettingsDTO(LAST_BET, StageType.PREFLOP);
-        actionStrategy.execute(player, actionService, new Call(LAST_BET, player.getGameName()), roundSettingsDTO);
+        actionStrategy.execute(player, actionService, new Call(LAST_BET), roundSettingsDTO);
         Mockito.verify(actionService).waitOneMoreAction(player, roundSettingsDTO);
     }
 
@@ -71,7 +71,7 @@ public class CallBigBlindStrategyTest {
         final RoundSettingsDTO roundSettingsDTO = DTOUtilTest.getRoundSettingsDTO(LAST_BET, StageType.PREFLOP);
         player.removeChips(roundSettingsDTO.getBigBlindBet());
         final long bet = LAST_BET - roundSettingsDTO.getBigBlindBet();
-        actionStrategy.execute(player, actionService, new Call(bet, player.getGameName()), roundSettingsDTO);
+        actionStrategy.execute(player, actionService, new Call(bet), roundSettingsDTO);
         Mockito.verify(actionService, Mockito.times(0)).waitOneMoreAction(Mockito.any(), Mockito.any());
         Assertions.assertEquals(DTOUtilTest.DEFAULT_CHIPS_COUNT - LAST_BET, player.getChipsCount());
     }
@@ -80,7 +80,7 @@ public class CallBigBlindStrategyTest {
     public void testWhenWasRaiseAndCallIsCorrectOnFlop() {
         final Player player = DTOUtilTest.getPlayer(RoleType.BIG_BLIND);
         final RoundSettingsDTO roundSettingsDTO = DTOUtilTest.getRoundSettingsDTO(LAST_BET, StageType.FLOP);
-        actionStrategy.execute(player, actionService, new Call(LAST_BET, player.getGameName()), roundSettingsDTO);
+        actionStrategy.execute(player, actionService, new Call(LAST_BET), roundSettingsDTO);
         Mockito.verify(actionService, Mockito.times(0)).waitOneMoreAction(Mockito.any(), Mockito.any());
         Assertions.assertEquals(DTOUtilTest.DEFAULT_CHIPS_COUNT - LAST_BET, player.getChipsCount());
     }

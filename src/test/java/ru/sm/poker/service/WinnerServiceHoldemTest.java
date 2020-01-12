@@ -2,9 +2,9 @@ package ru.sm.poker.service;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
+import ru.sm.poker.dto.CombinationDTO;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.CombinationType;
-import ru.sm.poker.dto.CombinationDTO;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.service.holdem.CombinationServiceHoldem;
 import ru.sm.poker.service.holdem.WinnerServiceHoldem;
@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class WinnerServiceHoldemTest {
 
