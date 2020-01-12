@@ -2,11 +2,10 @@ package ru.sm.poker.game.holdem;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ru.sm.poker.service.OrderService;
 import ru.sm.poker.dto.RoundSettingsDTO;
-import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.model.Player;
+import ru.sm.poker.service.OrderService;
 
 import java.util.Collections;
 import java.util.List;

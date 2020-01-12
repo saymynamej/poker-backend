@@ -2,14 +2,14 @@ package ru.sm.poker.game.holdem;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import ru.sm.poker.action.holdem.Fold;
+import ru.sm.poker.action.holdem.Wait;
+import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.RoleType;
 import ru.sm.poker.enums.StageType;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.dto.RoundSettingsDTO;
-import ru.sm.poker.action.holdem.Fold;
-import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.util.SortUtil;
 
 import java.security.SecureRandom;

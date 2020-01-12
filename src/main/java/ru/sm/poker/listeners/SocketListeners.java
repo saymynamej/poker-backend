@@ -5,11 +5,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
+import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
-import ru.sm.poker.game.holdem.HoldemGameManager;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.service.holdem.BroadCastService;
 
 import java.security.Principal;

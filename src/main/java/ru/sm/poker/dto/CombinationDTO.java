@@ -1,6 +1,7 @@
 package ru.sm.poker.dto;
 
-import lombok.*;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.CombinationType;
 

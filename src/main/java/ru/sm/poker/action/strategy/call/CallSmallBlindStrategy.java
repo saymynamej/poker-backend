@@ -1,10 +1,10 @@
 package ru.sm.poker.action.strategy.call;
 
+import ru.sm.poker.action.CountAction;
 import ru.sm.poker.action.strategy.ActionStrategy;
 import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.enums.StageType;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.action.CountAction;
 import ru.sm.poker.service.ActionService;
 
 public class CallSmallBlindStrategy implements ActionStrategy {

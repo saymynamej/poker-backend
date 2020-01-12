@@ -1,11 +1,11 @@
 package ru.sm.poker.model;
 
 import lombok.*;
+import ru.sm.poker.action.Action;
+import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.RoleType;
 import ru.sm.poker.enums.StateType;
-import ru.sm.poker.action.Action;
-import ru.sm.poker.action.holdem.Wait;
 
 import java.util.ArrayList;
 import java.util.List;

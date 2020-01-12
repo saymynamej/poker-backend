@@ -3,9 +3,9 @@ package ru.sm.poker.service.holdem;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
+import ru.sm.poker.dto.CombinationDTO;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.CombinationType;
-import ru.sm.poker.dto.CombinationDTO;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.service.CombinationService;
 import ru.sm.poker.service.WinnerService;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.lang.String.*;
+import static java.lang.String.format;
 
 @Service
 @RequiredArgsConstructor

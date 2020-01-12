@@ -5,7 +5,8 @@ import org.springframework.context.annotation.Configuration;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.model.Player;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 

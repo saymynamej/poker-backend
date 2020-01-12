@@ -8,7 +8,10 @@ import ru.sm.poker.enums.CombinationType;
 import ru.sm.poker.enums.PowerType;
 import ru.sm.poker.service.CombinationService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
