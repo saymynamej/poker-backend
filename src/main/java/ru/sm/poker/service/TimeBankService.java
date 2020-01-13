@@ -1,6 +1,7 @@
 package ru.sm.poker.service;
 
 import org.springframework.stereotype.Service;
+import ru.sm.poker.action.holdem.Fold;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.model.Player;
 
@@ -19,6 +20,7 @@ public class TimeBankService {
             @Override
             public void run() {
                 player.setStateType(StateType.AFK);
+                player.setAction(new Fold());
             }
         }, player.getTimeBank() * 1000L);
         return timer;

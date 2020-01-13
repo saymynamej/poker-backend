@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import ru.sm.poker.action.CountAction;
 import ru.sm.poker.action.ExecutableAction;
-import ru.sm.poker.action.strategy.raise.CommonRaiseStrategy;
+import ru.sm.poker.base.StrategyBase;
 import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.model.Player;
@@ -25,6 +25,6 @@ public class Raise implements ExecutableAction, CountAction {
 
     @Override
     public void doAction(RoundSettingsDTO roundSettingsDTO, Player player, ActionService actionService) {
-        new CommonRaiseStrategy().execute(player, actionService, this, roundSettingsDTO);
+        StrategyBase.RAISE_STRATEGIES.get(player.getRoleType()).execute(player, actionService, this, roundSettingsDTO);
     }
 }

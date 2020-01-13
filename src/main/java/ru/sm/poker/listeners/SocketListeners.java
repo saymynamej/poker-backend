@@ -8,6 +8,7 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
+import ru.sm.poker.game.SecurityService;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.service.holdem.BroadCastService;
 
@@ -20,6 +21,7 @@ import java.util.Optional;
 public class SocketListeners {
     private final GameManager gameManager;
     private final BroadCastService broadCastService;
+    private final SecurityService securityService;
 
 
     @EventListener(SessionSubscribeEvent.class)
@@ -35,7 +37,7 @@ public class SocketListeners {
                 final Map<String, Game> allGames = gameManager.getGames();
                 final Game game = allGames.get(playerPair.getLeft());
                 final RoundSettingsDTO roundSettingsDTO = game.getRoundSettings();
-                broadCastService.sendToUser(playerPair.getRight().getName(), roundSettingsDTO);
+                broadCastService.sendToUser(playerPair.getRight().getName(), securityService.secureCards(user.getName(), roundSettingsDTO));
             }
         }
     }

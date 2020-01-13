@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import ru.sm.poker.action.ExecutableAction;
+import ru.sm.poker.base.StrategyBase;
 import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.model.Player;
@@ -16,13 +17,14 @@ public class Bet implements ExecutableAction {
 
     private final long count;
 
+
     @Override
     public ActionType getActionType() {
         return ActionType.BET;
     }
 
     @Override
-    public void doAction(RoundSettingsDTO roundSettingsDTOm, Player player, ActionService actionService) {
-
+    public void doAction(RoundSettingsDTO roundSettingsDTO, Player player, ActionService actionService) {
+        StrategyBase.BET_STRATEGIES.get(player.getRoleType()).execute(player, actionService, this, roundSettingsDTO);
     }
 }

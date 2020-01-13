@@ -1,6 +1,7 @@
 package ru.sm.poker.game.holdem;
 
 import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.model.Player;
@@ -22,6 +23,9 @@ public class HoldemGame extends Game {
         isStarted = true;
         while (getPlayers().size() >= 4 && isStarted) {
             getRound().startRound();
+            if (!getRoundSettings().getPlayers().stream().allMatch(player -> player.getStateType() == StateType.AFK)) {
+                isStarted = false;
+            }
         }
     }
 
