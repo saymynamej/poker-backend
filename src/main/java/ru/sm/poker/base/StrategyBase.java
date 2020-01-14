@@ -5,6 +5,7 @@ import ru.sm.poker.action.strategy.bet.BetCommonStrategy;
 import ru.sm.poker.action.strategy.call.CallBigBlindStrategy;
 import ru.sm.poker.action.strategy.call.CallCommonStrategy;
 import ru.sm.poker.action.strategy.call.CallSmallBlindStrategy;
+import ru.sm.poker.action.strategy.check.CheckCommonStrategy;
 import ru.sm.poker.action.strategy.raise.RaiseCommonStrategy;
 import ru.sm.poker.enums.RoleType;
 
@@ -39,9 +40,9 @@ public class StrategyBase {
     }
 
     static {
-        CHECK_STRATEGIES.put(RoleType.BIG_BLIND, new BetCommonStrategy());
-        CHECK_STRATEGIES.put(RoleType.SMALL_BLIND, new BetCommonStrategy());
-        CHECK_STRATEGIES.put(RoleType.PLAYER, new BetCommonStrategy());
-        CHECK_STRATEGIES.put(RoleType.BUTTON, new BetCommonStrategy());
+        CHECK_STRATEGIES.put(RoleType.BIG_BLIND, new CheckCommonStrategy());
+        CHECK_STRATEGIES.put(RoleType.SMALL_BLIND, new CheckCommonStrategy());
+        CHECK_STRATEGIES.put(RoleType.PLAYER, new CheckCommonStrategy());
+        CHECK_STRATEGIES.put(RoleType.BUTTON, new CheckCommonStrategy());
     }
 }
