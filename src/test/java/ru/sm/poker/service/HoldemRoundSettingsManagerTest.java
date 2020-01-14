@@ -3,7 +3,6 @@ package ru.sm.poker.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.sm.poker.dto.RoundSettingsDTO;
-import ru.sm.poker.enums.RoleType;
 import ru.sm.poker.enums.StageType;
 import ru.sm.poker.game.RoundSettingsManager;
 import ru.sm.poker.game.holdem.HoldemRoundSettingsManager;
@@ -20,12 +19,7 @@ class HoldemRoundSettingsManagerTest {
     void testCommonSettingsPreflop() {
         final List<Player> players = getPlayers();
 
-        final RoundSettingsManager roundSettingsManager = new HoldemRoundSettingsManager(
-                players,
-                DEFAULT_GAME_NAME,
-                DEFAULT_SMALL_BLIND_BET,
-                DEFAULT_BIG_BLIND_BET
-        );
+        final RoundSettingsManager roundSettingsManager = getRoundSettingsManager(players);
 
         final RoundSettingsDTO preflopSettings = roundSettingsManager.getPreflopSettings();
         Assertions.assertEquals(
@@ -66,20 +60,11 @@ class HoldemRoundSettingsManagerTest {
         final List<Player> players = getPlayers();
 
         for (int i = 0; i < 10_000; i++) {
-            final RoundSettingsManager firstRound = new HoldemRoundSettingsManager(
-                    players,
-                    DEFAULT_GAME_NAME,
-                    DEFAULT_SMALL_BLIND_BET,
-                    DEFAULT_BIG_BLIND_BET
-            );
+            final RoundSettingsManager firstRound = getRoundSettingsManager(players);
+
             final RoundSettingsDTO preflopSettings = firstRound.getPreflopSettings();
 
-            final RoundSettingsManager secondRound = new HoldemRoundSettingsManager(
-                    players,
-                    DEFAULT_GAME_NAME,
-                    DEFAULT_SMALL_BLIND_BET,
-                    DEFAULT_BIG_BLIND_BET
-            );
+            final RoundSettingsManager secondRound = getRoundSettingsManager(players);
 
             final RoundSettingsDTO preflopSettings2 = secondRound.getPreflopSettings();
 
@@ -108,12 +93,7 @@ class HoldemRoundSettingsManagerTest {
     void testPostFlopSettings() {
         final List<Player> players = getPlayers();
 
-        final RoundSettingsManager firstRound = new HoldemRoundSettingsManager(
-                players,
-                DEFAULT_GAME_NAME,
-                DEFAULT_SMALL_BLIND_BET,
-                DEFAULT_BIG_BLIND_BET
-        );
+        final RoundSettingsManager firstRound = getRoundSettingsManager(players);
 
         final RoundSettingsDTO preflopSettings = firstRound.getPreflopSettings();
 
@@ -163,12 +143,7 @@ class HoldemRoundSettingsManagerTest {
     void testPostFlopSettingsWithTern() {
         final List<Player> players = getPlayers();
 
-        final RoundSettingsManager firstRound = new HoldemRoundSettingsManager(
-                players,
-                DEFAULT_GAME_NAME,
-                DEFAULT_SMALL_BLIND_BET,
-                DEFAULT_BIG_BLIND_BET
-        );
+        final RoundSettingsManager firstRound = getRoundSettingsManager(players);
 
         final RoundSettingsDTO preflopSettings = firstRound.getPreflopSettings();
 
@@ -231,12 +206,7 @@ class HoldemRoundSettingsManagerTest {
     void testPostFlopSettingsWithRiver() {
         final List<Player> players = getPlayers();
 
-        final RoundSettingsManager firstRound = new HoldemRoundSettingsManager(
-                players,
-                DEFAULT_GAME_NAME,
-                DEFAULT_SMALL_BLIND_BET,
-                DEFAULT_BIG_BLIND_BET
-        );
+        final RoundSettingsManager firstRound = getRoundSettingsManager(players);
 
         final RoundSettingsDTO preflopSettings = firstRound.getPreflopSettings();
 
@@ -298,6 +268,15 @@ class HoldemRoundSettingsManagerTest {
         Assertions.assertNotNull(postFlopSettingsWithRiver.getTern());
         Assertions.assertNotNull(postFlopSettingsWithRiver.getRiver());
 
+    }
+
+    private RoundSettingsManager getRoundSettingsManager(List<Player> players) {
+        return new HoldemRoundSettingsManager(
+                players,
+                DEFAULT_GAME_NAME,
+                DEFAULT_SMALL_BLIND_BET,
+                DEFAULT_BIG_BLIND_BET
+        );
     }
 
     public List<Player> getPlayers() {
