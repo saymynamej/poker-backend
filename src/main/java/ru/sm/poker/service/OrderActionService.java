@@ -11,6 +11,7 @@ import ru.sm.poker.enums.StageType;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.service.holdem.ActionServiceHoldem;
+import ru.sm.poker.util.SortUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,11 @@ public class OrderActionService implements OrderService {
 
     @Override
     public void start(RoundSettingsDTO roundSettingsDTO, List<Player> filteredPlayers) {
-        roundSettingsDTO.getPlayers().forEach(player -> {
+
+        final List<Player> sortedPlayers = roundSettingsDTO.getStageType() == StageType.PREFLOP ?
+                SortUtil.sortPreflop(roundSettingsDTO.getPlayers()) : SortUtil.sortPostflop(roundSettingsDTO.getPlayers());
+
+        sortedPlayers.forEach(player -> {
             if (!(player.getAction() instanceof Fold) && player.getStateType() != StateType.AFK) {
                 if (filteredPlayers.size() > 0) {
                     if (filteredPlayers.stream().anyMatch(fp -> fp.equals(player))) {
@@ -57,7 +62,7 @@ public class OrderActionService implements OrderService {
                         if (player.isBigBlind() && roundSettingsDTO.getLastBet() == roundSettingsDTO.getBigBlindBet()) {
                             continue;
                         }
-                        if (player.isBigBlind() && roundSettingsDTO.getBigBlindBet() + countAction.getCount() == roundSettingsDTO.getLastBet()){
+                        if (player.isBigBlind() && roundSettingsDTO.getBigBlindBet() + countAction.getCount() == roundSettingsDTO.getLastBet()) {
                             continue;
                         }
                     }
