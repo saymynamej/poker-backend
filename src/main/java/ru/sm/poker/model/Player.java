@@ -52,6 +52,10 @@ public class Player {
         this.chipsCount = chipsCount;
     }
 
+    public boolean isPlayer() {
+        return roleType == RoleType.PLAYER;
+    }
+
     public boolean isButton() {
         return roleType == RoleType.BUTTON;
     }
@@ -80,9 +84,10 @@ public class Player {
         this.chipsCount += chips;
     }
 
-    public void setChipsCount(long chipsCount){
+    public void setChipsCount(long chipsCount) {
         this.chipsCount = chipsCount;
     }
+
     public void removeChips(long chips) {
         if (chips > this.chipsCount) {
             this.chipsCount = 0;
