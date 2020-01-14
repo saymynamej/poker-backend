@@ -3,6 +3,7 @@ package ru.sm.poker.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.enums.RoleType;
 import ru.sm.poker.enums.StageType;
 import ru.sm.poker.game.RoundSettingsManager;
 import ru.sm.poker.game.holdem.HoldemRoundSettingsManager;
@@ -14,7 +15,6 @@ import java.util.List;
 import static ru.sm.poker.util.DTOUtilTest.*;
 
 class HoldemRoundSettingsManagerTest {
-
 
     @Test
     void testCommonSettingsPreflop() {
@@ -147,6 +147,11 @@ class HoldemRoundSettingsManagerTest {
                 postFlopSettings.getPlayers().stream().anyMatch(Player::isPlayer)
         );
 
+
+        Assertions.assertEquals(preflopSettings.getButton(), postFlopSettings.getButton());
+        Assertions.assertEquals(preflopSettings.getSmallBlind(), postFlopSettings.getSmallBlind());
+        Assertions.assertEquals(preflopSettings.getBigBlind(), postFlopSettings.getBigBlind());
+
         Assertions.assertNotNull(postFlopSettings.getFlop());
         Assertions.assertNull(postFlopSettings.getTern());
         Assertions.assertNull(postFlopSettings.getRiver());
@@ -204,6 +209,16 @@ class HoldemRoundSettingsManagerTest {
         Assertions.assertTrue(
                 postFlopSettings.getPlayers().stream().anyMatch(Player::isPlayer)
         );
+
+        Assertions.assertEquals(preflopSettings.getButton(), postFlopSettings.getButton());
+        Assertions.assertEquals(postFlopSettings.getButton(), postFlopSettingsWithTern.getButton());
+
+        Assertions.assertEquals(preflopSettings.getSmallBlind(), postFlopSettings.getSmallBlind());
+        Assertions.assertEquals(postFlopSettings.getSmallBlind(), postFlopSettingsWithTern.getSmallBlind());
+
+        Assertions.assertEquals(preflopSettings.getBigBlind(), postFlopSettings.getBigBlind());
+        Assertions.assertEquals(postFlopSettings.getBigBlind(), postFlopSettingsWithTern.getBigBlind());
+
 
         Assertions.assertNotNull(postFlopSettingsWithTern.getFlop());
         Assertions.assertNotNull(postFlopSettingsWithTern.getTern());
@@ -265,6 +280,19 @@ class HoldemRoundSettingsManagerTest {
         Assertions.assertTrue(
                 postFlopSettings.getPlayers().stream().anyMatch(Player::isPlayer)
         );
+
+
+        Assertions.assertEquals(preflopSettings.getButton(), postFlopSettings.getButton());
+        Assertions.assertEquals(postFlopSettings.getButton(), postFlopSettingsWithTern.getButton());
+        Assertions.assertEquals(postFlopSettingsWithTern.getButton(), postFlopSettingsWithRiver.getButton());
+
+        Assertions.assertEquals(preflopSettings.getSmallBlind(), postFlopSettings.getSmallBlind());
+        Assertions.assertEquals(postFlopSettings.getSmallBlind(), postFlopSettingsWithTern.getSmallBlind());
+        Assertions.assertEquals(postFlopSettingsWithTern.getSmallBlind(), postFlopSettingsWithRiver.getSmallBlind());
+
+        Assertions.assertEquals(preflopSettings.getBigBlind(), postFlopSettings.getBigBlind());
+        Assertions.assertEquals(postFlopSettings.getBigBlind(), postFlopSettingsWithTern.getBigBlind());
+        Assertions.assertEquals(postFlopSettingsWithTern.getBigBlind(), postFlopSettingsWithRiver.getBigBlind());
 
         Assertions.assertNotNull(postFlopSettingsWithRiver.getFlop());
         Assertions.assertNotNull(postFlopSettingsWithRiver.getTern());
