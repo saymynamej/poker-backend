@@ -1,7 +1,6 @@
 package ru.sm.poker.game.holdem;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import ru.sm.poker.action.holdem.Fold;
 import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.dto.RoundSettingsDTO;
@@ -9,57 +8,52 @@ import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.RoleType;
 import ru.sm.poker.enums.StageType;
 import ru.sm.poker.enums.StateType;
+import ru.sm.poker.game.RoundSettingsManager;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.util.SortUtil;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static java.lang.String.format;
 
 @RequiredArgsConstructor
-final class RoundSettingsController {
+public final class HoldemRoundSettingsManager implements RoundSettingsManager {
 
     private final SecureRandom random = new SecureRandom();
     private final List<CardType> allCards = CardType.getAllCardsAsList();
     private final List<Player> players;
     private final List<CardType> flop = setFlop();
-    private final CardType tern = setTern();
-    private final CardType river = setRiver();
+    private final CardType tern = getRandomCard();
+    private final CardType river = getRandomCard();
     private final String gameName;
     private final long bigBlindBet;
     private final long smallBlindBet;
 
-    @Setter
-    private long bank = 0;
-
     public RoundSettingsDTO getPreflopSettings() {
-        setAllActivePlayers();
+
+        if (players.size() < 4) throw new RuntimeException("players size bust be more than 4");
         dealCards();
         setButton();
         setSmallBlind();
         setBigBlind();
+        setAllActivePlayers();
 
         return RoundSettingsDTO
                 .builder()
                 .gameName(gameName)
-                .bank(bank)
+                .bank(bigBlindBet + smallBlindBet)
                 .smallBlindBet(smallBlindBet)
                 .bigBlindBet(bigBlindBet)
                 .needReload(false)
-                .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
-                .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
-                .button(getPlayerByRole(RoleType.BUTTON))
-                .players(SortUtil.sortPreflop(players))
+                .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElseThrow())
+                .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElseThrow())
+                .button(getPlayerByRole(RoleType.BUTTON).orElseThrow())
+                .players(players)
                 .stageType(StageType.PREFLOP)
                 .lastBet(bigBlindBet)
                 .build();
     }
-
 
     public RoundSettingsDTO getPostFlopSettings(long bank) {
         setAllActivePlayersTest();
@@ -67,13 +61,13 @@ final class RoundSettingsController {
                 .builder()
                 .flop(flop)
                 .gameName(gameName)
-                .button(getPlayerByRole(RoleType.BUTTON))
                 .bank(bank)
-                .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
                 .smallBlindBet(smallBlindBet)
                 .needReload(false)
                 .bigBlindBet(bigBlindBet)
-                .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
+                .button(getPlayerByRole(RoleType.BUTTON).orElseThrow())
+                .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElseThrow())
+                .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElseThrow())
                 .players(players)
                 .lastBet(0L)
                 .stageType(StageType.FLOP)
@@ -87,13 +81,13 @@ final class RoundSettingsController {
                 .flop(flop)
                 .tern(tern)
                 .gameName(gameName)
-                .button(getPlayerByRole(RoleType.BUTTON))
                 .bank(bank)
-                .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
                 .smallBlindBet(smallBlindBet)
                 .needReload(false)
                 .bigBlindBet(bigBlindBet)
-                .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
+                .button(getPlayerByRole(RoleType.BUTTON).orElseThrow())
+                .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElseThrow())
+                .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElseThrow())
                 .stageType(StageType.TERN)
                 .lastBet(0L)
                 .players(players)
@@ -115,16 +109,18 @@ final class RoundSettingsController {
                 .stageType(StageType.RIVER)
                 .smallBlindBet(smallBlindBet)
                 .bigBlindBet(bigBlindBet)
-                .button(getPlayerByRole(RoleType.BUTTON))
-                .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND))
-                .bigBlind(getPlayerByRole(RoleType.BIG_BLIND))
+                .button(getPlayerByRole(RoleType.BUTTON).orElseThrow())
+                .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElseThrow())
+                .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElseThrow())
                 .players(players)
                 .build();
     }
 
 
     private void dealCards() {
-        players.forEach(player -> player.addCards(Arrays.asList(getRandomCard(), getRandomCard())));
+        players.forEach(
+                player -> player.addCards(Arrays.asList(getRandomCard(), getRandomCard()))
+        );
     }
 
     private CardType getRandomCard() {
@@ -143,15 +139,6 @@ final class RoundSettingsController {
     }
 
 
-    private CardType setTern() {
-        return getRandomCard();
-    }
-
-    private CardType setRiver() {
-        return getRandomCard();
-    }
-
-
     private void setButton() {
         final List<Player> players = this.players;
         final Optional<Player> foundButton = players
@@ -159,19 +146,23 @@ final class RoundSettingsController {
                 .filter(Player::isButton)
                 .findAny();
 
-        if (foundButton.isPresent()) {
-            final Player button = foundButton.get();
-            button.removeRole();
-            int indexOfButton = players.indexOf(button);
-            if (indexOfButton + 1 >= players.size()) {
-                indexOfButton = 0;
-                players.get(indexOfButton).setButton();
-            } else {
-                players.get(indexOfButton + 1).setButton();
-            }
-        } else {
+        if (foundButton.isEmpty()) {
             players.get(getRandomPlayer()).setButton();
+            return;
         }
+
+        final Player button = foundButton.get();
+        button.removeRole();
+        int indexOfButton = players.indexOf(button);
+
+        if (indexOfButton + 1 < players.size()) {
+            players.get(indexOfButton + 1).setButton();
+            return;
+        }
+
+        indexOfButton = 0;
+        players.get(indexOfButton).setButton();
+
     }
 
     private int getRandomPlayer() {
@@ -184,14 +175,12 @@ final class RoundSettingsController {
         final int indexOfButton = getIndexOfButton();
         int indexOfSmallBlind = 0;
         Player smallBlind;
-        if (indexOfButton + 1 >= players.size()) {
-            smallBlind = players.get(indexOfSmallBlind);
-        } else {
+        if (indexOfButton + 1 < players.size()) {
             indexOfSmallBlind = indexOfButton + 1;
-            smallBlind = players.get(indexOfSmallBlind);
         }
+        smallBlind = players.get(indexOfSmallBlind);
         smallBlind.setRole(RoleType.SMALL_BLIND);
-        removeChipsPlayerAndAddToBank(smallBlind, smallBlindBet);
+        removeChipsFromPlayer(smallBlind, smallBlindBet);
     }
 
     private void setBigBlind() {
@@ -199,44 +188,37 @@ final class RoundSettingsController {
         final int indexOfSmallBlind = getIndexOfSmallBlind();
         Player bigBlind = getPlayer(indexOfSmallBlind);
         bigBlind.setRole(RoleType.BIG_BLIND);
-        removeChipsPlayerAndAddToBank(bigBlind, bigBlindBet);
+        removeChipsFromPlayer(bigBlind, bigBlindBet);
     }
 
 
     private void clearRole(RoleType roleType) {
-        final Optional<Player> playerByRole = players
-                .stream()
+        final Optional<Player> playerByRole = players.stream()
                 .filter(player -> player.getRoleType() == roleType)
                 .findAny();
+
         playerByRole.ifPresent(Player::removeRole);
     }
 
 
-    private void removeChipsPlayerAndAddToBank(Player player, long chips) {
+    private void removeChipsFromPlayer(Player player, long chips) {
         removeChips(player, chips);
-        addBank(chips);
     }
 
 
-    private Player getPlayerByRole(RoleType roleType) {
-        return this
-                .players
-                .stream()
+    private Optional<Player> getPlayerByRole(RoleType roleType) {
+        return this.players.stream()
                 .filter(player -> player.getRoleType() == roleType)
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException(format("Cannot find role:%s", roleType)));
+                .findFirst();
     }
 
     private int getIndexOfSmallBlind() {
-        return players.indexOf(getPlayerByRole(RoleType.SMALL_BLIND));
+        return players.indexOf(getPlayerByRole(RoleType.SMALL_BLIND).orElseThrow(() -> new RuntimeException("cannot find small blind")));
     }
 
-    private int getIndexOfBigBlind() {
-        return players.indexOf(getPlayerByRole(RoleType.BIG_BLIND));
-    }
 
     private int getIndexOfButton() {
-        return players.indexOf(getPlayerByRole(RoleType.BUTTON));
+        return players.indexOf(getPlayerByRole(RoleType.BUTTON).orElseThrow(() -> new RuntimeException("cannot find button")));
     }
 
     private List<CardType> setFlop() {
@@ -250,36 +232,22 @@ final class RoundSettingsController {
     private Player getPlayer(int indexOfSmallBlind) {
         int indexOfBigBlind = 0;
         Player bigBlind;
-        if (indexOfSmallBlind + 1 >= players.size()) {
-            bigBlind = players.get(indexOfBigBlind);
-        } else {
+        if (indexOfSmallBlind + 1 < players.size()) {
             indexOfBigBlind = indexOfSmallBlind + 1;
-            bigBlind = players.get(indexOfBigBlind);
         }
+        bigBlind = players.get(indexOfBigBlind);
         return bigBlind;
-    }
-
-    private List<Player> getPlayersInGame() {
-        return this.players.stream()
-                .filter(player -> player.getStateType() == StateType.IN_GAME)
-                .collect(Collectors.toList());
     }
 
     private void removeChips(Player player, long chips) {
         player.removeChips(chips);
     }
 
-    private void addChips(Player player, long chips) {
-        player.addChips(chips);
-    }
-
-    private void addBank(long count) {
-        bank += count;
-    }
-
     private void setAllActivePlayers() {
         this.players.forEach(player -> {
-            player.setRole(RoleType.PLAYER);
+            if (!player.isSmallBlind() && !player.isBigBlind() && !player.isButton()) {
+                player.setRole(RoleType.PLAYER);
+            }
             player.setAction(new Wait());
         });
     }
