@@ -26,6 +26,7 @@ public class HoldemGameManager implements GameManager {
     private final Map<String, Game> games;
     private final Queue<Player> players;
 
+
     @Override
     public Optional<Pair<String, Player>> getPlayerByName(String name) {
         final Optional<Map.Entry<String, Player>> gameAndPlayer = games
@@ -50,10 +51,9 @@ public class HoldemGameManager implements GameManager {
         return Optional.empty();
     }
 
-
     @Override
     public void addPlayer(Player player, String gameName) throws RuntimeException {
-        if (!checkGameName(gameName)) {
+        if (checkGameName(gameName)) {
             throw new RuntimeException(format("game with name %s not exist", gameName));
         }
         final Game game = games.get(gameName);
@@ -92,11 +92,11 @@ public class HoldemGameManager implements GameManager {
     @Override
     public boolean createNewGame(String name, Game game) {
         if (checkGameName(name)) {
-            return false;
-        } else {
             games.put(name, game);
             return true;
         }
+        return false;
+
     }
 
     @Override
@@ -109,12 +109,12 @@ public class HoldemGameManager implements GameManager {
 
     @Override
     public void addPlayer(Player player) {
-        if (!players.contains(player)) {
-            player.setStateType(StateType.IN_GAME);
-            players.add(player);
-        } else {
+        if (players.contains(player)) {
             log.info("player al6ready exist");
+            return;
         }
+        player.setStateType(StateType.IN_GAME);
+        players.add(player);
     }
 
     @Override
@@ -134,7 +134,7 @@ public class HoldemGameManager implements GameManager {
 
 
     private boolean checkGameName(String gameName) {
-        return games.containsKey(gameName);
+        return !games.containsKey(gameName);
     }
 
     @PostConstruct

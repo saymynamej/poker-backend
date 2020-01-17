@@ -1,4 +1,4 @@
-package ru.sm.poker.service;
+package ru.sm.poker.service.common;
 
 import org.springframework.stereotype.Service;
 import ru.sm.poker.action.holdem.Fold;

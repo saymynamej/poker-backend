@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.dto.CombinationDTO;
+import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.CombinationType;
 import ru.sm.poker.model.Player;
@@ -18,15 +19,35 @@ import static java.lang.String.format;
 
 @Service
 @RequiredArgsConstructor
-public class WinnerServiceHoldem implements WinnerService {
-
+public class HoldemWinnerService implements WinnerService {
     private final CombinationService combinationService;
 
     @Override
+    public void sendPrizes(RoundSettingsDTO roundSettingsDTO) {
+        final List<Pair<Player, CombinationDTO>> winners = findWinners(
+                roundSettingsDTO.getPlayers(),
+                roundSettingsDTO.getFlop(),
+                roundSettingsDTO.getTern(),
+                roundSettingsDTO.getRiver()
+        );
+        final long bank = roundSettingsDTO.getBank();
+        final Pair<Player, CombinationDTO> theMostPowerFullCombination = winners.get(0);
+        final CombinationDTO powerFullCombination = theMostPowerFullCombination.getRight();
+        final List<Pair<Player, CombinationDTO>> allPowerFullCombinations = winners.stream()
+                .filter(pair -> pair.getRight().equals(powerFullCombination))
+                .collect(Collectors.toList());
+
+        final int size = allPowerFullCombinations.size();
+        for (Pair<Player, CombinationDTO> allPowerFullCombination : allPowerFullCombinations) {
+            final long result = bank / size;
+            final Player player = allPowerFullCombination.getKey();
+            player.addChips(result);
+        }
+    }
+
+    @Override
     public List<Pair<Player, CombinationDTO>> findWinners(List<Player> players, List<CardType> flop, CardType tern, CardType river) {
-
         final List<Pair<Player, CombinationDTO>> playersComb = new ArrayList<>();
-
         final List<CardType> allCards = players
                 .stream()
                 .flatMap(player -> player
@@ -63,7 +84,6 @@ public class WinnerServiceHoldem implements WinnerService {
     }
 
     private void cardsIntersect(List<CardType> cards) {
-
         final List<CardType> distinct = cards.stream()
                 .distinct()
                 .collect(Collectors.toList());

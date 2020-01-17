@@ -8,6 +8,7 @@ import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.service.ActionService;
+import ru.sm.poker.service.common.GameService;
 
 import static ru.sm.poker.base.StrategyBase.CALL_STRATEGIES;
 
@@ -24,7 +25,13 @@ public class Call implements ExecutableAction {
     }
 
     @Override
-    public void doAction(RoundSettingsDTO roundSettingsDTO, Player player, ActionService actionService) {
-        CALL_STRATEGIES.get(player.getRoleType()).execute(player, actionService, this, roundSettingsDTO);
+    public void doAction(RoundSettingsDTO roundSettingsDTO, Player player, GameService gameService, ActionService actionService) {
+        CALL_STRATEGIES.get(player.getRoleType()).execute(
+                player,
+                gameService,
+                actionService,
+                this,
+                roundSettingsDTO
+        );
     }
 }

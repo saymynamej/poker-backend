@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.game.Round;
+import ru.sm.poker.game.RoundSettingsManager;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.service.OrderService;
+import ru.sm.poker.service.WinnerService;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,6 +19,7 @@ public class HoldemRound implements Round {
     private final List<Player> players;
     private final String gameName;
     private final OrderService orderService;
+    private final WinnerService winnerService;
     private final int smallBlindBet;
     private final int bigBlindBet;
     private RoundSettingsDTO roundSettingsDTO;
@@ -25,28 +28,27 @@ public class HoldemRound implements Round {
     public void startRound() {
         log.info("game was started, because found 4 person");
 
-        final RoundSettingsController roundSettingsController =
-                new RoundSettingsController(players, gameName, bigBlindBet, smallBlindBet);
-
-        this.roundSettingsDTO = roundSettingsController.getPreflopSettings();
-
+        final RoundSettingsManager roundSettingsManager =
+                new HoldemRoundSettingsManager(players, gameName, bigBlindBet, smallBlindBet);
+        this.roundSettingsDTO = roundSettingsManager.getPreflopSettings();
         orderService.start(roundSettingsDTO, Collections.emptyList());
-
-        this.roundSettingsDTO = roundSettingsController.getPostFlopSettings(this.roundSettingsDTO.getBank());
-
+        this.roundSettingsDTO = roundSettingsManager.getPostFlopSettings(this.roundSettingsDTO.getBank());
         orderService.start(roundSettingsDTO, Collections.emptyList());
-
-        this.roundSettingsDTO = roundSettingsController.getPostFlopSettingsWithTern(this.roundSettingsDTO.getBank());
+        this.roundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithTern(this.roundSettingsDTO.getBank());
         orderService.start(roundSettingsDTO, Collections.emptyList());
-
-        this.roundSettingsDTO = roundSettingsController.getPostFlopSettingsWithRiver(this.roundSettingsDTO.getBank());
+        this.roundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithRiver(this.roundSettingsDTO.getBank());
         orderService.start(roundSettingsDTO, Collections.emptyList());
+        winnerService.sendPrizes(roundSettingsDTO);
 
+    }
+
+    private boolean isAfk() {
+        return roundSettingsDTO.isAfk();
     }
 
     @Override
     public void reloadRound() {
-        this.roundSettingsDTO.setNeedReload(true);
+        this.roundSettingsDTO.setAfk(true);
     }
 
     @Override

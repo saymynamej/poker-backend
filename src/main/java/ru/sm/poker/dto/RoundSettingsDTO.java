@@ -4,17 +4,21 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import ru.sm.poker.action.CountAction;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.StageType;
 import ru.sm.poker.model.Player;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Builder
 @Getter
 @Setter
 @ToString
 public class RoundSettingsDTO {
+    private final Map<Player, List<CountAction>> history = new HashMap<>();
     private final List<Player> players;
     private final List<CardType> flop;
     private final CardType tern;
@@ -29,5 +33,5 @@ public class RoundSettingsDTO {
     private Long lastBet;
     private long bank;
     private Player activePlayer;
-    private boolean needReload;
+    private boolean isAfk;
 }

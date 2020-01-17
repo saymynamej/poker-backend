@@ -4,24 +4,13 @@ import ru.sm.poker.action.Action;
 import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.model.Player;
 
+import java.security.Principal;
+
 public interface ActionService {
     void setAction(String playerName, Action action);
 
-    void setUnSetAfkPlayer(String name);
+    void waitUntilPlayerWillHasAction(Player player, RoundSettingsDTO roundSettingsDTO);
 
-    void doAction(Player player, RoundSettingsDTO roundSettingsDTO);
+    void setUnSetAfkPlayer(String playerName);
 
-    void setActions(RoundSettingsDTO roundSettingsDTO);
-
-    void waitOneMoreAction(Player player, RoundSettingsDTO roundSettingsDTO);
-
-    void setAction(Player player, RoundSettingsDTO roundSettingsDTO);
-
-    void waitPlayerAction(Player player, RoundSettingsDTO roundSettingsDTO);
-
-    void setLastBet(RoundSettingsDTO roundSettingsDTO, long count);
-
-    void removeChipsPlayerAndAddToBank(Player player, long chips, RoundSettingsDTO roundSettingsDTO);
-
-    void setPlayerWait(Player playerWait);
 }

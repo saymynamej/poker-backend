@@ -9,6 +9,7 @@ import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.service.ActionService;
+import ru.sm.poker.service.common.GameService;
 
 @Getter
 @Setter
@@ -24,7 +25,13 @@ public class Bet implements ExecutableAction {
     }
 
     @Override
-    public void doAction(RoundSettingsDTO roundSettingsDTO, Player player, ActionService actionService) {
-        StrategyBase.BET_STRATEGIES.get(player.getRoleType()).execute(player, actionService, this, roundSettingsDTO);
+    public void doAction(RoundSettingsDTO roundSettingsDTO, Player player, GameService gameService, ActionService actionService) {
+        StrategyBase.BET_STRATEGIES.get(player.getRoleType()).execute(
+                player,
+                gameService,
+                actionService,
+                this,
+                roundSettingsDTO
+        );
     }
 }

@@ -1,4 +1,4 @@
-package ru.sm.poker.service.info;
+package ru.sm.poker.service.common;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;

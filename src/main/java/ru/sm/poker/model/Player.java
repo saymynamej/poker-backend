@@ -2,6 +2,7 @@ package ru.sm.poker.model;
 
 import lombok.*;
 import ru.sm.poker.action.Action;
+import ru.sm.poker.action.CountAction;
 import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.RoleType;
@@ -33,6 +34,7 @@ public class Player {
     @Getter
     @Setter
     private String gameName;
+
 
     @Builder
     public Player(String name, List<CardType> cards, RoleType roleType, long chipsCount, StateType stateType, long timeBank, Action action, boolean active, String gameName) {

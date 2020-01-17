@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class CombinationServiceHoldem implements CombinationService {
+public class HoldemCombinationService implements CombinationService {
 
     private final static int ONE_POWER = 1;
     private final static int COMBINATION_SIZE = 5;

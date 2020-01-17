@@ -1,7 +1,6 @@
 package ru.sm.poker.game.holdem;
 
 import ru.sm.poker.dto.RoundSettingsDTO;
-import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.model.Player;
@@ -10,22 +9,14 @@ import java.util.List;
 
 public class HoldemGame extends Game {
 
-    public HoldemGame(
-            String gameName, int maxPlayersSize,
-            List<Player> players,
-            Round round
-    ) {
+    public HoldemGame(String gameName, int maxPlayersSize, List<Player> players, Round round) {
         super(gameName, maxPlayersSize, players, round);
     }
 
     @Override
     public void start() {
-        isStarted = true;
-        while (getPlayers().size() >= 4 && isStarted) {
+        while (getPlayers().size() >= 4) {
             getRound().startRound();
-            if (!getRoundSettings().getPlayers().stream().allMatch(player -> player.getStateType() == StateType.AFK)) {
-                isStarted = false;
-            }
         }
     }
 

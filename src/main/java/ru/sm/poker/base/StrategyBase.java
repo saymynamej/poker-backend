@@ -1,48 +1,47 @@
 package ru.sm.poker.base;
 
 import ru.sm.poker.action.strategy.ActionStrategy;
-import ru.sm.poker.action.strategy.bet.BetCommonStrategy;
-import ru.sm.poker.action.strategy.call.CallBigBlindStrategy;
-import ru.sm.poker.action.strategy.call.CallCommonStrategy;
-import ru.sm.poker.action.strategy.call.CallSmallBlindStrategy;
-import ru.sm.poker.action.strategy.check.CheckCommonStrategy;
-import ru.sm.poker.action.strategy.raise.RaiseCommonStrategy;
+import ru.sm.poker.action.strategy.BetStrategy;
+import ru.sm.poker.action.strategy.CallStrategy;
+import ru.sm.poker.action.strategy.CheckStrategy;
+import ru.sm.poker.action.strategy.RaiseStrategy;
 import ru.sm.poker.enums.RoleType;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class StrategyBase {
+
     public final static Map<RoleType, ActionStrategy> CALL_STRATEGIES = new HashMap<>();
     public final static Map<RoleType, ActionStrategy> BET_STRATEGIES = new HashMap<>();
     public final static Map<RoleType, ActionStrategy> RAISE_STRATEGIES = new HashMap<>();
     public final static Map<RoleType, ActionStrategy> CHECK_STRATEGIES = new HashMap<>();
 
     static {
-        CALL_STRATEGIES.put(RoleType.BIG_BLIND, new CallBigBlindStrategy());
-        CALL_STRATEGIES.put(RoleType.SMALL_BLIND, new CallSmallBlindStrategy());
-        CALL_STRATEGIES.put(RoleType.PLAYER, new CallCommonStrategy());
-        CALL_STRATEGIES.put(RoleType.BUTTON, new CallCommonStrategy());
+        CALL_STRATEGIES.put(RoleType.BIG_BLIND, new CallStrategy());
+        CALL_STRATEGIES.put(RoleType.SMALL_BLIND, new CallStrategy());
+        CALL_STRATEGIES.put(RoleType.PLAYER, new CallStrategy());
+        CALL_STRATEGIES.put(RoleType.BUTTON, new CallStrategy());
     }
 
     static {
-        BET_STRATEGIES.put(RoleType.BIG_BLIND, new BetCommonStrategy());
-        BET_STRATEGIES.put(RoleType.SMALL_BLIND, new BetCommonStrategy());
-        BET_STRATEGIES.put(RoleType.PLAYER, new BetCommonStrategy());
-        BET_STRATEGIES.put(RoleType.BUTTON, new BetCommonStrategy());
+        BET_STRATEGIES.put(RoleType.BIG_BLIND, new BetStrategy());
+        BET_STRATEGIES.put(RoleType.SMALL_BLIND, new BetStrategy());
+        BET_STRATEGIES.put(RoleType.PLAYER, new BetStrategy());
+        BET_STRATEGIES.put(RoleType.BUTTON, new BetStrategy());
     }
 
     static {
-        RAISE_STRATEGIES.put(RoleType.BIG_BLIND, new RaiseCommonStrategy());
-        RAISE_STRATEGIES.put(RoleType.SMALL_BLIND, new RaiseCommonStrategy());
-        RAISE_STRATEGIES.put(RoleType.PLAYER, new RaiseCommonStrategy());
-        RAISE_STRATEGIES.put(RoleType.BUTTON, new RaiseCommonStrategy());
+        RAISE_STRATEGIES.put(RoleType.BIG_BLIND, new RaiseStrategy());
+        RAISE_STRATEGIES.put(RoleType.SMALL_BLIND, new RaiseStrategy());
+        RAISE_STRATEGIES.put(RoleType.PLAYER, new RaiseStrategy());
+        RAISE_STRATEGIES.put(RoleType.BUTTON, new RaiseStrategy());
     }
 
     static {
-        CHECK_STRATEGIES.put(RoleType.BIG_BLIND, new CheckCommonStrategy());
-        CHECK_STRATEGIES.put(RoleType.SMALL_BLIND, new CheckCommonStrategy());
-        CHECK_STRATEGIES.put(RoleType.PLAYER, new CheckCommonStrategy());
-        CHECK_STRATEGIES.put(RoleType.BUTTON, new CheckCommonStrategy());
+        CHECK_STRATEGIES.put(RoleType.BIG_BLIND, new CheckStrategy());
+        CHECK_STRATEGIES.put(RoleType.SMALL_BLIND, new CheckStrategy());
+        CHECK_STRATEGIES.put(RoleType.PLAYER, new CheckStrategy());
+        CHECK_STRATEGIES.put(RoleType.BUTTON, new CheckStrategy());
     }
 }

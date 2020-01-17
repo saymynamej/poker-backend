@@ -17,7 +17,7 @@ import java.security.Principal;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class GameController {
+public class CommonGameController {
 
     private final GameManager gameManager;
     private final ActionService actionService;
@@ -31,7 +31,7 @@ public class GameController {
                 .build());
     }
 
-    @MessageMapping
+    @MessageMapping("/afk")
     public void setUnsetAfk(Principal principal) {
         actionService.setUnSetAfkPlayer(principal.getName());
     }
@@ -47,17 +47,17 @@ public class GameController {
 
     @MessageMapping("/raise")
     public void raise(Principal principal, ActionDTO actionDTO) {
-        actionService.setAction(actionDTO.getName(), new Raise(Long.parseLong(actionDTO.getCount())));
+        actionService.setAction(principal.getName(), new Raise(Long.parseLong(actionDTO.getCount())));
     }
 
     @MessageMapping("/call")
     public void call(Principal principal, ActionDTO actionDTO) {
-        actionService.setAction(actionDTO.getName(), new Call(Long.parseLong(actionDTO.getCount())));
+        actionService.setAction(principal.getName(), new Call(Long.parseLong(actionDTO.getCount())));
     }
 
     @MessageMapping("/fold")
-    public void fold(Principal principal, ActionDTO actionDTO) {
-        actionService.setAction(actionDTO.getName(), new Fold());
+    public void fold(Principal principal) {
+        actionService.setAction(principal.getName(), new Fold());
     }
 
     @MessageMapping("/bet")
@@ -66,8 +66,8 @@ public class GameController {
     }
 
     @MessageMapping("/check")
-    public void check(Principal principal, ActionDTO actionDTO) {
-        actionService.setAction(actionDTO.getName(), new Check());
+    public void check(Principal principal) {
+        actionService.setAction(principal.getName(), new Check());
     }
 
     @MessageMapping("/reload")

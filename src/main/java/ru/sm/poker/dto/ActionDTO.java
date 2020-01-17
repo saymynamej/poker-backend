@@ -9,9 +9,6 @@ import lombok.ToString;
 @Setter
 @RequiredArgsConstructor
 @ToString
-public class
-ActionDTO {
-    private String name;
+public class ActionDTO {
     private String count;
-    private String gameName;
 }

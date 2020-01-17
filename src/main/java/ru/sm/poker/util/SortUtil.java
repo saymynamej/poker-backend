@@ -18,7 +18,7 @@ public class SortUtil {
         final Optional<Player> smallBlind = getPlayerByRole(players, RoleType.SMALL_BLIND);
         final Optional<Player> button = getPlayerByRole(players, RoleType.BUTTON);
 
-        if (!bigBlind.isPresent() || !smallBlind.isPresent() || !button.isPresent()) {
+        if (bigBlind.isEmpty() || smallBlind.isEmpty() || button.isEmpty()) {
             throw new RuntimeException("cannot find all roles for preflop");
         }
 
