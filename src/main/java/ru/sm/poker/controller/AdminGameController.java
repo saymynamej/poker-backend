@@ -1,6 +1,7 @@
 package ru.sm.poker.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.sm.poker.action.holdem.*;
@@ -8,12 +9,16 @@ import ru.sm.poker.dto.AdminActionDTO;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.service.ActionService;
+import ru.sm.poker.util.LongUtil;
 
 import java.security.Principal;
+
+import static ru.sm.poker.util.LongUtil.*;
 
 
 @RequiredArgsConstructor
 @RestController
+@Slf4j
 public class AdminGameController {
 
     private final GameManager gameManager;
@@ -35,12 +40,20 @@ public class AdminGameController {
 
     @MessageMapping("/admin/raise")
     public void raise(AdminActionDTO actionDTO) {
-        actionService.setAction(actionDTO.getName(), new Raise(Long.parseLong(actionDTO.getCount())));
+        try {
+            actionService.setAction(actionDTO.getName(), new Raise(parseLong(actionDTO.getCount())));
+        } catch (RuntimeException e) {
+            log.info("cannot parse raise: " + actionDTO);
+        }
     }
 
     @MessageMapping("/admin/call")
     public void call(AdminActionDTO actionDTO) {
-        actionService.setAction(actionDTO.getName(), new Call(Long.parseLong(actionDTO.getCount())));
+        try {
+            actionService.setAction(actionDTO.getName(), new Call(parseLong(actionDTO.getCount())));
+        } catch (RuntimeException e) {
+            log.info("cannot parse call: " + actionDTO);
+        }
     }
 
     @MessageMapping("/admin/fold")

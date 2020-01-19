@@ -7,7 +7,6 @@ import org.springframework.stereotype.Component;
 import ru.sm.poker.action.Action;
 import ru.sm.poker.action.CountAction;
 import ru.sm.poker.action.ExecutableAction;
-import ru.sm.poker.action.holdem.Fold;
 import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.enums.StateType;

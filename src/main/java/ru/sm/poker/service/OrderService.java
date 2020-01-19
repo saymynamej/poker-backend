@@ -6,5 +6,5 @@ import ru.sm.poker.model.Player;
 import java.util.List;
 
 public interface OrderService {
-    void start(RoundSettingsDTO roundSettingsDTO, List<Player> filterPlayers);
+    void start(RoundSettingsDTO roundSettingsDTO);
 }

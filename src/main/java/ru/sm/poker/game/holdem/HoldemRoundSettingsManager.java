@@ -1,6 +1,8 @@
 package ru.sm.poker.game.holdem;
 
 import lombok.RequiredArgsConstructor;
+import ru.sm.poker.action.CountAction;
+import ru.sm.poker.action.holdem.Call;
 import ru.sm.poker.action.holdem.Fold;
 import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.dto.RoundSettingsDTO;
@@ -12,10 +14,7 @@ import ru.sm.poker.game.RoundSettingsManager;
 import ru.sm.poker.model.Player;
 
 import java.security.SecureRandom;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 public final class HoldemRoundSettingsManager implements RoundSettingsManager {
@@ -51,6 +50,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .button(getPlayerByRole(RoleType.BUTTON).orElseThrow())
                 .players(players)
                 .stageType(StageType.PREFLOP)
+                .history(setBlindsHistory())
                 .lastBet(bigBlindBet)
                 .build();
     }
@@ -69,6 +69,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElseThrow())
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElseThrow())
                 .players(players)
+                .history(new HashMap<>())
                 .lastBet(0L)
                 .stageType(StageType.FLOP)
                 .build();
@@ -89,6 +90,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElseThrow())
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElseThrow())
                 .stageType(StageType.TERN)
+                .history(new HashMap<>())
                 .lastBet(0L)
                 .players(players)
                 .build();
@@ -108,6 +110,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .bank(bank)
                 .stageType(StageType.RIVER)
                 .smallBlindBet(smallBlindBet)
+                .history(new HashMap<>())
                 .bigBlindBet(bigBlindBet)
                 .button(getPlayerByRole(RoleType.BUTTON).orElseThrow())
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElseThrow())
@@ -210,6 +213,26 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
         return this.players.stream()
                 .filter(player -> player.getRoleType() == roleType)
                 .findFirst();
+    }
+
+    private Map<Player, List<CountAction>> setBlindsHistory() {
+        final Map<Player, List<CountAction>> history = new HashMap<>();
+        final Optional<Player> optionalSmallBlind = getPlayerByRole(RoleType.SMALL_BLIND);
+        final Optional<Player> optionalBigBlind = getPlayerByRole(RoleType.BIG_BLIND);
+
+        if (optionalSmallBlind.isEmpty() || optionalBigBlind.isEmpty()) {
+            throw new RuntimeException("global error, cannot find blinds");
+        }
+
+        final Player bigBlind = optionalBigBlind.get();
+        final Player smallBlind = optionalSmallBlind.get();
+        final List<CountAction> forBigBlind = new ArrayList<>();
+        forBigBlind.add(new Call(bigBlindBet));
+        final List<CountAction> forSmallBlind = new ArrayList<>();
+        forSmallBlind.add(new Call(smallBlindBet));
+        history.put(bigBlind, forBigBlind);
+        history.put(smallBlind, forSmallBlind);
+        return history;
     }
 
     private int getIndexOfSmallBlind() {

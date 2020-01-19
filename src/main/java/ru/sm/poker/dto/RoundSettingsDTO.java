@@ -18,7 +18,7 @@ import java.util.Map;
 @Setter
 @ToString
 public class RoundSettingsDTO {
-    private final Map<Player, List<CountAction>> history = new HashMap<>();
+    private final Map<Player, List<CountAction>> history;
     private final List<Player> players;
     private final List<CardType> flop;
     private final CardType tern;

@@ -31,13 +31,13 @@ public class HoldemRound implements Round {
         final RoundSettingsManager roundSettingsManager =
                 new HoldemRoundSettingsManager(players, gameName, bigBlindBet, smallBlindBet);
         this.roundSettingsDTO = roundSettingsManager.getPreflopSettings();
-        orderService.start(roundSettingsDTO, Collections.emptyList());
+        orderService.start(roundSettingsDTO);
         this.roundSettingsDTO = roundSettingsManager.getPostFlopSettings(this.roundSettingsDTO.getBank());
-        orderService.start(roundSettingsDTO, Collections.emptyList());
+        orderService.start(roundSettingsDTO);
         this.roundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithTern(this.roundSettingsDTO.getBank());
-        orderService.start(roundSettingsDTO, Collections.emptyList());
+        orderService.start(roundSettingsDTO);
         this.roundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithRiver(this.roundSettingsDTO.getBank());
-        orderService.start(roundSettingsDTO, Collections.emptyList());
+        orderService.start(roundSettingsDTO);
         winnerService.sendPrizes(roundSettingsDTO);
 
     }
