@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
+import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.enums.ErrorType;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
@@ -17,6 +19,7 @@ import java.util.Queue;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
+import static ru.sm.poker.enums.ErrorType.*;
 
 @Component
 @RequiredArgsConstructor
@@ -26,56 +29,59 @@ public class HoldemGameManager implements GameManager {
     private final Map<String, Game> games;
     private final Queue<Player> players;
 
-
     @Override
     public Optional<Pair<String, Player>> getPlayerByName(String name) {
-        final Optional<Map.Entry<String, Player>> gameAndPlayer = games
-                .entrySet()
-                .stream()
-                .flatMap((entry -> entry
-                        .getValue()
-                        .getRoundSettings()
-                        .getPlayers()
-                        .stream()
-                        .filter(player -> player.getName().equals(name))
-                        .collect(Collectors.toMap(playerF -> entry.getKey(), playerF -> playerF))
-                        .entrySet()
-                        .stream()))
-                .findFirst();
+        try {
+            final Optional<Map.Entry<String, Player>> gameAndPlayer = games
+                    .entrySet()
+                    .stream()
+                    .flatMap((entry -> entry
+                            .getValue()
+                            .getRoundSettings()
+                            .getPlayers()
+                            .stream()
+                            .filter(player -> player.getName().equals(name))
+                            .collect(Collectors.toMap(playerF -> entry.getKey(), playerF -> playerF))
+                            .entrySet()
+                            .stream()))
+                    .findFirst();
 
-        if (gameAndPlayer.isPresent()) {
-            final Map.Entry<String, Player> player = gameAndPlayer.get();
-            return Optional.of(Pair.of(player.getKey(), player.getValue()));
+            if (gameAndPlayer.isPresent()) {
+                final Map.Entry<String, Player> player = gameAndPlayer.get();
+                return Optional.of(Pair.of(player.getKey(), player.getValue()));
+            }
+
+        } catch (Exception ex) {
+            log.info("user not found");
         }
 
         return Optional.empty();
     }
 
-    @Override
-    public void addPlayer(Player player, String gameName) throws RuntimeException {
-        if (checkGameName(gameName)) {
-            throw new RuntimeException(format("game with name %s not exist", gameName));
-        }
-        final Game game = games.get(gameName);
-
-        synchronized (this) {
-            if (game.getRoundSettings().getPlayers().size() == game.getMaxPlayersSize()) {
-                throw new RuntimeException(format("game with name %s not exist", gameName));
-            }
-        }
-
-        player.setStateType(StateType.IN_GAME);
-        game.addPlayer(player);
-    }
 
     @Override
     public boolean playerExistByName(String gameName, String name) {
-        return games
-                .get(gameName)
-                .getRoundSettings()
+        final Game game = games.get(gameName);
+        return game.getRoundSettings()
                 .getPlayers()
                 .stream()
-                .anyMatch(exist -> exist.getName().equals(name));
+                .anyMatch(player -> player.getName().equals(name));
+    }
+
+
+    @Override
+    public void addChips(String name, long count) {
+        final Optional<Pair<String, Player>> optionalPlayer = getPlayerByName(name);
+        if (optionalPlayer.isPresent()) {
+            final Pair<String, Player> playerPair = optionalPlayer.get();
+            final Player player = playerPair.getRight();
+            player.addChips(count);
+        }
+    }
+
+    @Override
+    public void addChips(String name) {
+        addChips(name, 5000L);
     }
 
     @Override
@@ -108,13 +114,27 @@ public class HoldemGameManager implements GameManager {
     }
 
     @Override
-    public void addPlayer(Player player) {
-        if (players.contains(player)) {
-            log.info("player al6ready exist");
-            return;
+    public ErrorType joinInQueue(Player player) {
+        if (players.add(player)) {
+            player.setStateType(StateType.IN_GAME);
+            return SUCCESS_JOIN_IN_QUEUE;
+        }
+        return PLAYER_ALREADY_EXIST;
+    }
+
+    @Override
+    public ErrorType joinInGame(String gameName, Player player) throws RuntimeException {
+        if (checkGameName(gameName)) {
+            return GAME_NOT_FOUND;
+        }
+        final Game game = games.get(gameName);
+
+        if (game.getRoundSettings().getPlayers().size() == game.getMaxPlayersSize()) {
+            return SETTINGS_NOT_FOUND;
         }
         player.setStateType(StateType.IN_GAME);
-        players.add(player);
+        game.addPlayer(player);
+        return SUCCESS_JOIN_IN_QUEUE;
     }
 
     @Override
@@ -139,17 +159,17 @@ public class HoldemGameManager implements GameManager {
 
     @PostConstruct
     public void init() {
-        addPlayer(Player.builder()
+        joinInQueue(Player.builder()
                 .name("1")
                 .chipsCount(5000)
                 .timeBank(60L)
                 .build());
-        addPlayer(Player.builder()
+        joinInQueue(Player.builder()
                 .name("2")
                 .chipsCount(5000)
                 .timeBank(60L)
                 .build());
-        addPlayer(Player.builder()
+        joinInQueue(Player.builder()
                 .name("3")
                 .chipsCount(5000)
                 .timeBank(60L)

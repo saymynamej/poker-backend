@@ -5,15 +5,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.sm.poker.action.holdem.*;
+import ru.sm.poker.base.PlayerSettings;
 import ru.sm.poker.dto.AdminActionDTO;
 import ru.sm.poker.game.GameManager;
-import ru.sm.poker.model.Player;
 import ru.sm.poker.service.ActionService;
-import ru.sm.poker.util.LongUtil;
+import ru.sm.poker.service.common.SeatManager;
 
 import java.security.Principal;
 
-import static ru.sm.poker.util.LongUtil.*;
+import static ru.sm.poker.util.LongUtil.parseLong;
 
 
 @RequiredArgsConstructor
@@ -23,19 +23,23 @@ public class AdminGameController {
 
     private final GameManager gameManager;
     private final ActionService actionService;
+    private final SeatManager seatManager;
 
     @MessageMapping("/admin/addPlayer")
-    public void addUser(Principal principal) {
-        gameManager.addPlayer(Player.builder()
-                .name(principal.getName())
-                .timeBank(60L)
-                .chipsCount(5000)
-                .build());
+    public void joinInQueue(Principal principal) {
+        seatManager.joinInQueue(PlayerSettings.getDefaultPlayerForHoldem(principal.getName()));
     }
 
+
+    @MessageMapping("/admin/addChips")
+    public void addChips(String name) {
+        gameManager.addChips(name);
+    }
+
+
     @MessageMapping("/admin/afk")
-    public void setUnsetAfk(Principal principal) {
-        actionService.setUnSetAfkPlayer(principal.getName());
+    public void setUnsetAfk(String name) {
+        actionService.setUnSetAfkPlayer(name);
     }
 
     @MessageMapping("/admin/raise")

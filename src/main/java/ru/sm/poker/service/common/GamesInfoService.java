@@ -9,7 +9,6 @@ import ru.sm.poker.dto.GameDTO;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.service.InfoService;
-import ru.sm.poker.service.holdem.BroadCastService;
 
 import java.util.List;
 import java.util.Map;
@@ -23,14 +22,14 @@ import java.util.stream.Collectors;
 public class GamesInfoService implements InfoService {
 
     private final GameManager holdemGameManager;
-    private final BroadCastService broadCastService;
+    private final SimpleNotificationService simpleNotificationService;
 
 
     @Scheduled(cron = "*/3 * * * * *")
     @Override
     public void send() {
         final List<GameDTO> gameDTOS = convertMapToLisGameDTO(holdemGameManager.getGames());
-        broadCastService.sendGamesToAll(gameDTOS);
+        simpleNotificationService.sendGamesInformationToAll(gameDTOS);
     }
 
     private List<GameDTO> convertMapToLisGameDTO(Map<String, Game> games) {

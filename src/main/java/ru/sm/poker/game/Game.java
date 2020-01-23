@@ -5,6 +5,7 @@ import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.model.Player;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 public abstract class Game {
@@ -65,6 +66,5 @@ public abstract class Game {
     public abstract void reload();
 
     public abstract RoundSettingsDTO getRoundSettings();
-
 
 }

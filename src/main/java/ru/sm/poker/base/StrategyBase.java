@@ -1,10 +1,8 @@
 package ru.sm.poker.base;
 
-import ru.sm.poker.action.strategy.ActionStrategy;
-import ru.sm.poker.action.strategy.BetStrategy;
-import ru.sm.poker.action.strategy.CallStrategy;
-import ru.sm.poker.action.strategy.CheckStrategy;
-import ru.sm.poker.action.strategy.RaiseStrategy;
+import ru.sm.poker.action.ActionStrategy;
+
+import ru.sm.poker.action.holdem.strategy.*;
 import ru.sm.poker.enums.RoleType;
 
 import java.util.HashMap;
@@ -16,6 +14,7 @@ public class StrategyBase {
     public final static Map<RoleType, ActionStrategy> BET_STRATEGIES = new HashMap<>();
     public final static Map<RoleType, ActionStrategy> RAISE_STRATEGIES = new HashMap<>();
     public final static Map<RoleType, ActionStrategy> CHECK_STRATEGIES = new HashMap<>();
+    public final static Map<RoleType, ActionStrategy> ALLIN_STRATEGIES = new HashMap<>();
 
     static {
         CALL_STRATEGIES.put(RoleType.BIG_BLIND, new CallStrategy());
@@ -43,5 +42,12 @@ public class StrategyBase {
         CHECK_STRATEGIES.put(RoleType.SMALL_BLIND, new CheckStrategy());
         CHECK_STRATEGIES.put(RoleType.PLAYER, new CheckStrategy());
         CHECK_STRATEGIES.put(RoleType.BUTTON, new CheckStrategy());
+    }
+
+    static {
+        ALLIN_STRATEGIES.put(RoleType.BIG_BLIND, new AllStrategy());
+        ALLIN_STRATEGIES.put(RoleType.SMALL_BLIND, new AllStrategy());
+        ALLIN_STRATEGIES.put(RoleType.PLAYER, new AllStrategy());
+        ALLIN_STRATEGIES.put(RoleType.BUTTON, new AllStrategy());
     }
 }

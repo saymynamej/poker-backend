@@ -5,24 +5,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.action.Action;
-import ru.sm.poker.action.CountAction;
 import ru.sm.poker.action.ExecutableAction;
 import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.enums.ErrorType;
+import ru.sm.poker.enums.InformationType;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.game.SecurityService;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.service.ActionService;
-import ru.sm.poker.service.common.GameService;
-import ru.sm.poker.service.common.RoundSettingsService;
-import ru.sm.poker.service.common.TimeBankService;
+import ru.sm.poker.service.common.*;
 
 import java.util.Optional;
 import java.util.Timer;
 
 import static java.lang.String.format;
+import static ru.sm.poker.enums.ErrorType.*;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -31,7 +31,8 @@ public class HoldemActionService implements ActionService {
 
     private final SecurityService holdemSecurityService;
     private final GameManager holdemGameManager;
-    private final BroadCastService broadCastService;
+    private final SecurityNotificationService securityNotificationService;
+    private final SimpleNotificationService simpleNotificationService;
     private final TimeBankService timeBankService = new TimeBankService();
     private final RoundSettingsService roundSettingsService;
     private final GameService gameService;
@@ -41,7 +42,7 @@ public class HoldemActionService implements ActionService {
         final Optional<Pair<String, Player>> playerByName = holdemGameManager.getPlayerByName(playerName);
 
         if (playerByName.isEmpty()) {
-            log.info("cannot find player or game for :" + playerName);
+            log.info(format(FIND_PLAYER_ERROR.getMessage(), playerByName));
             return;
         }
 
@@ -50,15 +51,15 @@ public class HoldemActionService implements ActionService {
         final Player player = playerPair.getRight();
 
         if (game.getRoundSettings() == null || player == null) {
-            log.info("cannot settings for player :" + playerName);
+            log.info(format(SETTINGS_NOT_FOUND.getMessage(), playerName));
             return;
         }
 
         final RoundSettingsDTO roundSettings = game.getRoundSettings();
         player.setStateType(player.getStateType() == StateType.AFK ? StateType.IN_GAME : StateType.AFK);
 
-        broadCastService.sendToAllWithSecure(roundSettings);
-        log.info("new player state type:" + player.getStateType() + ", player name: " + player.getName());
+        securityNotificationService.sendToAllWithSecurity(roundSettings);
+        log.info(format(InformationType.CHANGED_STATE_TYPE_INFO.getMessage(), playerName, player.getStateType()));
     }
 
 
@@ -66,13 +67,14 @@ public class HoldemActionService implements ActionService {
     public void setAction(String playerName, Action action) {
         final Optional<Pair<String, Player>> playerByName = holdemGameManager.getPlayerByName(playerName);
         if (playerByName.isEmpty()) {
-            log.info("cannot find player with playerName:" + playerName);
+            log.info(format(FIND_PLAYER_ERROR.getMessage(), playerName));
             return;
         }
         final Pair<String, Player> pairGameAndPlayer = playerByName.get();
         final Player player = pairGameAndPlayer.getRight();
         if (!holdemSecurityService.isLegalPlayer(pairGameAndPlayer.getLeft(), player)) {
-            log.info(format("player  send bet to not own game. name:%s", player.getName()));
+            simpleNotificationService.sendErrorToUser(playerName, format(ErrorType.QUEUE_ERROR.getMessage(), player.getName()));
+            log.info(format(QUEUE_ERROR.getMessage(), player.getName()));
             return;
         }
         player.setAction(action);
@@ -82,14 +84,9 @@ public class HoldemActionService implements ActionService {
     public void waitUntilPlayerWillHasAction(Player player, RoundSettingsDTO roundSettingsDTO) {
         setPlayerWait(player);
         roundSettingsService.setActivePlayer(roundSettingsDTO, player);
-        broadCastService.sendToAllWithSecure(roundSettingsDTO);
+        securityNotificationService.sendToAllWithSecurity(roundSettingsDTO);
         waitPlayerAction(player, roundSettingsDTO);
-        if (player.getAction() instanceof CountAction) {
-            log.info("player action: " + player.getAction().getActionType() + ":"
-                    + ((CountAction) player.getAction()).getCount() + ", player name: " + player.getName());
-        }
         roundSettingsService.setInActivePlayer(roundSettingsDTO, player);
-
     }
 
 
@@ -116,5 +113,4 @@ public class HoldemActionService implements ActionService {
             ((ExecutableAction) action).doAction(roundSettingsDTO, player, gameService, this);
         }
     }
-
 }

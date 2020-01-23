@@ -6,14 +6,13 @@ import lombok.Setter;
 import lombok.ToString;
 import ru.sm.poker.action.CountAction;
 import ru.sm.poker.action.ExecutableAction;
-import ru.sm.poker.base.StrategyBase;
 import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
 
-import static ru.sm.poker.base.StrategyBase.*;
+import static ru.sm.poker.base.StrategyBase.RAISE_STRATEGIES;
 
 @Getter
 @Setter

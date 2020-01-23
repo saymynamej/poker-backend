@@ -10,22 +10,26 @@ import ru.sm.poker.enums.CombinationType;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.service.CombinationService;
 import ru.sm.poker.service.WinnerService;
+import ru.sm.poker.service.common.SecurityNotificationService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
+import static ru.sm.poker.util.PlayerUtil.getPlayersInGame;
 
 @Service
 @RequiredArgsConstructor
 public class HoldemWinnerService implements WinnerService {
+
     private final CombinationService combinationService;
+    private final SecurityNotificationService securityNotificationService;
 
     @Override
     public void sendPrizes(RoundSettingsDTO roundSettingsDTO) {
         final List<Pair<Player, CombinationDTO>> winners = findWinners(
-                roundSettingsDTO.getPlayers(),
+                getPlayersInGame(roundSettingsDTO.getPlayers()),
                 roundSettingsDTO.getFlop(),
                 roundSettingsDTO.getTern(),
                 roundSettingsDTO.getRiver()
@@ -38,11 +42,12 @@ public class HoldemWinnerService implements WinnerService {
                 .collect(Collectors.toList());
 
         final int size = allPowerFullCombinations.size();
-        for (Pair<Player, CombinationDTO> allPowerFullCombination : allPowerFullCombinations) {
+        allPowerFullCombinations.forEach(allPowerFullCombination -> {
             final long result = bank / size;
             final Player player = allPowerFullCombination.getKey();
             player.addChips(result);
-        }
+        });
+        securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(roundSettingsDTO);
     }
 
     @Override
@@ -82,6 +87,7 @@ public class HoldemWinnerService implements WinnerService {
 
         return playersComb;
     }
+
 
     private void cardsIntersect(List<CardType> cards) {
         final List<CardType> distinct = cards.stream()

@@ -9,7 +9,6 @@ import ru.sm.poker.model.Player;
 import ru.sm.poker.service.OrderService;
 import ru.sm.poker.service.WinnerService;
 
-import java.util.Collections;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -39,11 +38,6 @@ public class HoldemRound implements Round {
         this.roundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithRiver(this.roundSettingsDTO.getBank());
         orderService.start(roundSettingsDTO);
         winnerService.sendPrizes(roundSettingsDTO);
-
-    }
-
-    private boolean isAfk() {
-        return roundSettingsDTO.isAfk();
     }
 
     @Override
@@ -52,7 +46,7 @@ public class HoldemRound implements Round {
     }
 
     @Override
-    public RoundSettingsDTO getRoundSettingsDTO() {
+    public synchronized RoundSettingsDTO getRoundSettingsDTO() {
         return this.roundSettingsDTO;
     }
 }

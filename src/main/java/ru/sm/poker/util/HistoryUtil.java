@@ -1,14 +1,14 @@
 package ru.sm.poker.util;
 
 import ru.sm.poker.action.CountAction;
-import ru.sm.poker.action.holdem.Fold;
 import ru.sm.poker.dto.RoundSettingsDTO;
-import ru.sm.poker.enums.StateType;
 import ru.sm.poker.model.Player;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static ru.sm.poker.util.PlayerUtil.getPlayersInGame;
 
 public class HistoryUtil {
 
@@ -22,15 +22,8 @@ public class HistoryUtil {
     }
 
     public static boolean allPlayersInGameHaveSameCountOfBet(RoundSettingsDTO roundSettingsDTO) {
-        for (Player player : roundSettingsDTO.getPlayers()) {
-            if (player.getAction() instanceof Fold || player.getStateType() == StateType.AFK){
-                continue;
-            }
-            if (sumAllHistoryBets(roundSettingsDTO, player) != roundSettingsDTO.getLastBet()) {
-                return false;
-            }
-        }
-        return true;
+        return getPlayersInGame(roundSettingsDTO.getPlayers()).stream()
+                .noneMatch(player -> sumAllHistoryBets(roundSettingsDTO, player) != roundSettingsDTO.getLastBet());
     }
 
 

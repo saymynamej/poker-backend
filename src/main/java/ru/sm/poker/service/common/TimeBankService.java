@@ -13,7 +13,6 @@ public class TimeBankService {
 
     private final static long DEFAULT_TIME_FOR_ACTION = 20;
 
-
     public Timer activateTimeBank(Player player) {
         final Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -24,6 +23,10 @@ public class TimeBankService {
             }
         }, player.getTimeBank() * 1000L);
         return timer;
+    }
+
+    public void setTimeBank(Player player, long seconds){
+        player.setTimeBank(seconds);
     }
 
 }

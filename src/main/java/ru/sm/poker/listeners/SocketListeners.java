@@ -10,9 +10,10 @@ import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.game.SecurityService;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.service.holdem.BroadCastService;
+import ru.sm.poker.service.common.SimpleNotificationService;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -20,7 +21,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SocketListeners {
     private final GameManager gameManager;
-    private final BroadCastService broadCastService;
+    private final SimpleNotificationService simpleNotificationService;
     private final SecurityService securityService;
 
 
@@ -28,16 +29,13 @@ public class SocketListeners {
     public void handleWebsocketConnectListener(SessionSubscribeEvent event) {
         final Principal user = event.getUser();
         if (user != null) {
-
-            final Optional<Pair<String, Player>> playerByName
-                    = gameManager.getPlayerByName(user.getName());
-
+            final Optional<Pair<String, Player>> playerByName = gameManager.getPlayerByName(user.getName());
             if (playerByName.isPresent()) {
                 final Pair<String, Player> playerPair = playerByName.get();
                 final Map<String, Game> allGames = gameManager.getGames();
                 final Game game = allGames.get(playerPair.getLeft());
                 final RoundSettingsDTO roundSettingsDTO = game.getRoundSettings();
-                broadCastService.sendToUser(playerPair.getRight().getName(), securityService.secureCards(user.getName(), roundSettingsDTO));
+                simpleNotificationService.sendToUser(playerPair.getRight().getName(), securityService.secureCards(List.of(user.getName()), roundSettingsDTO));
             }
         }
     }

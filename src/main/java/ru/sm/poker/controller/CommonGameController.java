@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.sm.poker.action.holdem.*;
 import ru.sm.poker.dto.ActionDTO;
 import ru.sm.poker.game.GameManager;
-import ru.sm.poker.model.Player;
 import ru.sm.poker.service.ActionService;
+import ru.sm.poker.service.common.SeatManager;
 
 import java.security.Principal;
+
+import static ru.sm.poker.base.PlayerSettings.getDefaultPlayerForHoldem;
 
 @RequestMapping("/game")
 @RestController
@@ -21,14 +23,23 @@ public class CommonGameController {
 
     private final GameManager gameManager;
     private final ActionService actionService;
+    private final SeatManager seatManager;
+
 
     @MessageMapping("/addPlayer")
-    public void addUser(Principal principal) {
-        gameManager.addPlayer(Player.builder()
-                .name(principal.getName())
-                .timeBank(60L)
-                .chipsCount(5000)
-                .build());
+    public void joinInQueue(Principal principal) {
+        gameManager.joinInQueue(
+                getDefaultPlayerForHoldem(principal.getName())
+        );
+    }
+
+    @MessageMapping("/addPlayerInGame")
+    public void joinInGame(Principal principal, String gameName) {
+        seatManager.joinInGame(
+                gameName,
+                getDefaultPlayerForHoldem(principal.getName())
+        );
+        log.info("player:" + principal.getName() + " is connecting with game:" + gameName);
     }
 
     @MessageMapping("/afk")
@@ -36,13 +47,9 @@ public class CommonGameController {
         actionService.setUnSetAfkPlayer(principal.getName());
     }
 
-    @MessageMapping("/addPlayerInGame")
-    public void addUserInGame(Principal principal, String gameName) {
-        gameManager.addPlayer(Player
-                .builder()
-                .name(principal.getName())
-                .chipsCount(5000L)
-                .build(), gameName);
+    @MessageMapping("/addChips")
+    public void addChips(Principal principal) {
+        gameManager.addChips(principal.getName());
     }
 
     @MessageMapping("/raise")

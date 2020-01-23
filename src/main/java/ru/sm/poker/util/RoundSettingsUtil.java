@@ -1,11 +1,14 @@
 package ru.sm.poker.util;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.game.Game;
 import ru.sm.poker.model.Player;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class RoundSettingsUtil {
 
@@ -19,10 +22,10 @@ public class RoundSettingsUtil {
     }
 
 
-    public static RoundSettingsDTO copyWithSecureCard(RoundSettingsDTO roundSettingsDTO, String filterName) {
+    public static RoundSettingsDTO copyWithSecureCard(RoundSettingsDTO roundSettingsDTO, List<String> filters) {
         final List<Player> playersWithSecureCards = PlayerUtil.copies(roundSettingsDTO.getPlayers());
         playersWithSecureCards.forEach(player -> {
-            if (!player.getName().equals(filterName)) {
+            if (!filters.contains(player.getName())) {
                 player.addCards(Collections.emptyList());
             }
         });
@@ -48,5 +51,13 @@ public class RoundSettingsUtil {
                 .river(roundSettingsDTO.getRiver())
                 .tern(roundSettingsDTO.getTern())
                 .build();
+    }
+
+
+    public static ImmutablePair<Game, RoundSettingsDTO> getGameAndRoundSettings(Game game, Optional<RoundSettingsDTO> roundSettingsDTO) {
+        if (game == null || roundSettingsDTO.isEmpty()) {
+            throw new RuntimeException("cannot find game or roundsettings");
+        }
+        return ImmutablePair.of(game, roundSettingsDTO.get());
     }
 }

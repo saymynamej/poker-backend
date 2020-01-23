@@ -2,7 +2,6 @@ package ru.sm.poker.model;
 
 import lombok.*;
 import ru.sm.poker.action.Action;
-import ru.sm.poker.action.CountAction;
 import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.RoleType;

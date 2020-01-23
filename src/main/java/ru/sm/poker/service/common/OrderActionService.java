@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 import static ru.sm.poker.util.HistoryUtil.allPlayersInGameHaveSameCountOfBet;
 import static ru.sm.poker.util.HistoryUtil.sumAllHistoryBets;
+import static ru.sm.poker.util.PlayerUtil.getPlayersInGame;
 import static ru.sm.poker.util.SortUtil.sortPostflop;
 import static ru.sm.poker.util.SortUtil.sortPreflop;
 
@@ -29,10 +30,12 @@ public class OrderActionService implements OrderService {
 
     @Override
     public void start(RoundSettingsDTO roundSettingsDTO) {
-        final List<Player> sortedPlayers = roundSettingsDTO.getStageType() == StageType.PREFLOP ?
+        final List<Player> sortedPlayers = getPlayersInGame(roundSettingsDTO.getStageType() == StageType.PREFLOP ?
                 sortPreflop(roundSettingsDTO.getPlayers()) : sortPostflop(roundSettingsDTO.getPlayers()).stream()
                 .filter(player -> player.getStateType() != StateType.AFK)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
+
+        setAfkPlayersWithoutChips(sortedPlayers);
 
         boolean isFirstStart = true;
         boolean isWork = true;
@@ -41,15 +44,18 @@ public class OrderActionService implements OrderService {
             if (allChecks(sortedPlayers)) {
                 break;
             }
+            if (allPlayersInAllIn(sortedPlayers)) {
+                break;
+            }
             for (Player player : sortedPlayers) {
-                if (isOnePlayerLeft(sortedPlayers)){
+                if (player.getStateType() == null || player.getStateType() == StateType.AFK) {
+                    continue;
+                }
+                if (isOnePlayerLeft(sortedPlayers)) {
                     isWork = false;
                     break;
                 }
                 if (player.getAction() instanceof Fold) {
-                    continue;
-                }
-                if (player.getStateType() == StateType.AFK) {
                     continue;
                 }
                 if (sumAllHistoryBets(roundSettingsDTO, player) == roundSettingsDTO.getLastBet()) {
@@ -63,10 +69,22 @@ public class OrderActionService implements OrderService {
         }
     }
 
+    private void setAfkPlayersWithoutChips(List<Player> sortedPlayers) {
+        sortedPlayers.forEach(player -> {
+            if (player.getChipsCount() == 0) {
+                player.setStateType(StateType.AFK);
+            }
+        });
+    }
+
+    private boolean allPlayersInAllIn(List<Player> players) {
+        return getPlayersInGame(players).stream()
+                .allMatch(player -> player.getChipsCount() == 0 && player.getAction() != null);
+    }
 
     private boolean isOnePlayerLeft(List<Player> players) {
         return players.stream()
-                .filter(player -> !(player.getAction() instanceof Fold))
+                .filter(player -> !(player.getAction() instanceof Fold) && player.getStateType() == StateType.IN_GAME)
                 .count() == 1;
     }
 

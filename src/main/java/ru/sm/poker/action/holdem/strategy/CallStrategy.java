@@ -1,5 +1,6 @@
-package ru.sm.poker.action.strategy;
+package ru.sm.poker.action.holdem.strategy;
 
+import ru.sm.poker.action.ActionStrategy;
 import ru.sm.poker.action.CountAction;
 import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.model.Player;
