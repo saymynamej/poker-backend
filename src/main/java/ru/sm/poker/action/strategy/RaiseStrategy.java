@@ -8,31 +8,30 @@ import ru.sm.poker.model.Player;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
 
-import static ru.sm.poker.util.HistoryUtil.*;
+import static ru.sm.poker.util.HistoryUtil.sumAllHistoryBets;
+import static ru.sm.poker.util.PlayerUtil.checkPlayerHasEnoughChips;
 
 public class RaiseStrategy implements ActionStrategy {
 
     @Override
     public void execute(Player player, GameService gameService, ActionService actionService, CountAction countAction, RoundSettingsDTO roundSettingsDTO) {
-        final long prevBets = sumAllHistoryBets(roundSettingsDTO, player);
-        if (roundSettingsDTO.getStageType() == StageType.PREFLOP) {
-            switch (player.getRoleType()) {
-                case SMALL_BLIND:
-                case BIG_BLIND:
-                    player.setAction(new Raise(countAction.getCount() - prevBets));
-                    gameService.removeChipsFromPlayer(player, roundSettingsDTO, countAction.getCount() - prevBets, countAction.getCount());
-                    break;
-                default:
-                    gameService.removeChipsFromPlayer(player, roundSettingsDTO, countAction.getCount() - prevBets, countAction.getCount());
-                    break;
-            }
+
+        if (!checkPlayerHasEnoughChips(player, countAction)) {
+            actionService.waitUntilPlayerWillHasAction(player, roundSettingsDTO);
             return;
         }
 
-        if (countAction.getCount() > roundSettingsDTO.getLastBet() * 2) {
-            gameService.removeChipsFromPlayer(player, roundSettingsDTO, countAction.getCount() - prevBets, countAction.getCount());
+        if (countAction.getCount() < roundSettingsDTO.getLastBet() * 2) {
+            actionService.waitUntilPlayerWillHasAction(player, roundSettingsDTO);
             return;
         }
-        actionService.waitUntilPlayerWillHasAction(player, roundSettingsDTO);
+
+        final long prevBets = sumAllHistoryBets(roundSettingsDTO, player);
+        if (roundSettingsDTO.getStageType() == StageType.PREFLOP && player.isBigBlind() || player.isSmallBlind()) {
+            player.setAction(new Raise(countAction.getCount() - prevBets));
+        }
+
+        gameService.removeChipsFromPlayer(player, roundSettingsDTO, countAction.getCount() - prevBets, countAction.getCount());
+
     }
 }
