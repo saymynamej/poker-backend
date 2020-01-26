@@ -2,7 +2,7 @@ package ru.sm.poker.game;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.sm.poker.config.game.GameSettings;
-import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.model.Player;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public abstract class Game {
         return this.gameSettings.getMaxPlayerSize();
     }
 
-    protected GameSettings getGameSettings(){
+    public GameSettings getGameSettings(){
         return gameSettings;
     }
 
@@ -57,6 +57,8 @@ public abstract class Game {
     }
 
 
+
+
     public abstract void start();
 
     public abstract void enable();
@@ -65,6 +67,6 @@ public abstract class Game {
 
     public abstract void reload();
 
-    public abstract RoundSettingsDTO getRoundSettings();
+    public abstract HoldemRoundSettingsDTO getRoundSettings();
 
 }

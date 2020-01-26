@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.config.game.GameSettings;
 import ru.sm.poker.config.game.holdem.HoldemFullTableSettings;
+import ru.sm.poker.enums.GameType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.game.Round;
@@ -52,7 +53,7 @@ public class GameListeners {
 
                     final List<Player> playersFromQueue = extractQueue();
 
-                    final GameSettings gameSettings = new HoldemFullTableSettings(randomGameName);
+                    final GameSettings gameSettings = new HoldemFullTableSettings(randomGameName, GameType.HOLDEM);
 
                     final Round round = new HoldemRound(
                             playersFromQueue,

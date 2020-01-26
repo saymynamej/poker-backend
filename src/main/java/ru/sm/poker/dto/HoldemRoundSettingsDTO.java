@@ -16,7 +16,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
-public class RoundSettingsDTO {
+public class HoldemRoundSettingsDTO implements RoundSettings {
     private final Map<Player, List<CountAction>> history;
     private final List<Player> players;
     private final List<CardType> flop;
@@ -33,4 +33,8 @@ public class RoundSettingsDTO {
     private long bank;
     private Player activePlayer;
     private boolean isAfk;
+}
+
+interface RoundSettings {
+    Player getActivePlayer();
 }

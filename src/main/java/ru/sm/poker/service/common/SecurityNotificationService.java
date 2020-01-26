@@ -2,7 +2,7 @@ package ru.sm.poker.service.common;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.game.SecurityService;
 import ru.sm.poker.model.Player;
 
@@ -17,25 +17,25 @@ public class SecurityNotificationService {
     private final SimpleNotificationService simpleNotificationService;
     private final SecurityService securityService;
 
-    public void sendToAllWithSecurityWhoIsNotInTheGame(RoundSettingsDTO roundSettingsDTO) {
-        final List<String> filter = getPlayersInGame(roundSettingsDTO.getPlayers())
+    public void sendToAllWithSecurityWhoIsNotInTheGame(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
+        final List<String> filter = getPlayersInGame(holdemRoundSettingsDTO.getPlayers())
                 .stream()
                 .map(Player::getName)
                 .collect(Collectors.toList());
 
-        final RoundSettingsDTO secureSettings = securityService.secureCards(filter, roundSettingsDTO);
+        final HoldemRoundSettingsDTO secureSettings = securityService.secureCards(filter, holdemRoundSettingsDTO);
         secureSettings.getPlayers()
                 .forEach(player -> simpleNotificationService.sendToUser(player.getName(), secureSettings));
 
     }
 
-    public void sendToAllWithSecurity(RoundSettingsDTO roundSettingsDTO) {
-        roundSettingsDTO.getPlayers().forEach(player -> {
-            sendToUserWithSecurity(roundSettingsDTO, player.getName());
+    public void sendToAllWithSecurity(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
+        holdemRoundSettingsDTO.getPlayers().forEach(player -> {
+            sendToUserWithSecurity(holdemRoundSettingsDTO, player.getName());
         });
     }
 
-    public void sendToUserWithSecurity(RoundSettingsDTO roundSettingsDTO, String userName) {
-        simpleNotificationService.sendToUser(userName, securityService.secureCards(List.of(userName), roundSettingsDTO));
+    public void sendToUserWithSecurity(HoldemRoundSettingsDTO holdemRoundSettingsDTO, String userName) {
+        simpleNotificationService.sendToUser(userName, securityService.secureCards(List.of(userName), holdemRoundSettingsDTO));
     }
 }

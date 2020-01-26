@@ -1,5 +1,7 @@
 package ru.sm.poker.config.game;
 
+import ru.sm.poker.enums.GameType;
+
 public interface GameSettings {
     int getMaxPlayerSize();
 
@@ -12,4 +14,6 @@ public interface GameSettings {
     long getStartSmallBlindBet();
 
     long getStartBigBlindBet();
+
+    GameType getGameType();
 }

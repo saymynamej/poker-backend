@@ -5,7 +5,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
-import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.game.SecurityService;
@@ -34,8 +34,8 @@ public class SocketListeners {
                 final Pair<String, Player> playerPair = playerByName.get();
                 final Map<String, Game> allGames = gameManager.getGames();
                 final Game game = allGames.get(playerPair.getLeft());
-                final RoundSettingsDTO roundSettingsDTO = game.getRoundSettings();
-                simpleNotificationService.sendToUser(playerPair.getRight().getName(), securityService.secureCards(List.of(user.getName()), roundSettingsDTO));
+                final HoldemRoundSettingsDTO holdemRoundSettingsDTO = game.getRoundSettings();
+                simpleNotificationService.sendToUser(playerPair.getRight().getName(), securityService.secureCards(List.of(user.getName()), holdemRoundSettingsDTO));
             }
         }
     }

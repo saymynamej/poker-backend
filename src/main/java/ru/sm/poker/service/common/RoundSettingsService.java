@@ -3,8 +3,7 @@ package ru.sm.poker.service.common;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.sm.poker.action.holdem.Fold;
-import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.model.Player;
 
@@ -16,29 +15,29 @@ import java.util.stream.Collectors;
 @Slf4j
 public class RoundSettingsService {
 
-    public void addBank(RoundSettingsDTO roundSettingsDTO, long count) {
-        roundSettingsDTO.setBank(roundSettingsDTO.getBank() + count);
+    public void addBank(HoldemRoundSettingsDTO holdemRoundSettingsDTO, long count) {
+        holdemRoundSettingsDTO.setBank(holdemRoundSettingsDTO.getBank() + count);
     }
 
-    public void setActivePlayer(RoundSettingsDTO roundSettingsDTO, Player player) {
+    public void setActivePlayer(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player) {
         player.setActive(true);
-        roundSettingsDTO.setActivePlayer(player);
+        holdemRoundSettingsDTO.setActivePlayer(player);
     }
 
-    public void setInActivePlayer(RoundSettingsDTO roundSettingsDTO, Player player) {
+    public void setInActivePlayer(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player) {
         player.setActive(false);
-        roundSettingsDTO.setActivePlayer(null);
+        holdemRoundSettingsDTO.setActivePlayer(null);
     }
 
-    public void setLastBet(RoundSettingsDTO roundSettingsDTO, long count) {
-        if (roundSettingsDTO.getLastBet() < count) {
+    public void setLastBet(HoldemRoundSettingsDTO holdemRoundSettingsDTO, long count) {
+        if (holdemRoundSettingsDTO.getLastBet() < count) {
             log.info("prev last bet less than new last bet");
         }
-        roundSettingsDTO.setLastBet(count);
+        holdemRoundSettingsDTO.setLastBet(count);
     }
 
-    public boolean checkLastPlayer(RoundSettingsDTO roundSettingsDTO) {
-        final List<Player> activePlayers = roundSettingsDTO.getPlayers().stream()
+    public boolean checkLastPlayer(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
+        final List<Player> activePlayers = holdemRoundSettingsDTO.getPlayers().stream()
                 .filter(pl -> !(pl.getAction().getActionType() ==  ActionType.FOLD))
                 .collect(Collectors.toList());
 

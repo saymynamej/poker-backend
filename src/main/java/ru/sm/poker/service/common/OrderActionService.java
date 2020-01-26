@@ -3,7 +3,7 @@ package ru.sm.poker.service.common;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.enums.StageType;
 import ru.sm.poker.enums.StateType;
@@ -29,16 +29,20 @@ public class OrderActionService implements OrderService {
     private final ActionService actionServiceHoldem;
 
     @Override
-    public void start(RoundSettingsDTO roundSettingsDTO) {
-        final List<Player> sortedPlayers = getPlayersInGame(roundSettingsDTO.getStageType() == StageType.PREFLOP ? sortPreflop(roundSettingsDTO.getPlayers()) : sortPostflop(roundSettingsDTO.getPlayers()).stream()
-                .filter(player -> player.getStateType() != StateType.AFK)
-                .collect(Collectors.toList()));
+    public void start(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
+        final List<Player> sortedPlayers = getPlayersInGame(sort(
+                holdemRoundSettingsDTO.getPlayers(),
+                holdemRoundSettingsDTO.getStageType())
+        ).stream()
+                .filter(playerIsNotAfk())
+                .collect(Collectors.toList());
+
 
         boolean isFirstStart = true;
         boolean isWork = true;
 
         while (true) {
-            if (allPlayersInGameHaveSameCountOfBet(roundSettingsDTO) && roundSettingsDTO.getLastBet() != 0 && isWork) {
+            if (allPlayersInGameHaveSameCountOfBet(holdemRoundSettingsDTO) && holdemRoundSettingsDTO.getLastBet() != 0 && isWork) {
                 break;
             }
 
@@ -46,7 +50,7 @@ public class OrderActionService implements OrderService {
                 break;
             }
 
-            if (allPlayersInAllIn(roundSettingsDTO)) {
+            if (allPlayersInAllIn(holdemRoundSettingsDTO)) {
                 break;
             }
 
@@ -64,23 +68,28 @@ public class OrderActionService implements OrderService {
                 if (player.getAction().getActionType() == ActionType.FOLD) {
                     continue;
                 }
-                if (sumAllHistoryBets(roundSettingsDTO, player) == roundSettingsDTO.getLastBet()) {
+                if (sumAllHistoryBets(holdemRoundSettingsDTO, player) == holdemRoundSettingsDTO.getLastBet()) {
                     if (!isFirstStart) {
                         continue;
                     }
                 }
-                actionServiceHoldem.waitUntilPlayerWillHasAction(player, roundSettingsDTO);
+                actionServiceHoldem.waitUntilPlayerWillHasAction(player, holdemRoundSettingsDTO);
             }
             isFirstStart = false;
         }
+    }
+
+
+    private List<Player> sort(List<Player> players, StageType stageType) {
+        return stageType == StageType.PREFLOP ? sortPreflop(players) : sortPostflop(players);
     }
 
     private boolean playersHasNotChips(Player player) {
         return player.getChipsCount() == 0;
     }
 
-    private boolean allPlayersInAllIn(RoundSettingsDTO roundSettingsDTO) {
-        return getPlayersInGame(roundSettingsDTO.getPlayers()).stream()
+    private boolean allPlayersInAllIn(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
+        return getPlayersInGame(holdemRoundSettingsDTO.getPlayers()).stream()
                 .allMatch(playerInAllIn());
 
     }

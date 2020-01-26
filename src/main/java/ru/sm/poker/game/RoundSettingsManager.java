@@ -1,14 +1,14 @@
 package ru.sm.poker.game;
 
-import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 
 public interface RoundSettingsManager {
 
-    RoundSettingsDTO getPreflopSettings();
+    HoldemRoundSettingsDTO getPreflopSettings();
 
-    RoundSettingsDTO getPostFlopSettings(long bank);
+    HoldemRoundSettingsDTO getPostFlopSettings(long bank);
 
-    RoundSettingsDTO getPostFlopSettingsWithTern(long bank);
+    HoldemRoundSettingsDTO getPostFlopSettingsWithTern(long bank);
 
-    RoundSettingsDTO getPostFlopSettingsWithRiver(long bank);
+    HoldemRoundSettingsDTO getPostFlopSettingsWithRiver(long bank);
 }

@@ -2,6 +2,7 @@ package ru.sm.poker.config.game.holdem;
 
 import lombok.RequiredArgsConstructor;
 import ru.sm.poker.config.game.GameSettings;
+import ru.sm.poker.enums.GameType;
 
 @RequiredArgsConstructor
 public class HoldemFullTableSettings implements GameSettings {
@@ -17,6 +18,8 @@ public class HoldemFullTableSettings implements GameSettings {
     private final static int MIN_BIG_BLIND_BET = 2;
 
     private final String gameName;
+
+    private final GameType gameType;
 
 
     @Override
@@ -48,5 +51,10 @@ public class HoldemFullTableSettings implements GameSettings {
     @Override
     public long getStartBigBlindBet() {
         return MIN_BIG_BLIND_BET;
+    }
+
+    @Override
+    public GameType getGameType() {
+        return gameType;
     }
 }

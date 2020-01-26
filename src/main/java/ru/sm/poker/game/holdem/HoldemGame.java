@@ -1,7 +1,7 @@
 package ru.sm.poker.game.holdem;
 
 import ru.sm.poker.config.game.GameSettings;
-import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.Round;
@@ -47,8 +47,8 @@ public class HoldemGame extends Game {
     }
 
     @Override
-    public RoundSettingsDTO getRoundSettings() {
-        return getRound().getRoundSettingsDTO();
+    public HoldemRoundSettingsDTO getRoundSettings() {
+        return getRound().getHoldemRoundSettingsDTO();
     }
 
     private void setAllPlayerAreActive(List<Player> players) {

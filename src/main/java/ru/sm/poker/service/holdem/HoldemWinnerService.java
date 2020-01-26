@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.dto.CombinationDTO;
-import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.CombinationType;
 import ru.sm.poker.model.Player;
@@ -29,14 +29,14 @@ public class HoldemWinnerService implements WinnerService {
     private final NotificationService notificationService;
 
     @Override
-    public void sendPrizes(RoundSettingsDTO roundSettingsDTO) {
+    public void sendPrizes(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
         final List<Pair<Player, CombinationDTO>> winners = findWinners(
-                getPlayersInGame(roundSettingsDTO.getPlayers()),
-                roundSettingsDTO.getFlop(),
-                roundSettingsDTO.getTern(),
-                roundSettingsDTO.getRiver()
+                getPlayersInGame(holdemRoundSettingsDTO.getPlayers()),
+                holdemRoundSettingsDTO.getFlop(),
+                holdemRoundSettingsDTO.getTern(),
+                holdemRoundSettingsDTO.getRiver()
         );
-        final long bank = roundSettingsDTO.getBank();
+        final long bank = holdemRoundSettingsDTO.getBank();
 
         final Pair<Player, CombinationDTO> theMostPowerFullCombination = winners.get(0);
 
@@ -54,7 +54,7 @@ public class HoldemWinnerService implements WinnerService {
             player.addChips(result);
         });
 
-        securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(roundSettingsDTO);
+        securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettingsDTO);
         notificationService.sendToAll(winners);
     }
 

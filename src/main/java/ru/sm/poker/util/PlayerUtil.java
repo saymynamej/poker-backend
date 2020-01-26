@@ -29,6 +29,7 @@ public class PlayerUtil {
         return players.stream()
                 .filter(player -> player.getAction() != null &&
                         player.getAction().getActionType() != ActionType.FOLD &&
+                        player.getRoleType() != null &&
                         player.getStateType() != StateType.AFK &&
                         player.getCards() != null
                 )

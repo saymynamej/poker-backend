@@ -1,0 +1,166 @@
+{
+  "history": null,
+  "players": [
+    {
+      "name": "1",
+      "cards": [],
+      "roleType": "SMALL_BLIND",
+      "chipsCount": 4999,
+      "stateType": "IN_GAME",
+      "timeBank": 200,
+      "action": {
+        "actionType": "WAIT"
+      },
+      "active": false,
+      "gameName": "Bhorash",
+      "player": false,
+      "smallBlind": true,
+      "button": false,
+      "bigBlind": false
+    },
+    {
+      "name": "2",
+      "cards": [],
+      "roleType": "BIG_BLIND",
+      "chipsCount": 4998,
+      "stateType": "IN_GAME",
+      "timeBank": 200,
+      "action": {
+        "actionType": "WAIT"
+      },
+      "active": false,
+      "gameName": "Bhorash",
+      "player": false,
+      "smallBlind": false,
+      "button": false,
+      "bigBlind": true
+    },
+    {
+      "name": "3",
+      "cards": [],
+      "roleType": "PLAYER",
+      "chipsCount": 5000,
+      "stateType": "IN_GAME",
+      "timeBank": 200,
+      "action": {
+        "actionType": "WAIT"
+      },
+      "active": true,
+      "gameName": "Bhorash",
+      "player": true,
+      "smallBlind": false,
+      "button": false,
+      "bigBlind": false
+    },
+    {
+      "name": "5",
+      "cards": [
+        "SIX_S",
+        "J_C"
+      ],
+      "roleType": "BUTTON",
+      "chipsCount": 5000,
+      "stateType": "IN_GAME",
+      "timeBank": 200,
+      "action": {
+        "actionType": "WAIT"
+      },
+      "active": false,
+      "gameName": "Bhorash",
+      "player": false,
+      "smallBlind": false,
+      "button": true,
+      "bigBlind": false
+    }
+  ],
+  "flop": null,
+  "tern": null,
+  "river": null,
+  "gameName": "Bhorash",
+  "smallBlindBet": 1,
+  "bigBlindBet": 2,
+  "button": {
+    "name": "5",
+    "cards": [
+      "SIX_S",
+      "J_C"
+    ],
+    "roleType": "BUTTON",
+    "chipsCount": 5000,
+    "stateType": "IN_GAME",
+    "timeBank": 200,
+    "action": {
+      "actionType": "WAIT"
+    },
+    "active": false,
+    "gameName": "Bhorash",
+    "player": false,
+    "smallBlind": false,
+    "button": true,
+    "bigBlind": false
+  },
+  "smallBlind": {
+    "name": "1",
+    "cards": [
+      "NINE_S",
+      "NINE_H"
+    ],
+    "roleType": "SMALL_BLIND",
+    "chipsCount": 4999,
+    "stateType": "IN_GAME",
+    "timeBank": 200,
+    "action": {
+      "actionType": "WAIT"
+    },
+    "active": false,
+    "gameName": "Bhorash",
+    "player": false,
+    "smallBlind": true,
+    "button": false,
+    "bigBlind": false
+  },
+  "bigBlind": {
+    "name": "2",
+    "cards": [
+      "TEN_D",
+      "TEN_C"
+    ],
+    "roleType": "BIG_BLIND",
+    "chipsCount": 4998,
+    "stateType": "IN_GAME",
+    "timeBank": 200,
+    "action": {
+      "actionType": "WAIT"
+    },
+    "active": false,
+    "gameName": "Bhorash",
+    "player": false,
+    "smallBlind": false,
+    "button": false,
+    "bigBlind": true
+  },
+  "stageType": "PREFLOP",
+  "lastBet": 2,
+  "bank": 3,
+  "activePlayer": {
+    "name": "3",
+    "cards": [
+      "SEVEN_C",
+      "EIGHT_C"
+    ],
+    "roleType": "PLAYER",
+    "chipsCount": 5000,
+    "stateType": "IN_GAME",
+    "timeBank": 200,
+    "action": {
+      "actionType": "WAIT"
+    },
+    "active": true,
+    "gameName": "Bhorash",
+    "player": true,
+    "smallBlind": false,
+    "button": false,
+    "bigBlind": false
+  },
+  "afk": false
+}

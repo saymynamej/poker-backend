@@ -2,7 +2,7 @@ package ru.sm.poker.service.common;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.model.Player;
 
 import static ru.sm.poker.util.HistoryUtil.addActionInHistory;
@@ -13,10 +13,10 @@ public class GameService {
 
     private final RoundSettingsService roundSettingsService;
 
-    public void removeChipsFromPlayer(Player player, RoundSettingsDTO roundSettingsDTO, long removeChips, long lastBet) {
+    public void removeChipsFromPlayer(Player player, HoldemRoundSettingsDTO holdemRoundSettingsDTO, long removeChips, long lastBet) {
         player.removeChips(removeChips);
-        roundSettingsService.addBank(roundSettingsDTO, removeChips);
-        roundSettingsDTO.setLastBet(lastBet);
-        addActionInHistory(roundSettingsDTO, player);
+        roundSettingsService.addBank(holdemRoundSettingsDTO, removeChips);
+        holdemRoundSettingsDTO.setLastBet(lastBet);
+        addActionInHistory(holdemRoundSettingsDTO, player);
     }
 }

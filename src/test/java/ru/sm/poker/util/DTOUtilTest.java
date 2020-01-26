@@ -1,7 +1,7 @@
 package ru.sm.poker.util;
 
 import com.github.javafaker.Faker;
-import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.enums.RoleType;
 import ru.sm.poker.enums.StageType;
 import ru.sm.poker.model.Player;
@@ -16,8 +16,8 @@ public class DTOUtilTest {
     public final static long DEFAULT_BIG_BLIND_BET = 2L;
     public final static long DEFAULT_SMALL_BLIND_BET = 1L;
 
-    public static RoundSettingsDTO getRoundSettingsDTO(long lastBet, StageType stageType) {
-        return RoundSettingsDTO.builder()
+    public static HoldemRoundSettingsDTO getRoundSettingsDTO(long lastBet, StageType stageType) {
+        return HoldemRoundSettingsDTO.builder()
                 .lastBet(lastBet)
                 .stageType(stageType)
                 .bigBlindBet(DEFAULT_BIG_BLIND_BET)
@@ -26,8 +26,8 @@ public class DTOUtilTest {
                 .build();
     }
 
-    public static RoundSettingsDTO getRoundSettingsDTO(long lastBet) {
-        return RoundSettingsDTO.builder()
+    public static HoldemRoundSettingsDTO getRoundSettingsDTO(long lastBet) {
+        return HoldemRoundSettingsDTO.builder()
                 .lastBet(lastBet)
                 .players(Collections.emptyList())
                 .build();

@@ -34,7 +34,6 @@ public class Player {
     @Setter
     private String gameName;
 
-
     @Builder
     public Player(String name, List<CardType> cards, RoleType roleType, long chipsCount, StateType stateType, long timeBank, Action action, boolean active, String gameName) {
         this.name = name;

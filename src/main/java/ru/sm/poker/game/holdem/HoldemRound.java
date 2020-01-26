@@ -2,7 +2,7 @@ package ru.sm.poker.game.holdem;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.game.RoundSettingsManager;
@@ -22,7 +22,7 @@ public class HoldemRound implements Round {
     private final WinnerService winnerService;
     private final long smallBlindBet;
     private final long bigBlindBet;
-    private RoundSettingsDTO roundSettingsDTO;
+    private HoldemRoundSettingsDTO holdemRoundSettingsDTO;
 
     @Override
     public void startRound() {
@@ -30,15 +30,21 @@ public class HoldemRound implements Round {
 
         final RoundSettingsManager roundSettingsManager =
                 new HoldemRoundSettingsManager(players, gameName, bigBlindBet, smallBlindBet);
-        this.roundSettingsDTO = roundSettingsManager.getPreflopSettings();
-        orderService.start(roundSettingsDTO);
-        this.roundSettingsDTO = roundSettingsManager.getPostFlopSettings(this.roundSettingsDTO.getBank());
-        orderService.start(roundSettingsDTO);
-        this.roundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithTern(this.roundSettingsDTO.getBank());
-        orderService.start(roundSettingsDTO);
-        this.roundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithRiver(this.roundSettingsDTO.getBank());
-        orderService.start(roundSettingsDTO);
-        winnerService.sendPrizes(roundSettingsDTO);
+
+        this.holdemRoundSettingsDTO = roundSettingsManager.getPreflopSettings();
+        orderService.start(holdemRoundSettingsDTO);
+
+        this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettings(this.holdemRoundSettingsDTO.getBank());
+        orderService.start(holdemRoundSettingsDTO);
+
+        this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithTern(this.holdemRoundSettingsDTO.getBank());
+        orderService.start(holdemRoundSettingsDTO);
+
+        this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithRiver(this.holdemRoundSettingsDTO.getBank());
+        orderService.start(holdemRoundSettingsDTO);
+
+
+        winnerService.sendPrizes(holdemRoundSettingsDTO);
 
 //        //TODO, TRANSFER IT TO THE OTHER SERVICE
         players.forEach(player -> {
@@ -52,11 +58,11 @@ public class HoldemRound implements Round {
 
     @Override
     public void reloadRound() {
-        this.roundSettingsDTO.getPlayers().forEach(player -> player.setStateType(StateType.AFK));
+        this.holdemRoundSettingsDTO.getPlayers().forEach(player -> player.setStateType(StateType.AFK));
     }
 
     @Override
-    public synchronized RoundSettingsDTO getRoundSettingsDTO() {
-        return this.roundSettingsDTO;
+    public synchronized HoldemRoundSettingsDTO getHoldemRoundSettingsDTO() {
+        return this.holdemRoundSettingsDTO;
     }
 }

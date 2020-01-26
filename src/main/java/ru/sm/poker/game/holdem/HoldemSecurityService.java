@@ -3,7 +3,7 @@ package ru.sm.poker.game.holdem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.game.SecurityService;
@@ -25,8 +25,7 @@ public class HoldemSecurityService implements SecurityService {
         final Game game = holdemGameManager.getGameByName(gameName);
         if (game != null && player != null && game.getRoundSettings() != null && game.getRoundSettings().getActivePlayer() != null) {
 
-            return game
-                    .getRoundSettings()
+            return game.getRoundSettings()
                     .getActivePlayer()
                     .equals(player);
         }
@@ -41,8 +40,8 @@ public class HoldemSecurityService implements SecurityService {
     }
 
     @Override
-    public RoundSettingsDTO secureCards(List<String> filterName, RoundSettingsDTO roundSettingsDTO) {
-        return RoundSettingsUtil.copyWithSecureCard(roundSettingsDTO, filterName);
+    public HoldemRoundSettingsDTO secureCards(List<String> filterName, HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
+        return RoundSettingsUtil.copyWithSecureCard(holdemRoundSettingsDTO, filterName);
     }
 
     @Override
