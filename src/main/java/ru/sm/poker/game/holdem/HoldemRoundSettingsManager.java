@@ -6,10 +6,7 @@ import ru.sm.poker.action.holdem.Call;
 import ru.sm.poker.action.holdem.Fold;
 import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.dto.RoundSettingsDTO;
-import ru.sm.poker.enums.CardType;
-import ru.sm.poker.enums.RoleType;
-import ru.sm.poker.enums.StageType;
-import ru.sm.poker.enums.StateType;
+import ru.sm.poker.enums.*;
 import ru.sm.poker.game.RoundSettingsManager;
 import ru.sm.poker.model.Player;
 
@@ -278,7 +275,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
 
     private void setAllActivePlayersTest() {
         this.players.forEach(player -> {
-            if (!(player.getAction() instanceof Fold) && player.getStateType() == StateType.IN_GAME) {
+            if (!(player.getAction() instanceof Fold) && player.getAction().getActionType() != ActionType.ALLIN && player.getStateType() == StateType.IN_GAME) {
                 player.setAction(new Wait());
             }
         });

@@ -7,11 +7,14 @@ import ru.sm.poker.game.Game;
 import ru.sm.poker.game.holdem.HoldemGameManager;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.service.NotificationService;
+import ru.sm.poker.util.PlayerUtil;
+
 import javax.annotation.PostConstruct;
 import java.util.Queue;
 import static java.lang.String.format;
 import static ru.sm.poker.enums.ErrorType.PLAYER_ALREADY_EXIST;
 import static ru.sm.poker.enums.ErrorType.SUCCESS_JOIN_IN_QUEUE;
+import static ru.sm.poker.util.PlayerUtil.*;
 
 @RequiredArgsConstructor
 @Component
@@ -52,22 +55,8 @@ public class SeatManager {
 
     @PostConstruct
     public void init() {
-        joinInQueue(Player.builder()
-                .name("1")
-                .chipsCount(5000)
-                .timeBank(60L)
-                .build());
-
-        joinInQueue(Player.builder()
-                .name("2")
-                .chipsCount(5000)
-                .timeBank(60L)
-                .build());
-
-        joinInQueue(Player.builder()
-                .name("3")
-                .chipsCount(5000)
-                .timeBank(60L)
-                .build());
+        joinInQueue(getDefaultPlayerForHoldem("1"));
+        joinInQueue(getDefaultPlayerForHoldem("2"));
+        joinInQueue(getDefaultPlayerForHoldem("3"));
     }
 }

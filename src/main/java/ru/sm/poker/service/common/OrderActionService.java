@@ -19,6 +19,7 @@ import static ru.sm.poker.util.HistoryUtil.sumAllHistoryBets;
 import static ru.sm.poker.util.PlayerUtil.getPlayersInGame;
 import static ru.sm.poker.util.SortUtil.sortPostflop;
 import static ru.sm.poker.util.SortUtil.sortPreflop;
+import static ru.sm.poker.util.StreamUtil.*;
 
 @RequiredArgsConstructor
 @Service
@@ -37,14 +38,14 @@ public class OrderActionService implements OrderService {
         boolean isWork = true;
 
         while (true) {
-
-            if (allPlayersInGameHaveSameCountOfBet(roundSettingsDTO) && roundSettingsDTO.getLastBet() != 0){
+            if (allPlayersInGameHaveSameCountOfBet(roundSettingsDTO) && roundSettingsDTO.getLastBet() != 0 && isWork) {
                 break;
             }
 
             if (allChecks(sortedPlayers)) {
                 break;
             }
+
             if (allPlayersInAllIn(roundSettingsDTO)) {
                 break;
             }
@@ -80,8 +81,14 @@ public class OrderActionService implements OrderService {
 
     private boolean allPlayersInAllIn(RoundSettingsDTO roundSettingsDTO) {
         return getPlayersInGame(roundSettingsDTO.getPlayers()).stream()
-                .allMatch(player -> player.getAction().getActionType() == ActionType.ALLIN);
+                .allMatch(playerInAllIn());
 
+    }
+
+    private boolean allChecks(List<Player> players) {
+        return players.stream()
+                .filter(playerInAllIn().negate())
+                .allMatch(playersHasCheck());
     }
 
     private boolean isOnePlayerLeft(List<Player> players) {
@@ -90,9 +97,4 @@ public class OrderActionService implements OrderService {
                 .count() == players.size() - 1;
     }
 
-    private boolean allChecks(List<Player> players) {
-        return getPlayersInGame(players).stream()
-                .filter(player -> player.getAction().getActionType() != ActionType.ALLIN)
-                .allMatch(player -> player.getAction().getActionType() == ActionType.CHECK);
-    }
 }
