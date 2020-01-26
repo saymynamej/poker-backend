@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.CombinationType;
-import ru.sm.poker.service.holdem.CombinationServiceHoldem;
+import ru.sm.poker.service.holdem.HoldemCombinationService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class CheckCombinationDTOTypeServiceHoldemTest {
 
-    private final CombinationServiceHoldem checkCombinationServiceHoldem = new CombinationServiceHoldem();
+    private final HoldemCombinationService checkHoldemCombinationService = new HoldemCombinationService();
 
     private static final List<CardType> FLUSH_ROUAL_FULL = new ArrayList<>(Arrays.asList(CardType.A_H, CardType.K_H, CardType.Q_H, CardType.J_H, CardType.TEN_H, CardType.FOUR_H, CardType.K_S));
     private static final List<CardType> FLUSH_ROYAL_COMBINATION = new ArrayList<>(Arrays.asList(CardType.A_H, CardType.K_H, CardType.Q_H, CardType.J_H, CardType.TEN_H));
@@ -78,81 +78,81 @@ public class CheckCombinationDTOTypeServiceHoldemTest {
 
     @Test
     public void testFlushRoyal() {
-        final Pair<CombinationType, List<CardType>> flashRoyal = checkCombinationServiceHoldem.findCombination(FLUSH_ROUAL_FULL);
+        final Pair<CombinationType, List<CardType>> flashRoyal = checkHoldemCombinationService.findCombination(FLUSH_ROUAL_FULL);
         Assert.assertEquals(FLUSH_ROYAL_COMBINATION, flashRoyal.getValue());
     }
 
     @Test
     public void testStraitFlash() {
-        final Pair<CombinationType, List<CardType>> straitFlush = checkCombinationServiceHoldem.findCombination(STRAIT_FLUSH_FULL);
+        final Pair<CombinationType, List<CardType>> straitFlush = checkHoldemCombinationService.findCombination(STRAIT_FLUSH_FULL);
         Assert.assertEquals(STRAIT_FLUSH_COMBINATION, straitFlush.getValue());
     }
 
     @Test
     public void testStraitFlash2() {
-        final Pair<CombinationType, List<CardType>> straitFlush2 = checkCombinationServiceHoldem.findCombination(STRAIT_FLUSH_FULL_2);
+        final Pair<CombinationType, List<CardType>> straitFlush2 = checkHoldemCombinationService.findCombination(STRAIT_FLUSH_FULL_2);
         Assert.assertEquals(STRAIT_FLUSH_COMBINATION_2, straitFlush2.getValue());
     }
 
 
     @Test
     public void testKare() {
-        final Pair<CombinationType, List<CardType>> kare = checkCombinationServiceHoldem.findCombination(KARE_FULL);
+        final Pair<CombinationType, List<CardType>> kare = checkHoldemCombinationService.findCombination(KARE_FULL);
         Assert.assertEquals(KARE_COMBINATION, kare.getValue());
     }
 
     @Test
     public void testFullHouse() {
-        final Pair<CombinationType, List<CardType>> fullHouse = checkCombinationServiceHoldem.findCombination(FULL_HOUSE_FULL);
+        final Pair<CombinationType, List<CardType>> fullHouse = checkHoldemCombinationService.findCombination(FULL_HOUSE_FULL);
         Assert.assertEquals(FULL_HOUSE_COMBINATION, fullHouse.getValue());
     }
 
     @Test
     public void testFlush() {
-        final Pair<CombinationType, List<CardType>> flush = checkCombinationServiceHoldem.findCombination(FLUSH_FULL);
+        final Pair<CombinationType, List<CardType>> flush = checkHoldemCombinationService.findCombination(FLUSH_FULL);
         Assert.assertEquals(FLUSH_COMBINATION, flush.getValue());
     }
 
     @Test
     public void testStrait() {
-        final Pair<CombinationType, List<CardType>> straight = checkCombinationServiceHoldem.findCombination(STRAIT_FULL);
+        final Pair<CombinationType, List<CardType>> straight = checkHoldemCombinationService.findCombination(STRAIT_FULL);
         Assert.assertEquals(STRAIT_COMBINATION, straight.getValue());
     }
 
     @Test
     public void testStrait2() {
-        final Pair<CombinationType, List<CardType>> straight2 = checkCombinationServiceHoldem.findCombination(STRAIT_FULL_2);
+        final Pair<CombinationType, List<CardType>> straight2 = checkHoldemCombinationService.findCombination(STRAIT_FULL_2);
         Assert.assertEquals(STRAIT_COMBINATION_2, straight2.getValue());
     }
 
     @Test
     public void testStraight3() {
-        Pair<CombinationType, List<CardType>> strait3 = checkCombinationServiceHoldem.findCombination(STRAIT_FULL_3);
+        Pair<CombinationType, List<CardType>> strait3 = checkHoldemCombinationService.findCombination(STRAIT_FULL_3);
         Assert.assertEquals(STRAIT_COMBINATION_3, strait3.getValue());
     }
 
 
     @Test
     public void testThree() {
-        final Pair<CombinationType, List<CardType>> three = checkCombinationServiceHoldem.findCombination(THREE_FULL);
+        final Pair<CombinationType, List<CardType>> three = checkHoldemCombinationService.findCombination(THREE_FULL);
         Assert.assertEquals(THREE_COMBINATION, three.getValue());
     }
 
     @Test
     public void testThree2() {
-        final Pair<CombinationType, List<CardType>> three_2 = checkCombinationServiceHoldem.findCombination(THREE_FULL_2);
+        final Pair<CombinationType, List<CardType>> three_2 = checkHoldemCombinationService.findCombination(THREE_FULL_2);
         Assert.assertEquals(THREE_COMBINATION_2, three_2.getValue());
     }
 
     @Test
     public void testThree3() {
-        final Pair<CombinationType, List<CardType>> three_3 = checkCombinationServiceHoldem.findCombination(THREE_FULL_3);
+        final Pair<CombinationType, List<CardType>> three_3 = checkHoldemCombinationService.findCombination(THREE_FULL_3);
         Assert.assertEquals(THREE_COMBINATION_3, three_3.getValue());
     }
 
     @Test
     public void testTwoPair() {
-        final Pair<CombinationType, List<CardType>> twoPair = checkCombinationServiceHoldem.findCombination(TWO_PAIR_FULL);
+        final Pair<CombinationType, List<CardType>> twoPair = checkHoldemCombinationService.findCombination(TWO_PAIR_FULL);
         Assert.assertEquals(TWO_PAIR_COMBINATION, twoPair.getValue());
     }
 
@@ -164,7 +164,7 @@ public class CheckCombinationDTOTypeServiceHoldemTest {
 
     @Test
     public void testOnePair() {
-        final Pair<CombinationType, List<CardType>> pair = checkCombinationServiceHoldem.findCombination(PAIR_FULL);
+        final Pair<CombinationType, List<CardType>> pair = checkHoldemCombinationService.findCombination(PAIR_FULL);
         Assert.assertEquals(PAIR_FULL_COMBINATION, pair.getValue());
     }
 
@@ -174,13 +174,13 @@ public class CheckCombinationDTOTypeServiceHoldemTest {
      */
     @Test
     public void testHighCard() {
-        final Pair<CombinationType, List<CardType>> highCards = checkCombinationServiceHoldem.findCombination(HIGH_CARD_FULL);
+        final Pair<CombinationType, List<CardType>> highCards = checkHoldemCombinationService.findCombination(HIGH_CARD_FULL);
         Assert.assertEquals(HIGH_COMBINATION, highCards.getValue());
     }
 
     @Test
     public void testHighCard2() {
-        final Pair<CombinationType, List<CardType>> highCards_2 = checkCombinationServiceHoldem.findCombination(HIGH_CARD_FULL_2);
+        final Pair<CombinationType, List<CardType>> highCards_2 = checkHoldemCombinationService.findCombination(HIGH_CARD_FULL_2);
         Assert.assertEquals(HIGH_COMBINATION_2, highCards_2.getValue());
     }
 

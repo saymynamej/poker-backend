@@ -1,7 +1,7 @@
 package ru.sm.poker.util;
 
 import ru.sm.poker.action.CountAction;
-import ru.sm.poker.action.holdem.Fold;
+import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.model.Player;
 
@@ -17,12 +17,21 @@ public class PlayerUtil {
         return copyPlayers;
     }
 
+    public static Player getDefaultPlayerForHoldem(String playerName) {
+        return Player.builder()
+                .name(playerName)
+                .timeBank(60L)
+                .chipsCount(40)
+                .build();
+    }
+
     public static List<Player> getPlayersInGame(List<Player> players) {
         return players.stream()
-                .filter(
-                        player -> !(player.getAction() instanceof Fold &&
-                                player.getStateType() != StateType.AFK &&
-                                player.getRoleType() != null) && player.getCards() != null)
+                .filter(player -> player.getAction() != null &&
+                        player.getAction().getActionType() != ActionType.FOLD &&
+                        player.getStateType() != StateType.AFK &&
+                        player.getCards() != null
+                )
                 .collect(Collectors.toList());
     }
 

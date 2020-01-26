@@ -7,22 +7,21 @@ import ru.sm.poker.model.Player;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static ru.sm.poker.util.PlayerUtil.getPlayersInGame;
 
 public class HistoryUtil {
 
 
-    public static long allPreviousBetsEqualsLastBetWithNewAction(RoundSettingsDTO roundSettingsDTO, Player player, CountAction countAction) {
-        return sumAllHistoryBets(roundSettingsDTO, player) + countAction.getCount();
-    }
-
-    public static boolean allPreviousBetsEqualsLastBet(RoundSettingsDTO roundSettingsDTO, Player player) {
-        return sumAllHistoryBets(roundSettingsDTO, player) == roundSettingsDTO.getLastBet();
-    }
-
     public static boolean allPlayersInGameHaveSameCountOfBet(RoundSettingsDTO roundSettingsDTO) {
-        return getPlayersInGame(roundSettingsDTO.getPlayers()).stream()
+        final List<Player> playersInGame = getPlayersInGame(roundSettingsDTO.getPlayers());
+
+        final List<Player> players = playersInGame.stream()
+                .filter(player -> player.getChipsCount() > 0)
+                .collect(Collectors.toList());
+
+        return players.stream()
                 .noneMatch(player -> sumAllHistoryBets(roundSettingsDTO, player) != roundSettingsDTO.getLastBet());
     }
 

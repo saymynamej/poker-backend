@@ -9,6 +9,7 @@ import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.CombinationType;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.service.CombinationService;
+import ru.sm.poker.service.NotificationService;
 import ru.sm.poker.service.WinnerService;
 import ru.sm.poker.service.common.SecurityNotificationService;
 
@@ -25,6 +26,7 @@ public class HoldemWinnerService implements WinnerService {
 
     private final CombinationService combinationService;
     private final SecurityNotificationService securityNotificationService;
+    private final NotificationService notificationService;
 
     @Override
     public void sendPrizes(RoundSettingsDTO roundSettingsDTO) {
@@ -35,19 +37,25 @@ public class HoldemWinnerService implements WinnerService {
                 roundSettingsDTO.getRiver()
         );
         final long bank = roundSettingsDTO.getBank();
+
         final Pair<Player, CombinationDTO> theMostPowerFullCombination = winners.get(0);
-        final CombinationDTO powerFullCombination = theMostPowerFullCombination.getRight();
+
+        final CombinationDTO powerFullCombination = theMostPowerFullCombination.getValue();
+
         final List<Pair<Player, CombinationDTO>> allPowerFullCombinations = winners.stream()
                 .filter(pair -> pair.getRight().equals(powerFullCombination))
                 .collect(Collectors.toList());
 
         final int size = allPowerFullCombinations.size();
+
         allPowerFullCombinations.forEach(allPowerFullCombination -> {
             final long result = bank / size;
             final Player player = allPowerFullCombination.getKey();
             player.addChips(result);
         });
+
         securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(roundSettingsDTO);
+        notificationService.sendToAll(winners);
     }
 
     @Override

@@ -3,6 +3,8 @@ package ru.sm.poker.listeners;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.sm.poker.config.game.GameSettings;
+import ru.sm.poker.config.game.holdem.HoldemFullTableSettings;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.game.Round;
@@ -19,7 +21,6 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 import static ru.sm.poker.util.GameUtil.getRandomGOTCityName;
 
@@ -29,8 +30,8 @@ import static ru.sm.poker.util.GameUtil.getRandomGOTCityName;
 @Slf4j
 public class GameListeners {
 
-    private final ExecutorService executorServiceForStart = Executors.newFixedThreadPool(10);
-    private final ExecutorService executorServiceForClear = Executors.newSingleThreadExecutor();
+    private final ExecutorService executorServiceForStart = Executors.newFixedThreadPool(1);
+    private final ExecutorService executorServiceForGames = Executors.newFixedThreadPool(10);
     private final OrderService orderService;
     private final GameManager gameManager;
     private final WinnerService winnerService;
@@ -39,33 +40,36 @@ public class GameListeners {
 
     @PostConstruct
     public void init() {
-        enable();
-        enableClearListener();
+        enableHoldemClassicCash();
     }
 
-    private void enable() {
+    private void enableHoldemClassicCash() {
         executorServiceForStart.submit(() -> {
             while (isEnable) {
                 ThreadUtil.sleep(1);
-                if (players.size() > 3) {
+                if (players.size() >= 4) {
                     final String randomGameName = getRandomGOTCityName();
 
                     final List<Player> playersFromQueue = extractQueue();
 
+                    final GameSettings gameSettings = new HoldemFullTableSettings(randomGameName);
+
                     final Round round = new HoldemRound(
-                            playersFromQueue, randomGameName,
-                            orderService, winnerService,
-                            1, 2);
+                            playersFromQueue,
+                            randomGameName,
+                            orderService,
+                            winnerService,
+                            gameSettings.getStartSmallBlindBet(),
+                            gameSettings.getStartBigBlindBet());
 
                     final Game holdemGame = new HoldemGame(
-                            randomGameName,
-                            9,
+                            gameSettings,
                             playersFromQueue,
                             round
                     );
 
                     gameManager.createNewGame(randomGameName, holdemGame);
-                    holdemGame.start();
+                    executorServiceForGames.submit(holdemGame::start);
                 }
             }
         });
@@ -80,27 +84,4 @@ public class GameListeners {
         return players;
     }
 
-    private void enableClearListener() {
-        executorServiceForClear.submit(() -> {
-            while (isEnable) {
-                ThreadUtil.sleep(10);
-                final List<Game> allEmptyGame = findAllEmptyGame();
-                clearGame(allEmptyGame);
-            }
-        });
-    }
-
-    private void clearGame(List<Game> games) {
-        if (games != null && !games.isEmpty()) {
-            games.forEach(game -> gameManager.getGames().remove(game.getName()));
-        }
-    }
-
-    private List<Game> findAllEmptyGame() {
-        return gameManager.getGames()
-                .values()
-                .stream()
-                .filter(game -> game.getRoundSettings().getPlayers().size() == 0)
-                .collect(Collectors.toList());
-    }
 }

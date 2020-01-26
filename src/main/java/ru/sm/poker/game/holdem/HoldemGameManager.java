@@ -4,22 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
-import ru.sm.poker.dto.RoundSettingsDTO;
-import ru.sm.poker.enums.ErrorType;
-import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.model.Player;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Queue;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
-import static ru.sm.poker.enums.ErrorType.*;
 
 @Component
 @RequiredArgsConstructor
@@ -27,7 +21,7 @@ import static ru.sm.poker.enums.ErrorType.*;
 public class HoldemGameManager implements GameManager {
 
     private final Map<String, Game> games;
-    private final Queue<Player> players;
+
 
     @Override
     public Optional<Pair<String, Player>> getPlayerByName(String name) {
@@ -96,13 +90,10 @@ public class HoldemGameManager implements GameManager {
     }
 
     @Override
-    public boolean createNewGame(String name, Game game) {
+    public void createNewGame(String name, Game game) {
         if (checkGameName(name)) {
             games.put(name, game);
-            return true;
         }
-        return false;
-
     }
 
     @Override
@@ -114,37 +105,42 @@ public class HoldemGameManager implements GameManager {
     }
 
     @Override
-    public ErrorType joinInQueue(Player player) {
-        if (players.add(player)) {
-            player.setStateType(StateType.IN_GAME);
-            return SUCCESS_JOIN_IN_QUEUE;
-        }
-        return PLAYER_ALREADY_EXIST;
+    public void reload(String gameName) {
+        getGameByName(gameName).reload();
+    }
+
+
+    @Override
+    public void disableGame(String gameName) {
+        getGameByName(gameName).disable();
     }
 
     @Override
-    public ErrorType joinInGame(String gameName, Player player) throws RuntimeException {
-        if (checkGameName(gameName)) {
-            return GAME_NOT_FOUND;
-        }
+    public void enableGame(String gameName) {
+        getGameByName(gameName).enable();
+    }
+
+    @Override
+    public void startGame(String gameName) {
+        getGameByName(gameName).start();
+    }
+
+    @Override
+    public Player getActivePlayerInGame(String game){
+        return getGameByName(game).getRoundSettings()
+                .getPlayers()
+                .stream()
+                .filter(Player::isActive)
+                .findFirst().orElseThrow(()-> new RuntimeException("cannot find active player in game:" + game));
+    }
+
+    @Override
+    public Game getGameByName(String gameName){
         final Game game = games.get(gameName);
-
-        if (game.getRoundSettings().getPlayers().size() == game.getMaxPlayersSize()) {
-            return SETTINGS_NOT_FOUND;
+        if (game == null) {
+            throw new RuntimeException("cannot find game");
         }
-        player.setStateType(StateType.IN_GAME);
-        game.addPlayer(player);
-        return SUCCESS_JOIN_IN_QUEUE;
-    }
-
-    @Override
-    public void reload(String playerName) {
-        final Optional<Pair<String, Player>> player = getPlayerByName(playerName);
-        if (player.isPresent()) {
-            final Pair<String, Player> playerPair = player.get();
-            final Game game = getGames().get(playerPair.getLeft());
-            game.reload();
-        }
+        return game;
     }
 
     @Override
@@ -152,27 +148,8 @@ public class HoldemGameManager implements GameManager {
         return games;
     }
 
-
     private boolean checkGameName(String gameName) {
         return !games.containsKey(gameName);
     }
 
-    @PostConstruct
-    public void init() {
-        joinInQueue(Player.builder()
-                .name("1")
-                .chipsCount(5000)
-                .timeBank(60L)
-                .build());
-        joinInQueue(Player.builder()
-                .name("2")
-                .chipsCount(5000)
-                .timeBank(60L)
-                .build());
-        joinInQueue(Player.builder()
-                .name("3")
-                .chipsCount(5000)
-                .timeBank(60L)
-                .build());
-    }
 }

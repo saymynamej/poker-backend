@@ -32,6 +32,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
     public RoundSettingsDTO getPreflopSettings() {
 
         if (players.size() < 4) throw new RuntimeException("players size bust be more than 4");
+
         dealCards();
         setButton();
         setSmallBlind();

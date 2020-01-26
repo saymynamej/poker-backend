@@ -2,12 +2,19 @@ package ru.sm.poker.service;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.sm.poker.dto.CombinationDTO;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.CombinationType;
+import ru.sm.poker.game.SecurityService;
 import ru.sm.poker.model.Player;
-import ru.sm.poker.service.holdem.CombinationServiceHoldem;
-import ru.sm.poker.service.holdem.WinnerServiceHoldem;
+import ru.sm.poker.service.common.SimpleNotificationService;
+import ru.sm.poker.service.holdem.HoldemCombinationService;
+import ru.sm.poker.service.holdem.HoldemWinnerService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,13 +22,14 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class WinnerServiceHoldemTest {
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
+@ActiveProfiles("test")
+public class HoldemWinnerServiceTest {
 
-    private final CombinationServiceHoldem checkCombinationService
-            = new CombinationServiceHoldem();
 
-    private final WinnerService winnerService
-            = new WinnerServiceHoldem(checkCombinationService);
+    @Autowired
+    private WinnerService winnerService;
 
     private final List<CardType> flop = Arrays.asList(CardType.SIX_D, CardType.SEVEN_C, CardType.EIGHT_H);
     private final CardType tern = CardType.A_C;

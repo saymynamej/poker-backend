@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.action.holdem.Fold;
 import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.model.Player;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public class RoundSettingsService {
 
     public boolean checkLastPlayer(RoundSettingsDTO roundSettingsDTO) {
         final List<Player> activePlayers = roundSettingsDTO.getPlayers().stream()
-                .filter(pl -> !(pl.getAction() instanceof Fold))
+                .filter(pl -> !(pl.getAction().getActionType() ==  ActionType.FOLD))
                 .collect(Collectors.toList());
 
         return activePlayers.size() == 1;

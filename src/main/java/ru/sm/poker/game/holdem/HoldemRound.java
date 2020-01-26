@@ -3,6 +3,7 @@ package ru.sm.poker.game.holdem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.game.RoundSettingsManager;
 import ru.sm.poker.model.Player;
@@ -19,8 +20,8 @@ public class HoldemRound implements Round {
     private final String gameName;
     private final OrderService orderService;
     private final WinnerService winnerService;
-    private final int smallBlindBet;
-    private final int bigBlindBet;
+    private final long smallBlindBet;
+    private final long bigBlindBet;
     private RoundSettingsDTO roundSettingsDTO;
 
     @Override
@@ -38,11 +39,20 @@ public class HoldemRound implements Round {
         this.roundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithRiver(this.roundSettingsDTO.getBank());
         orderService.start(roundSettingsDTO);
         winnerService.sendPrizes(roundSettingsDTO);
+
+//        //TODO, TRANSFER IT TO THE OTHER SERVICE
+        players.forEach(player -> {
+            if (player.getChipsCount() ==  0){
+                player.setStateType(StateType.AFK);
+            }
+        });
+
+
     }
 
     @Override
     public void reloadRound() {
-        this.roundSettingsDTO.setAfk(true);
+        this.roundSettingsDTO.getPlayers().forEach(player -> player.setStateType(StateType.AFK));
     }
 
     @Override

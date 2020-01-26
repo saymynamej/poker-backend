@@ -10,10 +10,10 @@ import ru.sm.poker.dto.ActionDTO;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.SeatManager;
+import ru.sm.poker.util.PlayerUtil;
 
 import java.security.Principal;
 
-import static ru.sm.poker.base.PlayerSettings.getDefaultPlayerForHoldem;
 
 @RequestMapping("/game")
 @RestController
@@ -28,8 +28,8 @@ public class CommonGameController {
 
     @MessageMapping("/addPlayer")
     public void joinInQueue(Principal principal) {
-        gameManager.joinInQueue(
-                getDefaultPlayerForHoldem(principal.getName())
+        seatManager.joinInQueue(
+                PlayerUtil.getDefaultPlayerForHoldem(principal.getName())
         );
     }
 
@@ -37,9 +37,8 @@ public class CommonGameController {
     public void joinInGame(Principal principal, String gameName) {
         seatManager.joinInGame(
                 gameName,
-                getDefaultPlayerForHoldem(principal.getName())
+                PlayerUtil.getDefaultPlayerForHoldem(principal.getName())
         );
-        log.info("player:" + principal.getName() + " is connecting with game:" + gameName);
     }
 
     @MessageMapping("/afk")
@@ -77,8 +76,8 @@ public class CommonGameController {
         actionService.setAction(principal.getName(), new Check());
     }
 
-    @MessageMapping("/reload")
-    public void reload(Principal principal) {
-        gameManager.reload(principal.getName());
+    @MessageMapping("/all-in")
+    public void allIn(Principal principal, ActionDTO actionDTO) {
+        actionService.setAction(principal.getName(), new All(Long.parseLong(actionDTO.getCount())));
     }
 }

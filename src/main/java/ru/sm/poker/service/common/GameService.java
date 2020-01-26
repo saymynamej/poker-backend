@@ -11,11 +11,10 @@ import static ru.sm.poker.util.HistoryUtil.addActionInHistory;
 @RequiredArgsConstructor
 public class GameService {
 
-    private final PlayerService playerService;
     private final RoundSettingsService roundSettingsService;
 
     public void removeChipsFromPlayer(Player player, RoundSettingsDTO roundSettingsDTO, long removeChips, long lastBet) {
-        playerService.removeChips(player, removeChips);
+        player.removeChips(removeChips);
         roundSettingsService.addBank(roundSettingsDTO, removeChips);
         roundSettingsDTO.setLastBet(lastBet);
         addActionInHistory(roundSettingsDTO, player);

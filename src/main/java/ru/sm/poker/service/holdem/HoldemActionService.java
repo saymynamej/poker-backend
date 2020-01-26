@@ -2,12 +2,14 @@ package ru.sm.poker.service.holdem;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.action.Action;
 import ru.sm.poker.action.ExecutableAction;
 import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.dto.RoundSettingsDTO;
+import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.enums.ErrorType;
 import ru.sm.poker.enums.InformationType;
 import ru.sm.poker.enums.StateType;
@@ -47,8 +49,8 @@ public class HoldemActionService implements ActionService {
         }
 
         final Pair<String, Player> playerPair = playerByName.get();
-        final Game game = holdemGameManager.getGames().get(playerPair.getLeft());
-        final Player player = playerPair.getRight();
+        final Game game = holdemGameManager.getGameByName(playerPair.getKey());
+        final Player player = playerPair.getValue();
 
         if (game.getRoundSettings() == null || player == null) {
             log.info(format(SETTINGS_NOT_FOUND.getMessage(), playerName));
@@ -82,6 +84,7 @@ public class HoldemActionService implements ActionService {
 
     @Override
     public void waitUntilPlayerWillHasAction(Player player, RoundSettingsDTO roundSettingsDTO) {
+        log.info("waiting action from player:" + player.getName());
         setPlayerWait(player);
         roundSettingsService.setActivePlayer(roundSettingsDTO, player);
         securityNotificationService.sendToAllWithSecurity(roundSettingsDTO);
@@ -96,21 +99,21 @@ public class HoldemActionService implements ActionService {
 
 
     private void waitPlayerAction(Player player, RoundSettingsDTO roundSettingsDTO) {
-        final Timer timer = timeBankService.activateTimeBank(player);
+        final ImmutablePair<Timer, Long> timeBank = timeBankService.activateTimeBank(player);
         while (true) {
-            if (!(player.getAction() instanceof Wait)) {
-                timer.cancel();
+            if (!(player.getAction().getActionType() == ActionType.WAIT)) {
+                timeBankService.cancel(timeBank.getValue(), player, timeBank.getKey());
                 doAction(player, roundSettingsDTO);
                 break;
             }
         }
     }
 
-
     private void doAction(Player player, RoundSettingsDTO roundSettingsDTO) {
         final Action action = player.getAction();
         if (action instanceof ExecutableAction) {
             ((ExecutableAction) action).doAction(roundSettingsDTO, player, gameService, this);
+            log.info("player: " + player.getName() + " did action:" + action);
         }
     }
 }

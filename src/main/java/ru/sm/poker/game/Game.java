@@ -1,24 +1,22 @@
 package ru.sm.poker.game;
 
 import lombok.extern.slf4j.Slf4j;
+import ru.sm.poker.config.game.GameSettings;
 import ru.sm.poker.dto.RoundSettingsDTO;
 import ru.sm.poker.model.Player;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 public abstract class Game {
 
-    private final String gameName;
-    private final int maxPlayerSize;
+    private final GameSettings gameSettings;
     private final List<Player> players;
     private final Round round;
-    protected boolean isStarted = true;
+    protected boolean isEnable = true;
 
-    public Game(String gameName, int maxPlayersSize, List<Player> players, Round round){
-        this.gameName = gameName;
-        this.maxPlayerSize = maxPlayersSize;
+    public Game(GameSettings gameSettings, List<Player> players, Round round){
+        this.gameSettings = gameSettings;
         this.players = players;
         this.round = round;
     }
@@ -30,16 +28,21 @@ public abstract class Game {
     protected List<Player> getPlayers(){
         return this.players;
     }
-    public boolean isStarted(){
-        return isStarted;
+
+    public boolean isEnable(){
+        return isEnable;
     }
 
     public String getName(){
-        return this.gameName;
+        return this.gameSettings.getGameName();
     }
 
     public int getMaxPlayersSize(){
-        return this.maxPlayerSize;
+        return this.gameSettings.getMaxPlayerSize();
+    }
+
+    protected GameSettings getGameSettings(){
+        return gameSettings;
     }
 
     public void addPlayer(Player player){
@@ -47,21 +50,18 @@ public abstract class Game {
             this.players.add(player);
             return;
         }
-        log.info(player + " already in game");
     }
 
     public void removePlayer(Player player){
-        if (!this.players.contains(player)){
-            log.info(player + " :player not found");
-            return;
-        }
         this.players.remove(player);
     }
 
 
     public abstract void start();
 
-    public abstract void stop();
+    public abstract void enable();
+
+    public abstract void disable();
 
     public abstract void reload();
 

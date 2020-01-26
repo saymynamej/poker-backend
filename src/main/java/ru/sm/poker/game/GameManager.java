@@ -16,17 +16,24 @@ public interface GameManager {
 
     void removePlayer(Player player);
 
-    ErrorType joinInQueue(Player player);
+    void reload(String gameName);
 
-    ErrorType joinInGame(String gameName, Player player);
+    void disableGame(String gameName);
 
-    void reload(String playerName);
+    void enableGame(String gameName);
 
-    Map<String, Game> getGames();
+    void startGame(String gameName);
 
-    boolean createNewGame(String name, Game game);
+    void createNewGame(String name, Game game);
 
     void addChips(String name);
 
     void addChips(String name, long count);
+
+    Player getActivePlayerInGame(String game);
+
+    Game getGameByName(String gameName);
+
+    Map<String, Game> getGames();
+
 }
