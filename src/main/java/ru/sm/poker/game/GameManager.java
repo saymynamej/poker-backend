@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface GameManager {
     boolean playerExistByName(String gameName, String name);
 
-    Optional<Pair<String, Player>> getPlayerByName(String name);
+    Optional<Player> getPlayerByName(String name);
 
     void removePlayer(String gameName, Player player);
 

@@ -1,5 +1,6 @@
 package ru.sm.poker.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.sm.poker.game.Game;
@@ -11,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @Configuration
+@RequiredArgsConstructor
 public class GameConfig {
 
     @Bean
@@ -22,4 +24,5 @@ public class GameConfig {
     public Queue<Player> getPlayers() {
         return new LinkedBlockingQueue<>();
     }
+
 }

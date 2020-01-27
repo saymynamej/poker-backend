@@ -2,6 +2,7 @@ package ru.sm.poker.listeners;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.config.game.GameSettings;
 import ru.sm.poker.config.game.holdem.HoldemFullTableSettings;
@@ -32,7 +33,7 @@ import static ru.sm.poker.util.GameUtil.getRandomGOTCityName;
 public class GameListeners {
 
     private final ExecutorService executorServiceForStart = Executors.newFixedThreadPool(1);
-    private final ExecutorService executorServiceForGames = Executors.newFixedThreadPool(10);
+    private final ExecutorService executorServiceForGames = Executors.newFixedThreadPool(15);
     private final OrderService orderService;
     private final GameManager gameManager;
     private final WinnerService winnerService;
@@ -42,6 +43,7 @@ public class GameListeners {
     @PostConstruct
     public void init() {
         enableHoldemClassicCash();
+        fillHoldemCashGames();
     }
 
     private void enableHoldemClassicCash() {
@@ -83,6 +85,31 @@ public class GameListeners {
             players.add(this.players.poll());
         }
         return players;
+    }
+
+
+    public void fillHoldemCashGames() {
+        for (int i = 0; i < 10; i++) {
+            final String randomGameName = getRandomGOTCityName();
+
+            final GameSettings gameSettings = new HoldemFullTableSettings(randomGameName, GameType.HOLDEM);
+            final List<Player> players = new ArrayList<>();
+            final Round round = new HoldemRound(
+                    players,
+                    randomGameName,
+                    orderService,
+                    winnerService,
+                    gameSettings.getStartSmallBlindBet(),
+                    gameSettings.getStartBigBlindBet());
+
+            final Game holdemGame = new HoldemGame(
+                    gameSettings,
+                    players,
+                    round
+            );
+            gameManager.createNewGame(randomGameName, holdemGame);
+            executorServiceForGames.submit(holdemGame::start);
+        }
     }
 
 }

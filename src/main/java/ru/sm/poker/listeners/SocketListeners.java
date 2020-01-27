@@ -29,13 +29,15 @@ public class SocketListeners {
     public void handleWebsocketConnectListener(SessionSubscribeEvent event) {
         final Principal user = event.getUser();
         if (user != null) {
-            final Optional<Pair<String, Player>> playerByName = gameManager.getPlayerByName(user.getName());
-            if (playerByName.isPresent()) {
-                final Pair<String, Player> playerPair = playerByName.get();
+            final Optional<Player> optionalPlayer = gameManager.getPlayerByName(user.getName());
+            if (optionalPlayer.isPresent()) {
+                final Player player = optionalPlayer.get();
                 final Map<String, Game> allGames = gameManager.getGames();
-                final Game game = allGames.get(playerPair.getLeft());
-                final HoldemRoundSettingsDTO holdemRoundSettingsDTO = game.getRoundSettings();
-                simpleNotificationService.sendToUser(playerPair.getRight().getName(), securityService.secureCards(List.of(user.getName()), holdemRoundSettingsDTO));
+                if (player.getGameName() != null) {
+                    final Game game = allGames.get(player.getGameName());
+                    final HoldemRoundSettingsDTO holdemRoundSettingsDTO = game.getRoundSettings();
+                    simpleNotificationService.sendToUser(player.getName(), securityService.secureCards(List.of(user.getName()), holdemRoundSettingsDTO));
+                }
             }
         }
     }

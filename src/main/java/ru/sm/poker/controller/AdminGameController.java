@@ -1,5 +1,6 @@
 package ru.sm.poker.controller;
 
+import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
@@ -28,9 +29,14 @@ public class AdminGameController {
     private final ActionService actionService;
     private final SeatManager seatManager;
 
-    @MessageMapping("/admin/addPlayer")
+    @MessageMapping("/admin/addPlayerInQueue")
     public void joinInQueue(Principal principal) {
         seatManager.joinInQueue(PlayerUtil.getDefaultPlayerForHoldem(principal.getName()));
+    }
+
+    @MessageMapping("/admin/addPlayerInGame")
+    public void joinInGame(AdminActionDTO actionDTO) {
+        seatManager.joinInGame(actionDTO.getName(), PlayerUtil.getDefaultPlayerForHoldem(new Faker().name().name()));
     }
 
 
@@ -96,9 +102,9 @@ public class AdminGameController {
 
     @MessageMapping("/admin/all-in")
     public void allIn(AdminActionDTO actionDTO) {
-        final Optional<Pair<String, Player>> playerByName = gameManager.getPlayerByName(actionDTO.getName());
+        final Optional<Player> playerByName = gameManager.getPlayerByName(actionDTO.getName());
         playerByName.ifPresent(
-                stringPlayerPair -> actionService.setAction(actionDTO.getName(), new All(stringPlayerPair.getRight().getChipsCount()))
+                player -> actionService.setAction(actionDTO.getName(), new All(player.getChipsCount()))
         );
     }
 

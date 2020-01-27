@@ -34,16 +34,21 @@ public class GamesInfoService implements InfoService {
     }
 
     private List<GameDTO> convertMapToLisGameDTO(Map<String, Game> games) {
-
-        return games.values()
-                .stream()
-                .filter(game -> game.getRoundSettings() != null)
+        return games.values().stream()
                 .map(game -> GameDTO.builder()
-                        .countPlayers(game.getRoundSettings().getPlayers().size())
-                        .gameType(game.getGameSettings().getGameType())
                         .name(game.getName())
-                        .maxPlayersSize(game.getGameSettings().getMaxPlayerSize())
                         .build())
                 .collect(Collectors.toList());
+//
+//        return games.values()
+//                .stream()
+//                .filter(game -> game.getRoundSettings() != null)
+//                .map(game -> GameDTO.builder()
+//                        .countPlayers(game.getRoundSettings().getPlayers().size())
+//                        .gameType(game.getGameSettings().getGameType())
+//                        .name(game.getName())
+//                        .maxPlayersSize(game.getGameSettings().getMaxPlayerSize())
+//                        .build())
+//                .collect(Collectors.toList());
     }
 }

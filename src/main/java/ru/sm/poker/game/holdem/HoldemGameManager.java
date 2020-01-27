@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.model.Player;
@@ -24,32 +25,13 @@ public class HoldemGameManager implements GameManager {
 
 
     @Override
-    public Optional<Pair<String, Player>> getPlayerByName(String name) {
-        try {
-            final Optional<Map.Entry<String, Player>> gameAndPlayer = games
-                    .entrySet()
-                    .stream()
-                    .flatMap((entry -> entry
-                            .getValue()
-                            .getRoundSettings()
-                            .getPlayers()
-                            .stream()
-                            .filter(player -> player.getName().equals(name))
-                            .collect(Collectors.toMap(playerF -> entry.getKey(), playerF -> playerF))
-                            .entrySet()
-                            .stream()))
-                    .findFirst();
-
-            if (gameAndPlayer.isPresent()) {
-                final Map.Entry<String, Player> player = gameAndPlayer.get();
-                return Optional.of(Pair.of(player.getKey(), player.getValue()));
-            }
-
-        } catch (Exception ex) {
-            log.info("user not found");
-        }
-
-        return Optional.empty();
+    public Optional<Player> getPlayerByName(String name) {
+       return games.values().stream()
+                .filter(game -> game.getRoundSettings() != null)
+                .map(Game::getRoundSettings)
+                .flatMap(roundSettings -> roundSettings.getPlayers().stream())
+                .filter(player -> player.getName().equals(name))
+                .findAny();
     }
 
 
@@ -65,10 +47,9 @@ public class HoldemGameManager implements GameManager {
 
     @Override
     public void addChips(String name, long count) {
-        final Optional<Pair<String, Player>> optionalPlayer = getPlayerByName(name);
+        final Optional<Player> optionalPlayer = getPlayerByName(name);
         if (optionalPlayer.isPresent()) {
-            final Pair<String, Player> playerPair = optionalPlayer.get();
-            final Player player = playerPair.getRight();
+            final Player player = optionalPlayer.get();
             player.addChips(count);
         }
     }
@@ -93,6 +74,7 @@ public class HoldemGameManager implements GameManager {
     public void createNewGame(String name, Game game) {
         if (checkGameName(name)) {
             games.put(name, game);
+            log.info("game: " + name + " created");
         }
     }
 
@@ -126,16 +108,16 @@ public class HoldemGameManager implements GameManager {
     }
 
     @Override
-    public Player getActivePlayerInGame(String game){
+    public Player getActivePlayerInGame(String game) {
         return getGameByName(game).getRoundSettings()
                 .getPlayers()
                 .stream()
                 .filter(Player::isActive)
-                .findFirst().orElseThrow(()-> new RuntimeException("cannot find active player in game:" + game));
+                .findFirst().orElseThrow(() -> new RuntimeException("cannot find active player in game:" + game));
     }
 
     @Override
-    public Game getGameByName(String gameName){
+    public Game getGameByName(String gameName) {
         final Game game = games.get(gameName);
         if (game == null) {
             throw new RuntimeException("cannot find game");

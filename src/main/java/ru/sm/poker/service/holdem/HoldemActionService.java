@@ -41,40 +41,40 @@ public class HoldemActionService implements ActionService {
 
     @Override
     public void setUnSetAfkPlayer(String playerName) {
-        final Optional<Pair<String, Player>> playerByName = holdemGameManager.getPlayerByName(playerName);
+        final Optional<Player> optionalPlayer = holdemGameManager.getPlayerByName(playerName);
 
-        if (playerByName.isEmpty()) {
-            log.info(format(FIND_PLAYER_ERROR.getMessage(), playerByName));
+        if (optionalPlayer.isEmpty()) {
+            log.info(format(FIND_PLAYER_ERROR.getMessage(), playerName));
             return;
         }
 
-        final Pair<String, Player> playerPair = playerByName.get();
-        final Game game = holdemGameManager.getGameByName(playerPair.getKey());
-        final Player player = playerPair.getValue();
+        final Player player = optionalPlayer.get();
 
-        if (game.getRoundSettings() == null || player == null) {
-            log.info(format(SETTINGS_NOT_FOUND.getMessage(), playerName));
-            return;
+        if (player.getGameName() != null) {
+            final Game game = holdemGameManager.getGameByName(player.getGameName());
+            if (game.getRoundSettings() == null) {
+                log.info(format(SETTINGS_NOT_FOUND.getMessage(), playerName));
+                return;
+            }
+
+            final HoldemRoundSettingsDTO roundSettings = game.getRoundSettings();
+            player.setStateType(player.getStateType() == StateType.AFK ? StateType.IN_GAME : StateType.AFK);
+
+            securityNotificationService.sendToAllWithSecurity(roundSettings);
+            log.info(format(InformationType.CHANGED_STATE_TYPE_INFO.getMessage(), playerName, player.getStateType()));
         }
-
-        final HoldemRoundSettingsDTO roundSettings = game.getRoundSettings();
-        player.setStateType(player.getStateType() == StateType.AFK ? StateType.IN_GAME : StateType.AFK);
-
-        securityNotificationService.sendToAllWithSecurity(roundSettings);
-        log.info(format(InformationType.CHANGED_STATE_TYPE_INFO.getMessage(), playerName, player.getStateType()));
     }
 
 
     @Override
     public void setAction(String playerName, Action action) {
-        final Optional<Pair<String, Player>> playerByName = holdemGameManager.getPlayerByName(playerName);
-        if (playerByName.isEmpty()) {
+        final Optional<Player> optionalPlayer = holdemGameManager.getPlayerByName(playerName);
+        if (optionalPlayer.isEmpty()) {
             log.info(format(FIND_PLAYER_ERROR.getMessage(), playerName));
             return;
         }
-        final Pair<String, Player> pairGameAndPlayer = playerByName.get();
-        final Player player = pairGameAndPlayer.getRight();
-        if (!holdemSecurityService.isLegalPlayer(pairGameAndPlayer.getLeft(), player)) {
+        final Player player = optionalPlayer.get();
+        if (!holdemSecurityService.isLegalPlayer(player.getGameName(), player)) {
             simpleNotificationService.sendErrorToUser(playerName, format(ErrorType.QUEUE_ERROR.getMessage(), player.getName()));
             log.info(format(QUEUE_ERROR.getMessage(), player.getName()));
             return;
