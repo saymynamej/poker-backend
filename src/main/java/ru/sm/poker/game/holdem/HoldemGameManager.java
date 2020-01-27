@@ -2,9 +2,7 @@ package ru.sm.poker.game.holdem;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.model.Player;
@@ -12,7 +10,7 @@ import ru.sm.poker.model.Player;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.String.format;
 
@@ -21,15 +19,12 @@ import static java.lang.String.format;
 @Slf4j
 public class HoldemGameManager implements GameManager {
 
-    private final Map<String, Game> games;
-
+    private final static Map<String, Game> games = new ConcurrentHashMap<>();
 
     @Override
     public Optional<Player> getPlayerByName(String name) {
-       return games.values().stream()
-                .filter(game -> game.getRoundSettings() != null)
-                .map(Game::getRoundSettings)
-                .flatMap(roundSettings -> roundSettings.getPlayers().stream())
+        return games.values().stream()
+                .flatMap(game -> game.getPlayers().stream())
                 .filter(player -> player.getName().equals(name))
                 .findAny();
     }
@@ -38,9 +33,7 @@ public class HoldemGameManager implements GameManager {
     @Override
     public boolean playerExistByName(String gameName, String name) {
         final Game game = games.get(gameName);
-        return game.getRoundSettings()
-                .getPlayers()
-                .stream()
+        return game.getPlayers().stream()
                 .anyMatch(player -> player.getName().equals(name));
     }
 

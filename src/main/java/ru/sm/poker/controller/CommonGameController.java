@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.sm.poker.action.holdem.*;
 import ru.sm.poker.dto.ActionDTO;
 import ru.sm.poker.game.GameManager;
-import ru.sm.poker.model.Player;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.SeatManager;
-import ru.sm.poker.util.PlayerUtil;
 
 import java.security.Principal;
+
+import static ru.sm.poker.util.PlayerUtil.getDefaultPlayerForHoldem;
 
 
 @RequestMapping("/game")
@@ -29,9 +29,8 @@ public class CommonGameController {
 
     @MessageMapping("/addPlayer")
     public void joinInQueue(Principal principal) {
-
         seatManager.joinInQueue(
-                PlayerUtil.getDefaultPlayerForHoldem(principal.getName())
+                getDefaultPlayerForHoldem(principal.getName())
         );
     }
 
@@ -39,7 +38,7 @@ public class CommonGameController {
     public void joinInGame(Principal principal, String gameName) {
         seatManager.joinInGame(
                 gameName,
-                PlayerUtil.getDefaultPlayerForHoldem(principal.getName())
+                getDefaultPlayerForHoldem(principal.getName())
         );
     }
 

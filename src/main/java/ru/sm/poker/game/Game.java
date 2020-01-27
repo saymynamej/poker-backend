@@ -3,6 +3,7 @@ package ru.sm.poker.game;
 import lombok.extern.slf4j.Slf4j;
 import ru.sm.poker.config.game.GameSettings;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.enums.StateType;
 import ru.sm.poker.model.Player;
 
 import java.util.List;
@@ -25,7 +26,7 @@ public abstract class Game {
         return this.round;
     }
 
-    protected List<Player> getPlayers(){
+    public List<Player> getPlayers(){
         return this.players;
     }
 
@@ -47,8 +48,8 @@ public abstract class Game {
 
     public void addPlayer(Player player){
         if (!this.players.contains(player)) {
+            player.setStateType(StateType.IN_GAME);
             this.players.add(player);
-            return;
         }
     }
 

@@ -55,7 +55,7 @@ public class HoldemWinnerService implements WinnerService {
         });
 
         securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettingsDTO);
-        notificationService.sendToAll(winners);
+        notificationService.sendGameInformationToAll(winners);
     }
 
     @Override

@@ -1,13 +1,13 @@
 package ru.sm.poker.service;
 
 public interface NotificationService {
-    void sendToUser(String userName, Object message);
+    void sendGameInformationToUser(String userName, Object message);
 
-    void sendErrorToUser(String userName, Object message);
+    void sendSystemMessageToUser(String userName, Object message);
 
-    void sendErrorToAll(Object message);
+    void sendSystemMessageToAll(Object message);
 
-    void sendToAll(Object games);
+    void sendGameInformationToAll(Object games);
 
     void sendGamesInformationToAll(Object games);
 }

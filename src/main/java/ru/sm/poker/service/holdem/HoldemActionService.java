@@ -3,14 +3,13 @@ package ru.sm.poker.service.holdem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.action.Action;
 import ru.sm.poker.action.ExecutableAction;
 import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.enums.ActionType;
-import ru.sm.poker.enums.ErrorType;
+import ru.sm.poker.enums.MessageType;
 import ru.sm.poker.enums.InformationType;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Game;
@@ -24,7 +23,7 @@ import java.util.Optional;
 import java.util.Timer;
 
 import static java.lang.String.format;
-import static ru.sm.poker.enums.ErrorType.*;
+import static ru.sm.poker.enums.MessageType.*;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -75,7 +74,7 @@ public class HoldemActionService implements ActionService {
         }
         final Player player = optionalPlayer.get();
         if (!holdemSecurityService.isLegalPlayer(player.getGameName(), player)) {
-            simpleNotificationService.sendErrorToUser(playerName, format(ErrorType.QUEUE_ERROR.getMessage(), player.getName()));
+            simpleNotificationService.sendSystemMessageToUser(playerName, format(MessageType.QUEUE_ERROR.getMessage(), player.getName()));
             log.info(format(QUEUE_ERROR.getMessage(), player.getName()));
             return;
         }

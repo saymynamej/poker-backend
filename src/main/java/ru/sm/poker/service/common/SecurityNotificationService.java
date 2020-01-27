@@ -25,7 +25,7 @@ public class SecurityNotificationService {
 
         final HoldemRoundSettingsDTO secureSettings = securityService.secureCards(filter, holdemRoundSettingsDTO);
         secureSettings.getPlayers()
-                .forEach(player -> simpleNotificationService.sendToUser(player.getName(), secureSettings));
+                .forEach(player -> simpleNotificationService.sendGameInformationToUser(player.getName(), secureSettings));
 
     }
 
@@ -36,6 +36,6 @@ public class SecurityNotificationService {
     }
 
     public void sendToUserWithSecurity(HoldemRoundSettingsDTO holdemRoundSettingsDTO, String userName) {
-        simpleNotificationService.sendToUser(userName, securityService.secureCards(List.of(userName), holdemRoundSettingsDTO));
+        simpleNotificationService.sendGameInformationToUser(userName, securityService.secureCards(List.of(userName), holdemRoundSettingsDTO));
     }
 }

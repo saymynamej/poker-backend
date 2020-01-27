@@ -2,7 +2,6 @@ package ru.sm.poker.listeners;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.config.game.GameSettings;
 import ru.sm.poker.config.game.holdem.HoldemFullTableSettings;
@@ -15,6 +14,8 @@ import ru.sm.poker.game.holdem.HoldemRound;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.service.OrderService;
 import ru.sm.poker.service.WinnerService;
+import ru.sm.poker.service.common.SeatManager;
+import ru.sm.poker.util.PlayerUtil;
 import ru.sm.poker.util.ThreadUtil;
 
 import javax.annotation.PostConstruct;
@@ -36,8 +37,8 @@ public class GameListeners {
     private final ExecutorService executorServiceForGames = Executors.newFixedThreadPool(15);
     private final OrderService orderService;
     private final GameManager gameManager;
+    private final SeatManager seatManager;
     private final WinnerService winnerService;
-    private final Queue<Player> players;
     private boolean isEnable = true;
 
     @PostConstruct
@@ -50,7 +51,7 @@ public class GameListeners {
         executorServiceForStart.submit(() -> {
             while (isEnable) {
                 ThreadUtil.sleep(1);
-                if (players.size() >= 4) {
+                if (seatManager.getQueue().size() >= 4) {
                     final String randomGameName = getRandomGOTCityName();
 
                     final List<Player> playersFromQueue = extractQueue();
@@ -80,9 +81,10 @@ public class GameListeners {
 
     private List<Player> extractQueue() {
         final List<Player> players = new ArrayList<>();
-        final int size = this.players.size();
+        final Queue<Player> queue = seatManager.getQueue();
+        final int size = queue.size();
         for (int i = 0; i < size; i++) {
-            players.add(this.players.poll());
+            players.add(queue.poll());
         }
         return players;
     }
@@ -91,9 +93,9 @@ public class GameListeners {
     public void fillHoldemCashGames() {
         for (int i = 0; i < 10; i++) {
             final String randomGameName = getRandomGOTCityName();
-
             final GameSettings gameSettings = new HoldemFullTableSettings(randomGameName, GameType.HOLDEM);
             final List<Player> players = new ArrayList<>();
+
             final Round round = new HoldemRound(
                     players,
                     randomGameName,
@@ -107,6 +109,12 @@ public class GameListeners {
                     players,
                     round
             );
+
+            if (randomGameName.equalsIgnoreCase("LANNISPORT")){
+                holdemGame.addPlayer(PlayerUtil.getDefaultPlayerForHoldem("1"));
+                holdemGame.addPlayer(PlayerUtil.getDefaultPlayerForHoldem("2"));
+            }
+
             gameManager.createNewGame(randomGameName, holdemGame);
             executorServiceForGames.submit(holdemGame::start);
         }

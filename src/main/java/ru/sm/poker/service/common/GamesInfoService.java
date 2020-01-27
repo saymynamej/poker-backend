@@ -6,7 +6,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.dto.GameDTO;
-import ru.sm.poker.enums.GameType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.service.InfoService;
@@ -26,7 +25,7 @@ public class GamesInfoService implements InfoService {
     private final SimpleNotificationService simpleNotificationService;
 
 
-    @Scheduled(cron = "*/3 * * * * *")
+    @Scheduled(cron = "*/2 * * * * *")
     @Override
     public void send() {
         final List<GameDTO> gameDTOS = convertMapToLisGameDTO(holdemGameManager.getGames());
@@ -37,18 +36,10 @@ public class GamesInfoService implements InfoService {
         return games.values().stream()
                 .map(game -> GameDTO.builder()
                         .name(game.getName())
+                        .maxPlayersSize(game.getGameSettings().getMaxPlayerSize())
+                        .gameType(game.getGameSettings().getGameType())
+                        .countPlayers(game.getPlayers().size())
                         .build())
                 .collect(Collectors.toList());
-//
-//        return games.values()
-//                .stream()
-//                .filter(game -> game.getRoundSettings() != null)
-//                .map(game -> GameDTO.builder()
-//                        .countPlayers(game.getRoundSettings().getPlayers().size())
-//                        .gameType(game.getGameSettings().getGameType())
-//                        .name(game.getName())
-//                        .maxPlayersSize(game.getGameSettings().getMaxPlayerSize())
-//                        .build())
-//                .collect(Collectors.toList());
     }
 }

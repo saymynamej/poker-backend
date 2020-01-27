@@ -16,22 +16,22 @@ public class SimpleNotificationService implements NotificationService {
 
 
     @Override
-    public void sendErrorToUser(String userName, Object message) {
+    public void sendSystemMessageToUser(String userName, Object message) {
         simpMessagingTemplate.convertAndSendToUser(userName, socketMappingConfig.getErrorPath(), message);
     }
 
     @Override
-    public void sendErrorToAll(Object message) {
+    public void sendSystemMessageToAll(Object message) {
         simpMessagingTemplate.convertAndSend(socketMappingConfig.getErrorPath(), message);
     }
 
     @Override
-    public void sendToUser(String userName, Object message) {
+    public void sendGameInformationToUser(String userName, Object message) {
         simpMessagingTemplate.convertAndSendToUser(userName, socketMappingConfig.getPokerGamePath(), message);
     }
 
     @Override
-    public void sendToAll(Object message) {
+    public void sendGameInformationToAll(Object message) {
         simpMessagingTemplate.convertAndSend(socketMappingConfig.getPokerGamePath(), message);
     }
 

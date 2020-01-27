@@ -1,7 +1,5 @@
 package ru.sm.poker.game;
 
-import org.apache.commons.lang3.tuple.Pair;
-import ru.sm.poker.enums.ErrorType;
 import ru.sm.poker.model.Player;
 
 import java.util.Map;
