@@ -1,0 +1,47 @@
+{
+  "groups": [
+    {
+      "name": "config.socket",
+      "type": "ru.sm.poker.config.SocketMappingConfig",
+      "sourceType": "ru.sm.poker.config.SocketMappingConfig"
+    }
+  ],
+  "properties": [
+    {
+      "name": "config.socket.bank-path",
+      "type": "java.lang.String",
+      "sourceType": "ru.sm.poker.config.SocketMappingConfig"
+    },
+    {
+      "name": "config.socket.error-path",
+      "type": "java.lang.String",
+      "sourceType": "ru.sm.poker.config.SocketMappingConfig"
+    },
+    {
+      "name": "config.socket.flop-path",
+      "type": "java.lang.String",
+      "sourceType": "ru.sm.poker.config.SocketMappingConfig"
+    },
+    {
+      "name": "config.socket.poker-game-path",
+      "type": "java.lang.String",
+      "sourceType": "ru.sm.poker.config.SocketMappingConfig"
+    },
+    {
+      "name": "config.socket.ready-players-path",
+      "type": "java.lang.String",
+      "sourceType": "ru.sm.poker.config.SocketMappingConfig"
+    },
+    {
+      "name": "config.socket.river-path",
+      "type": "java.lang.String",
+      "sourceType": "ru.sm.poker.config.SocketMappingConfig"
+    },
+    {
+      "name": "config.socket.tern-path",
+      "type": "java.lang.String",
+      "sourceType": "ru.sm.poker.config.SocketMappingConfig"
+    }
+  ],
+  "hints": []
+}

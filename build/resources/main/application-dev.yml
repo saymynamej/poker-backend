@@ -1,0 +1,44 @@
+server:
+    port: 1010
+spring:
+  application:
+    name: poker-server
+  datasource:
+    username: test
+    password: test
+    url: jdbc:postgresql://192.168.1.61:6789/postgres
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+#eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone: http://192.168.1.61:8888/eureka/
+
+service:
+  registration:
+    rootPath: http://registration-service
+    authPath: http://registration-service/api/user/auth
+    registrationPath: http://registration-service/api/user/registration
+    activationPath: http://registration-service/api/user/activation/{code}
+  email:
+    rootPath: http://email-service
+    sendPath: http://email-service/api/mail/send
+    savePath: http://email-service/api/mail/save
+
+config:
+  socket:
+    poker-game-path: "/poker/game"
+    ready-players-path: "/poker/game/ready/players"
+    error-path: "/poker/error"
+    flop-path: "/poker/game/flop"
+    tern-path: "/poker/game/tern"
+    river-path: "/poker/game/river"
+    bank-path: "/poker/game/bank"

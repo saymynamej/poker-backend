@@ -36,6 +36,10 @@ public class PlayerUtil {
                 .collect(Collectors.toList());
     }
 
+    public void getName (){
+        
+    }
+
     public static boolean checkPlayerHasEnoughChips(Player player, CountAction countAction) {
         return player.getChipsCount() >= countAction.getCount();
     }
