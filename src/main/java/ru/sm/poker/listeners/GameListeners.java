@@ -113,7 +113,7 @@ public class GameListeners {
             );
 
             holdemGame.addPlayer(PlayerUtil.getDefaultPlayerForHoldem("3"));
-//            holdemGame.addPlayer(PlayerUtil.getDefaultPlayerForHoldem("5"));
+            holdemGame.addPlayer(PlayerUtil.getDefaultPlayerForHoldem("2"));
 
             gameManager.createNewGame(randomGameName, holdemGame);
             executorServiceForGames.submit(holdemGame::start);

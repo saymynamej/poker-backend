@@ -35,6 +35,7 @@ public class HistoryUtil {
                 summ += ca.getCount();
             }
         }
+        System.out.println(player.getName() + " : " + summ);
         return summ;
     }
 

@@ -14,6 +14,7 @@ import ru.sm.poker.service.WinnerService;
 import ru.sm.poker.service.common.SecurityNotificationService;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,39 +31,48 @@ public class HoldemWinnerService implements WinnerService {
 
     @Override
     public void sendPrizes(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-        final List<Pair<Player, CombinationDTO>> winners = findWinners(
+        final List<Pair<Player, CombinationDTO>> playersAndCombinations = findWinners(
                 getPlayersInGame(holdemRoundSettingsDTO.getPlayers()),
                 holdemRoundSettingsDTO.getFlop(),
                 holdemRoundSettingsDTO.getTern(),
                 holdemRoundSettingsDTO.getRiver()
         );
+        final CombinationDTO theMostPowerFullCombination = findTheMostPowerFullCombination(playersAndCombinations);
+
+        final List<Player> playerWithTheMostPowerFullCombinations = findPlayerWithTheMostPowerFullCombinations(
+                playersAndCombinations,
+                theMostPowerFullCombination.getCombinationType()
+        );
         final long bank = holdemRoundSettingsDTO.getBank();
-
-        final Pair<Player, CombinationDTO> theMostPowerFullCombination = winners.get(0);
-
-        final CombinationDTO powerFullCombination = theMostPowerFullCombination.getValue();
-
-        final List<Pair<Player, CombinationDTO>> allPowerFullCombinations = winners.stream()
-                .filter(pair -> pair.getRight().equals(powerFullCombination))
-                .collect(Collectors.toList());
-
-        final int size = allPowerFullCombinations.size();
-
-        allPowerFullCombinations.forEach(allPowerFullCombination -> {
-            final long result = bank / size;
-            final Player player = allPowerFullCombination.getKey();
-            player.addChips(result);
-        });
-
+        playerWithTheMostPowerFullCombinations.forEach(player -> player.addChips(bank / playerWithTheMostPowerFullCombinations.size()));
         securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettingsDTO);
-        notificationService.sendGameInformationToAll(winners);
+
+    }
+
+
+    private List<Player> findPlayerWithTheMostPowerFullCombinations(List<Pair<Player, CombinationDTO>> player, CombinationType combinationType) {
+        return player.stream()
+                .filter(pair -> pair.getValue().getCombinationType().equals(combinationType))
+                .map(Pair::getKey)
+                .collect(Collectors.toList());
+    }
+
+
+    private CombinationDTO findTheMostPowerFullCombination(List<Pair<Player, CombinationDTO>> combinations) {
+        return combinations.stream()
+                .max(Comparator.comparingInt(
+                        playerCombinationDTOPair -> playerCombinationDTOPair.getRight()
+                                .getCombinationType()
+                                .getPower())
+                )
+                .get()
+                .getRight();
     }
 
     @Override
     public List<Pair<Player, CombinationDTO>> findWinners(List<Player> players, List<CardType> flop, CardType tern, CardType river) {
         final List<Pair<Player, CombinationDTO>> playersComb = new ArrayList<>();
-        final List<CardType> allCards = players
-                .stream()
+        final List<CardType> allCards = players.stream()
                 .flatMap(player -> player
                         .getCards()
                         .stream())
@@ -90,14 +100,7 @@ public class HoldemWinnerService implements WinnerService {
 
             playersComb.add(Pair.of(player, comboDTO));
         });
-
-        sort(playersComb);
-
         return playersComb;
-    }
-
-    private void sort(List<Pair<Player, CombinationDTO>> playersComb) {
-        playersComb.sort((o1, o2) -> o2.getValue().getCombinationType().getPower() - o1.getValue().getCombinationType().getPower());
     }
 
 

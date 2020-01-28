@@ -32,8 +32,7 @@ public class OrderActionService implements OrderService {
     public void start(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
         final List<Player> sortedPlayers = getPlayersInGame(sort(
                 holdemRoundSettingsDTO.getPlayers(),
-                holdemRoundSettingsDTO.getStageType())
-        ).stream()
+                holdemRoundSettingsDTO.getStageType())).stream()
                 .filter(playerIsNotAfk())
                 .collect(Collectors.toList());
 
