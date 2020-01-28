@@ -55,7 +55,7 @@ public class OrderActionService implements OrderService {
             }
 
             for (Player player : sortedPlayers) {
-                if (player.getStateType() == null || player.getStateType() == StateType.AFK) {
+                if (player.getStateType() == null || player.getStateType() == StateType.AFK || player.getStateType() == StateType.LEAVE) {
                     continue;
                 }
                 if (playersHasNotChips(player)) {

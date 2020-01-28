@@ -100,6 +100,9 @@ public class HoldemActionService implements ActionService {
     private void waitPlayerAction(Player player, HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
         final ImmutablePair<Timer, Long> timeBank = timeBankService.activateTimeBank(player);
         while (true) {
+            if (player.getStateType() == StateType.LEAVE) {
+                break;
+            }
             if (!(player.getAction().getActionType() == ActionType.WAIT)) {
                 timeBankService.cancel(timeBank.getValue(), player, timeBank.getKey());
                 doAction(player, holdemRoundSettingsDTO);

@@ -26,12 +26,13 @@ public class HoldemRound implements Round {
 
     @Override
     public void startRound() {
-        log.info("game was started, because found 4 person");
+        log.info("game was started, because found enough persons");
 
         final RoundSettingsManager roundSettingsManager =
                 new HoldemRoundSettingsManager(players, gameName, bigBlindBet, smallBlindBet);
 
         this.holdemRoundSettingsDTO = roundSettingsManager.getPreflopSettings();
+
         orderService.start(holdemRoundSettingsDTO);
 
         this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettings(this.holdemRoundSettingsDTO.getBank());

@@ -23,7 +23,7 @@ public class AllStrategy implements ActionStrategy {
             gameService.removeChipsFromPlayer(player, holdemRoundSettingsDTO, countAction.getCount(), allBets);
             return;
         }
-        gameService.removeChipsFromPlayer(player, holdemRoundSettingsDTO, countAction.getCount()              , holdemRoundSettingsDTO.getLastBet());
+        gameService.removeChipsFromPlayer(player, holdemRoundSettingsDTO, countAction.getCount(), holdemRoundSettingsDTO.getLastBet());
 
     }
 }

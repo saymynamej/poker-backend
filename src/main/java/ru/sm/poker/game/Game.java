@@ -7,6 +7,7 @@ import ru.sm.poker.enums.StateType;
 import ru.sm.poker.model.Player;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 public abstract class Game {
@@ -16,49 +17,58 @@ public abstract class Game {
     private final Round round;
     protected boolean isEnable = true;
 
-    public Game(GameSettings gameSettings, List<Player> players, Round round){
+    public Game(GameSettings gameSettings, List<Player> players, Round round) {
         this.gameSettings = gameSettings;
         this.players = players;
         this.round = round;
     }
 
-    protected Round getRound(){
+    protected Round getRound() {
         return this.round;
     }
 
-    public List<Player> getPlayers(){
+    public List<Player> getPlayers() {
         return this.players;
     }
 
-    public boolean isEnable(){
+    public boolean isEnable() {
         return isEnable;
     }
 
-    public String getName(){
+    public String getName() {
         return this.gameSettings.getGameName();
     }
 
-    public int getMaxPlayersSize(){
+    public int getMaxPlayersSize() {
         return this.gameSettings.getMaxPlayerSize();
     }
 
-    public GameSettings getGameSettings(){
+    public GameSettings getGameSettings() {
         return gameSettings;
     }
 
-    public void addPlayer(Player player){
+    public void addPlayer(Player player) {
         if (!this.players.contains(player)) {
             player.setStateType(StateType.IN_GAME);
             this.players.add(player);
         }
     }
 
-    public void removePlayer(Player player){
-        this.players.remove(player);
+    public boolean removePlayer(Player player) {
+        return this.players.remove(player);
     }
 
-
-
+    public boolean removePlayer(String name) {
+        final Optional<Player> optionalPlayer = getPlayers().stream()
+                .filter(player -> player.getName().equals(name))
+                .findAny();
+        if (optionalPlayer.isPresent()) {
+            final Player player = optionalPlayer.get();
+            player.setStateType(StateType.LEAVE);
+            return this.removePlayer(player);
+        }
+        return false;
+    }
 
     public abstract void start();
 

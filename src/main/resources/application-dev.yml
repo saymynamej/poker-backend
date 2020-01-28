@@ -1,5 +1,5 @@
 server:
-    port: 1010
+  port: 1010
 spring:
   application:
     name: poker-server
@@ -44,3 +44,15 @@ config:
     river-path: "/poker/game/river"
     bank-path: "/poker/game/bank"
     games-path: "/poker/games"
+  cors:
+    hosts:
+      - "http://127.0.0.1:8080"
+    credentials: true
+    methods:
+      - "GET"
+      - "HEAD"
+      - "OPTIONS"
+      - "POST"
+      - "PUT"
+    headers:
+

@@ -42,6 +42,14 @@ public class CommonGameController {
         );
     }
 
+    @MessageMapping("/leaveGame")
+    public void leaveGame(Principal principal, String gameName) {
+        seatManager.leaveGame(
+                principal.getName(),
+                gameName
+        );
+    }
+
     @MessageMapping("/afk")
     public void setUnsetAfk(Principal principal) {
         actionService.setUnSetAfkPlayer(principal.getName());

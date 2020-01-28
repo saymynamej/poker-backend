@@ -91,9 +91,13 @@ public class HoldemWinnerService implements WinnerService {
             playersComb.add(Pair.of(player, comboDTO));
         });
 
-        playersComb.sort((o1, o2) -> o2.getValue().getCombinationType().getPower() - o1.getValue().getCombinationType().getPower());
+        sort(playersComb);
 
         return playersComb;
+    }
+
+    private void sort(List<Pair<Player, CombinationDTO>> playersComb) {
+        playersComb.sort((o1, o2) -> o2.getValue().getCombinationType().getPower() - o1.getValue().getCombinationType().getPower());
     }
 
 

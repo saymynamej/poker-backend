@@ -327,7 +327,7 @@ public class HoldemCombinationService implements CombinationService {
 
         //DELETE CARDS WITH SAME POWER
         for (CardType card : copyList) {
-            List<CardType> samePowerCards = filterByPower(copyList, card.getPower());
+            final List<CardType> samePowerCards = filterByPower(copyList, card.getPower());
             if (samePowerCards.size() > 1) {
                 cards.removeAll(samePowerCards);
                 cards.add(samePowerCards.get(0));
@@ -409,8 +409,7 @@ public class HoldemCombinationService implements CombinationService {
     }
 
     private List<CardType> findFlushBySuit(List<CardType> cardTypes, CardType.SuitType suitType) {
-        final List<CardType> cards = cardTypes
-                .stream()
+        final List<CardType> cards = cardTypes.stream()
                 .filter(cardType -> cardType.getSuitType().equals(suitType))
                 .collect(Collectors.toList());
 
@@ -477,8 +476,7 @@ public class HoldemCombinationService implements CombinationService {
     }
 
     private boolean checkDuplicate(List<CardType> cards) {
-        if (cards
-                .stream()
+        if (cards.stream()
                 .distinct()
                 .count() == COMBINATION_SIZE) {
             return true;

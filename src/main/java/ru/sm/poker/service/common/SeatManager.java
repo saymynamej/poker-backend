@@ -61,6 +61,16 @@ public class SeatManager {
     }
 
 
+    public void leaveGame(String playerName, String gameName) {
+        final Game game = holdemGameManager.getGameByName(gameName);
+        if (game != null) {
+            if (game.removePlayer(playerName)) {
+                log.info(format("player %s leave the game %s", playerName, gameName));
+            }
+        }
+
+    }
+
     public Queue<Player> getQueue() {
         return players;
     }

@@ -1,5 +1,6 @@
 package ru.sm.poker.listeners;
 
+import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -91,6 +92,7 @@ public class GameListeners {
 
 
     public void fillHoldemCashGames() {
+
         for (int i = 0; i < 10; i++) {
             final String randomGameName = getRandomGOTCityName();
             final GameSettings gameSettings = new HoldemFullTableSettings(randomGameName, GameType.HOLDEM);
@@ -110,10 +112,8 @@ public class GameListeners {
                     round
             );
 
-            if (randomGameName.equalsIgnoreCase("LANNISPORT")){
-                holdemGame.addPlayer(PlayerUtil.getDefaultPlayerForHoldem("1"));
-                holdemGame.addPlayer(PlayerUtil.getDefaultPlayerForHoldem("2"));
-            }
+            holdemGame.addPlayer(PlayerUtil.getDefaultPlayerForHoldem("3"));
+//            holdemGame.addPlayer(PlayerUtil.getDefaultPlayerForHoldem("5"));
 
             gameManager.createNewGame(randomGameName, holdemGame);
             executorServiceForGames.submit(holdemGame::start);

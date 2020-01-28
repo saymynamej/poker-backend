@@ -9,9 +9,9 @@ public class HoldemFullTableSettings implements GameSettings {
 
     private final static int MAX_PLAYERS_SIZE = 9;
 
-    private final static int MIN_ACTIVE_PLAYERS = 4;
+    private final static int MIN_ACTIVE_PLAYERS = 3;
 
-    private final static int MIN_PLAYERS_FOR_START = 4;
+    private final static int MIN_PLAYERS_FOR_START = 3;
 
     private final static int MIN_SMALL_BLIND_BET = 1;
 
