@@ -6,8 +6,9 @@ import org.springframework.stereotype.Component;
 import ru.sm.poker.enums.MessageType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.common.CommonGameManager;
-import ru.sm.poker.model.Player;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.service.NotificationService;
+import ru.sm.poker.service.SeatManager;
 
 import javax.annotation.PostConstruct;
 import java.util.Queue;
@@ -21,17 +22,18 @@ import static ru.sm.poker.util.PlayerUtil.*;
 @RequiredArgsConstructor
 @Component
 @Slf4j
-public class SeatManager {
+public class SimpleSeatManager implements SeatManager {
 
     private final CommonGameManager commonGameManager;
     private final SecurityNotificationService securityNotificationService;
     private final NotificationService notificationService;
-    private final Queue<Player> players = new LinkedBlockingQueue<>();
+    private final Queue<PlayerDTO> playerDTOS = new LinkedBlockingQueue<>();
 
 
-    public void joinInGame(String gameName, Player player) {
-        if (commonGameManager.getPlayerByName(player.getName()).isPresent()) {
-            notificationService.sendSystemMessageToUser(player.getName(), MessageType.ONLY_ONE_TABLE_MESSAGE.getMessage());
+    @Override
+    public void joinInGame(String gameName, PlayerDTO playerDTO) {
+        if (commonGameManager.getPlayerByName(playerDTO.getName()).isPresent()) {
+            notificationService.sendSystemMessageToUser(playerDTO.getName(), MessageType.ONLY_ONE_TABLE_MESSAGE.getMessage());
             return;
         }
 
@@ -40,27 +42,29 @@ public class SeatManager {
             final int actualSize = game.getPlayers().size();
             final int maxPlayerSize = game.getGameSettings().getMaxPlayerSize();
             if (actualSize < maxPlayerSize) {
-                game.addPlayer(player);
-                log.info(format("player:%s, joined to the game:%s", player.getName(), gameName));
+                game.addPlayer(playerDTO);
+                log.info(format("player:%s, joined to the game:%s", playerDTO.getName(), gameName));
             }
         }
     }
 
-    public void joinInQueue(Player player) {
-        final boolean isExist = players.contains(player);
+    @Override
+    public void joinInQueue(PlayerDTO playerDTO) {
+        final boolean isExist = playerDTOS.contains(playerDTO);
         if (isExist) {
             notificationService.sendGameInformationToAll(
-                    format(PLAYER_ALREADY_EXIST.getMessage(), player.getName())
+                    format(PLAYER_ALREADY_EXIST.getMessage(), playerDTO.getName())
             );
             return;
         }
-        players.add(player);
+        playerDTOS.add(playerDTO);
         notificationService.sendGameInformationToAll(
-                format(SUCCESS_JOIN_IN_QUEUE.getMessage(), player.getName())
+                format(SUCCESS_JOIN_IN_QUEUE.getMessage(), playerDTO.getName())
         );
     }
 
 
+    @Override
     public void leaveGame(String playerName, String gameName) {
         final Game game = commonGameManager.getGameByName(gameName);
         if (game != null) {
@@ -71,8 +75,9 @@ public class SeatManager {
 
     }
 
-    public Queue<Player> getQueue() {
-        return players;
+    @Override
+    public Queue<PlayerDTO> getQueue() {
+        return playerDTOS;
     }
 
 

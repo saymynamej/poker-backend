@@ -1,4 +1,4 @@
-package ru.sm.poker.model;
+package ru.sm.poker.dto;
 
 import lombok.*;
 import ru.sm.poker.action.Action;
@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @ToString
 @EqualsAndHashCode(of = "name")
-public class Player {
+public class PlayerDTO {
 
     private String name;
     private List<CardType> cards;
@@ -35,7 +35,7 @@ public class Player {
     private String gameName;
 
     @Builder
-    public Player(String name, List<CardType> cards, RoleType roleType, long chipsCount, StateType stateType, long timeBank, Action action, boolean active, String gameName) {
+    public PlayerDTO(String name, List<CardType> cards, RoleType roleType, long chipsCount, StateType stateType, long timeBank, Action action, boolean active, String gameName) {
         this.name = name;
         this.cards = cards;
         this.roleType = roleType;
@@ -47,7 +47,7 @@ public class Player {
         this.gameName = gameName;
     }
 
-    public Player(String name, long chipsCount) {
+    public PlayerDTO(String name, long chipsCount) {
         this.name = name;
         this.chipsCount = chipsCount;
     }
@@ -100,8 +100,8 @@ public class Player {
         this.cards = new ArrayList<>(cards);
     }
 
-    public Player copy() {
-        return Player
+    public PlayerDTO copy() {
+        return PlayerDTO
                 .builder()
                 .name(name)
                 .action(action)

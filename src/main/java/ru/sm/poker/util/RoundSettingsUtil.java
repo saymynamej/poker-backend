@@ -4,7 +4,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.game.Game;
-import ru.sm.poker.model.Player;
+import ru.sm.poker.dto.PlayerDTO;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,18 +12,18 @@ import java.util.Optional;
 
 public class RoundSettingsUtil {
 
-    public static HoldemRoundSettingsDTO copyWithNewPlayersAndReloadAction(HoldemRoundSettingsDTO holdemRoundSettingsDTO, List<Player> players) {
-        final String gameName = players.get(0)
+    public static HoldemRoundSettingsDTO copyWithNewPlayersAndReloadAction(HoldemRoundSettingsDTO holdemRoundSettingsDTO, List<PlayerDTO> playerDTOS) {
+        final String gameName = playerDTOS.get(0)
                 .getGameName();
 
-        players.forEach(player -> player.setAction(new Wait()));
+        playerDTOS.forEach(player -> player.setAction(new Wait()));
 
-        return copy(holdemRoundSettingsDTO, players);
+        return copy(holdemRoundSettingsDTO, playerDTOS);
     }
 
 
     public static HoldemRoundSettingsDTO copyWithSecureCard(HoldemRoundSettingsDTO holdemRoundSettingsDTO, List<String> filters) {
-        final List<Player> playersWithSecureCards = PlayerUtil.copies(holdemRoundSettingsDTO.getPlayers());
+        final List<PlayerDTO> playersWithSecureCards = PlayerUtil.copies(holdemRoundSettingsDTO.getPlayerDTOS());
         playersWithSecureCards.forEach(player -> {
             if (!filters.contains(player.getName())) {
                 player.addCards(Collections.emptyList());
@@ -34,7 +34,7 @@ public class RoundSettingsUtil {
     }
 
 
-    public static HoldemRoundSettingsDTO copy(HoldemRoundSettingsDTO holdemRoundSettingsDTO, List<Player> players) {
+    public static HoldemRoundSettingsDTO copy(HoldemRoundSettingsDTO holdemRoundSettingsDTO, List<PlayerDTO> playerDTOS) {
         return HoldemRoundSettingsDTO.builder()
                 .gameName(holdemRoundSettingsDTO.getGameName())
                 .bank(holdemRoundSettingsDTO.getBank())
@@ -43,10 +43,10 @@ public class RoundSettingsUtil {
                 .bigBlind(holdemRoundSettingsDTO.getBigBlind())
                 .smallBlind(holdemRoundSettingsDTO.getSmallBlind())
                 .button(holdemRoundSettingsDTO.getButton())
-                .players(players)
+                .playerDTOS(playerDTOS)
                 .stageType(holdemRoundSettingsDTO.getStageType())
                 .lastBet(holdemRoundSettingsDTO.getLastBet())
-                .activePlayer(holdemRoundSettingsDTO.getActivePlayer())
+                .activePlayerDTO(holdemRoundSettingsDTO.getActivePlayerDTO())
                 .flop(holdemRoundSettingsDTO.getFlop())
                 .river(holdemRoundSettingsDTO.getRiver())
                 .tern(holdemRoundSettingsDTO.getTern())
