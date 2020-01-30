@@ -33,8 +33,8 @@ public abstract class Game {
         return isEnable;
     }
 
-    public String getName() {
-        return this.gameSettings.getGameName();
+    public String getGameName() {
+        return this.round.getGameName();
     }
 
     public int getMaxPlayersSize() {

@@ -35,7 +35,7 @@ public class GamesInfoService implements InfoService {
     private List<GameDTO> convertMapToLisGameDTO(Map<String, Game> games) {
         return games.values().stream()
                 .map(game -> GameDTO.builder()
-                        .name(game.getName())
+                        .name(game.getGameName())
                         .maxPlayersSize(game.getGameSettings().getMaxPlayerSize())
                         .gameType(game.getGameSettings().getGameType())
                         .countPlayers(game.getPlayers().size())

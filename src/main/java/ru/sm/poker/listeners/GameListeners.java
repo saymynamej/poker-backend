@@ -54,12 +54,10 @@ public class GameListeners {
                 if (seatManager.getQueue().size() >= 4) {
                     final String randomGameName = getRandomGOTCityName();
 
-                    final List<PlayerDTO> playersFromQueue = extractQueue();
-
-                    final GameSettings gameSettings = new HoldemFullTableSettings(randomGameName, GameType.HOLDEM);
+                    final GameSettings gameSettings = new HoldemFullTableSettings(GameType.HOLDEM);
 
                     final Round round = new HoldemRound(
-                            playersFromQueue,
+                            extractQueue(),
                             randomGameName,
                             orderService,
                             winnerService,
@@ -93,7 +91,7 @@ public class GameListeners {
 
         for (int i = 0; i < 10; i++) {
             final String randomGameName = getRandomGOTCityName();
-            final GameSettings gameSettings = new HoldemFullTableSettings(randomGameName, GameType.HOLDEM);
+            final GameSettings gameSettings = new HoldemFullTableSettings(GameType.HOLDEM);
             final List<PlayerDTO> playerDTOS = new ArrayList<>();
 
             final Round round = new HoldemRound(

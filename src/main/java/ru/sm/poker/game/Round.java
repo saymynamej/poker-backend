@@ -9,6 +9,8 @@ public interface Round {
 
     void startRound();
 
+    String getGameName();
+
     void reloadRound();
 
     HoldemRoundSettingsDTO getHoldemRoundSettingsDTO();

@@ -62,6 +62,11 @@ public class HoldemRound implements Round {
     }
 
     @Override
+    public String getGameName(){
+        return this.gameName;
+    }
+
+    @Override
     public void reloadRound() {
         this.holdemRoundSettingsDTO.getPlayerDTOS().forEach(player -> player.setStateType(StateType.AFK));
     }

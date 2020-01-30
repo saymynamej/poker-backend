@@ -17,15 +17,7 @@ public class HoldemFullTableSettings implements GameSettings {
 
     private final static int MIN_BIG_BLIND_BET = 2;
 
-    private final String gameName;
-
     private final GameType gameType;
-
-
-    @Override
-    public String getGameName() {
-        return gameName;
-    }
 
     @Override
     public int getMaxPlayerSize() {
