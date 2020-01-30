@@ -8,28 +8,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.sm.poker.action.holdem.Raise;
-import ru.sm.poker.config.game.GameSettings;
-import ru.sm.poker.config.game.holdem.HoldemFullTableSettings;
-import ru.sm.poker.game.Game;
-import ru.sm.poker.game.Round;
-import ru.sm.poker.game.holdem.HoldemGame;
-import ru.sm.poker.game.holdem.HoldemGameManager;
-import ru.sm.poker.game.holdem.HoldemRound;
-import ru.sm.poker.model.Player;
+import ru.sm.poker.game.common.CommonGameManager;
 import ru.sm.poker.service.WinnerService;
 import ru.sm.poker.service.common.OrderActionService;
 import ru.sm.poker.service.common.SecurityNotificationService;
 import ru.sm.poker.service.common.SimpleNotificationService;
-import ru.sm.poker.util.ThreadUtil;
 
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static java.util.List.of;
-import static ru.sm.poker.util.GameUtil.getRandomGOTCityName;
-import static ru.sm.poker.util.PlayerUtil.getDefaultPlayerForHoldem;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -43,7 +31,7 @@ public class HoldemGameTest {
     private WinnerService winnerService;
 
     @Autowired
-    private HoldemGameManager holdemGameManager;
+    private CommonGameManager commonGameManager;
 
     @MockBean
     private SimpleNotificationService simpleNotificationService;

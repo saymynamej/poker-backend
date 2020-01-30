@@ -10,11 +10,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.sm.poker.dto.CombinationDTO;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.CombinationType;
-import ru.sm.poker.game.SecurityService;
-import ru.sm.poker.model.Player;
-import ru.sm.poker.service.common.SimpleNotificationService;
-import ru.sm.poker.service.holdem.HoldemCombinationService;
-import ru.sm.poker.service.holdem.HoldemWinnerService;
+import ru.sm.poker.dto.PlayerDTO;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,43 +34,43 @@ public class HoldemWinnerServiceTest {
     @Test
     public void testWinner() {
 
-        final List<Player> players = new ArrayList<>();
+        final List<PlayerDTO> playerDTOS = new ArrayList<>();
 
-        final Player winner = Player
+        final PlayerDTO winner = PlayerDTO
                 .builder()
                 .name("winner")
                 .cards(Arrays.asList(CardType.NINE_H, CardType.FIVE_H))
                 .build();
 
-        players.add(winner);
+        playerDTOS.add(winner);
 
-        final Player looser = Player
+        final PlayerDTO looser = PlayerDTO
                 .builder()
                 .name("looser")
                 .cards(Arrays.asList(CardType.SIX_H, CardType.SEVEN_D))
                 .build();
 
-        players.add(looser);
+        playerDTOS.add(looser);
 
-        final Player looser2 = Player
+        final PlayerDTO looser2 = PlayerDTO
                 .builder()
                 .name("looser2")
                 .cards(Arrays.asList(CardType.NINE_C, CardType.A_D))
                 .build();
 
-        players.add(looser2);
+        playerDTOS.add(looser2);
 
-        final Player looser3 = Player
+        final PlayerDTO looser3 = PlayerDTO
                 .builder()
                 .name("looser3")
                 .cards(Arrays.asList(CardType.TWO_C, CardType.TWO_D))
                 .build();
 
-        players.add(looser3);
+        playerDTOS.add(looser3);
 
 
-        final List<Pair<Player, CombinationDTO>> winners =
-                winnerService.findWinners(players, flop, tern, river);
+        final List<Pair<PlayerDTO, CombinationDTO>> winners =
+                winnerService.findWinners(playerDTOS, flop, tern, river);
 
         assertEquals(winners.get(0).getKey().getName(), winner.getName());
         assertEquals(winners.get(0).getValue().getCombinationType(), CombinationType.STRAIT);
