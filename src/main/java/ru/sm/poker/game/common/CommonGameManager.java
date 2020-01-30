@@ -1,4 +1,4 @@
-package ru.sm.poker.game.holdem;
+package ru.sm.poker.game.common;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ import static java.lang.String.format;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class HoldemGameManager implements GameManager {
+public class CommonGameManager implements GameManager {
 
     private final static Map<String, Game> games = new ConcurrentHashMap<>();
 

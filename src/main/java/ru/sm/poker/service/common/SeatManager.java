@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.enums.MessageType;
 import ru.sm.poker.game.Game;
-import ru.sm.poker.game.holdem.HoldemGameManager;
+import ru.sm.poker.game.common.CommonGameManager;
 import ru.sm.poker.model.Player;
 import ru.sm.poker.service.NotificationService;
 
@@ -23,19 +23,19 @@ import static ru.sm.poker.util.PlayerUtil.*;
 @Slf4j
 public class SeatManager {
 
-    private final HoldemGameManager holdemGameManager;
+    private final CommonGameManager commonGameManager;
     private final SecurityNotificationService securityNotificationService;
     private final NotificationService notificationService;
     private final Queue<Player> players = new LinkedBlockingQueue<>();
 
 
     public void joinInGame(String gameName, Player player) {
-        if (holdemGameManager.getPlayerByName(player.getName()).isPresent()) {
+        if (commonGameManager.getPlayerByName(player.getName()).isPresent()) {
             notificationService.sendSystemMessageToUser(player.getName(), MessageType.ONLY_ONE_TABLE_MESSAGE.getMessage());
             return;
         }
 
-        final Game game = holdemGameManager.getGameByName(gameName);
+        final Game game = commonGameManager.getGameByName(gameName);
         synchronized (this) {
             final int actualSize = game.getPlayers().size();
             final int maxPlayerSize = game.getGameSettings().getMaxPlayerSize();
@@ -62,7 +62,7 @@ public class SeatManager {
 
 
     public void leaveGame(String playerName, String gameName) {
-        final Game game = holdemGameManager.getGameByName(gameName);
+        final Game game = commonGameManager.getGameByName(gameName);
         if (game != null) {
             if (game.removePlayer(playerName)) {
                 log.info(format("player %s leave the game %s", playerName, gameName));

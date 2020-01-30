@@ -39,7 +39,7 @@ public class HoldemActionService implements ActionService {
     private final GameService gameService;
 
     @Override
-    public void setUnSetAfkPlayer(String playerName) {
+    public void changeStateType(String playerName) {
         final Optional<Player> optionalPlayer = holdemGameManager.getPlayerByName(playerName);
 
         if (optionalPlayer.isEmpty()) {

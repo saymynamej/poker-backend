@@ -52,7 +52,7 @@ public class CommonGameController {
 
     @MessageMapping("/afk")
     public void setUnsetAfk(Principal principal) {
-        actionService.setUnSetAfkPlayer(principal.getName());
+        actionService.changeStateType(principal.getName());
     }
 
     @MessageMapping("/addChips")

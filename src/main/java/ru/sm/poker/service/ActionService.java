@@ -9,6 +9,6 @@ public interface ActionService {
 
     void waitUntilPlayerWillHasAction(Player player, HoldemRoundSettingsDTO holdemRoundSettingsDTO);
 
-    void setUnSetAfkPlayer(String playerName);
+    void changeStateType(String playerName);
 
 }
