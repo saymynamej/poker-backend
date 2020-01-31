@@ -6,3 +6,6 @@
 /*.ipr
 /*.iws
 
+/.gradle/
+/gradle/
+/build/
