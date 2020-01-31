@@ -7,6 +7,9 @@ import ru.sm.poker.enums.StageType;
 import ru.sm.poker.dto.PlayerDTO;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class DTOUtilTest {
 
@@ -31,6 +34,12 @@ public class DTOUtilTest {
                 .lastBet(lastBet)
                 .playerDTOS(Collections.emptyList())
                 .build();
+    }
+
+
+    public List<PlayerDTO> getPlayers(int count) {
+        return IntStream.of(0, count).mapToObj(i -> getPlayer())
+                .collect(Collectors.toList());
     }
 
     public static PlayerDTO getPlayer() {
