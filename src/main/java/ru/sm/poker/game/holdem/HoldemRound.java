@@ -6,7 +6,7 @@ import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.game.RoundSettingsManager;
-import ru.sm.poker.model.Player;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.service.OrderService;
 import ru.sm.poker.service.WinnerService;
 
@@ -16,7 +16,7 @@ import java.util.List;
 @Slf4j
 public class HoldemRound implements Round {
 
-    private final List<Player> players;
+    private final List<PlayerDTO> playerDTOS;
     private final String gameName;
     private final OrderService orderService;
     private final WinnerService winnerService;
@@ -29,7 +29,7 @@ public class HoldemRound implements Round {
         log.info("game was started, because found enough persons");
 
         final RoundSettingsManager roundSettingsManager =
-                new HoldemRoundSettingsManager(players, gameName, bigBlindBet, smallBlindBet);
+                new HoldemRoundSettingsManager(playerDTOS, gameName, bigBlindBet, smallBlindBet);
 
         this.holdemRoundSettingsDTO = roundSettingsManager.getPreflopSettings();
 
@@ -48,18 +48,27 @@ public class HoldemRound implements Round {
         winnerService.sendPrizes(holdemRoundSettingsDTO);
 
 //        //TODO, TRANSFER IT TO THE OTHER SERVICE
-        players.forEach(player -> {
+        playerDTOS.forEach(player -> {
             if (player.getChipsCount() ==  0){
                 player.setStateType(StateType.AFK);
             }
         });
 
+    }
 
+    @Override
+    public List<PlayerDTO> getPlayers() {
+        return this.playerDTOS;
+    }
+
+    @Override
+    public String getGameName(){
+        return this.gameName;
     }
 
     @Override
     public void reloadRound() {
-        this.holdemRoundSettingsDTO.getPlayers().forEach(player -> player.setStateType(StateType.AFK));
+        this.holdemRoundSettingsDTO.getPlayerDTOS().forEach(player -> player.setStateType(StateType.AFK));
     }
 
     @Override

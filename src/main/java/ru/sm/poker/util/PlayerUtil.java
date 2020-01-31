@@ -1,32 +1,35 @@
 package ru.sm.poker.util;
 
 import ru.sm.poker.action.CountAction;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.enums.StateType;
-import ru.sm.poker.model.Player;
+import ru.sm.poker.dto.PlayerDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.sm.poker.util.HistoryUtil.addActionInHistory;
+
 public class PlayerUtil {
 
-    public static List<Player> copies(List<Player> players) {
-        final List<Player> copyPlayers = new ArrayList<>();
-        players.forEach(player -> copyPlayers.add(player.copy()));
-        return copyPlayers;
+    public static List<PlayerDTO> copies(List<PlayerDTO> playerDTOS) {
+        final List<PlayerDTO> copyPlayerDTOS = new ArrayList<>();
+        playerDTOS.forEach(player -> copyPlayerDTOS.add(player.copy()));
+        return copyPlayerDTOS;
     }
 
-    public static Player getDefaultPlayerForHoldem(String playerName) {
-        return Player.builder()
+    public static PlayerDTO getDefaultPlayerForHoldem(String playerName) {
+        return PlayerDTO.builder()
                 .name(playerName)
                 .timeBank(200L)
                 .chipsCount(5000L)
                 .build();
     }
 
-    public static List<Player> getPlayersInGame(List<Player> players) {
-        return players.stream()
+    public static List<PlayerDTO> getPlayersInGame(List<PlayerDTO> playerDTOS) {
+        return playerDTOS.stream()
                 .filter(player -> player.getAction() != null &&
                         player.getAction().getActionType() != ActionType.FOLD &&
                         player.getRoleType() != null &&
@@ -36,11 +39,8 @@ public class PlayerUtil {
                 .collect(Collectors.toList());
     }
 
-    public void getName (){
-        
+    public static boolean checkPlayerHasEnoughChips(PlayerDTO playerDTO, CountAction countAction) {
+        return playerDTO.getChipsCount() >= countAction.getCount();
     }
 
-    public static boolean checkPlayerHasEnoughChips(Player player, CountAction countAction) {
-        return player.getChipsCount() >= countAction.getCount();
-    }
 }

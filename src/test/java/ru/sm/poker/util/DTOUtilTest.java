@@ -4,7 +4,7 @@ import com.github.javafaker.Faker;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.enums.RoleType;
 import ru.sm.poker.enums.StageType;
-import ru.sm.poker.model.Player;
+import ru.sm.poker.dto.PlayerDTO;
 
 import java.util.Collections;
 
@@ -22,19 +22,19 @@ public class DTOUtilTest {
                 .stageType(stageType)
                 .bigBlindBet(DEFAULT_BIG_BLIND_BET)
                 .smallBlindBet(DEFAULT_SMALL_BLIND_BET)
-                .players(Collections.emptyList())
+                .playerDTOS(Collections.emptyList())
                 .build();
     }
 
     public static HoldemRoundSettingsDTO getRoundSettingsDTO(long lastBet) {
         return HoldemRoundSettingsDTO.builder()
                 .lastBet(lastBet)
-                .players(Collections.emptyList())
+                .playerDTOS(Collections.emptyList())
                 .build();
     }
 
-    public static Player getPlayer() {
-        return Player.builder()
+    public static PlayerDTO getPlayer() {
+        return PlayerDTO.builder()
                 .gameName(DEFAULT_GAME_NAME)
                 .chipsCount(DEFAULT_CHIPS_COUNT)
                 .name(faker.name().name())
@@ -42,8 +42,8 @@ public class DTOUtilTest {
                 .build();
     }
 
-    public static Player getPlayer(RoleType roleType) {
-        return Player.builder()
+    public static PlayerDTO getPlayer(RoleType roleType) {
+        return PlayerDTO.builder()
                 .gameName(DEFAULT_GAME_NAME)
                 .chipsCount(DEFAULT_CHIPS_COUNT)
                 .roleType(roleType)

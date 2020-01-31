@@ -3,15 +3,14 @@ package ru.sm.poker.controller;
 import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.sm.poker.action.holdem.*;
 import ru.sm.poker.dto.AdminActionDTO;
 import ru.sm.poker.game.GameManager;
-import ru.sm.poker.model.Player;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.service.ActionService;
-import ru.sm.poker.service.common.SeatManager;
+import ru.sm.poker.service.SeatManager;
 import ru.sm.poker.util.PlayerUtil;
 
 import java.security.Principal;
@@ -47,8 +46,8 @@ public class AdminGameController {
 
 
     @MessageMapping("/admin/afk")
-    public void setUnsetAfk(String name) {
-        actionService.setUnSetAfkPlayer(name);
+    public void changeStateType(String name) {
+        actionService.changeStateType(name);
     }
 
     @MessageMapping("/admin/raise")
@@ -102,7 +101,7 @@ public class AdminGameController {
 
     @MessageMapping("/admin/all-in")
     public void allIn(AdminActionDTO actionDTO) {
-        final Optional<Player> playerByName = gameManager.getPlayerByName(actionDTO.getName());
+        final Optional<PlayerDTO> playerByName = gameManager.getPlayerByName(actionDTO.getName());
         playerByName.ifPresent(
                 player -> actionService.setAction(actionDTO.getName(), new All(player.getChipsCount()))
         );

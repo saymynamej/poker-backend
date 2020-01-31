@@ -5,8 +5,6 @@ import ru.sm.poker.enums.GameType;
 public interface GameSettings {
     int getMaxPlayerSize();
 
-    String getGameName();
-
     int getMinActivePlayers();
 
     int getMinPlayersForStart();

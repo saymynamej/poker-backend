@@ -1,11 +1,11 @@
-package ru.sm.poker.game.holdem;
+package ru.sm.poker.game.common;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
-import ru.sm.poker.model.Player;
+import ru.sm.poker.dto.PlayerDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -17,12 +17,12 @@ import static java.lang.String.format;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class HoldemGameManager implements GameManager {
+public class CommonGameManager implements GameManager {
 
     private final static Map<String, Game> games = new ConcurrentHashMap<>();
 
     @Override
-    public Optional<Player> getPlayerByName(String name) {
+    public Optional<PlayerDTO> getPlayerByName(String name) {
         return games.values().stream()
                 .flatMap(game -> game.getPlayers().stream())
                 .filter(player -> player.getName().equals(name))
@@ -40,10 +40,10 @@ public class HoldemGameManager implements GameManager {
 
     @Override
     public void addChips(String name, long count) {
-        final Optional<Player> optionalPlayer = getPlayerByName(name);
+        final Optional<PlayerDTO> optionalPlayer = getPlayerByName(name);
         if (optionalPlayer.isPresent()) {
-            final Player player = optionalPlayer.get();
-            player.addChips(count);
+            final PlayerDTO playerDTO = optionalPlayer.get();
+            playerDTO.addChips(count);
         }
     }
 
@@ -53,14 +53,14 @@ public class HoldemGameManager implements GameManager {
     }
 
     @Override
-    public void removePlayer(String gameName, Player player) {
+    public void removePlayer(String gameName, PlayerDTO playerDTO) {
         final Game game = games.get(gameName);
         if (game != null) {
-            game.removePlayer(player);
-            log.info("Player removed :" + player.getName());
+            game.removePlayer(playerDTO);
+            log.info("Player removed :" + playerDTO.getName());
             return;
         }
-        throw new RuntimeException(format("could not found player in game =%s, player=%s", gameName, player.getName()));
+        throw new RuntimeException(format("could not found player in game =%s, player=%s", gameName, playerDTO.getName()));
     }
 
     @Override
@@ -72,10 +72,10 @@ public class HoldemGameManager implements GameManager {
     }
 
     @Override
-    public void removePlayer(Player player) {
+    public void removePlayer(PlayerDTO playerDTO) {
         games.forEach((name, game) -> {
-            final List<Player> players = game.getRoundSettings().getPlayers();
-            players.remove(player);
+            final List<PlayerDTO> playerDTOS = game.getRoundSettings().getPlayerDTOS();
+            playerDTOS.remove(playerDTO);
         });
     }
 
@@ -101,11 +101,11 @@ public class HoldemGameManager implements GameManager {
     }
 
     @Override
-    public Player getActivePlayerInGame(String game) {
+    public PlayerDTO getActivePlayerInGame(String game) {
         return getGameByName(game).getRoundSettings()
-                .getPlayers()
+                .getPlayerDTOS()
                 .stream()
-                .filter(Player::isActive)
+                .filter(PlayerDTO::isActive)
                 .findFirst().orElseThrow(() -> new RuntimeException("cannot find active player in game:" + game));
     }
 

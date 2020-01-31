@@ -9,7 +9,7 @@ import ru.sm.poker.action.holdem.*;
 import ru.sm.poker.dto.ActionDTO;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.service.ActionService;
-import ru.sm.poker.service.common.SeatManager;
+import ru.sm.poker.service.SeatManager;
 
 import java.security.Principal;
 
@@ -52,7 +52,7 @@ public class CommonGameController {
 
     @MessageMapping("/afk")
     public void setUnsetAfk(Principal principal) {
-        actionService.setUnSetAfkPlayer(principal.getName());
+        actionService.changeStateType(principal.getName());
     }
 
     @MessageMapping("/addChips")

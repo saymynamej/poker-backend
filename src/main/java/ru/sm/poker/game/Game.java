@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.sm.poker.config.game.GameSettings;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.enums.StateType;
-import ru.sm.poker.model.Player;
+import ru.sm.poker.dto.PlayerDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,13 +13,11 @@ import java.util.Optional;
 public abstract class Game {
 
     private final GameSettings gameSettings;
-    private final List<Player> players;
     private final Round round;
     protected boolean isEnable = true;
 
-    public Game(GameSettings gameSettings, List<Player> players, Round round) {
+    public Game(GameSettings gameSettings, Round round) {
         this.gameSettings = gameSettings;
-        this.players = players;
         this.round = round;
     }
 
@@ -27,16 +25,16 @@ public abstract class Game {
         return this.round;
     }
 
-    public List<Player> getPlayers() {
-        return this.players;
+    public List<PlayerDTO> getPlayers() {
+        return this.round.getPlayers();
     }
 
     public boolean isEnable() {
         return isEnable;
     }
 
-    public String getName() {
-        return this.gameSettings.getGameName();
+    public String getGameName() {
+        return this.round.getGameName();
     }
 
     public int getMaxPlayersSize() {
@@ -47,25 +45,25 @@ public abstract class Game {
         return gameSettings;
     }
 
-    public void addPlayer(Player player) {
-        if (!this.players.contains(player)) {
-            player.setStateType(StateType.IN_GAME);
-            this.players.add(player);
+    public void addPlayer(PlayerDTO playerDTO) {
+        if (!this.getPlayers().contains(playerDTO)) {
+            playerDTO.setStateType(StateType.IN_GAME);
+            this.getPlayers().add(playerDTO);
         }
     }
 
-    public boolean removePlayer(Player player) {
-        return this.players.remove(player);
+    public boolean removePlayer(PlayerDTO playerDTO) {
+        return this.getPlayers().remove(playerDTO);
     }
 
     public boolean removePlayer(String name) {
-        final Optional<Player> optionalPlayer = getPlayers().stream()
+        final Optional<PlayerDTO> optionalPlayer = getPlayers().stream()
                 .filter(player -> player.getName().equals(name))
                 .findAny();
         if (optionalPlayer.isPresent()) {
-            final Player player = optionalPlayer.get();
-            player.setStateType(StateType.LEAVE);
-            return this.removePlayer(player);
+            final PlayerDTO playerDTO = optionalPlayer.get();
+            playerDTO.setStateType(StateType.LEAVE);
+            return this.removePlayer(playerDTO);
         }
         return false;
     }

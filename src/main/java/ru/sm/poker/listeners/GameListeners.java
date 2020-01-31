@@ -1,6 +1,5 @@
 package ru.sm.poker.listeners;
 
-import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -12,10 +11,10 @@ import ru.sm.poker.game.GameManager;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.game.holdem.HoldemGame;
 import ru.sm.poker.game.holdem.HoldemRound;
-import ru.sm.poker.model.Player;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.service.OrderService;
 import ru.sm.poker.service.WinnerService;
-import ru.sm.poker.service.common.SeatManager;
+import ru.sm.poker.service.SeatManager;
 import ru.sm.poker.util.PlayerUtil;
 import ru.sm.poker.util.ThreadUtil;
 
@@ -55,12 +54,10 @@ public class GameListeners {
                 if (seatManager.getQueue().size() >= 4) {
                     final String randomGameName = getRandomGOTCityName();
 
-                    final List<Player> playersFromQueue = extractQueue();
-
-                    final GameSettings gameSettings = new HoldemFullTableSettings(randomGameName, GameType.HOLDEM);
+                    final GameSettings gameSettings = new HoldemFullTableSettings(GameType.HOLDEM);
 
                     final Round round = new HoldemRound(
-                            playersFromQueue,
+                            extractQueue(),
                             randomGameName,
                             orderService,
                             winnerService,
@@ -69,7 +66,6 @@ public class GameListeners {
 
                     final Game holdemGame = new HoldemGame(
                             gameSettings,
-                            playersFromQueue,
                             round
                     );
 
@@ -80,14 +76,14 @@ public class GameListeners {
         });
     }
 
-    private List<Player> extractQueue() {
-        final List<Player> players = new ArrayList<>();
-        final Queue<Player> queue = seatManager.getQueue();
+    private List<PlayerDTO> extractQueue() {
+        final List<PlayerDTO> playerDTOS = new ArrayList<>();
+        final Queue<PlayerDTO> queue = seatManager.getQueue();
         final int size = queue.size();
         for (int i = 0; i < size; i++) {
-            players.add(queue.poll());
+            playerDTOS.add(queue.poll());
         }
-        return players;
+        return playerDTOS;
     }
 
 
@@ -95,11 +91,11 @@ public class GameListeners {
 
         for (int i = 0; i < 10; i++) {
             final String randomGameName = getRandomGOTCityName();
-            final GameSettings gameSettings = new HoldemFullTableSettings(randomGameName, GameType.HOLDEM);
-            final List<Player> players = new ArrayList<>();
+            final GameSettings gameSettings = new HoldemFullTableSettings(GameType.HOLDEM);
+            final List<PlayerDTO> playerDTOS = new ArrayList<>();
 
             final Round round = new HoldemRound(
-                    players,
+                    playerDTOS,
                     randomGameName,
                     orderService,
                     winnerService,
@@ -108,7 +104,6 @@ public class GameListeners {
 
             final Game holdemGame = new HoldemGame(
                     gameSettings,
-                    players,
                     round
             );
 
