@@ -37,7 +37,7 @@ public class DTOUtilTest {
     }
 
 
-    public List<PlayerDTO> getPlayers(int count) {
+    public static List<PlayerDTO> getPlayers(int count) {
         return IntStream.of(0, count).mapToObj(i -> getPlayer())
                 .collect(Collectors.toList());
     }
