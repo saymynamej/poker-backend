@@ -28,9 +28,8 @@ public class RaiseStrategy implements ActionStrategy {
         }
 
         final long prevBets = sumAllHistoryBets(holdemRoundSettingsDTO, playerDTO);
-        if (holdemRoundSettingsDTO.getStageType() == StageType.PREFLOP && playerDTO.isBigBlind() || playerDTO.isSmallBlind()) {
-            playerDTO.setAction(new Raise(countAction.getCount() - prevBets));
-        }
+
+        playerDTO.setAction(new Raise(countAction.getCount() - prevBets));
 
         gameService.removeChipsFromPlayer(playerDTO, holdemRoundSettingsDTO, countAction.getCount() - prevBets, countAction.getCount());
 
