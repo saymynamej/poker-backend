@@ -9,7 +9,6 @@ import ru.sm.poker.enums.StageType;
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.StateType;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +30,10 @@ public class DTOUtilTest {
         return getRoundSettingsDTO(DEFAULT_LAST_BET);
     }
 
+    public static HoldemRoundSettingsDTO getRoundSettingsDTO(StageType stageType) {
+        return getRoundSettingsDTO(DEFAULT_PLAYERS_SIZE, stageType);
+    }
+
     public static HoldemRoundSettingsDTO getRoundSettingsDTO(int countPlayers, StageType stageType) {
         return getRoundSettingsDTO(DEFAULT_LAST_BET, stageType, getPlayers(countPlayers));
     }
@@ -45,6 +48,7 @@ public class DTOUtilTest {
                 .history(new HashMap<>())
                 .build();
     }
+
 
     public static HoldemRoundSettingsDTO getRoundSettingsDTO(long lastBet) {
         return HoldemRoundSettingsDTO.builder()
