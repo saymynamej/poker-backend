@@ -23,7 +23,7 @@ public class RoundSettingsUtil {
 
 
     public static HoldemRoundSettingsDTO copyWithSecureCard(HoldemRoundSettingsDTO holdemRoundSettingsDTO, List<String> filters) {
-        final List<PlayerDTO> playersWithSecureCards = PlayerUtil.copies(holdemRoundSettingsDTO.getPlayerDTOS());
+        final List<PlayerDTO> playersWithSecureCards = PlayerUtil.copies(holdemRoundSettingsDTO.getPlayers());
         playersWithSecureCards.forEach(player -> {
             if (!filters.contains(player.getName())) {
                 player.addCards(Collections.emptyList());
@@ -43,7 +43,7 @@ public class RoundSettingsUtil {
                 .bigBlind(holdemRoundSettingsDTO.getBigBlind())
                 .smallBlind(holdemRoundSettingsDTO.getSmallBlind())
                 .button(holdemRoundSettingsDTO.getButton())
-                .playerDTOS(playerDTOS)
+                .players(playerDTOS)
                 .stageType(holdemRoundSettingsDTO.getStageType())
                 .lastBet(holdemRoundSettingsDTO.getLastBet())
                 .activePlayerDTO(holdemRoundSettingsDTO.getActivePlayerDTO())

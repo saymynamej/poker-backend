@@ -18,19 +18,19 @@ public class SecurityNotificationService {
     private final SecurityService securityService;
 
     public void sendToAllWithSecurityWhoIsNotInTheGame(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-        final List<String> filter = getPlayersInGame(holdemRoundSettingsDTO.getPlayerDTOS())
+        final List<String> filter = getPlayersInGame(holdemRoundSettingsDTO.getPlayers())
                 .stream()
                 .map(PlayerDTO::getName)
                 .collect(Collectors.toList());
 
         final HoldemRoundSettingsDTO secureSettings = securityService.secureCards(filter, holdemRoundSettingsDTO);
-        secureSettings.getPlayerDTOS()
+        secureSettings.getPlayers()
                 .forEach(player -> simpleNotificationService.sendGameInformationToUser(player.getName(), secureSettings));
 
     }
 
     public void sendToAllWithSecurity(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-        holdemRoundSettingsDTO.getPlayerDTOS().forEach(player -> {
+        holdemRoundSettingsDTO.getPlayers().forEach(player -> {
             sendToUserWithSecurity(holdemRoundSettingsDTO, player.getName());
         });
     }

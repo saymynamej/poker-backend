@@ -74,7 +74,7 @@ public class CommonGameManager implements GameManager {
     @Override
     public void removePlayer(PlayerDTO playerDTO) {
         games.forEach((name, game) -> {
-            final List<PlayerDTO> playerDTOS = game.getRoundSettings().getPlayerDTOS();
+            final List<PlayerDTO> playerDTOS = game.getRoundSettings().getPlayers();
             playerDTOS.remove(playerDTO);
         });
     }
@@ -103,7 +103,7 @@ public class CommonGameManager implements GameManager {
     @Override
     public PlayerDTO getActivePlayerInGame(String game) {
         return getGameByName(game).getRoundSettings()
-                .getPlayerDTOS()
+                .getPlayers()
                 .stream()
                 .filter(PlayerDTO::isActive)
                 .findFirst().orElseThrow(() -> new RuntimeException("cannot find active player in game:" + game));

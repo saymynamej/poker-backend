@@ -1,6 +1,7 @@
 package ru.sm.poker.util;
 
 import ru.sm.poker.action.CountAction;
+import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.enums.StateType;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 import static ru.sm.poker.util.HistoryUtil.addActionInHistory;
 
 public class PlayerUtil {
+
 
     public static List<PlayerDTO> copies(List<PlayerDTO> playerDTOS) {
         final List<PlayerDTO> copyPlayerDTOS = new ArrayList<>();

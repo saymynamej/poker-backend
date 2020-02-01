@@ -32,7 +32,7 @@ public class HoldemWinnerService implements WinnerService {
     @Override
     public void sendPrizes(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
         final List<Pair<PlayerDTO, CombinationDTO>> playersAndCombinations = findWinners(
-                getPlayersInGame(holdemRoundSettingsDTO.getPlayerDTOS()),
+                getPlayersInGame(holdemRoundSettingsDTO.getPlayers()),
                 holdemRoundSettingsDTO.getFlop(),
                 holdemRoundSettingsDTO.getTern(),
                 holdemRoundSettingsDTO.getRiver()

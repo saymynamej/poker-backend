@@ -46,7 +46,7 @@ public class GameService {
     }
 
     public boolean checkLastPlayer(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-        final List<PlayerDTO> activePlayerDTOS = holdemRoundSettingsDTO.getPlayerDTOS().stream()
+        final List<PlayerDTO> activePlayerDTOS = holdemRoundSettingsDTO.getPlayers().stream()
                 .filter(pl -> !(pl.getAction().getActionType() == ActionType.FOLD))
                 .collect(Collectors.toList());
 

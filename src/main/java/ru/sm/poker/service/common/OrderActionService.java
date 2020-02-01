@@ -31,7 +31,7 @@ public class OrderActionService implements OrderService {
     @Override
     public void start(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
         final List<PlayerDTO> sortedPlayerDTOS = getPlayersInGame(sort(
-                holdemRoundSettingsDTO.getPlayerDTOS(),
+                holdemRoundSettingsDTO.getPlayers(),
                 holdemRoundSettingsDTO.getStageType())).stream()
                 .filter(playerIsNotAfk())
                 .collect(Collectors.toList());
@@ -88,7 +88,7 @@ public class OrderActionService implements OrderService {
     }
 
     private boolean allPlayersInAllIn(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-        return getPlayersInGame(holdemRoundSettingsDTO.getPlayerDTOS()).stream()
+        return getPlayersInGame(holdemRoundSettingsDTO.getPlayers()).stream()
                 .allMatch(playerInAllIn());
 
     }
