@@ -2,8 +2,6 @@ package ru.sm.poker.util;
 
 import ru.sm.poker.action.CountAction;
 import ru.sm.poker.dto.PlayerDTO;
-import ru.sm.poker.enums.ActionType;
-import ru.sm.poker.enums.StateType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +26,7 @@ public class PlayerUtil {
 
     public static List<PlayerDTO> getPlayersInGame(List<PlayerDTO> playerDTOS) {
         return playerDTOS.stream()
-                .filter(player -> player.getAction() != null &&
-                        player.getAction().getActionType() != ActionType.FOLD &&
-                        player.getRoleType() != null &&
-                        player.getStateType() != StateType.AFK &&
-                        player.getStateType() != StateType.LEAVE &&
-                        player.getCards() != null
-                )
+                .filter(StreamUtil.playerInGame())
                 .collect(Collectors.toList());
     }
 
