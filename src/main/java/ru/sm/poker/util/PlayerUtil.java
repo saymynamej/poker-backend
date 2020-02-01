@@ -36,6 +36,7 @@ public class PlayerUtil {
                         player.getAction().getActionType() != ActionType.FOLD &&
                         player.getRoleType() != null &&
                         player.getStateType() != StateType.AFK &&
+                        player.getStateType() != StateType.LEAVE &&
                         player.getCards() != null
                 )
                 .collect(Collectors.toList());
