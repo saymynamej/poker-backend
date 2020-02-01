@@ -67,7 +67,7 @@ public class HistoryUtilTest {
     @Test
     public void allPlayersInGameHaveSameCountOfBetSuccessTest() {
         final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO(DEFAULT_PLAYERS_SIZE, StageType.PREFLOP);
-        final List<PlayerDTO> playerDTOS = roundSettingsDTO.getPlayerDTOS();
+        final List<PlayerDTO> playerDTOS = roundSettingsDTO.getPlayers();
         for (PlayerDTO playerDTO : playerDTOS) {
             addActionInHistory(roundSettingsDTO, playerDTO, new Call(DEFAULT_BIG_BLIND_BET));
         }
@@ -78,7 +78,7 @@ public class HistoryUtilTest {
     @Test
     public void allPlayersInGameHaveSameCountOfBetSuccessFail() {
         final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO(DEFAULT_PLAYERS_SIZE, StageType.PREFLOP);
-        final List<PlayerDTO> playerDTOS = roundSettingsDTO.getPlayerDTOS();
+        final List<PlayerDTO> playerDTOS = roundSettingsDTO.getPlayers();
         for (PlayerDTO playerDTO : playerDTOS) {
             addActionInHistory(roundSettingsDTO, playerDTO, new Call(DEFAULT_BIG_BLIND_BET));
         }

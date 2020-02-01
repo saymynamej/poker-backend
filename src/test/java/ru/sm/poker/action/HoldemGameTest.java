@@ -17,8 +17,6 @@ import ru.sm.poker.service.common.SimpleNotificationService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static java.util.List.of;
-
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
@@ -45,6 +43,11 @@ public class HoldemGameTest {
 
     @Test
     public void testGame() {
+
+
+
+
+
 //        final String randomGameName = getRandomGOTCityName();
 //
 //        final List<Player> playersFromQueue = of(

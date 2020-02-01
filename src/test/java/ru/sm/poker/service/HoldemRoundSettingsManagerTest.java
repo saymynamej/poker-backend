@@ -33,21 +33,21 @@ class HoldemRoundSettingsManagerTest {
                 preflopSettings.getLastBet(), preflopSettings.getBigBlindBet()
         );
         Assertions.assertTrue(
-                preflopSettings.getPlayerDTOS().stream()
+                preflopSettings.getPlayers().stream()
                         .noneMatch(player -> player.getRoleType() == null)
         );
 
         Assertions.assertTrue(
-                preflopSettings.getPlayerDTOS().stream().anyMatch(PlayerDTO::isBigBlind)
+                preflopSettings.getPlayers().stream().anyMatch(PlayerDTO::isBigBlind)
         );
         Assertions.assertTrue(
-                preflopSettings.getPlayerDTOS().stream().anyMatch(PlayerDTO::isSmallBlind)
+                preflopSettings.getPlayers().stream().anyMatch(PlayerDTO::isSmallBlind)
         );
         Assertions.assertTrue(
-                preflopSettings.getPlayerDTOS().stream().anyMatch(PlayerDTO::isButton)
+                preflopSettings.getPlayers().stream().anyMatch(PlayerDTO::isButton)
         );
         Assertions.assertTrue(
-                preflopSettings.getPlayerDTOS().stream().anyMatch(PlayerDTO::isPlayer)
+                preflopSettings.getPlayers().stream().anyMatch(PlayerDTO::isPlayer)
         );
 
         Assertions.assertNull(preflopSettings.getFlop());
@@ -68,14 +68,14 @@ class HoldemRoundSettingsManagerTest {
 
             final HoldemRoundSettingsDTO preflopSettings2 = secondRound.getPreflopSettings();
 
-            final int firstButtonIndex = preflopSettings.getPlayerDTOS().indexOf(preflopSettings.getButton());
-            final int secondButtonIndex = preflopSettings2.getPlayerDTOS().indexOf(preflopSettings2.getButton());
+            final int firstButtonIndex = preflopSettings.getPlayers().indexOf(preflopSettings.getButton());
+            final int secondButtonIndex = preflopSettings2.getPlayers().indexOf(preflopSettings2.getButton());
 
-            final int firstSmallBlindIndex = preflopSettings.getPlayerDTOS().indexOf(preflopSettings.getSmallBlind());
-            final int secondSmallBlindIndex = preflopSettings2.getPlayerDTOS().indexOf(preflopSettings2.getSmallBlind());
+            final int firstSmallBlindIndex = preflopSettings.getPlayers().indexOf(preflopSettings.getSmallBlind());
+            final int secondSmallBlindIndex = preflopSettings2.getPlayers().indexOf(preflopSettings2.getSmallBlind());
 
-            final int firstBigBlindIndex = preflopSettings.getPlayerDTOS().indexOf(preflopSettings.getBigBlind());
-            final int secondBigBlindIndex = preflopSettings2.getPlayerDTOS().indexOf(preflopSettings2.getBigBlind());
+            final int firstBigBlindIndex = preflopSettings.getPlayers().indexOf(preflopSettings.getBigBlind());
+            final int secondBigBlindIndex = preflopSettings2.getPlayers().indexOf(preflopSettings2.getBigBlind());
 
             final int expectedButtonValue = playerDTOS.size() % (secondButtonIndex - firstButtonIndex) == 0 ? 0 : 1;
             final int expectedSmallBlindValue = playerDTOS.size() % (secondSmallBlindIndex - firstSmallBlindIndex) == 0 ? 0 : 1;
@@ -110,21 +110,21 @@ class HoldemRoundSettingsManagerTest {
                 0, postFlopSettings.getLastBet()
         );
         Assertions.assertTrue(
-                postFlopSettings.getPlayerDTOS().stream()
+                postFlopSettings.getPlayers().stream()
                         .noneMatch(player -> player.getRoleType() == null)
         );
 
         Assertions.assertTrue(
-                postFlopSettings.getPlayerDTOS().stream().anyMatch(PlayerDTO::isBigBlind)
+                postFlopSettings.getPlayers().stream().anyMatch(PlayerDTO::isBigBlind)
         );
         Assertions.assertTrue(
-                postFlopSettings.getPlayerDTOS().stream().anyMatch(PlayerDTO::isSmallBlind)
+                postFlopSettings.getPlayers().stream().anyMatch(PlayerDTO::isSmallBlind)
         );
         Assertions.assertTrue(
-                postFlopSettings.getPlayerDTOS().stream().anyMatch(PlayerDTO::isButton)
+                postFlopSettings.getPlayers().stream().anyMatch(PlayerDTO::isButton)
         );
         Assertions.assertTrue(
-                postFlopSettings.getPlayerDTOS().stream().anyMatch(PlayerDTO::isPlayer)
+                postFlopSettings.getPlayers().stream().anyMatch(PlayerDTO::isPlayer)
         );
 
 
@@ -165,24 +165,24 @@ class HoldemRoundSettingsManagerTest {
         );
 
         Assertions.assertTrue(
-                postFlopSettings.getPlayerDTOS().stream()
+                postFlopSettings.getPlayers().stream()
                         .noneMatch(player -> player.getRoleType() == null)
         );
 
         Assertions.assertTrue(
-                postFlopSettings.getPlayerDTOS().stream().anyMatch(PlayerDTO::isBigBlind)
+                postFlopSettings.getPlayers().stream().anyMatch(PlayerDTO::isBigBlind)
         );
 
         Assertions.assertTrue(
-                postFlopSettings.getPlayerDTOS().stream().anyMatch(PlayerDTO::isSmallBlind)
+                postFlopSettings.getPlayers().stream().anyMatch(PlayerDTO::isSmallBlind)
         );
 
         Assertions.assertTrue(
-                postFlopSettings.getPlayerDTOS().stream().anyMatch(PlayerDTO::isButton)
+                postFlopSettings.getPlayers().stream().anyMatch(PlayerDTO::isButton)
         );
 
         Assertions.assertTrue(
-                postFlopSettings.getPlayerDTOS().stream().anyMatch(PlayerDTO::isPlayer)
+                postFlopSettings.getPlayers().stream().anyMatch(PlayerDTO::isPlayer)
         );
 
         Assertions.assertEquals(preflopSettings.getButton(), postFlopSettings.getButton());
@@ -231,24 +231,24 @@ class HoldemRoundSettingsManagerTest {
         );
 
         Assertions.assertTrue(
-                postFlopSettings.getPlayerDTOS().stream()
+                postFlopSettings.getPlayers().stream()
                         .noneMatch(player -> player.getRoleType() == null)
         );
 
         Assertions.assertTrue(
-                postFlopSettings.getPlayerDTOS().stream().anyMatch(PlayerDTO::isBigBlind)
+                postFlopSettings.getPlayers().stream().anyMatch(PlayerDTO::isBigBlind)
         );
 
         Assertions.assertTrue(
-                postFlopSettings.getPlayerDTOS().stream().anyMatch(PlayerDTO::isSmallBlind)
+                postFlopSettings.getPlayers().stream().anyMatch(PlayerDTO::isSmallBlind)
         );
 
         Assertions.assertTrue(
-                postFlopSettings.getPlayerDTOS().stream().anyMatch(PlayerDTO::isButton)
+                postFlopSettings.getPlayers().stream().anyMatch(PlayerDTO::isButton)
         );
 
         Assertions.assertTrue(
-                postFlopSettings.getPlayerDTOS().stream().anyMatch(PlayerDTO::isPlayer)
+                postFlopSettings.getPlayers().stream().anyMatch(PlayerDTO::isPlayer)
         );
 
 

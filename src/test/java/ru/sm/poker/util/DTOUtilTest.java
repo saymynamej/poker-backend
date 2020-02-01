@@ -44,7 +44,8 @@ public class DTOUtilTest {
                 .stageType(stageType)
                 .bigBlindBet(DEFAULT_BIG_BLIND_BET)
                 .smallBlindBet(DEFAULT_SMALL_BLIND_BET)
-                .playerDTOS(players)
+                .bank(DEFAULT_BIG_BLIND_BET + DEFAULT_SMALL_BLIND_BET)
+                .players(players)
                 .history(new HashMap<>())
                 .build();
     }
@@ -55,8 +56,9 @@ public class DTOUtilTest {
                 .lastBet(lastBet)
                 .bigBlindBet(DEFAULT_BIG_BLIND_BET)
                 .smallBlindBet(DEFAULT_SMALL_BLIND_BET)
+                .bank(DEFAULT_BIG_BLIND_BET + DEFAULT_SMALL_BLIND_BET)
                 .history(new HashMap<>())
-                .playerDTOS(Collections.emptyList())
+                .players(Collections.emptyList())
                 .build();
     }
 
