@@ -17,7 +17,7 @@ import static ru.sm.poker.util.HistoryUtil.addActionInHistory;
 @Slf4j
 public class GameService {
 
-    public void removeChipsFromPlayer(PlayerDTO playerDTO, HoldemRoundSettingsDTO holdemRoundSettingsDTO, long removeChips, long lastBet) {
+    public void doAction(PlayerDTO playerDTO, HoldemRoundSettingsDTO holdemRoundSettingsDTO, long removeChips, long lastBet) {
         playerDTO.removeChips(removeChips);
         addBank(holdemRoundSettingsDTO, removeChips);
         setLastBet(holdemRoundSettingsDTO, lastBet);

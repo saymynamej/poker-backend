@@ -1,7 +1,6 @@
 package ru.sm.poker.base;
 
 import ru.sm.poker.action.ActionStrategy;
-
 import ru.sm.poker.action.holdem.strategy.*;
 import ru.sm.poker.enums.RoleType;
 

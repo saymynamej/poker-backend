@@ -7,7 +7,7 @@ import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
 
-import static ru.sm.poker.util.HistoryUtil.*;
+import static ru.sm.poker.util.HistoryUtil.sumAllHistoryBetsWithNewAction;
 
 public class AllStrategy implements ActionStrategy {
 
@@ -20,10 +20,10 @@ public class AllStrategy implements ActionStrategy {
         final long allBets = sumAllHistoryBetsWithNewAction(holdemRoundSettingsDTO, playerDTO, countAction);
 
         if (allBets >= holdemRoundSettingsDTO.getLastBet()) {
-            gameService.removeChipsFromPlayer(playerDTO, holdemRoundSettingsDTO, countAction.getCount(), allBets);
+            gameService.doAction(playerDTO, holdemRoundSettingsDTO, countAction.getCount(), allBets);
             return;
         }
-        gameService.removeChipsFromPlayer(playerDTO, holdemRoundSettingsDTO, countAction.getCount(), holdemRoundSettingsDTO.getLastBet());
+        gameService.doAction(playerDTO, holdemRoundSettingsDTO, countAction.getCount(), holdemRoundSettingsDTO.getLastBet());
 
     }
 }

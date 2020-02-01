@@ -3,12 +3,12 @@ package ru.sm.poker.action.holdem;
 import lombok.RequiredArgsConstructor;
 import ru.sm.poker.action.ExecutableAction;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
 
-import static ru.sm.poker.base.StrategyBase.*;
+import static ru.sm.poker.base.StrategyBase.ALLIN_STRATEGIES;
 
 @RequiredArgsConstructor
 public class All implements ExecutableAction {

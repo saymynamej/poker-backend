@@ -3,8 +3,8 @@ package ru.sm.poker.util;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.game.Game;
 import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.game.Game;
 
 import java.util.Collections;
 import java.util.List;

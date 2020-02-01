@@ -1,8 +1,8 @@
 package ru.sm.poker.util;
 
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.enums.StateType;
-import ru.sm.poker.dto.PlayerDTO;
 
 import java.util.function.Predicate;
 

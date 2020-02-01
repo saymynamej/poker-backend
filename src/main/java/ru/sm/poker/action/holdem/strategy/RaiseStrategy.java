@@ -4,7 +4,6 @@ import ru.sm.poker.action.ActionStrategy;
 import ru.sm.poker.action.CountAction;
 import ru.sm.poker.action.holdem.Raise;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.enums.StageType;
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
@@ -29,9 +28,10 @@ public class RaiseStrategy implements ActionStrategy {
 
         final long prevBets = sumAllHistoryBets(holdemRoundSettingsDTO, playerDTO);
 
+        //CHANGE ACTION FOR HISTORY
         playerDTO.setAction(new Raise(countAction.getCount() - prevBets));
 
-        gameService.removeChipsFromPlayer(playerDTO, holdemRoundSettingsDTO, countAction.getCount() - prevBets, countAction.getCount());
+        gameService.doAction(playerDTO, holdemRoundSettingsDTO, countAction.getCount() - prevBets, countAction.getCount());
 
     }
 }

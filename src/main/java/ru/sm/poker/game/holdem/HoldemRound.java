@@ -3,10 +3,10 @@ package ru.sm.poker.game.holdem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.game.RoundSettingsManager;
-import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.service.OrderService;
 import ru.sm.poker.service.WinnerService;
 
@@ -43,7 +43,6 @@ public class HoldemRound implements Round {
 
         this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithRiver(this.holdemRoundSettingsDTO.getBank());
         orderService.start(holdemRoundSettingsDTO);
-
 
         winnerService.sendPrizes(holdemRoundSettingsDTO);
 

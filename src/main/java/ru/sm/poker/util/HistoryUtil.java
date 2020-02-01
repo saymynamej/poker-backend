@@ -72,5 +72,4 @@ public class HistoryUtil {
             addActionInHistory(holdemRoundSettingsDTO, playerDTO, (CountAction) playerDTO.getAction());
         }
     }
-
 }

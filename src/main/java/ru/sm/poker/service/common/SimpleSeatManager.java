@@ -3,10 +3,10 @@ package ru.sm.poker.service.common;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.MessageType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.common.CommonGameManager;
-import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.service.NotificationService;
 import ru.sm.poker.service.SeatManager;
 
@@ -17,7 +17,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import static java.lang.String.format;
 import static ru.sm.poker.enums.MessageType.PLAYER_ALREADY_EXIST;
 import static ru.sm.poker.enums.MessageType.SUCCESS_JOIN_IN_QUEUE;
-import static ru.sm.poker.util.PlayerUtil.*;
+import static ru.sm.poker.util.PlayerUtil.getDefaultPlayerForHoldem;
 
 @RequiredArgsConstructor
 @Component

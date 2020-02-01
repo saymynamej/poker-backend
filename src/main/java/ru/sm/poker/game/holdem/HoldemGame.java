@@ -2,10 +2,10 @@ package ru.sm.poker.game.holdem;
 
 import ru.sm.poker.config.game.GameSettings;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.Round;
-import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.util.ThreadUtil;
 
 import java.util.List;

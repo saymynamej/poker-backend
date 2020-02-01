@@ -5,16 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.config.game.GameSettings;
 import ru.sm.poker.config.game.holdem.HoldemFullTableSettings;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.GameType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.game.holdem.HoldemGame;
 import ru.sm.poker.game.holdem.HoldemRound;
-import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.service.OrderService;
-import ru.sm.poker.service.WinnerService;
 import ru.sm.poker.service.SeatManager;
+import ru.sm.poker.service.WinnerService;
 import ru.sm.poker.util.PlayerUtil;
 import ru.sm.poker.util.ThreadUtil;
 

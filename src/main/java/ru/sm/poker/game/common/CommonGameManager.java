@@ -3,9 +3,9 @@ package ru.sm.poker.game.common;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
-import ru.sm.poker.dto.PlayerDTO;
 
 import java.util.List;
 import java.util.Map;

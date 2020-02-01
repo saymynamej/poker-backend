@@ -3,8 +3,8 @@ package ru.sm.poker.service.common;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.action.holdem.Fold;
-import ru.sm.poker.enums.StateType;
 import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.enums.StateType;
 
 import java.util.Timer;
 import java.util.TimerTask;

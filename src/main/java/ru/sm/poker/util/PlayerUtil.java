@@ -1,17 +1,13 @@
 package ru.sm.poker.util;
 
 import ru.sm.poker.action.CountAction;
-import ru.sm.poker.action.holdem.Wait;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.enums.StateType;
-import ru.sm.poker.dto.PlayerDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static ru.sm.poker.util.HistoryUtil.addActionInHistory;
 
 public class PlayerUtil {
 

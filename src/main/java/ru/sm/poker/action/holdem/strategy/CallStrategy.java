@@ -22,7 +22,7 @@ public class CallStrategy implements ActionStrategy {
         final long bets = sumAllHistoryBetsWithNewAction(holdemRoundSettingsDTO, playerDTO, countAction);
 
         if (bets == holdemRoundSettingsDTO.getLastBet()) {
-            gameService.removeChipsFromPlayer(playerDTO, holdemRoundSettingsDTO, countAction.getCount(), bets);
+            gameService.doAction(playerDTO, holdemRoundSettingsDTO, countAction.getCount(), bets);
             return;
         }
         actionService.waitUntilPlayerWillHasAction(playerDTO, holdemRoundSettingsDTO);
