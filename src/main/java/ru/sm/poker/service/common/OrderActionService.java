@@ -12,7 +12,6 @@ import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.OrderService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ru.sm.poker.util.HistoryUtil.allPlayersInGameHaveSameCountOfBet;
 import static ru.sm.poker.util.HistoryUtil.sumAllHistoryBets;
@@ -29,19 +28,19 @@ public class OrderActionService implements OrderService {
     private final ActionService actionServiceHoldem;
 
     @Override
-    public void start(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-        final List<PlayerDTO> sortedPlayerDTOS = getPlayersInGame(sort(
-                holdemRoundSettingsDTO.getPlayers(),
-                holdemRoundSettingsDTO.getStageType())).stream()
-                .filter(playerIsNotAfk())
-                .collect(Collectors.toList());
-
+    public boolean start(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
+        final List<PlayerDTO> sortedPlayerDTOS = getPlayersInGame(
+                sort(
+                        holdemRoundSettingsDTO.getPlayers(),
+                        holdemRoundSettingsDTO.getStageType()
+                )
+        );
 
         boolean isFirstStart = true;
-        boolean isWork = true;
+        boolean isSkipNext = false;
 
         while (true) {
-            if (allPlayersInGameHaveSameCountOfBet(holdemRoundSettingsDTO) && holdemRoundSettingsDTO.getLastBet() != 0 && isWork) {
+            if (allPlayersInGameHaveSameCountOfBet(holdemRoundSettingsDTO) && holdemRoundSettingsDTO.getLastBet() != 0) {
                 break;
             }
 
@@ -50,6 +49,10 @@ public class OrderActionService implements OrderService {
             }
 
             if (allPlayersInAllIn(holdemRoundSettingsDTO)) {
+                break;
+            }
+            if (isOnePlayerLeft(sortedPlayerDTOS)) {
+                isSkipNext = true;
                 break;
             }
 
@@ -61,7 +64,7 @@ public class OrderActionService implements OrderService {
                     continue;
                 }
                 if (isOnePlayerLeft(sortedPlayerDTOS)) {
-                    isWork = false;
+                    isSkipNext = true;
                     break;
                 }
                 if (playerDTO.getAction().getActionType() == ActionType.FOLD) {
@@ -76,6 +79,7 @@ public class OrderActionService implements OrderService {
             }
             isFirstStart = false;
         }
+        return isSkipNext;
     }
 
 

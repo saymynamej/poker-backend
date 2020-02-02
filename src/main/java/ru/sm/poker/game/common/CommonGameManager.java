@@ -111,6 +111,9 @@ public class CommonGameManager implements GameManager {
 
     @Override
     public Game getGameByName(String gameName) {
+        if (gameName == null) {
+            throw new RuntimeException("game is null");
+        }
         final Game game = games.get(gameName);
         if (game == null) {
             throw new RuntimeException("cannot find game");

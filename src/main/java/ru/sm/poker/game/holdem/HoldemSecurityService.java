@@ -24,7 +24,6 @@ public class HoldemSecurityService implements SecurityService {
     public boolean isLegalPlayer(String gameName, PlayerDTO playerDTO) {
         final Game game = holdemGameManager.getGameByName(gameName);
         if (game != null && playerDTO != null && game.getRoundSettings() != null && game.getRoundSettings().getActivePlayerDTO() != null) {
-
             return game.getRoundSettings()
                     .getActivePlayerDTO()
                     .equals(playerDTO);

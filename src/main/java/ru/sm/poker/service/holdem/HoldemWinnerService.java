@@ -31,21 +31,25 @@ public class HoldemWinnerService implements WinnerService {
 
     @Override
     public void sendPrizes(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-        final List<Pair<PlayerDTO, CombinationDTO>> playersAndCombinations = findWinners(
-                getPlayersInGame(holdemRoundSettingsDTO.getPlayers()),
-                holdemRoundSettingsDTO.getFlop(),
-                holdemRoundSettingsDTO.getTern(),
-                holdemRoundSettingsDTO.getRiver()
-        );
-        final CombinationDTO theMostPowerFullCombination = findTheMostPowerFullCombination(playersAndCombinations);
+//        final List<Pair<PlayerDTO, CombinationDTO>> playersAndCombinations = findWinners(
+//                getPlayersInGame(holdemRoundSettingsDTO.getPlayers()),
+//                holdemRoundSettingsDTO.getFlop(),
+//                holdemRoundSettingsDTO.getTern(),
+//                holdemRoundSettingsDTO.getRiver()
+//        );
 
-        final List<PlayerDTO> playerDTOWithTheMostPowerFullCombinations = findPlayerWithTheMostPowerFullCombinations(
-                playersAndCombinations,
-                theMostPowerFullCombination.getCombinationType()
-        );
-        final long bank = holdemRoundSettingsDTO.getBank();
-        playerDTOWithTheMostPowerFullCombinations.forEach(player -> player.addChips(bank / playerDTOWithTheMostPowerFullCombinations.size()));
-        securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettingsDTO);
+
+//        final CombinationDTO theMostPowerFullCombination = findTheMostPowerFullCombination(playersAndCombinations);
+
+//        final List<PlayerDTO> playerDTOWithTheMostPowerFullCombinations = findPlayerWithTheMostPowerFullCombinations(
+//                playersAndCombinations,
+//                theMostPowerFullCombination.getCombinationType()
+//        );
+//        final long bank = holdemRoundSettingsDTO.getBank();
+//        playerDTOWithTheMostPowerFullCombinations.forEach(player -> player.addChips(bank / playerDTOWithTheMostPowerFullCombinations.size()));
+//        securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettingsDTO);
+
+        notificationService.sendGameInformationToAll(holdemRoundSettingsDTO);
 
     }
 

@@ -3,10 +3,10 @@ package ru.sm.poker.game.holdem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.game.RoundSettingsManager;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.service.OrderService;
 import ru.sm.poker.service.WinnerService;
 
@@ -33,23 +33,27 @@ public class HoldemRound implements Round {
 
         this.holdemRoundSettingsDTO = roundSettingsManager.getPreflopSettings();
 
-        orderService.start(holdemRoundSettingsDTO);
+        final boolean isSkipNext = orderService.start(holdemRoundSettingsDTO);
 
-        this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettings(this.holdemRoundSettingsDTO.getBank());
-        orderService.start(holdemRoundSettingsDTO);
-
-        this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithTern(this.holdemRoundSettingsDTO.getBank());
-        orderService.start(holdemRoundSettingsDTO);
-
-        this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithRiver(this.holdemRoundSettingsDTO.getBank());
-        orderService.start(holdemRoundSettingsDTO);
+        if (!isSkipNext) {
+            this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettings(this.holdemRoundSettingsDTO.getBank());
+            final boolean isSkipNext2 = orderService.start(this.holdemRoundSettingsDTO);
+            if (!isSkipNext2) {
+                this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithTern(this.holdemRoundSettingsDTO.getBank());
+                final boolean isSkipNext3 = orderService.start(this.holdemRoundSettingsDTO);
+                if (!isSkipNext3) {
+                    this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithRiver(this.holdemRoundSettingsDTO.getBank());
+                    orderService.start(holdemRoundSettingsDTO);
+                }
+            }
+        }
 
         winnerService.sendPrizes(holdemRoundSettingsDTO);
 
 //        //TODO, TRANSFER IT TO THE OTHER SERVICE
         playerDTOS.forEach(player -> {
-            if (player.getChipsCount() ==  0){
-                player.setStateType(StateType.AFK);
+            if (player.getChipsCount() == 0) {
+                player.addChips(5000L);
             }
         });
 
@@ -61,7 +65,7 @@ public class HoldemRound implements Round {
     }
 
     @Override
-    public String getGameName(){
+    public String getGameName() {
         return this.gameName;
     }
 

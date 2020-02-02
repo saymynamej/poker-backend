@@ -10,7 +10,7 @@ public class WaitUtil {
         try {
             waitCondition(5L, TimeUnit.SECONDS, supplier);
         } catch (Exception e) {
-            throw new RuntimeException("error while wait of condition", e);
+//            throw new RuntimeException("error while wait of condition", e);
         }
     }
 
@@ -32,8 +32,6 @@ public class WaitUtil {
                     return;
                 else {
                     Thread.sleep(250);
-                    System.out.println("not finished..");
-
                 }
                 current = ZonedDateTime.now();
             } catch (Exception e) {
