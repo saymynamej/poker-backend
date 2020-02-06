@@ -7,7 +7,7 @@ import ru.sm.poker.model.Player;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
 
-import static ru.sm.poker.util.HistoryUtil.*;
+import static ru.sm.poker.util.HistoryUtil.sumAllHistoryBetsWithNewAction;
 
 public class AllStrategy implements ActionStrategy {
 

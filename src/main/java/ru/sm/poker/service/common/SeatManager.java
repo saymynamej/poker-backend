@@ -16,7 +16,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import static java.lang.String.format;
 import static ru.sm.poker.enums.MessageType.PLAYER_ALREADY_EXIST;
 import static ru.sm.poker.enums.MessageType.SUCCESS_JOIN_IN_QUEUE;
-import static ru.sm.poker.util.PlayerUtil.*;
+import static ru.sm.poker.util.PlayerUtil.getDefaultPlayerForHoldem;
 
 @RequiredArgsConstructor
 @Component

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static java.lang.String.*;
+import static java.lang.String.format;
 
 @Component
 @RequiredArgsConstructor
