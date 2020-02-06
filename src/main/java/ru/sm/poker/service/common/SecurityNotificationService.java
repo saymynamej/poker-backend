@@ -17,6 +17,8 @@ public class SecurityNotificationService {
     private final SimpleNotificationService simpleNotificationService;
     private final SecurityService securityService;
 
+
+
     public void sendToAllWithSecurityWhoIsNotInTheGame(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
         final List<String> filter = getPlayersInGame(holdemRoundSettingsDTO.getPlayers())
                 .stream()
@@ -30,9 +32,7 @@ public class SecurityNotificationService {
     }
 
     public void sendToAllWithSecurity(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-        holdemRoundSettingsDTO.getPlayers().forEach(player -> {
-            sendToUserWithSecurity(holdemRoundSettingsDTO, player.getName());
-        });
+        holdemRoundSettingsDTO.getPlayers().forEach(player -> sendToUserWithSecurity(holdemRoundSettingsDTO, player.getName()));
     }
 
     public void sendToUserWithSecurity(HoldemRoundSettingsDTO holdemRoundSettingsDTO, String userName) {

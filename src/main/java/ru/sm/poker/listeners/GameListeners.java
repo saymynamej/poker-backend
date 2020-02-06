@@ -43,11 +43,11 @@ public class GameListeners {
 
     @PostConstruct
     public void init() {
-        enableHoldemClassicCash();
+        enableHoldemCash();
         fillHoldemCashGames();
     }
 
-    private void enableHoldemClassicCash() {
+    private void enableHoldemCash() {
         executorServiceForStart.submit(() -> {
             while (isEnable) {
                 ThreadUtil.sleep(1);

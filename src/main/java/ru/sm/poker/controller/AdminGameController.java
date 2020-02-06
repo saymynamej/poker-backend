@@ -35,7 +35,7 @@ public class AdminGameController {
 
     @MessageMapping("/admin/addPlayerInGame")
     public void joinInGame(AdminActionDTO actionDTO) {
-        seatManager.joinInGame(actionDTO.getName(), PlayerUtil.getDefaultPlayerForHoldem(new Faker().name().name()));
+        seatManager.joinInGame(actionDTO.getName(), PlayerUtil.getDefaultPlayerForHoldem(new Faker().name().name(), 50));
     }
 
 

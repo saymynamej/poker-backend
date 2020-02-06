@@ -14,11 +14,12 @@ import ru.sm.poker.service.OrderService;
 import java.util.List;
 
 import static ru.sm.poker.util.HistoryUtil.allPlayersInGameHaveSameCountOfBet;
-import static ru.sm.poker.util.HistoryUtil.sumAllHistoryBets;
+import static ru.sm.poker.util.HistoryUtil.sumStageHistoryBets;
 import static ru.sm.poker.util.PlayerUtil.getPlayersInGame;
 import static ru.sm.poker.util.SortUtil.sortPostflop;
 import static ru.sm.poker.util.SortUtil.sortPreflop;
-import static ru.sm.poker.util.StreamUtil.*;
+import static ru.sm.poker.util.StreamUtil.playerInAllIn;
+import static ru.sm.poker.util.StreamUtil.playersHasCheck;
 
 @RequiredArgsConstructor
 @Service
@@ -26,6 +27,8 @@ import static ru.sm.poker.util.StreamUtil.*;
 public class OrderActionService implements OrderService {
 
     private final ActionService actionServiceHoldem;
+    private final SecurityNotificationService securityNotificationService;
+
 
     @Override
     public boolean start(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
@@ -40,15 +43,14 @@ public class OrderActionService implements OrderService {
         boolean isSkipNext = false;
 
         while (true) {
+            if (allPlayersInAllIn(holdemRoundSettingsDTO)) {
+                securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettingsDTO);
+                break;
+            }
             if (allPlayersInGameHaveSameCountOfBet(holdemRoundSettingsDTO) && holdemRoundSettingsDTO.getLastBet() != 0) {
                 break;
             }
-
             if (allChecks(sortedPlayerDTOS)) {
-                break;
-            }
-
-            if (allPlayersInAllIn(holdemRoundSettingsDTO)) {
                 break;
             }
             if (isOnePlayerLeft(sortedPlayerDTOS)) {
@@ -70,7 +72,7 @@ public class OrderActionService implements OrderService {
                 if (playerDTO.getAction().getActionType() == ActionType.FOLD) {
                     continue;
                 }
-                if (sumAllHistoryBets(holdemRoundSettingsDTO, playerDTO) == holdemRoundSettingsDTO.getLastBet()) {
+                if (sumStageHistoryBets(holdemRoundSettingsDTO, playerDTO) == holdemRoundSettingsDTO.getLastBet()) {
                     if (!isFirstStart) {
                         continue;
                     }

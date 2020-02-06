@@ -17,10 +17,14 @@ public class PlayerUtil {
     }
 
     public static PlayerDTO getDefaultPlayerForHoldem(String playerName) {
+        return getDefaultPlayerForHoldem(playerName, 5000L);
+    }
+
+    public static PlayerDTO getDefaultPlayerForHoldem(String playerName, long chipsCount) {
         return PlayerDTO.builder()
                 .name(playerName)
                 .timeBank(200L)
-                .chipsCount(5000L)
+                .chipsCount(chipsCount)
                 .build();
     }
 

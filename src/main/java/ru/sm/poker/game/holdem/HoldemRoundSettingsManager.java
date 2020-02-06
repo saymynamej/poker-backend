@@ -46,18 +46,19 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .bank(bigBlindBet + smallBlindBet)
                 .smallBlindBet(smallBlindBet)
                 .bigBlindBet(bigBlindBet)
+                .fullHistory(new HashMap<>())
                 .isAfk(false)
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElseThrow())
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElseThrow())
                 .button(getPlayerByRole(RoleType.BUTTON).orElseThrow())
                 .players(players)
                 .stageType(StageType.PREFLOP)
-                .history(setBlindsHistory())
+                .stageHistory(setBlindsHistory())
                 .lastBet(bigBlindBet)
                 .build();
     }
 
-    public HoldemRoundSettingsDTO getPostFlopSettings(long bank) {
+    public HoldemRoundSettingsDTO getPostFlopSettings(long bank, Map<PlayerDTO, List<CountAction>> prevHistory) {
         setAllActivePlayersTest();
         return HoldemRoundSettingsDTO
                 .builder()
@@ -65,19 +66,20 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .gameName(gameName)
                 .bank(bank)
                 .smallBlindBet(smallBlindBet)
+                .fullHistory(new HashMap<>(prevHistory))
                 .isAfk(false)
                 .bigBlindBet(bigBlindBet)
                 .button(getPlayerByRole(RoleType.BUTTON).orElseThrow())
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElseThrow())
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElseThrow())
                 .players(players)
-                .history(new HashMap<>())
+                .stageHistory(new HashMap<>())
                 .lastBet(0L)
                 .stageType(StageType.FLOP)
                 .build();
     }
 
-    public HoldemRoundSettingsDTO getPostFlopSettingsWithTern(long bank) {
+    public HoldemRoundSettingsDTO getPostFlopSettingsWithTern(long bank, Map<PlayerDTO, List<CountAction>> prevHistory) {
         setAllActivePlayersTest();
         return HoldemRoundSettingsDTO
                 .builder()
@@ -87,19 +89,20 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .bank(bank)
                 .smallBlindBet(smallBlindBet)
                 .isAfk(false)
+                .fullHistory(new HashMap<>(prevHistory))
                 .bigBlindBet(bigBlindBet)
                 .button(getPlayerByRole(RoleType.BUTTON).orElseThrow())
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElseThrow())
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElseThrow())
                 .stageType(StageType.TERN)
-                .history(new HashMap<>())
+                .stageHistory(new HashMap<>())
                 .lastBet(0L)
                 .players(players)
                 .build();
     }
 
 
-    public HoldemRoundSettingsDTO getPostFlopSettingsWithRiver(long bank) {
+    public HoldemRoundSettingsDTO getPostFlopSettingsWithRiver(long bank, Map<PlayerDTO, List<CountAction>> prevHistory) {
         setAllActivePlayersTest();
         return HoldemRoundSettingsDTO
                 .builder()
@@ -112,7 +115,8 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .bank(bank)
                 .stageType(StageType.RIVER)
                 .smallBlindBet(smallBlindBet)
-                .history(new HashMap<>())
+                .fullHistory(new HashMap<>(prevHistory))
+                .stageHistory(new HashMap<>())
                 .bigBlindBet(bigBlindBet)
                 .button(getPlayerByRole(RoleType.BUTTON).orElseThrow())
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElseThrow())

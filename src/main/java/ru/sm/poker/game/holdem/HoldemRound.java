@@ -9,6 +9,7 @@ import ru.sm.poker.game.RoundSettingsManager;
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.service.OrderService;
 import ru.sm.poker.service.WinnerService;
+import ru.sm.poker.util.ThreadUtil;
 
 import java.util.List;
 
@@ -36,13 +37,13 @@ public class HoldemRound implements Round {
         final boolean isSkipNext = orderService.start(holdemRoundSettingsDTO);
 
         if (!isSkipNext) {
-            this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettings(this.holdemRoundSettingsDTO.getBank());
+            this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettings(this.holdemRoundSettingsDTO.getBank(), this.holdemRoundSettingsDTO.getStageHistory());
             final boolean isSkipNext2 = orderService.start(this.holdemRoundSettingsDTO);
             if (!isSkipNext2) {
-                this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithTern(this.holdemRoundSettingsDTO.getBank());
+                this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithTern(this.holdemRoundSettingsDTO.getBank(), this.holdemRoundSettingsDTO.getStageHistory());
                 final boolean isSkipNext3 = orderService.start(this.holdemRoundSettingsDTO);
                 if (!isSkipNext3) {
-                    this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithRiver(this.holdemRoundSettingsDTO.getBank());
+                    this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithRiver(this.holdemRoundSettingsDTO.getBank(), this.holdemRoundSettingsDTO.getStageHistory());
                     orderService.start(holdemRoundSettingsDTO);
                 }
             }
@@ -50,7 +51,9 @@ public class HoldemRound implements Round {
 
         winnerService.sendPrizes(holdemRoundSettingsDTO);
 
-//        //TODO, TRANSFER IT TO THE OTHER SERVICE
+        ThreadUtil.sleep(10);
+
+
         playerDTOS.forEach(player -> {
             if (player.getChipsCount() == 0) {
                 player.addChips(5000L);

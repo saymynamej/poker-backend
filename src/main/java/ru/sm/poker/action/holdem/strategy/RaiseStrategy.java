@@ -8,7 +8,7 @@ import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
 
-import static ru.sm.poker.util.HistoryUtil.sumAllHistoryBets;
+import static ru.sm.poker.util.HistoryUtil.sumStageHistoryBets;
 import static ru.sm.poker.util.PlayerUtil.checkPlayerHasEnoughChips;
 
 public class RaiseStrategy implements ActionStrategy {
@@ -26,7 +26,7 @@ public class RaiseStrategy implements ActionStrategy {
             return;
         }
 
-        final long prevBets = sumAllHistoryBets(holdemRoundSettingsDTO, playerDTO);
+        final long prevBets = sumStageHistoryBets(holdemRoundSettingsDTO, playerDTO);
 
         //CHANGE ACTION FOR HISTORY
         playerDTO.setAction(new Raise(countAction.getCount() - prevBets));

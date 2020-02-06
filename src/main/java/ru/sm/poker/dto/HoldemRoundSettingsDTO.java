@@ -16,7 +16,8 @@ import java.util.Map;
 @Setter
 @ToString
 public class HoldemRoundSettingsDTO {
-    private final Map<PlayerDTO, List<CountAction>> history;
+    private final Map<PlayerDTO, List<CountAction>> stageHistory;
+    private final Map<PlayerDTO, List<CountAction>> fullHistory;
     private final List<PlayerDTO> players;
     private final List<CardType> flop;
     private final CardType tern;

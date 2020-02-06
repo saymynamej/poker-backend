@@ -10,5 +10,5 @@ import java.util.List;
 
 public interface WinnerService {
     void sendPrizes(HoldemRoundSettingsDTO holdemRoundSettingsDTO);
-    List<Pair<PlayerDTO, CombinationDTO>> findWinners(List<PlayerDTO> playerDTOS, List<CardType> flop, CardType tern, CardType river);
+    List<Pair<PlayerDTO, CombinationDTO>> findWinners(List<PlayerDTO> playerDTOS, List<CardType> deck);
 }

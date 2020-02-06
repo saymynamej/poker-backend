@@ -38,7 +38,7 @@ public class CommonGameController {
     public void joinInGame(Principal principal, String gameName) {
         seatManager.joinInGame(
                 gameName,
-                getDefaultPlayerForHoldem(principal.getName())
+                getDefaultPlayerForHoldem(principal.getName(), 50L)
         );
     }
 
