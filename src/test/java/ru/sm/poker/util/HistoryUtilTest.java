@@ -24,10 +24,10 @@ public class HistoryUtilTest {
         final long secondRaise = 10;
         final long thirdRaise = 40;
         final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO();
-        final Map<PlayerDTO, List<CountAction>> history = roundSettingsDTO.getHistory();
+        final Map<PlayerDTO, List<CountAction>> history = roundSettingsDTO.getStageHistory();
         final PlayerDTO player = getPlayer();
         history.put(player, List.of(new Call(firstBet), new Raise(secondRaise), new Raise(thirdRaise)));
-        final long result = HistoryUtil.sumAllHistoryBets(roundSettingsDTO, player);
+        final long result = HistoryUtil.sumRoundHistoryBets(roundSettingsDTO, player);
         Assertions.assertEquals(firstBet + secondRaise + thirdRaise, result);
     }
 
@@ -38,7 +38,7 @@ public class HistoryUtilTest {
         final long thirdRaise = 40;
         final long newActionBet = 100;
         final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO();
-        final Map<PlayerDTO, List<CountAction>> history = roundSettingsDTO.getHistory();
+        final Map<PlayerDTO, List<CountAction>> history = roundSettingsDTO.getStageHistory();
         final PlayerDTO player = getPlayer();
         history.put(player, List.of(new Call(firstBet), new Raise(secondRaise), new Raise(thirdRaise)));
         final long result = sumAllHistoryBetsWithNewAction(roundSettingsDTO, player, new Bet(newActionBet));
@@ -52,7 +52,7 @@ public class HistoryUtilTest {
         final PlayerDTO player = getPlayer();
         player.setAction(new Call(callCount));
         addActionInHistory(roundSettingsDTO, player);
-        Assertions.assertEquals(roundSettingsDTO.getHistory().get(player).get(0).getCount(), callCount);
+        Assertions.assertEquals(roundSettingsDTO.getStageHistory().get(player).get(0).getCount(), callCount);
     }
 
     @Test
@@ -61,7 +61,7 @@ public class HistoryUtilTest {
         final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO();
         final PlayerDTO player = getPlayer();
         addActionInHistory(roundSettingsDTO, player, new Call(callCount));
-        Assertions.assertEquals(roundSettingsDTO.getHistory().get(player).get(0).getCount(), callCount);
+        Assertions.assertEquals(roundSettingsDTO.getStageHistory().get(player).get(0).getCount(), callCount);
     }
 
     @Test

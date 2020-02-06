@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.sm.poker.action.holdem.Call;
 import ru.sm.poker.action.holdem.Raise;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.PlayerDTO;
@@ -56,7 +55,7 @@ public class RaiseTest {
         final long secondBet = 16L;
         final long lastBet = 64L;
 
-        final Map<PlayerDTO, List<CountAction>> history = holdemRoundSettingsDTO.getHistory();
+        final Map<PlayerDTO, List<CountAction>> history = holdemRoundSettingsDTO.getStageHistory();
         history.put(player, List.of(
                 new Raise(firstBet),
                 new Raise(secondBet))
