@@ -1,12 +1,38 @@
 {
   "groups": [
     {
+      "name": "config.cors",
+      "type": "ru.sm.poker.config.CorsConfig",
+      "sourceType": "ru.sm.poker.config.CorsConfig"
+    },
+    {
       "name": "config.socket",
       "type": "ru.sm.poker.config.SocketMappingConfig",
       "sourceType": "ru.sm.poker.config.SocketMappingConfig"
     }
   ],
   "properties": [
+    {
+      "name": "config.cors.credentials",
+      "type": "java.lang.Boolean",
+      "sourceType": "ru.sm.poker.config.CorsConfig",
+      "defaultValue": false
+    },
+    {
+      "name": "config.cors.headers",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "ru.sm.poker.config.CorsConfig"
+    },
+    {
+      "name": "config.cors.hosts",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "ru.sm.poker.config.CorsConfig"
+    },
+    {
+      "name": "config.cors.methods",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "ru.sm.poker.config.CorsConfig"
+    },
     {
       "name": "config.socket.bank-path",
       "type": "java.lang.String",
@@ -19,6 +45,11 @@
     },
     {
       "name": "config.socket.flop-path",
+      "type": "java.lang.String",
+      "sourceType": "ru.sm.poker.config.SocketMappingConfig"
+    },
+    {
+      "name": "config.socket.games-path",
       "type": "java.lang.String",
       "sourceType": "ru.sm.poker.config.SocketMappingConfig"
     },

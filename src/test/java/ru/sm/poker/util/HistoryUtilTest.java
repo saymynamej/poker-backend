@@ -27,7 +27,7 @@ public class HistoryUtilTest {
         final Map<PlayerDTO, List<CountAction>> history = roundSettingsDTO.getStageHistory();
         final PlayerDTO player = getPlayer();
         history.put(player, List.of(new Call(firstBet), new Raise(secondRaise), new Raise(thirdRaise)));
-        final long result = HistoryUtil.sumRoundHistoryBets(roundSettingsDTO, player);
+        final long result = HistoryUtil.sumStageHistoryBets(roundSettingsDTO, player);
         Assertions.assertEquals(firstBet + secondRaise + thirdRaise, result);
     }
 
