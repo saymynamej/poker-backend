@@ -9,3 +9,7 @@
 .gradle/
 gradle/
 build/
+
+/.gradle/
+/gradle/
+/build/
