@@ -17,7 +17,7 @@ public class HoldemGame extends Game {
 
     public HoldemGame(GameSettings gameSettings, Round round) {
         super(gameSettings, round);
-        setAllPlayerAreActive();
+        setAllPlayersActive();
     }
 
     @Override
@@ -51,7 +51,7 @@ public class HoldemGame extends Game {
         return getRound().getHoldemRoundSettingsDTO();
     }
 
-    private void setAllPlayerAreActive() {
+    private void setAllPlayersActive() {
         getPlayers().forEach(player -> player.setStateType(StateType.IN_GAME));
     }
 

@@ -86,7 +86,6 @@ public class GameListeners {
         return playerDTOS;
     }
 
-
     public void fillHoldemCashGames() {
 
         for (int i = 0; i < 10; i++) {

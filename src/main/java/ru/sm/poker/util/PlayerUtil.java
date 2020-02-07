@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 public class PlayerUtil {
 
-
     public static List<PlayerDTO> copies(List<PlayerDTO> playerDTOS) {
         final List<PlayerDTO> copyPlayerDTOS = new ArrayList<>();
         playerDTOS.forEach(player -> copyPlayerDTOS.add(player.copy()));

@@ -53,7 +53,6 @@ public class HoldemRound implements Round {
 
         ThreadUtil.sleep(10);
 
-
         playerDTOS.forEach(player -> {
             if (player.getChipsCount() == 0) {
                 player.addChips(5000L);

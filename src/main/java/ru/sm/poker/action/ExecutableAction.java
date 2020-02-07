@@ -6,5 +6,10 @@ import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
 
 public interface ExecutableAction extends CountAction {
-    void doAction(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO playerDTO, GameService gameService, ActionService actionService);
+    void doAction(
+            HoldemRoundSettingsDTO holdemRoundSettingsDTO,
+            PlayerDTO playerDTO,
+            GameService gameService,
+            ActionService actionService
+    );
 }

@@ -5,6 +5,7 @@ import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.PlayerDTO;
 
 public interface ActionService {
+
     void setAction(String playerName, Action action);
 
     void waitUntilPlayerWillHasAction(PlayerDTO playerDTO, HoldemRoundSettingsDTO holdemRoundSettingsDTO);

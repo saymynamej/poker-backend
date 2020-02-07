@@ -6,5 +6,12 @@ import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
 
 public interface ActionStrategy {
-    void execute(PlayerDTO playerDTO, GameService gameService, ActionService actionService, CountAction countAction, HoldemRoundSettingsDTO holdemRoundSettingsDTO);
+
+    void execute(
+            PlayerDTO playerDTO,
+            GameService gameService,
+            ActionService actionService,
+            CountAction countAction,
+            HoldemRoundSettingsDTO holdemRoundSettingsDTO
+    );
 }

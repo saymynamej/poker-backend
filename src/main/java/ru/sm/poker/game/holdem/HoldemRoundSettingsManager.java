@@ -30,9 +30,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
         players.forEach(player -> player.setGameName(gameName));
     }
 
-
     public HoldemRoundSettingsDTO getPreflopSettings() {
-
         setAllPlayersGameName();
         dealCards();
         setButton();
@@ -147,7 +145,6 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
         allCards.remove(randomIntCard);
     }
 
-
     private void setButton() {
         final List<PlayerDTO> playerDTOS = this.players;
         final Optional<PlayerDTO> foundButton = playerDTOS
@@ -178,7 +175,6 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
         return random.nextInt(players.size());
     }
 
-
     private void setSmallBlind() {
         clearRole(RoleType.SMALL_BLIND);
         final int indexOfButton = getIndexOfButton();
@@ -200,7 +196,6 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
         removeChipsFromPlayer(bigBlind, bigBlindBet);
     }
 
-
     private void clearRole(RoleType roleType) {
         final Optional<PlayerDTO> playerByRole = players.stream()
                 .filter(player -> player.getRoleType() == roleType)
@@ -209,11 +204,9 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
         playerByRole.ifPresent(PlayerDTO::removeRole);
     }
 
-
     private void removeChipsFromPlayer(PlayerDTO playerDTO, long chips) {
         removeChips(playerDTO, chips);
     }
-
 
     private Optional<PlayerDTO> getPlayerByRole(RoleType roleType) {
         return this.players.stream()

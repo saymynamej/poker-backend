@@ -5,6 +5,7 @@ import ru.sm.poker.dto.PlayerDTO;
 import java.util.Queue;
 
 public interface SeatManager {
+
     void joinInGame(String gameName, PlayerDTO playerDTO);
 
     void joinInQueue(PlayerDTO playerDTO);

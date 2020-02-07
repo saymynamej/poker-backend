@@ -21,7 +21,6 @@ public class RoundSettingsUtil {
         return copy(holdemRoundSettingsDTO, playerDTOS);
     }
 
-
     public static HoldemRoundSettingsDTO copyWithSecureCard(HoldemRoundSettingsDTO holdemRoundSettingsDTO, List<String> filters) {
         final List<PlayerDTO> playersWithSecureCards = PlayerUtil.copies(holdemRoundSettingsDTO.getPlayers());
         playersWithSecureCards.forEach(player -> {
@@ -32,7 +31,6 @@ public class RoundSettingsUtil {
 
         return copy(holdemRoundSettingsDTO, playersWithSecureCards);
     }
-
 
     public static HoldemRoundSettingsDTO copy(HoldemRoundSettingsDTO holdemRoundSettingsDTO, List<PlayerDTO> playerDTOS) {
         return HoldemRoundSettingsDTO.builder()
@@ -52,7 +50,6 @@ public class RoundSettingsUtil {
                 .tern(holdemRoundSettingsDTO.getTern())
                 .build();
     }
-
 
     public static ImmutablePair<Game, HoldemRoundSettingsDTO> getGameAndRoundSettings(Game game, Optional<HoldemRoundSettingsDTO> roundSettingsDTO) {
         if (game == null || roundSettingsDTO.isEmpty()) {

@@ -6,6 +6,7 @@ import ru.sm.poker.dto.PlayerDTO;
 import java.util.List;
 
 public interface SecurityService {
+
     boolean isLegalPlayer(String gameName, PlayerDTO playerDTO);
 
     boolean isLegalPlayer(PlayerDTO playerDTO);

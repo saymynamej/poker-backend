@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface GameManager {
+
     boolean playerExistByName(String gameName, String name);
 
     Optional<PlayerDTO> getPlayerByName(String name);

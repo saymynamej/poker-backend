@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 
 public class WaitUtil {
+
     public static void waitOfCondition(BooleanSupplier supplier) {
         try {
             waitCondition(5L, TimeUnit.SECONDS, supplier);

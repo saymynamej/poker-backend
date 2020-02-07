@@ -6,59 +6,62 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.sm.poker.enums.CardType.SuitType.*;
+import static ru.sm.poker.enums.PowerType.*;
+
 public enum CardType {
-    A_D(PowerType.A_POWER, SuitType.DIAMOND),
-    K_D(PowerType.K_POWER, SuitType.DIAMOND),
-    Q_D(PowerType.Q_POWER, SuitType.DIAMOND),
-    J_D(PowerType.J_POWER, SuitType.DIAMOND),
-    TEN_D(PowerType.TEN_POWER, SuitType.DIAMOND),
-    NINE_D(PowerType.NINE_POWER, SuitType.DIAMOND),
-    EIGHT_D(PowerType.EIGHT_POWER, SuitType.DIAMOND),
-    SEVEN_D(PowerType.SEVEN_POWER, SuitType.DIAMOND),
-    SIX_D(PowerType.SIX_POWER, SuitType.DIAMOND),
-    FIVE_D(PowerType.FIVE_POWER, SuitType.DIAMOND),
-    FOUR_D(PowerType.FOUR_POWER, SuitType.DIAMOND),
-    THREE_D(PowerType.THREE_POWER, SuitType.DIAMOND),
-    TWO_D(PowerType.TWO_POWER, SuitType.DIAMOND),
-    A_H(PowerType.A_POWER, SuitType.HEART),
-    K_H(PowerType.K_POWER, SuitType.HEART),
-    Q_H(PowerType.Q_POWER, SuitType.HEART),
-    J_H(PowerType.J_POWER, SuitType.HEART),
-    TEN_H(PowerType.TEN_POWER, SuitType.HEART),
-    NINE_H(PowerType.NINE_POWER, SuitType.HEART),
-    EIGHT_H(PowerType.EIGHT_POWER, SuitType.HEART),
-    SEVEN_H(PowerType.SEVEN_POWER, SuitType.HEART),
-    SIX_H(PowerType.SIX_POWER, SuitType.HEART),
-    FIVE_H(PowerType.FIVE_POWER, SuitType.HEART),
-    FOUR_H(PowerType.FOUR_POWER, SuitType.HEART),
-    THREE_H(PowerType.THREE_POWER, SuitType.HEART),
-    TWO_H(PowerType.TWO_POWER, SuitType.HEART),
-    A_S(PowerType.A_POWER, SuitType.SPADE),
-    K_S(PowerType.K_POWER, SuitType.SPADE),
-    Q_S(PowerType.Q_POWER, SuitType.SPADE),
-    J_S(PowerType.J_POWER, SuitType.SPADE),
-    TEN_S(PowerType.TEN_POWER, SuitType.SPADE),
-    NINE_S(PowerType.NINE_POWER, SuitType.SPADE),
-    EIGHT_S(PowerType.EIGHT_POWER, SuitType.SPADE),
-    SEVEN_S(PowerType.SEVEN_POWER, SuitType.SPADE),
-    SIX_S(PowerType.SIX_POWER, SuitType.SPADE),
-    FIVE_S(PowerType.FIVE_POWER, SuitType.SPADE),
-    FOUR_S(PowerType.FOUR_POWER, SuitType.SPADE),
-    THREE_S(PowerType.THREE_POWER, SuitType.SPADE),
-    TWO_S(PowerType.TWO_POWER, SuitType.SPADE),
-    A_C(PowerType.A_POWER, SuitType.CLUB),
-    K_C(PowerType.K_POWER, SuitType.CLUB),
-    Q_C(PowerType.Q_POWER, SuitType.CLUB),
-    J_C(PowerType.J_POWER, SuitType.CLUB),
-    TEN_C(PowerType.TEN_POWER, SuitType.CLUB),
-    NINE_C(PowerType.NINE_POWER, SuitType.CLUB),
-    EIGHT_C(PowerType.EIGHT_POWER, SuitType.CLUB),
-    SEVEN_C(PowerType.SEVEN_POWER, SuitType.CLUB),
-    SIX_C(PowerType.SIX_POWER, SuitType.CLUB),
-    FIVE_C(PowerType.FIVE_POWER, SuitType.CLUB),
-    FOUR_C(PowerType.FOUR_POWER, SuitType.CLUB),
-    THREE_C(PowerType.THREE_POWER, SuitType.CLUB),
-    TWO_C(PowerType.TWO_POWER, SuitType.CLUB);
+    A_D(A_POWER, DIAMOND),
+    K_D(K_POWER, DIAMOND),
+    Q_D(Q_POWER, DIAMOND),
+    J_D(J_POWER, DIAMOND),
+    TEN_D(TEN_POWER, DIAMOND),
+    NINE_D(NINE_POWER, DIAMOND),
+    EIGHT_D(EIGHT_POWER, DIAMOND),
+    SEVEN_D(SEVEN_POWER, DIAMOND),
+    SIX_D(SIX_POWER, DIAMOND),
+    FIVE_D(FIVE_POWER, DIAMOND),
+    FOUR_D(FOUR_POWER, DIAMOND),
+    THREE_D(THREE_POWER, DIAMOND),
+    TWO_D(TWO_POWER, DIAMOND),
+    A_H(A_POWER, HEART),
+    K_H(K_POWER, HEART),
+    Q_H(Q_POWER, HEART),
+    J_H(J_POWER, HEART),
+    TEN_H(TEN_POWER, HEART),
+    NINE_H(NINE_POWER, HEART),
+    EIGHT_H(EIGHT_POWER, HEART),
+    SEVEN_H(SEVEN_POWER, HEART),
+    SIX_H(SIX_POWER, HEART),
+    FIVE_H(FIVE_POWER, HEART),
+    FOUR_H(FOUR_POWER, HEART),
+    THREE_H(THREE_POWER, HEART),
+    TWO_H(TWO_POWER, HEART),
+    A_S(A_POWER, SPADE),
+    K_S(K_POWER, SPADE),
+    Q_S(Q_POWER, SPADE),
+    J_S(J_POWER, SPADE),
+    TEN_S(TEN_POWER, SPADE),
+    NINE_S(NINE_POWER, SPADE),
+    EIGHT_S(EIGHT_POWER, SPADE),
+    SEVEN_S(SEVEN_POWER, SPADE),
+    SIX_S(SIX_POWER, SPADE),
+    FIVE_S(FIVE_POWER, SPADE),
+    FOUR_S(FOUR_POWER, SPADE),
+    THREE_S(THREE_POWER, SPADE),
+    TWO_S(TWO_POWER, SPADE),
+    A_C(A_POWER, CLUB),
+    K_C(K_POWER, CLUB),
+    Q_C(Q_POWER, CLUB),
+    J_C(J_POWER, CLUB),
+    TEN_C(TEN_POWER, CLUB),
+    NINE_C(NINE_POWER, CLUB),
+    EIGHT_C(EIGHT_POWER, CLUB),
+    SEVEN_C(SEVEN_POWER, CLUB),
+    SIX_C(SIX_POWER, CLUB),
+    FIVE_C(FIVE_POWER, CLUB),
+    FOUR_C(FOUR_POWER, CLUB),
+    THREE_C(THREE_POWER, CLUB),
+    TWO_C(TWO_POWER, CLUB);
 
     @Getter
     private final PowerType power;
@@ -74,14 +77,9 @@ public enum CardType {
         return power.getPowerAsInt();
     }
 
-
     public static List<CardType> getAllCardsAsList() {
         return Arrays.stream(values()).collect(Collectors.toList());
     }
-
-
-
-
 
     public enum SuitType {
         DIAMOND,
