@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.game.SecurityService;
-import ru.sm.poker.model.Player;
 import ru.sm.poker.util.RoundSettingsUtil;
 
 import java.util.List;
@@ -21,18 +21,17 @@ public class HoldemSecurityService implements SecurityService {
     private final GameManager holdemGameManager;
 
     @Override
-    public boolean isLegalPlayer(String gameName, Player player) {
+    public boolean isLegalPlayer(String gameName, PlayerDTO playerDTO) {
         final Game game = holdemGameManager.getGameByName(gameName);
-        if (game != null && player != null && game.getRoundSettings() != null && game.getRoundSettings().getActivePlayer() != null) {
-
+        if (game != null && playerDTO != null && game.getRoundSettings() != null && game.getRoundSettings().getActivePlayerDTO() != null) {
             return game.getRoundSettings()
-                    .getActivePlayer()
-                    .equals(player);
+                    .getActivePlayerDTO()
+                    .equals(playerDTO);
         }
 
-        assert player != null;
+        assert playerDTO != null;
         log.info(String.format("cannot define legality for player:%s and game: %s",
-                player.getName(),
+                playerDTO.getName(),
                 gameName)
         );
 
@@ -45,7 +44,7 @@ public class HoldemSecurityService implements SecurityService {
     }
 
     @Override
-    public boolean isLegalPlayer(Player player) {
-        return isLegalPlayer(player.getGameName(), player);
+    public boolean isLegalPlayer(PlayerDTO playerDTO) {
+        return isLegalPlayer(playerDTO.getGameName(), playerDTO);
     }
 }

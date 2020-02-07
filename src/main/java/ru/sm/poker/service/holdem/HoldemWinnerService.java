@@ -5,17 +5,16 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.dto.CombinationDTO;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.CombinationType;
-import ru.sm.poker.model.Player;
+import ru.sm.poker.enums.StageType;
 import ru.sm.poker.service.CombinationService;
-import ru.sm.poker.service.NotificationService;
 import ru.sm.poker.service.WinnerService;
 import ru.sm.poker.service.common.SecurityNotificationService;
+import ru.sm.poker.util.HistoryUtil;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -27,38 +26,88 @@ public class HoldemWinnerService implements WinnerService {
 
     private final CombinationService combinationService;
     private final SecurityNotificationService securityNotificationService;
-    private final NotificationService notificationService;
 
     @Override
     public void sendPrizes(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-        final List<Pair<Player, CombinationDTO>> playersAndCombinations = findWinners(
-                getPlayersInGame(holdemRoundSettingsDTO.getPlayers()),
-                holdemRoundSettingsDTO.getFlop(),
-                holdemRoundSettingsDTO.getTern(),
-                holdemRoundSettingsDTO.getRiver()
-        );
-        final CombinationDTO theMostPowerFullCombination = findTheMostPowerFullCombination(playersAndCombinations);
 
-        final List<Player> playerWithTheMostPowerFullCombinations = findPlayerWithTheMostPowerFullCombinations(
-                playersAndCombinations,
-                theMostPowerFullCombination.getCombinationType()
-        );
-        final long bank = holdemRoundSettingsDTO.getBank();
-        playerWithTheMostPowerFullCombinations.forEach(player -> player.addChips(bank / playerWithTheMostPowerFullCombinations.size()));
-        securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettingsDTO);
+        final List<PlayerDTO> players = holdemRoundSettingsDTO.getPlayers();
+        final List<PlayerDTO> playersInGame = getPlayersInGame(players);
+        final List<CardType> deckCards = new ArrayList<>();
 
+        if (playersInGame.size() == 1) {
+            final PlayerDTO lastPlayer = playersInGame.get(0);
+            lastPlayer.addChips(holdemRoundSettingsDTO.getBank());
+            securityNotificationService.sendToAllWithSecurity(holdemRoundSettingsDTO);
+            return;
+        }
+
+        if (holdemRoundSettingsDTO.getStageType() == StageType.RIVER) {
+            if (holdemRoundSettingsDTO.getFlop() != null) {
+                deckCards.addAll(holdemRoundSettingsDTO.getFlop());
+            }
+            if (holdemRoundSettingsDTO.getTern() != null) {
+                deckCards.add(holdemRoundSettingsDTO.getTern());
+            }
+            if (holdemRoundSettingsDTO.getRiver() != null) {
+                deckCards.add(holdemRoundSettingsDTO.getRiver());
+            }
+        }
+
+        if (deckCards.size() != HoldemCombinationService.getCombinationSize()) {
+            throw new RuntimeException("global error, cards deck size muste be " + HoldemCombinationService.getCombinationSize());
+        }
+
+        final long fullBank = holdemRoundSettingsDTO.getBank();
+
+        final Map<PlayerDTO, Long> banks = new HashMap<>();
+
+        for (PlayerDTO playerDTO : playersInGame) {
+            final long allBets = HistoryUtil.sumRoundHistoryBets(holdemRoundSettingsDTO, playerDTO);
+            banks.put(playerDTO, allBets * playersInGame.size());
+        }
+
+
+
+
+
+
+
+
+//        final List<Pair<PlayerDTO, CombinationDTO>> combinations = findWinners(playersInGame, deckCards);
+//        final CombinationDTO theMostPowerFullCombination = findTheMostPowerFullCombination(combinations);
+//        final List<Pair<PlayerDTO, CombinationDTO>> playersWithTheMostPowerFullCombinations = findPlayersWithTheMostPowerFullCombinations(
+//                combinations,
+//                theMostPowerFullCombination.getCombinationType()
+//        );
+//
+//        if (playersWithTheMostPowerFullCombinations.size() > 1) {
+//            final List<Pair<PlayerDTO, CombinationDTO>> winner = findWinnerFromPlayersWhoHasTheSameCombinations(playersWithTheMostPowerFullCombinations);
+//            for (Pair<PlayerDTO, CombinationDTO> playerDTOCombinationDTOPair : winner) {
+//                final PlayerDTO playerDTO = playerDTOCombinationDTOPair.getKey();
+//                playerDTO.addChips(holdemRoundSettingsDTO.getBank() / winner.size());
+//                securityNotificationService.sendToAllWithSecurity(holdemRoundSettingsDTO);
+//            }
+//            return;
+//        }
+//        final PlayerDTO playerDTO = playersWithTheMostPowerFullCombinations.get(0).getKey();
+//        playerDTO.addChips(holdemRoundSettingsDTO.getBank());
+//        securityNotificationService.sendToAllWithSecurity(holdemRoundSettingsDTO);
+}
+
+
+    private List<Pair<PlayerDTO, CombinationDTO>> findWinnerFromPlayersWhoHasTheSameCombinations(List<Pair<PlayerDTO, CombinationDTO>> players) {
+        return null;
     }
 
 
-    private List<Player> findPlayerWithTheMostPowerFullCombinations(List<Pair<Player, CombinationDTO>> player, CombinationType combinationType) {
+    private List<Pair<PlayerDTO, CombinationDTO>> findPlayersWithTheMostPowerFullCombinations(List<Pair<PlayerDTO, CombinationDTO>> player, CombinationType combinationType) {
         return player.stream()
                 .filter(pair -> pair.getValue().getCombinationType().equals(combinationType))
-                .map(Pair::getKey)
                 .collect(Collectors.toList());
     }
 
 
-    private CombinationDTO findTheMostPowerFullCombination(List<Pair<Player, CombinationDTO>> combinations) {
+    private CombinationDTO findTheMostPowerFullCombination(List<Pair<PlayerDTO, CombinationDTO>> combinations) {
         return combinations.stream()
                 .max(Comparator.comparingInt(
                         playerCombinationDTOPair -> playerCombinationDTOPair.getRight()
@@ -70,36 +119,15 @@ public class HoldemWinnerService implements WinnerService {
     }
 
     @Override
-    public List<Pair<Player, CombinationDTO>> findWinners(List<Player> players, List<CardType> flop, CardType tern, CardType river) {
-        final List<Pair<Player, CombinationDTO>> playersComb = new ArrayList<>();
-        final List<CardType> allCards = players.stream()
-                .flatMap(player -> player
-                        .getCards()
-                        .stream())
-                .collect(Collectors.toList());
-
-        allCards.addAll(flop);
-        allCards.add(tern);
-        allCards.add(river);
-
-        cardsIntersect(allCards);
-
-        players.forEach(player -> {
-            final List<CardType> playersCards = new ArrayList<>(player.getCards());
-            playersCards.addAll(flop);
-            playersCards.add(tern);
-            playersCards.add(river);
-
-            final Pair<CombinationType, List<CardType>> combination =
-                    combinationService.findCombination(playersCards);
-
-            final CombinationDTO comboDTO = new CombinationDTO(
-                    combination.getLeft(),
-                    combination.getRight()
-            );
-
-            playersComb.add(Pair.of(player, comboDTO));
-        });
+    public List<Pair<PlayerDTO, CombinationDTO>> findWinners(List<PlayerDTO> players, List<CardType> deck) {
+        final List<Pair<PlayerDTO, CombinationDTO>> playersComb = new ArrayList<>();
+        for (PlayerDTO player : players) {
+            final List<CardType> allCards = player.getCards();
+            allCards.addAll(deck);
+            final Pair<CombinationType, List<CardType>> combination = combinationService.findCombination(allCards);
+            final CombinationDTO combinationDTO = new CombinationDTO(combination.getKey(), combination.getValue());
+            playersComb.add(Pair.of(player, combinationDTO));
+        }
         return playersComb;
     }
 

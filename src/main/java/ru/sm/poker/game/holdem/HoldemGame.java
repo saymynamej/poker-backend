@@ -2,10 +2,10 @@ package ru.sm.poker.game.holdem;
 
 import ru.sm.poker.config.game.GameSettings;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.Round;
-import ru.sm.poker.model.Player;
 import ru.sm.poker.util.ThreadUtil;
 
 import java.util.List;
@@ -15,9 +15,9 @@ public class HoldemGame extends Game {
 
     private final static long DELAY_IN_SECONDS = 2L;
 
-    public HoldemGame(GameSettings gameSettings, List<Player> players, Round round) {
-        super(gameSettings, players, round);
-        setAllPlayerAreActive(players);
+    public HoldemGame(GameSettings gameSettings, Round round) {
+        super(gameSettings, round);
+        setAllPlayersActive();
     }
 
     @Override
@@ -51,13 +51,13 @@ public class HoldemGame extends Game {
         return getRound().getHoldemRoundSettingsDTO();
     }
 
-    private void setAllPlayerAreActive(List<Player> players) {
-        players.forEach(player -> player.setStateType(StateType.IN_GAME));
+    private void setAllPlayersActive() {
+        getPlayers().forEach(player -> player.setStateType(StateType.IN_GAME));
     }
 
     private boolean isReady() {
-        final List<Player> players = getPlayers();
-        return players.size() >= getGameSettings().getMinPlayersForStart() && players.stream()
+        final List<PlayerDTO> playerDTOS = getPlayers();
+        return playerDTOS.size() >= getGameSettings().getMinPlayersForStart() && playerDTOS.stream()
                 .filter(player -> player.getStateType() == StateType.IN_GAME)
                 .count() >= getGameSettings().getMinActivePlayers();
     }

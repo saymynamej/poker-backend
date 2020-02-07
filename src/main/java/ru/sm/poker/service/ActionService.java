@@ -2,13 +2,14 @@ package ru.sm.poker.service;
 
 import ru.sm.poker.action.Action;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.model.Player;
+import ru.sm.poker.dto.PlayerDTO;
 
 public interface ActionService {
+
     void setAction(String playerName, Action action);
 
-    void waitUntilPlayerWillHasAction(Player player, HoldemRoundSettingsDTO holdemRoundSettingsDTO);
+    void waitUntilPlayerWillHasAction(PlayerDTO playerDTO, HoldemRoundSettingsDTO holdemRoundSettingsDTO);
 
-    void setUnSetAfkPlayer(String playerName);
+    void changeStateType(String playerName);
 
 }

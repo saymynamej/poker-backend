@@ -1,6 +1,7 @@
 package ru.sm.poker.service;
 
 public interface NotificationService {
+
     void sendGameInformationToUser(String userName, Object message);
 
     void sendSystemMessageToUser(String userName, Object message);

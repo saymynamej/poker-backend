@@ -4,22 +4,22 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.enums.StageType;
 import ru.sm.poker.enums.StateType;
-import ru.sm.poker.model.Player;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.OrderService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ru.sm.poker.util.HistoryUtil.allPlayersInGameHaveSameCountOfBet;
-import static ru.sm.poker.util.HistoryUtil.sumAllHistoryBets;
+import static ru.sm.poker.util.HistoryUtil.sumStageHistoryBets;
 import static ru.sm.poker.util.PlayerUtil.getPlayersInGame;
 import static ru.sm.poker.util.SortUtil.sortPostflop;
 import static ru.sm.poker.util.SortUtil.sortPreflop;
-import static ru.sm.poker.util.StreamUtil.*;
+import static ru.sm.poker.util.StreamUtil.playerInAllIn;
+import static ru.sm.poker.util.StreamUtil.playersHasCheck;
 
 @RequiredArgsConstructor
 @Service
@@ -27,64 +27,70 @@ import static ru.sm.poker.util.StreamUtil.*;
 public class OrderActionService implements OrderService {
 
     private final ActionService actionServiceHoldem;
+    private final SecurityNotificationService securityNotificationService;
+
 
     @Override
-    public void start(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-        final List<Player> sortedPlayers = getPlayersInGame(sort(
-                holdemRoundSettingsDTO.getPlayers(),
-                holdemRoundSettingsDTO.getStageType())).stream()
-                .filter(playerIsNotAfk())
-                .collect(Collectors.toList());
-
+    public boolean start(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
+        final List<PlayerDTO> sortedPlayerDTOS = getPlayersInGame(
+                sort(
+                        holdemRoundSettingsDTO.getPlayers(),
+                        holdemRoundSettingsDTO.getStageType()
+                )
+        );
 
         boolean isFirstStart = true;
-        boolean isWork = true;
+        boolean isSkipNext = false;
 
         while (true) {
-            if (allPlayersInGameHaveSameCountOfBet(holdemRoundSettingsDTO) && holdemRoundSettingsDTO.getLastBet() != 0 && isWork) {
-                break;
-            }
-
-            if (allChecks(sortedPlayers)) {
-                break;
-            }
-
             if (allPlayersInAllIn(holdemRoundSettingsDTO)) {
+                securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettingsDTO);
+                break;
+            }
+            if (allPlayersInGameHaveSameCountOfBet(holdemRoundSettingsDTO) && holdemRoundSettingsDTO.getLastBet() != 0) {
+                break;
+            }
+            if (allChecks(sortedPlayerDTOS)) {
+                break;
+            }
+            if (isOnePlayerLeft(sortedPlayerDTOS)) {
+                isSkipNext = true;
                 break;
             }
 
-            for (Player player : sortedPlayers) {
-                if (player.getStateType() == null || player.getStateType() == StateType.AFK || player.getStateType() == StateType.LEAVE) {
+            for (PlayerDTO playerDTO : sortedPlayerDTOS) {
+                if (playerDTO.getStateType() == null || playerDTO.getStateType() == StateType.AFK || playerDTO.getStateType() == StateType.LEAVE) {
                     continue;
                 }
-                if (playersHasNotChips(player)) {
+                if (playersHasNotChips(playerDTO)) {
                     continue;
                 }
-                if (isOnePlayerLeft(sortedPlayers)) {
-                    isWork = false;
+                if (isOnePlayerLeft(sortedPlayerDTOS)) {
+                    isSkipNext = true;
                     break;
                 }
-                if (player.getAction().getActionType() == ActionType.FOLD) {
+                if (playerDTO.getAction().getActionType() == ActionType.FOLD) {
                     continue;
                 }
-                if (sumAllHistoryBets(holdemRoundSettingsDTO, player) == holdemRoundSettingsDTO.getLastBet()) {
+                if (sumStageHistoryBets(holdemRoundSettingsDTO, playerDTO) == holdemRoundSettingsDTO.getLastBet()) {
                     if (!isFirstStart) {
                         continue;
                     }
                 }
-                actionServiceHoldem.waitUntilPlayerWillHasAction(player, holdemRoundSettingsDTO);
+                actionServiceHoldem.waitUntilPlayerWillHasAction(playerDTO, holdemRoundSettingsDTO);
             }
             isFirstStart = false;
         }
+        return isSkipNext;
     }
 
 
-    private List<Player> sort(List<Player> players, StageType stageType) {
-        return stageType == StageType.PREFLOP ? sortPreflop(players) : sortPostflop(players);
+    private List<PlayerDTO> sort(List<PlayerDTO> playerDTOS, StageType stageType) {
+        return stageType == StageType.PREFLOP ? sortPreflop(playerDTOS) : sortPostflop(playerDTOS);
     }
 
-    private boolean playersHasNotChips(Player player) {
-        return player.getChipsCount() == 0;
+    private boolean playersHasNotChips(PlayerDTO playerDTO) {
+        return playerDTO.getChipsCount() == 0;
     }
 
     private boolean allPlayersInAllIn(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
@@ -93,16 +99,16 @@ public class OrderActionService implements OrderService {
 
     }
 
-    private boolean allChecks(List<Player> players) {
-        return players.stream()
+    private boolean allChecks(List<PlayerDTO> playerDTOS) {
+        return playerDTOS.stream()
                 .filter(playerInAllIn().negate())
                 .allMatch(playersHasCheck());
     }
 
-    private boolean isOnePlayerLeft(List<Player> players) {
-        return players.stream()
+    private boolean isOnePlayerLeft(List<PlayerDTO> playerDTOS) {
+        return playerDTOS.stream()
                 .filter(player -> player.getAction().getActionType() == ActionType.FOLD && player.getStateType() == StateType.IN_GAME)
-                .count() == players.size() - 1;
+                .count() == playerDTOS.size() - 1;
     }
 
 }

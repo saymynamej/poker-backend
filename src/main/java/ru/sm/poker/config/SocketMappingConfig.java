@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import javax.validation.constraints.NotNull;
 
 
-
 @Configuration
 @Getter
 @Setter

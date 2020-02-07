@@ -2,7 +2,7 @@ package ru.sm.poker.util;
 
 import ru.sm.poker.action.CountAction;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.model.Player;
+import ru.sm.poker.dto.PlayerDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,34 +15,50 @@ public class HistoryUtil {
 
 
     public static boolean allPlayersInGameHaveSameCountOfBet(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-        final List<Player> playersInGame = getPlayersInGame(holdemRoundSettingsDTO.getPlayers());
+        final List<PlayerDTO> playersInGame = getPlayersInGame(holdemRoundSettingsDTO.getPlayers());
 
-        final List<Player> players = playersInGame.stream()
+        final List<PlayerDTO> playerDTOS = playersInGame.stream()
                 .filter(player -> player.getChipsCount() > 0)
                 .collect(Collectors.toList());
 
-        return players.stream()
-                .noneMatch(player -> sumAllHistoryBets(holdemRoundSettingsDTO, player) != holdemRoundSettingsDTO.getLastBet());
+        return playerDTOS.stream()
+                .noneMatch(player -> sumStageHistoryBets(holdemRoundSettingsDTO, player) != holdemRoundSettingsDTO.getLastBet());
     }
 
 
-    public static long sumAllHistoryBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player) {
-        final Map<Player, List<CountAction>> history = holdemRoundSettingsDTO.getHistory();
-        final List<CountAction> countActions = history.get(player);
-        long summ = 0;
-        if (countActions != null) {
-            for (CountAction ca : countActions) {
-                summ += ca.getCount();
-            }
+    public static long sumRoundHistoryBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO playerDTO) {
+        final Map<PlayerDTO, List<CountAction>> fullHistory = holdemRoundSettingsDTO.getFullHistory();
+        final List<CountAction> countActions = fullHistory.get(playerDTO);
+        long sum = 0;
+        if (countActions != null){
+            sum = sumBets(countActions);
         }
-        System.out.println(player.getName() + " : " + summ);
-        return summ;
+        return sum;
     }
 
 
-    public static long sumAllHistoryBetsWithNewAction(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player, CountAction countAction) {
-        final Map<Player, List<CountAction>> history = holdemRoundSettingsDTO.getHistory();
-        final List<CountAction> countActions = history.get(player);
+    public static long sumStageHistoryBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO playerDTO) {
+        final Map<PlayerDTO, List<CountAction>> history = holdemRoundSettingsDTO.getStageHistory();
+        final List<CountAction> countActions = history.get(playerDTO);
+        long sum = 0;
+        if (countActions != null) {
+            sum = sumBets(countActions);
+        }
+        return sum;
+    }
+
+    private static long sumBets(List<CountAction> actions) {
+        long sum = 0;
+        for (CountAction ca : actions) {
+            sum += ca.getCount();
+        }
+        return sum;
+    }
+
+
+    public static long sumAllHistoryBetsWithNewAction(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO playerDTO, CountAction countAction) {
+        final Map<PlayerDTO, List<CountAction>> history = holdemRoundSettingsDTO.getStageHistory();
+        final List<CountAction> countActions = history.get(playerDTO);
         long summ = countAction.getCount();
 
         if (countActions != null) {
@@ -53,22 +69,33 @@ public class HistoryUtil {
         return summ;
     }
 
-    public static void addActionInHistory(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player) {
-        final Map<Player, List<CountAction>> history = holdemRoundSettingsDTO.getHistory();
 
-        final List<CountAction> newActionsList = history.get(player);
+    public static void addActionInHistory(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO playerDTO, CountAction action) {
+        final Map<PlayerDTO, List<CountAction>> history = holdemRoundSettingsDTO.getStageHistory();
+
+        final List<CountAction> newActionsList = history.get(playerDTO);
         if (newActionsList != null) {
-            if (player.getAction() instanceof CountAction) {
-                newActionsList.add((CountAction) player.getAction());
-            }
+            newActionsList.add(action);
             return;
         }
 
         final List<CountAction> actionsList = new ArrayList<>();
-        if (player.getAction() instanceof CountAction) {
-            actionsList.add((CountAction) player.getAction());
-        }
-        history.put(player, actionsList);
+        actionsList.add(action);
+        history.put(playerDTO, actionsList);
     }
 
+    public static void addActionInHistory(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO playerDTO) {
+        if (playerDTO.getAction() instanceof CountAction) {
+            addActionInHistory(holdemRoundSettingsDTO, playerDTO, (CountAction) playerDTO.getAction());
+        }
+    }
+
+    public static void unionHistory(Map<PlayerDTO, List<CountAction>> firstHistory, Map<PlayerDTO, List<CountAction>> secondHistory) {
+        firstHistory.forEach((key, value) -> {
+            final List<CountAction> countActions = secondHistory.get(key);
+            if (countActions != null) {
+                countActions.addAll(value);
+            }
+        });
+    }
 }

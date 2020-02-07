@@ -7,10 +7,10 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.sm.poker.action.holdem.*;
 import ru.sm.poker.dto.AdminActionDTO;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.game.GameManager;
-import ru.sm.poker.model.Player;
 import ru.sm.poker.service.ActionService;
-import ru.sm.poker.service.common.SeatManager;
+import ru.sm.poker.service.SeatManager;
 import ru.sm.poker.util.PlayerUtil;
 
 import java.security.Principal;
@@ -35,23 +35,21 @@ public class AdminGameController {
 
     @MessageMapping("/admin/addPlayerInGame")
     public void joinInGame(AdminActionDTO actionDTO) {
-        seatManager.joinInGame(actionDTO.getName(), PlayerUtil.getDefaultPlayerForHoldem(new Faker().name().name()));
+        seatManager.joinInGame(actionDTO.getName(), PlayerUtil.getDefaultPlayerForHoldem(new Faker().name().name(), 50));
     }
-
 
     @MessageMapping("/admin/addChips")
     public void addChips(String name) {
         gameManager.addChips(name);
     }
 
-
-    @MessageMapping("/admin/afk")
-    public void setUnsetAfk(String name) {
-        actionService.setUnSetAfkPlayer(name);
+    @MessageMapping("/admin/changeStateType")
+    public void changeStateType(String name) {
+        actionService.changeStateType(name);
     }
 
-    @MessageMapping("/admin/raise")
-    public void raise(AdminActionDTO actionDTO) {
+    @MessageMapping("/admin/doRaise")
+    public void doRaise(AdminActionDTO actionDTO) {
         try {
             actionService.setAction(actionDTO.getName(), new Raise(parseLong(actionDTO.getCount())));
         } catch (RuntimeException e) {
@@ -59,8 +57,8 @@ public class AdminGameController {
         }
     }
 
-    @MessageMapping("/admin/call")
-    public void call(AdminActionDTO actionDTO) {
+    @MessageMapping("/admin/doCall")
+    public void doCall(AdminActionDTO actionDTO) {
         try {
             actionService.setAction(actionDTO.getName(), new Call(parseLong(actionDTO.getCount())));
         } catch (RuntimeException e) {
@@ -68,21 +66,28 @@ public class AdminGameController {
         }
     }
 
-    @MessageMapping("/admin/fold")
-    public void fold(AdminActionDTO actionDTO) {
+    @MessageMapping("/admin/doFold")
+    public void doFold(AdminActionDTO actionDTO) {
         actionService.setAction(actionDTO.getName(), new Fold());
     }
 
-    @MessageMapping("/admin/bet")
-    public void bet(AdminActionDTO actionDTO) {
+    @MessageMapping("/admin/doBet")
+    public void doBet(AdminActionDTO actionDTO) {
         actionService.setAction(actionDTO.getName(), new Bet(Long.parseLong(actionDTO.getCount())));
     }
 
-    @MessageMapping("/admin/check")
-    public void check(AdminActionDTO actionDTO) {
+    @MessageMapping("/admin/doCheck")
+    public void doCheck(AdminActionDTO actionDTO) {
         actionService.setAction(actionDTO.getName(), new Check());
     }
 
+    @MessageMapping("/admin/doAllIn")
+    public void doAllIn(AdminActionDTO actionDTO) {
+        final Optional<PlayerDTO> playerByName = gameManager.getPlayerByName(actionDTO.getName());
+        playerByName.ifPresent(
+                player -> actionService.setAction(actionDTO.getName(), new All(player.getChipsCount()))
+        );
+    }
 
     @MessageMapping("/admin/reload")
     public void reload(String gameName) {
@@ -97,14 +102,6 @@ public class AdminGameController {
     @MessageMapping("/admin/enableGame")
     public void enableGame(String gameName) {
         gameManager.enableGame(gameName);
-    }
-
-    @MessageMapping("/admin/all-in")
-    public void allIn(AdminActionDTO actionDTO) {
-        final Optional<Player> playerByName = gameManager.getPlayerByName(actionDTO.getName());
-        playerByName.ifPresent(
-                player -> actionService.setAction(actionDTO.getName(), new All(player.getChipsCount()))
-        );
     }
 
     @MessageMapping("/admin/startGame")
