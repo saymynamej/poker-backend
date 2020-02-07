@@ -11,14 +11,19 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.sm.poker.action.holdem.Raise;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
-import ru.sm.poker.util.DTOUtilTest;
+import ru.sm.poker.util.ThreadUtil;
+import ru.sm.poker.util.WaitUtilTest;
 
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import static ru.sm.poker.util.DTOUtilTest.*;
+import static ru.sm.poker.util.WaitUtilTest.*;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -37,20 +42,15 @@ public class RaiseTest {
     public void testSuccessRaise() {
         final long raiseCount = 4;
         final long lastBet = 2;
-        final HoldemRoundSettingsDTO roundSettingsDTO = DTOUtilTest.getRoundSettingsDTO(lastBet);
-        final PlayerDTO player = DTOUtilTest.getPlayer();
+        final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO(lastBet);
+        final PlayerDTO player = getPlayer();
         final Raise raise = new Raise(raiseCount);
-        raise.doAction(roundSettingsDTO, player, gameService, actionService);
-        Assertions.assertEquals(DTOUtilTest.DEFAULT_CHIPS_COUNT - raise.getCount(), player.getChipsCount());
-    }
-
-    @Test
-    public void testSuccessRaiseWithHistory() {
-
+        executorService.submit(() -> raise.doAction(roundSettingsDTO, player, gameService, actionService));
+        waitAction(player, ActionType.RAISE);
+        Assertions.assertEquals(DEFAULT_CHIPS_COUNT - raise.getCount(), player.getChipsCount());
     }
 
     private long setHistoryForPlayer(PlayerDTO player, HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-
         final long firstBet = 4L;
         final long secondBet = 16L;
         final long lastBet = 64L;

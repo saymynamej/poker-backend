@@ -22,7 +22,7 @@ import java.util.concurrent.Executors;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static ru.sm.poker.util.DTOUtilTest.*;
-import static ru.sm.poker.util.WaitUtil.waitOfCondition;
+import static ru.sm.poker.util.WaitUtilTest.waitAction;
 
 
 @ExtendWith(SpringExtension.class)
@@ -43,7 +43,8 @@ class CallTest {
         final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
         final Call call = new Call(DEFAULT_LAST_BET);
         final PlayerDTO player = getPlayer();
-        call.doAction(roundSettingsDTO, player, gameService, actionService);
+        executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
+        waitAction(player);
         Assertions.assertEquals(DEFAULT_CHIPS_COUNT - DEFAULT_LAST_BET, player.getChipsCount());
         Assertions.assertEquals(call.getCount(), roundSettingsDTO.getLastBet());
     }
@@ -54,7 +55,7 @@ class CallTest {
         final PlayerDTO player = getPlayer();
         final Call call = new Call(player.getChipsCount() + 1);
         executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
-        waitOfCondition(() -> player.getAction() != null);
+        waitAction(player);
         verify(actionService, times(1)).waitUntilPlayerWillHasAction(player, roundSettingsDTO);
         Assertions.assertEquals(roundSettingsDTO.getBigBlindBet(), roundSettingsDTO.getLastBet());
     }
@@ -65,7 +66,7 @@ class CallTest {
         final PlayerDTO player = getPlayer();
         final Call call = new Call(DEFAULT_BIG_BLIND_BET + 1);
         executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
-        waitOfCondition(() -> player.getAction() != null);
+        waitAction(player);
         verify(actionService, times(1)).waitUntilPlayerWillHasAction(player, roundSettingsDTO);
         Assertions.assertEquals(roundSettingsDTO.getBigBlindBet(), roundSettingsDTO.getLastBet());
     }
@@ -76,7 +77,8 @@ class CallTest {
         final PlayerDTO player = getPlayer();
         final long sumAllBets = setHistoryForPlayer(player, roundSettingsDTO);
         final Call call = new Call(roundSettingsDTO.getLastBet() - sumAllBets);
-        call.doAction(roundSettingsDTO, player, gameService, actionService);
+        executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
+        waitAction(player);
         Assertions.assertEquals(player.getChipsCount(), DEFAULT_CHIPS_COUNT - roundSettingsDTO.getLastBet());
     }
 
@@ -87,8 +89,8 @@ class CallTest {
         final PlayerDTO player = getPlayer();
         final long sumAllBets = setHistoryForPlayer(player, roundSettingsDTO);
         final Call call = new Call(roundSettingsDTO.getLastBet() - sumAllBets + 1L);
-        executorServiceForActions.submit( () -> call.doAction(roundSettingsDTO, player, gameService, actionService));
-        waitOfCondition(() -> player.getAction() != null);
+        executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
+        waitAction(player);
         verify(actionService, times(1)).waitUntilPlayerWillHasAction(player, roundSettingsDTO);
         Assertions.assertEquals(player.getChipsCount(), DEFAULT_CHIPS_COUNT - sumAllBets);
     }
@@ -110,4 +112,5 @@ class CallTest {
 
         return firstBet + secondBet + thirdBet;
     }
+
 }

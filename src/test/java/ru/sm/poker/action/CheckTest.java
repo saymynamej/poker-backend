@@ -16,20 +16,19 @@ import ru.sm.poker.enums.StageType;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
 import ru.sm.poker.util.DTOUtilTest;
-import ru.sm.poker.util.WaitUtil;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import static ru.sm.poker.util.WaitUtilTest.waitAction;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
 public class CheckTest {
 
-
     @SpyBean
     private GameService gameService;
-
     @SpyBean
     private ActionService actionService;
 
@@ -38,10 +37,10 @@ public class CheckTest {
     @Test
     public void testSuccessCheckWhenLastBetZero() {
         final HoldemRoundSettingsDTO roundSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.FLOP);
-        System.out.println(roundSettingsDTO.getStageType());
         roundSettingsDTO.setLastBet(0L);
         final PlayerDTO player = DTOUtilTest.getPlayer();
-        new Check().doAction(roundSettingsDTO, player, gameService, actionService);
+        executorService.submit(() -> new Check().doAction(roundSettingsDTO, player, gameService, actionService));
+        waitAction(player);
     }
 
     @Test
@@ -51,7 +50,7 @@ public class CheckTest {
         roundSettingsDTO.setLastBet(0L);
         final PlayerDTO player = DTOUtilTest.getPlayer();
         executorService.submit(() -> new Check().doAction(roundSettingsDTO, player, gameService, actionService));
-        WaitUtil.waitOfCondition(() -> player.getAction() != null);
+        waitAction(player);
         Mockito.verify(actionService, Mockito.times(1)).waitUntilPlayerWillHasAction(player, roundSettingsDTO);
     }
 
@@ -61,7 +60,8 @@ public class CheckTest {
         roundSettingsDTO.setLastBet(2L);
         final PlayerDTO player = DTOUtilTest.getPlayer();
         player.setRole(RoleType.BIG_BLIND);
-        new Check().doAction(roundSettingsDTO, player, gameService, actionService);
+        executorService.submit(() -> new Check().doAction(roundSettingsDTO, player, gameService, actionService));
+        waitAction(player);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class CheckTest {
         roundSettingsDTO.setLastBet(roundSettingsDTO.getBigBlindBet() + roundSettingsDTO.getBigBlindBet());
         final PlayerDTO player = DTOUtilTest.getPlayer();
         executorService.submit(() -> new Check().doAction(roundSettingsDTO, player, gameService, actionService));
-        WaitUtil.waitOfCondition(() -> player.getAction() != null);
+        waitAction(player);
         Mockito.verify(actionService, Mockito.times(1)).waitUntilPlayerWillHasAction(player, roundSettingsDTO);
     }
 }
