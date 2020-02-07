@@ -50,8 +50,8 @@ public class CommonGameController {
         );
     }
 
-    @MessageMapping("/afk")
-    public void setUnsetAfk(Principal principal) {
+    @MessageMapping("/changeStateType")
+    public void changeStateType(Principal principal) {
         actionService.changeStateType(principal.getName());
     }
 
@@ -60,33 +60,33 @@ public class CommonGameController {
         gameManager.addChips(principal.getName());
     }
 
-    @MessageMapping("/raise")
-    public void raise(Principal principal, ActionDTO actionDTO) {
+    @MessageMapping("/doRaise")
+    public void doRaise(Principal principal, ActionDTO actionDTO) {
         actionService.setAction(principal.getName(), new Raise(Long.parseLong(actionDTO.getCount())));
     }
 
-    @MessageMapping("/call")
-    public void call(Principal principal, ActionDTO actionDTO) {
+    @MessageMapping("/doCall")
+    public void doCall(Principal principal, ActionDTO actionDTO) {
         actionService.setAction(principal.getName(), new Call(Long.parseLong(actionDTO.getCount())));
     }
 
-    @MessageMapping("/fold")
-    public void fold(Principal principal) {
+    @MessageMapping("/doFold")
+    public void doFold(Principal principal) {
         actionService.setAction(principal.getName(), new Fold());
     }
 
-    @MessageMapping("/bet")
-    public void bet(Principal principal, ActionDTO actionDTO) {
+    @MessageMapping("/doBet")
+    public void doBet(Principal principal, ActionDTO actionDTO) {
         actionService.setAction(principal.getName(), new Bet(Long.parseLong(actionDTO.getCount())));
     }
 
-    @MessageMapping("/check")
-    public void check(Principal principal) {
+    @MessageMapping("/doCheck")
+    public void doCheck(Principal principal) {
         actionService.setAction(principal.getName(), new Check());
     }
 
-    @MessageMapping("/all-in")
-    public void allIn(Principal principal, ActionDTO actionDTO) {
+    @MessageMapping("/doAllIn")
+    public void doAllIn(Principal principal, ActionDTO actionDTO) {
         actionService.setAction(principal.getName(), new All(Long.parseLong(actionDTO.getCount())));
     }
 }
