@@ -32,13 +32,12 @@ public class SimpleSeatManager implements SeatManager {
 
     @Override
     public void joinInGame(String gameName, PlayerDTO playerDTO) {
-        if (commonGameManager.getPlayerByName(playerDTO.getName()).isPresent()) {
-            notificationService.sendSystemMessageToUser(playerDTO.getName(), MessageType.ONLY_ONE_TABLE_MESSAGE.getMessage());
-            return;
-        }
-
-        final Game game = commonGameManager.getGameByName(gameName);
         synchronized (this) {
+            if (commonGameManager.getPlayerByName(playerDTO.getName()).isPresent()) {
+                notificationService.sendSystemMessageToUser(playerDTO.getName(), MessageType.ONLY_ONE_TABLE_MESSAGE.getMessage());
+                return;
+            }
+            final Game game = commonGameManager.getGameByName(gameName);
             final int actualSize = game.getPlayers().size();
             final int maxPlayerSize = game.getGameSettings().getMaxPlayerSize();
             if (actualSize < maxPlayerSize) {
@@ -50,17 +49,19 @@ public class SimpleSeatManager implements SeatManager {
 
     @Override
     public void joinInQueue(PlayerDTO playerDTO) {
-        final boolean isExist = players.contains(playerDTO);
-        if (isExist) {
+        synchronized (this) {
+            final boolean isExist = players.contains(playerDTO);
+            if (isExist) {
+                notificationService.sendGameInformationToAll(
+                        format(PLAYER_ALREADY_EXIST.getMessage(), playerDTO.getName())
+                );
+                return;
+            }
+            players.add(playerDTO);
             notificationService.sendGameInformationToAll(
-                    format(PLAYER_ALREADY_EXIST.getMessage(), playerDTO.getName())
+                    format(SUCCESS_JOIN_IN_QUEUE.getMessage(), playerDTO.getName())
             );
-            return;
         }
-        players.add(playerDTO);
-        notificationService.sendGameInformationToAll(
-                format(SUCCESS_JOIN_IN_QUEUE.getMessage(), playerDTO.getName())
-        );
     }
 
 
