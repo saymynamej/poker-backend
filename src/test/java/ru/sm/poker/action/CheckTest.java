@@ -46,7 +46,6 @@ public class CheckTest {
     @Test
     public void testFailCheckWhenLastBetZero() {
         final HoldemRoundSettingsDTO roundSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.PREFLOP);
-        System.out.println(roundSettingsDTO.getStageType());
         roundSettingsDTO.setLastBet(0L);
         final PlayerDTO player = DTOUtilTest.getPlayer();
         executorService.submit(() -> new Check().doAction(roundSettingsDTO, player, gameService, actionService));
