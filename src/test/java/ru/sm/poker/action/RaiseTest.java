@@ -14,8 +14,6 @@ import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
-import ru.sm.poker.util.ThreadUtil;
-import ru.sm.poker.util.WaitUtilTest;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static ru.sm.poker.util.DTOUtilTest.*;
-import static ru.sm.poker.util.WaitUtilTest.*;
+import static ru.sm.poker.util.WaitUtilTest.waitAction;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest

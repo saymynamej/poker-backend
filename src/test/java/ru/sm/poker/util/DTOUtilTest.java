@@ -3,10 +3,10 @@ package ru.sm.poker.util;
 import com.github.javafaker.Faker;
 import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.RoleType;
 import ru.sm.poker.enums.StageType;
-import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.StateType;
 
 import java.util.Collections;

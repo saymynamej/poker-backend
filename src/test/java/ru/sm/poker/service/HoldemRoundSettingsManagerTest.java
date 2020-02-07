@@ -3,10 +3,10 @@ package ru.sm.poker.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.StageType;
 import ru.sm.poker.game.RoundSettingsManager;
 import ru.sm.poker.game.holdem.HoldemRoundSettingsManager;
-import ru.sm.poker.dto.PlayerDTO;
 
 import java.util.ArrayList;
 import java.util.List;

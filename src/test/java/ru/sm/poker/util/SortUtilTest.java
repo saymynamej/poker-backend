@@ -4,8 +4,8 @@ import com.github.javafaker.Faker;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import ru.sm.poker.enums.RoleType;
 import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.enums.RoleType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
