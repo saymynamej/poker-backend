@@ -87,7 +87,6 @@ public class GameListeners {
     }
 
     public void fillHoldemCashGames() {
-
         for (int i = 0; i < 10; i++) {
             final String randomGameName = getRandomGOTCityName();
             final GameSettings gameSettings = new HoldemFullTableSettings(GameType.HOLDEM);
