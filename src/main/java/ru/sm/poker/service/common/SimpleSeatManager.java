@@ -27,7 +27,7 @@ public class SimpleSeatManager implements SeatManager {
     private final CommonGameManager commonGameManager;
     private final SecurityNotificationService securityNotificationService;
     private final NotificationService notificationService;
-    private final Queue<PlayerDTO> playerDTOS = new LinkedBlockingQueue<>();
+    private final Queue<PlayerDTO> players = new LinkedBlockingQueue<>();
 
 
     @Override
@@ -50,14 +50,14 @@ public class SimpleSeatManager implements SeatManager {
 
     @Override
     public void joinInQueue(PlayerDTO playerDTO) {
-        final boolean isExist = playerDTOS.contains(playerDTO);
+        final boolean isExist = players.contains(playerDTO);
         if (isExist) {
             notificationService.sendGameInformationToAll(
                     format(PLAYER_ALREADY_EXIST.getMessage(), playerDTO.getName())
             );
             return;
         }
-        playerDTOS.add(playerDTO);
+        players.add(playerDTO);
         notificationService.sendGameInformationToAll(
                 format(SUCCESS_JOIN_IN_QUEUE.getMessage(), playerDTO.getName())
         );
@@ -77,7 +77,7 @@ public class SimpleSeatManager implements SeatManager {
 
     @Override
     public Queue<PlayerDTO> getQueue() {
-        return playerDTOS;
+        return players;
     }
 
 
