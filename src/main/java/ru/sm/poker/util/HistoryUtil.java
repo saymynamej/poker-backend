@@ -27,24 +27,24 @@ public class HistoryUtil {
 
 
     public static long sumRoundHistoryBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO playerDTO) {
-        final Map<PlayerDTO, List<CountAction>> fullHistory = holdemRoundSettingsDTO.getFullHistory();
-        final List<CountAction> countActions = fullHistory.get(playerDTO);
-        long sum = 0;
-        if (countActions != null){
-            sum = sumBets(countActions);
-        }
-        return sum;
+        return sumBets(getCountActions(playerDTO, holdemRoundSettingsDTO.getFullHistory()));
     }
 
 
     public static long sumStageHistoryBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO playerDTO) {
-        final Map<PlayerDTO, List<CountAction>> history = holdemRoundSettingsDTO.getStageHistory();
-        final List<CountAction> countActions = history.get(playerDTO);
-        long sum = 0;
-        if (countActions != null) {
-            sum = sumBets(countActions);
+        return sumBets(getCountActions(playerDTO, holdemRoundSettingsDTO.getStageHistory()));
+    }
+
+    private static List<CountAction> getCountActions(PlayerDTO playerDTO, Map<PlayerDTO, List<CountAction>> stageHistory) {
+        if (stageHistory == null) {
+            throw new RuntimeException("cannot find history for player " + playerDTO.getName());
         }
-        return sum;
+        final List<CountAction> countActions = stageHistory.get(playerDTO);
+
+        if (countActions == null) {
+            throw new RuntimeException("cannot find actions for player:" + playerDTO.getName());
+        }
+        return countActions;
     }
 
     private static long sumBets(List<CountAction> actions) {
@@ -58,20 +58,29 @@ public class HistoryUtil {
 
     public static long sumAllHistoryBetsWithNewAction(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO playerDTO, CountAction countAction) {
         final Map<PlayerDTO, List<CountAction>> history = holdemRoundSettingsDTO.getStageHistory();
+        if (history == null) {
+            throw new RuntimeException("cannot find history for player:" + playerDTO.getName());
+        }
         final List<CountAction> countActions = history.get(playerDTO);
-        long summ = countAction.getCount();
+        if (countAction == null) {
+            throw new RuntimeException("cannot find actions for player:" + playerDTO.getName());
+        }
+        long sum = countAction.getCount();
 
         if (countActions != null) {
             for (CountAction ca : countActions) {
-                summ += ca.getCount();
+                sum += ca.getCount();
             }
         }
-        return summ;
+        return sum;
     }
 
 
     public static void addActionInHistory(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO playerDTO, CountAction action) {
         final Map<PlayerDTO, List<CountAction>> history = holdemRoundSettingsDTO.getStageHistory();
+        if (history == null) {
+            throw new RuntimeException("cannot find history");
+        }
 
         final List<CountAction> newActionsList = history.get(playerDTO);
         if (newActionsList != null) {
@@ -85,12 +94,15 @@ public class HistoryUtil {
     }
 
     public static void addActionInHistory(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO playerDTO) {
-        if (playerDTO.getAction() instanceof CountAction) {
+        if (playerDTO.getAction() != null && playerDTO.getAction() instanceof CountAction) {
             addActionInHistory(holdemRoundSettingsDTO, playerDTO, (CountAction) playerDTO.getAction());
         }
     }
 
     public static void unionHistory(Map<PlayerDTO, List<CountAction>> firstHistory, Map<PlayerDTO, List<CountAction>> secondHistory) {
+        if (firstHistory == null || secondHistory == null) {
+            throw new RuntimeException("histories cannot be null");
+        }
         firstHistory.forEach((key, value) -> {
             final List<CountAction> countActions = secondHistory.get(key);
             if (countActions != null) {
