@@ -58,26 +58,26 @@ public class OrderActionService implements OrderService {
                 break;
             }
 
-            for (PlayerDTO playerDTO : sortedPlayerDTOS) {
-                if (playerDTO.getStateType() == null || playerDTO.getStateType() == StateType.AFK || playerDTO.getStateType() == StateType.LEAVE) {
+            for (PlayerDTO player : sortedPlayerDTOS) {
+                if (player.getStateType() == null || player.getStateType() == StateType.AFK || player.getStateType() == StateType.LEAVE) {
                     continue;
                 }
-                if (playersHasNotChips(playerDTO)) {
+                if (playersHasNotChips(player)) {
                     continue;
                 }
                 if (isOnePlayerLeft(sortedPlayerDTOS)) {
                     isSkipNext = true;
                     break;
                 }
-                if (playerDTO.getAction().getActionType() == ActionType.FOLD) {
+                if (player.getAction().getActionType() == ActionType.FOLD) {
                     continue;
                 }
-                if (sumStageHistoryBets(holdemRoundSettingsDTO, playerDTO) == holdemRoundSettingsDTO.getLastBet()) {
+                if (sumStageHistoryBets(holdemRoundSettingsDTO, player) == holdemRoundSettingsDTO.getLastBet()) {
                     if (!isFirstStart) {
                         continue;
                     }
                 }
-                actionServiceHoldem.waitUntilPlayerWillHasAction(playerDTO, holdemRoundSettingsDTO);
+                actionServiceHoldem.waitUntilPlayerWillHasAction(player, holdemRoundSettingsDTO);
             }
             isFirstStart = false;
         }

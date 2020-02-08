@@ -13,7 +13,7 @@ public interface RoundSettingsManager {
 
     HoldemRoundSettingsDTO getPostFlopSettings(long bank, Map<PlayerDTO, List<CountAction>> prevHistory);
 
-    HoldemRoundSettingsDTO getPostFlopSettingsWithTern(long bank, Map<PlayerDTO, List<CountAction>> prevHistory);
+    HoldemRoundSettingsDTO getPostFlopSettingsWithTern(long bank, Map<PlayerDTO, List<CountAction>> fullHistory);
 
-    HoldemRoundSettingsDTO getPostFlopSettingsWithRiver(long bank, Map<PlayerDTO, List<CountAction>> prevHistory);
+    HoldemRoundSettingsDTO getPostFlopSettingsWithRiver(long bank, Map<PlayerDTO, List<CountAction>> fullHistory);
 }

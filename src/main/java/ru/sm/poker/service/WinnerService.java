@@ -12,5 +12,5 @@ public interface WinnerService {
 
     void sendPrizes(HoldemRoundSettingsDTO holdemRoundSettingsDTO);
 
-    List<Pair<PlayerDTO, CombinationDTO>> findWinners(List<PlayerDTO> playerDTOS, List<CardType> deck);
+    List<Pair<PlayerDTO, CombinationDTO>> findCombinations(List<PlayerDTO> playerDTOS, List<CardType> deck);
 }

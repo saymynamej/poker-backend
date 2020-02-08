@@ -64,7 +64,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .gameName(gameName)
                 .bank(bank)
                 .smallBlindBet(smallBlindBet)
-                .fullHistory(new HashMap<>(prevHistory))
+                .fullHistory(prevHistory)
                 .isAfk(false)
                 .bigBlindBet(bigBlindBet)
                 .button(getPlayerByRole(RoleType.BUTTON).orElseThrow())
@@ -77,7 +77,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .build();
     }
 
-    public HoldemRoundSettingsDTO getPostFlopSettingsWithTern(long bank, Map<PlayerDTO, List<CountAction>> prevHistory) {
+    public HoldemRoundSettingsDTO getPostFlopSettingsWithTern(long bank, Map<PlayerDTO, List<CountAction>> fullHistory) {
         setAllActivePlayersTest();
         return HoldemRoundSettingsDTO
                 .builder()
@@ -87,7 +87,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .bank(bank)
                 .smallBlindBet(smallBlindBet)
                 .isAfk(false)
-                .fullHistory(new HashMap<>(prevHistory))
+                .fullHistory(fullHistory)
                 .bigBlindBet(bigBlindBet)
                 .button(getPlayerByRole(RoleType.BUTTON).orElseThrow())
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElseThrow())
@@ -100,7 +100,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
     }
 
 
-    public HoldemRoundSettingsDTO getPostFlopSettingsWithRiver(long bank, Map<PlayerDTO, List<CountAction>> prevHistory) {
+    public HoldemRoundSettingsDTO getPostFlopSettingsWithRiver(long bank, Map<PlayerDTO, List<CountAction>> fullHistory) {
         setAllActivePlayersTest();
         return HoldemRoundSettingsDTO
                 .builder()
@@ -113,7 +113,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .bank(bank)
                 .stageType(StageType.RIVER)
                 .smallBlindBet(smallBlindBet)
-                .fullHistory(new HashMap<>(prevHistory))
+                .fullHistory(fullHistory)
                 .stageHistory(new HashMap<>())
                 .bigBlindBet(bigBlindBet)
                 .button(getPlayerByRole(RoleType.BUTTON).orElseThrow())
