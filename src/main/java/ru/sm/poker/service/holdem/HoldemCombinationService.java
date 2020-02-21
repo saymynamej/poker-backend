@@ -33,57 +33,45 @@ public class HoldemCombinationService implements CombinationService {
             throw new RuntimeException("cards size must be 7");
         }
 
-        //FLUSH ROYAL
         final List<CardType> flushRoyal = findFlushRoyal(new ArrayList<>(cards));
         if (!flushRoyal.isEmpty() && checkSize(flushRoyal) && checkDuplicate(flushRoyal)) {
             return ImmutablePair.of(CombinationType.FLUSH_ROYAL, flushRoyal);
         }
-        //STRAIGHT FLUSH
 
         final List<CardType> straitFlush = findStraitFlush(new ArrayList<>(cards));
         if (!straitFlush.isEmpty() && checkSize(straitFlush) && checkDuplicate(straitFlush)) {
             return ImmutablePair.of(CombinationType.STRAIT_FLUSH, straitFlush);
         }
 
-        //KARE
         final List<CardType> kare = findKare(new ArrayList<>(cards));
         if (!kare.isEmpty() && checkSize(kare) && checkDuplicate(kare)) {
             return ImmutablePair.of(CombinationType.KARE, kare);
         }
-
-        //FULL-HOUSE
 
         final List<CardType> fullHouse = findFullHouse(new ArrayList<>(cards));
         if (!fullHouse.isEmpty() && checkSize(fullHouse) && checkDuplicate(fullHouse)) {
             return ImmutablePair.of(CombinationType.FULL_HOUSE, fullHouse);
         }
 
-        //FLUSH
         final List<CardType> flush = findFlush(new ArrayList<>(cards));
         if (!flush.isEmpty() && checkSize(flush) && checkDuplicate(flush)) {
             return ImmutablePair.of(CombinationType.FLUSH, flush);
         }
 
-        //STRAIT
         final List<CardType> strait = findStrait(new ArrayList<>(cards));
         if (!strait.isEmpty() && checkSize(strait) && checkDuplicate(strait)) {
             return ImmutablePair.of(CombinationType.STRAIT, strait);
         }
 
-        //THREE
         final List<CardType> three = findThree(new ArrayList<>(cards));
         if (!three.isEmpty() && checkSize(three) && checkDuplicate(three)) {
             return ImmutablePair.of(CombinationType.THREE, three);
         }
 
-        //TWO PAIR
-
         final List<CardType> twoPair = findTwoPair(new ArrayList<>(cards));
         if (!twoPair.isEmpty() && checkSize(twoPair) && checkDuplicate(twoPair)) {
             return ImmutablePair.of(CombinationType.TWO_PAIR, twoPair);
         }
-
-        //PAIR
 
         final List<CardType> pair = findPair(new ArrayList<>(cards));
 
@@ -91,7 +79,6 @@ public class HoldemCombinationService implements CombinationService {
             return ImmutablePair.of(CombinationType.PAIR, pair);
         }
 
-        //HIGH CARD
         final List<CardType> highCards = findHighCard(new ArrayList<>(cards));
 
         if (!highCards.isEmpty() && checkSize(highCards) && checkDuplicate(highCards)) {
