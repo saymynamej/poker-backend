@@ -310,7 +310,6 @@ public class HoldemCombinationService implements CombinationService {
     private List<CardType> cutStraight(List<CardType> cards) {
         final List<CardType> copyList = new ArrayList<>(cards);
 
-        //DELETE CARDS WITH SAME POWER
         for (CardType card : copyList) {
             final List<CardType> samePowerCards = filterByPower(copyList, card.getPower());
             if (samePowerCards.size() > 1) {
