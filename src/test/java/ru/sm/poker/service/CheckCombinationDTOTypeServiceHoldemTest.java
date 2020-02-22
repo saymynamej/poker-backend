@@ -30,7 +30,6 @@ public class CheckCombinationDTOTypeServiceHoldemTest {
     private static final List<CardType> FLUSH_ROYAL_CLUB_COMBINATION = new ArrayList<>(Arrays.asList(A_C, K_C, Q_C, J_C, TEN_C));
 
 
-
     private static final List<CardType> STRAIT_FLUSH_CLUB_FULL = new ArrayList<>(Arrays.asList(EIGHT_C, SEVEN_C, TEN_C, J_C, NINE_C, FOUR_H, K_S));
     private static final List<CardType> STRAIT_FLUSH_CLUB_COMBINATION = new ArrayList<>(Arrays.asList(J_C, TEN_C, NINE_C, EIGHT_C, SEVEN_C));
 
@@ -47,8 +46,6 @@ public class CheckCombinationDTOTypeServiceHoldemTest {
     private static final List<CardType> STRAIT_FLUSH_COMBINATION = new ArrayList<>(Arrays.asList(J_C, TEN_C, NINE_C, EIGHT_C, SEVEN_C));
 
 
-
-
     private static final List<CardType> KARE_FULL = new ArrayList<>(Arrays.asList(NINE_C, FOUR_H, K_S, SIX_C, SIX_H, SIX_S, SIX_D));
     private static final List<CardType> KARE_COMBINATION = new ArrayList<>(Arrays.asList(SIX_C, SIX_H, SIX_S, SIX_D, K_S));
 
@@ -62,13 +59,29 @@ public class CheckCombinationDTOTypeServiceHoldemTest {
     private static final List<CardType> KARE_COMBINATION4 = new ArrayList<>(Arrays.asList(SEVEN_S, SEVEN_C, SEVEN_D, SEVEN_H, A_D));
 
 
-    private static final List<CardType> FLUSH_FULL = new ArrayList<>(Arrays.asList(NINE_H, A_H, K_H, TWO_H, FIVE_H, FOUR_H, K_S));
-    private static final List<CardType> FLUSH_COMBINATION = new ArrayList<>(Arrays.asList(NINE_H, A_H, K_H, FIVE_H, FOUR_H));
+    private static final List<CardType> FLUSH_HEART_FULL = new ArrayList<>(Arrays.asList(NINE_H, A_H, K_H, TWO_H, FIVE_H, FOUR_H, K_S));
+    private static final List<CardType> FLUSH_HEART_COMBINATION = new ArrayList<>(Arrays.asList(A_H, K_H, NINE_H, FIVE_H, FOUR_H));
 
+    private static final List<CardType> FLUSH_DIAMOND_FULL = new ArrayList<>(Arrays.asList(J_D, TWO_D, THREE_D, SEVEN_D, A_H, A_C, K_D));
+    private static final List<CardType> FLUSH_DIAMOND_COMBINATION = new ArrayList<>(Arrays.asList(K_D, J_D, SEVEN_D, THREE_D, TWO_D));
+
+    private static final List<CardType> FLUSH_SPADE_FULL = new ArrayList<>(Arrays.asList(K_S, Q_S, SEVEN_S, FOUR_S, FIVE_S, K_H, K_C));
+    private static final List<CardType> FLUSH_SPADE_COMBINATION = new ArrayList<>(Arrays.asList(K_S, Q_S, SEVEN_S, FIVE_S, FOUR_S));
+
+    private static final List<CardType> FLUSH_CLUB_FULL = new ArrayList<>(Arrays.asList(A_C, K_C, J_C, Q_C, NINE_C, TWO_C, THREE_C));
+    private static final List<CardType> FLUSH_CLUB_COMBINATION = new ArrayList<>(Arrays.asList(A_C, K_C, Q_C, J_C, NINE_C));
 
     private static final List<CardType> FULL_HOUSE_FULL = new ArrayList<>(Arrays.asList(EIGHT_C, EIGHT_D, EIGHT_H, FIVE_D, FIVE_C, FIVE_H, FOUR_H));
     private static final List<CardType> FULL_HOUSE_COMBINATION = new ArrayList<>(Arrays.asList(FIVE_D, FIVE_C, EIGHT_C, EIGHT_D, EIGHT_H));
 
+    private static final List<CardType> FULL_HOUSE_FULL2 = new ArrayList<>(Arrays.asList(A_D, A_C, SEVEN_D, A_H, K_C, K_H, FOUR_H));
+    private static final List<CardType> FULL_HOUSE_COMBINATION2 = new ArrayList<>(Arrays.asList(K_C, K_H, A_D, A_C, A_H));
+
+    private static final List<CardType> FULL_HOUSE_FULL3 = new ArrayList<>(Arrays.asList(EIGHT_C, EIGHT_D, Q_C, Q_H, Q_D, TEN_C, TEN_D));
+    private static final List<CardType> FULL_HOUSE_COMBINATION3 = new ArrayList<>(Arrays.asList(TEN_C, TEN_D, Q_C, Q_H, Q_D));
+
+    private static final List<CardType> FULL_HOUSE_FULL4 = new ArrayList<>(Arrays.asList(J_D, EIGHT_D, SEVEN_H, SEVEN_D, FIVE_C, J_C, J_H));
+    private static final List<CardType> FULL_HOUSE_COMBINATION4 = new ArrayList<>(Arrays.asList(SEVEN_H, SEVEN_D, J_D, J_C, J_H));
 
     private static final List<CardType> STRAIT_FULL = new ArrayList<>(Arrays.asList(EIGHT_C, SEVEN_S, SIX_H, FIVE_D, THREE_D, FOUR_H, TWO_D));
     private static final List<CardType> STRAIT_COMBINATION = new ArrayList<>(Arrays.asList(EIGHT_C, SEVEN_S, SIX_H, FIVE_D, FOUR_H));
@@ -216,10 +229,52 @@ public class CheckCombinationDTOTypeServiceHoldemTest {
     }
 
     @Test
-    public void testFlush() {
-        final Pair<CombinationType, List<CardType>> flush = checkHoldemCombinationService.findCombination(FLUSH_FULL);
+    public void testFullHouse2() {
+        final Pair<CombinationType, List<CardType>> fullHouse = checkHoldemCombinationService.findCombination(FULL_HOUSE_FULL2);
+        Assert.assertEquals(CombinationType.FULL_HOUSE, fullHouse.getKey());
+        Assert.assertEquals(FULL_HOUSE_COMBINATION2, fullHouse.getValue());
+    }
+
+    @Test
+    public void testFullHouse3() {
+        final Pair<CombinationType, List<CardType>> fullHouse = checkHoldemCombinationService.findCombination(FULL_HOUSE_FULL3);
+        Assert.assertEquals(CombinationType.FULL_HOUSE, fullHouse.getKey());
+        Assert.assertEquals(FULL_HOUSE_COMBINATION3, fullHouse.getValue());
+    }
+
+    @Test
+    public void testFullHouse4() {
+        final Pair<CombinationType, List<CardType>> fullHouse = checkHoldemCombinationService.findCombination(FULL_HOUSE_FULL4);
+        Assert.assertEquals(CombinationType.FULL_HOUSE, fullHouse.getKey());
+        Assert.assertEquals(FULL_HOUSE_COMBINATION4, fullHouse.getValue());
+    }
+
+    @Test
+    public void testHeartFlush() {
+        final Pair<CombinationType, List<CardType>> flush = checkHoldemCombinationService.findCombination(FLUSH_HEART_FULL);
         Assert.assertEquals(CombinationType.FLUSH, flush.getKey());
-        Assert.assertEquals(FLUSH_COMBINATION, flush.getValue());
+        Assert.assertEquals(FLUSH_HEART_COMBINATION, flush.getValue());
+    }
+
+    @Test
+    public void testClubFlush() {
+        final Pair<CombinationType, List<CardType>> flush = checkHoldemCombinationService.findCombination(FLUSH_CLUB_FULL);
+        Assert.assertEquals(CombinationType.FLUSH, flush.getKey());
+        Assert.assertEquals(FLUSH_CLUB_COMBINATION, flush.getValue());
+    }
+
+    @Test
+    public void testDiamondFlush() {
+        final Pair<CombinationType, List<CardType>> flush = checkHoldemCombinationService.findCombination(FLUSH_DIAMOND_FULL);
+        Assert.assertEquals(CombinationType.FLUSH, flush.getKey());
+        Assert.assertEquals(FLUSH_DIAMOND_COMBINATION, flush.getValue());
+    }
+
+    @Test
+    public void testSpadeFlush() {
+        final Pair<CombinationType, List<CardType>> flush = checkHoldemCombinationService.findCombination(FLUSH_SPADE_FULL);
+        Assert.assertEquals(CombinationType.FLUSH, flush.getKey());
+        Assert.assertEquals(FLUSH_SPADE_COMBINATION, flush.getValue());
     }
 
     @Test

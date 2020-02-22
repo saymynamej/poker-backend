@@ -392,25 +392,25 @@ public class HoldemCombinationService implements CombinationService {
         final List<CardType> spadeFlush = findFlushBySuit(cardTypes, CardType.SuitType.SPADE);
 
         if (!spadeFlush.isEmpty()) {
-            return spadeFlush;
+            return sortByPowerDesc(spadeFlush);
         }
 
         final List<CardType> heartFlush = findFlushBySuit(cardTypes, CardType.SuitType.HEART);
 
         if (!heartFlush.isEmpty()) {
-            return heartFlush;
+            return sortByPowerDesc(heartFlush);
         }
 
         final List<CardType> clubFlush = findFlushBySuit(cardTypes, CardType.SuitType.CLUB);
 
         if (!clubFlush.isEmpty()) {
-            return clubFlush;
+            return sortByPowerDesc(clubFlush);
         }
 
         final List<CardType> diamondFlush = findFlushBySuit(cardTypes, CardType.SuitType.DIAMOND);
 
         if (!diamondFlush.isEmpty()) {
-            return diamondFlush;
+            return sortByPowerDesc(diamondFlush);
         }
 
         return Collections.emptyList();
