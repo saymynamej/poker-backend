@@ -25,10 +25,8 @@ import static ru.sm.poker.util.PlayerUtil.getDefaultPlayerForHoldem;
 public class SimpleSeatManager implements SeatManager {
 
     private final CommonGameManager commonGameManager;
-    private final SecurityNotificationService securityNotificationService;
     private final NotificationService notificationService;
     private final Queue<PlayerDTO> players = new LinkedBlockingQueue<>();
-
 
     @Override
     public void joinInGame(String gameName, PlayerDTO playerDTO) {
@@ -63,7 +61,6 @@ public class SimpleSeatManager implements SeatManager {
             );
         }
     }
-
 
     @Override
     public void leaveGame(String playerName, String gameName) {

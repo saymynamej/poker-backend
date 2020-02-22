@@ -29,7 +29,6 @@ public class OrderActionService implements OrderService {
     private final ActionService actionServiceHoldem;
     private final SecurityNotificationService securityNotificationService;
 
-
     @Override
     public boolean start(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
         final List<PlayerDTO> sortedPlayerDTOS = getPlayersInGame(

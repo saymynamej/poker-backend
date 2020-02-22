@@ -89,11 +89,9 @@ public class SimpleActionService implements ActionService {
         gameService.setInActivePlayer(holdemRoundSettingsDTO, playerDTO);
     }
 
-
     public void setPlayerWait(PlayerDTO playerDTOWait) {
         playerDTOWait.setAction(new Wait());
     }
-
 
     private void waitPlayerAction(PlayerDTO playerDTO, HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
         final ImmutablePair<Timer, Long> timeBank = timeBankService.activateTimeBank(playerDTO);

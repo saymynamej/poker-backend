@@ -92,7 +92,6 @@ public class HistoryUtil {
     }
 
     public static Map<PlayerDTO, List<CountAction>> unionHistory(Map<PlayerDTO, List<CountAction>> firstHistory, Map<PlayerDTO, List<CountAction>> secondHistory) {
-
         final Map<PlayerDTO, List<CountAction>> unionActions = new HashMap<>(firstHistory);
 
         secondHistory.forEach((key, value) -> {
@@ -103,7 +102,6 @@ public class HistoryUtil {
                 unionActions.put(key, value);
             }
         });
-
 
         return unionActions;
     }

@@ -14,7 +14,6 @@ public class SimpleNotificationService implements NotificationService {
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final SocketMappingConfig socketMappingConfig;
 
-
     @Override
     public void sendSystemMessageToUser(String userName, Object message) {
         simpMessagingTemplate.convertAndSendToUser(userName, socketMappingConfig.getErrorPath(), message);

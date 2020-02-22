@@ -3,7 +3,6 @@ package ru.sm.poker.service.holdem;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
-import ru.sm.poker.action.CountAction;
 import ru.sm.poker.dto.CombinationDTO;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.PlayerDTO;
@@ -29,42 +28,38 @@ public class HoldemWinnerService implements WinnerService {
 
     @Override
     public void sendPrizes(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-
         checkCardsIntersect(getAllCards(holdemRoundSettingsDTO));
-
         final List<PlayerDTO> players = PlayerUtil.getPlayersInGame(holdemRoundSettingsDTO.getPlayers());
-
         final List<CardType> deck = getDeck(holdemRoundSettingsDTO);
-
         final List<Pair<PlayerDTO, CombinationDTO>> playersAndCombos = findCombinations(players, deck);
-
-        final long bank = holdemRoundSettingsDTO.getBank();
-
         final List<Pair<PlayerDTO, CombinationDTO>> winners = findWinners(playersAndCombos);
 
-
         if (winners.size() == 1) {
-            final Pair<PlayerDTO, CombinationDTO> playerAndCombination = winners.get(0);
-
-            final PlayerDTO player = playerAndCombination.getKey();
-
-            processBets(holdemRoundSettingsDTO, player);
-
+            processBets(holdemRoundSettingsDTO, winners.get(0).getKey());
             securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettingsDTO);
+            return;
         }
 
+        final List<Pair<PlayerDTO, CombinationDTO>> moreStrongerCombinations = combinationService.findMoreStrongerCombinations(playersAndCombos);
+        if (moreStrongerCombinations.size() == 1) {
+            processBets(holdemRoundSettingsDTO, moreStrongerCombinations.get(0).getKey());
+            securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettingsDTO);
+            return;
+        }
+        returnBets(holdemRoundSettingsDTO);
+        securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettingsDTO);
+    }
+
+    private void returnBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
+        final Map<PlayerDTO, Long> playersBets = getPlayersBets(holdemRoundSettingsDTO);
+        playersBets.forEach(PlayerDTO::addChips);
     }
 
     private void processBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO winner) {
-
         long calculate = 0;
-
         final Map<PlayerDTO, Long> playersBets = getPlayersBets(holdemRoundSettingsDTO);
-
         final Long winnerBets = playersBets.get(winner);
-
         calculate += winnerBets;
-
         for (Map.Entry<PlayerDTO, Long> otherPlayerBets : playersBets.entrySet()) {
             if (otherPlayerBets.getKey().equals(winner)) {
                 continue;
@@ -79,11 +74,8 @@ public class HoldemWinnerService implements WinnerService {
                 continue;
             }
             calculate += bets;
-
         }
-
         winner.addChips(calculate);
-
     }
 
     private Map<PlayerDTO, Long> getPlayersBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
@@ -98,19 +90,6 @@ public class HoldemWinnerService implements WinnerService {
 
         return bets;
 
-    }
-
-    private Map<PlayerDTO, Long> getBanksForPlayers(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-        final Map<PlayerDTO, Long> banks = new HashMap<>();
-
-        final List<PlayerDTO> players = holdemRoundSettingsDTO.getPlayers();
-
-        players.forEach(player -> {
-            final long playerBets = sumRoundHistoryBets(holdemRoundSettingsDTO, player);
-            banks.put(player, playerBets * players.size());
-        });
-
-        return banks;
     }
 
     @Override

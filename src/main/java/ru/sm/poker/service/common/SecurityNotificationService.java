@@ -17,8 +17,6 @@ public class SecurityNotificationService {
     private final SimpleNotificationService simpleNotificationService;
     private final SecurityService securityService;
 
-
-
     public void sendToAllWithSecurityWhoIsNotInTheGame(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
         final List<String> filter = getPlayersInGame(holdemRoundSettingsDTO.getPlayers())
                 .stream()

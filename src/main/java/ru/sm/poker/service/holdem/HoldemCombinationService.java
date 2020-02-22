@@ -1,17 +1,15 @@
 package ru.sm.poker.service.holdem;
 
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
+import ru.sm.poker.dto.CombinationDTO;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.CombinationType;
 import ru.sm.poker.enums.PowerType;
 import ru.sm.poker.service.CombinationService;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,62 +25,93 @@ public class HoldemCombinationService implements CombinationService {
 
 
     @Override
-    public Pair<CombinationType, List<CardType>> findCombination(List<CardType> cards) {
+    public List<Pair<PlayerDTO, CombinationDTO>> findMoreStrongerCombinations(
+            List<Pair<PlayerDTO, CombinationDTO>> playersAndCombinations
+    ) {
 
+        int max = findMaxSumCards(playersAndCombinations);
+
+        return playersAndCombinations.stream()
+                .filter(pair -> sumCards(pair.getRight().getCards()) == max)
+                .collect(Collectors.toList());
+    }
+
+    private int findMaxSumCards(List<Pair<PlayerDTO, CombinationDTO>> playersAndCombinations) {
+        int max = 0;
+
+        for (Pair<PlayerDTO, CombinationDTO> playerDTOCombinationDTOPair : playersAndCombinations) {
+            int result = sumCards(playerDTOCombinationDTOPair.getRight().getCards());
+            if (result > max) {
+                max = result;
+            }
+        }
+        return max;
+    }
+
+    private int sumCards(List<CardType> cards) {
+        int sum = 0;
+        for (CardType card : cards) {
+            sum += card.getPowerAsInt();
+        }
+        return sum;
+    }
+
+    @Override
+    public Pair<CombinationType, List<CardType>> findCombination(List<CardType> cards) {
         if (cards.size() != FULL_COMBINATION_SIZE) {
             throw new RuntimeException("cards size must be 7");
         }
 
         final List<CardType> flushRoyal = findFlushRoyal(new ArrayList<>(cards));
         if (!flushRoyal.isEmpty() && checkSize(flushRoyal) && checkDuplicate(flushRoyal)) {
-            return ImmutablePair.of(CombinationType.FLUSH_ROYAL, flushRoyal);
+            return Pair.of(CombinationType.FLUSH_ROYAL, flushRoyal);
         }
 
         final List<CardType> straitFlush = findStraitFlush(new ArrayList<>(cards));
         if (!straitFlush.isEmpty() && checkSize(straitFlush) && checkDuplicate(straitFlush)) {
-            return ImmutablePair.of(CombinationType.STRAIT_FLUSH, straitFlush);
+            return Pair.of(CombinationType.STRAIT_FLUSH, straitFlush);
         }
 
         final List<CardType> kare = findKare(new ArrayList<>(cards));
         if (!kare.isEmpty() && checkSize(kare) && checkDuplicate(kare)) {
-            return ImmutablePair.of(CombinationType.KARE, kare);
+            return Pair.of(CombinationType.KARE, kare);
         }
 
         final List<CardType> fullHouse = findFullHouse(new ArrayList<>(cards));
         if (!fullHouse.isEmpty() && checkSize(fullHouse) && checkDuplicate(fullHouse)) {
-            return ImmutablePair.of(CombinationType.FULL_HOUSE, fullHouse);
+            return Pair.of(CombinationType.FULL_HOUSE, fullHouse);
         }
 
         final List<CardType> flush = findFlush(new ArrayList<>(cards));
         if (!flush.isEmpty() && checkSize(flush) && checkDuplicate(flush)) {
-            return ImmutablePair.of(CombinationType.FLUSH, flush);
+            return Pair.of(CombinationType.FLUSH, flush);
         }
 
         final List<CardType> strait = findStrait(new ArrayList<>(cards));
         if (!strait.isEmpty() && checkSize(strait) && checkDuplicate(strait)) {
-            return ImmutablePair.of(CombinationType.STRAIT, strait);
+            return Pair.of(CombinationType.STRAIT, strait);
         }
 
         final List<CardType> three = findThree(new ArrayList<>(cards));
         if (!three.isEmpty() && checkSize(three) && checkDuplicate(three)) {
-            return ImmutablePair.of(CombinationType.THREE, three);
+            return Pair.of(CombinationType.THREE, three);
         }
 
         final List<CardType> twoPair = findTwoPair(new ArrayList<>(cards));
         if (!twoPair.isEmpty() && checkSize(twoPair) && checkDuplicate(twoPair)) {
-            return ImmutablePair.of(CombinationType.TWO_PAIR, twoPair);
+            return Pair.of(CombinationType.TWO_PAIR, twoPair);
         }
 
         final List<CardType> pair = findPair(new ArrayList<>(cards));
 
         if (!pair.isEmpty() && checkSize(pair) && checkDuplicate(pair)) {
-            return ImmutablePair.of(CombinationType.PAIR, pair);
+            return Pair.of(CombinationType.PAIR, pair);
         }
 
         final List<CardType> highCards = findHighCard(new ArrayList<>(cards));
 
         if (!highCards.isEmpty() && checkSize(highCards) && checkDuplicate(highCards)) {
-            return ImmutablePair.of(CombinationType.HIGH_CARD, highCards);
+            return Pair.of(CombinationType.HIGH_CARD, highCards);
         }
 
         throw new RuntimeException("global error, could not found poker combination!");
@@ -120,7 +149,6 @@ public class HoldemCombinationService implements CombinationService {
     }
 
     private List<CardType> findFullHouse(List<CardType> cards) {
-
         final List<CardType> foundThree = new ArrayList<>();
         final List<CardType> foundTwo = new ArrayList<>();
         final List<CardType> copySorted = new ArrayList<>(cards).stream()
@@ -296,33 +324,54 @@ public class HoldemCombinationService implements CombinationService {
         return flushRoyal.size() == COMBINATION_SIZE;
     }
 
-    private List<CardType> findStrait(List<CardType> cardTypes) {
-        if (checkStrait(cardTypes)) {
-            cutStraight(cardTypes);
-            return cardTypes.stream()
-                    .sorted(Comparator.comparingInt(CardType::getPowerAsInt).reversed())
-                    .collect(Collectors.toList());
+
+    private List<CardType> findStrait(List<CardType> cards) {
+        if (checkStrait(cards)) {
+            final List<CardType> sortedCards = sortByPowerDesc(removeCardsWithSamePower(cards));
+
+            if (sortedCards.size() == 5) {
+                return sortedCards;
+            }
+
+            while (true) {
+                final List<CardType> firstFiveCards = sortedCards.stream()
+                        .limit(5)
+                        .collect(Collectors.toList());
+
+                if (checkStrait(firstFiveCards)){
+                  return firstFiveCards;
+                }
+                sortedCards.remove(0);
+            }
         }
         return Collections.emptyList();
     }
 
-
-    private List<CardType> cutStraight(List<CardType> cards) {
-        final List<CardType> copyList = new ArrayList<>(cards);
-
-        for (CardType card : copyList) {
-            final List<CardType> samePowerCards = filterByPower(copyList, card.getPower());
-            if (samePowerCards.size() > 1) {
-                cards.removeAll(samePowerCards);
-                cards.add(samePowerCards.get(0));
+    private boolean checkStrait(List<CardType> cards) {
+        final List<CardType> distinctList = sortByPowerAsc(removeCardsWithSamePower(cards));
+        int i = 0;
+        for (CardType cardFromFirstLoop : distinctList) {
+            CardType equalsCard = cardFromFirstLoop;
+            for (CardType cardFromSecondLoop : distinctList) {
+                if (cardFromFirstLoop.equals(cardFromSecondLoop)) {
+                    continue;
+                }
+                if (equalsCard.getPowerAsInt() - cardFromSecondLoop.getPowerAsInt() == -1) {
+                    i++;
+                } else {
+                    if (i < 4) {
+                        i = 0;
+                    }
+                }
+                equalsCard = cardFromSecondLoop;
+            }
+            if (i >= 4) {
+                return true;
+            } else {
+                i = 0;
             }
         }
-
-        if (cards.size() > COMBINATION_SIZE) {
-            cards.remove(findSmallerCard(cards));
-            cutFlush(cards);
-        }
-        return sortByPowerDesc(cards);
+        return false;
     }
 
 
@@ -332,39 +381,14 @@ public class HoldemCombinationService implements CombinationService {
                 .collect(Collectors.toList());
     }
 
-
     private List<CardType> sortByPowerAsc(List<CardType> cards) {
         return cards.stream()
                 .sorted(Comparator.comparingInt(CardType::getPowerAsInt))
                 .collect(Collectors.toList());
     }
 
-    private boolean checkStrait(List<CardType> cards) {
-
-        final List<CardType> distinctList = removeCardsWithSamePower(cards);
-        int i = 0;
-
-        for (CardType cardFromFirstLoop : distinctList) {
-            for (CardType cardFromSecondLoop : distinctList) {
-                if (cardFromFirstLoop.equals(cardFromSecondLoop)) {
-                    continue;
-                }
-                final int powerAsInt = cardFromFirstLoop.getPowerAsInt();
-                final int powerAsInt1 = cardFromSecondLoop.getPowerAsInt();
-                if (powerAsInt1 - powerAsInt == ONE_POWER) {
-                    i++;
-                }
-            }
-            if (i >= NUMBER_OF_COMPARISONS) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     private List<CardType> findFlush(List<CardType> cardTypes) {
-
         final List<CardType> spadeFlush = findFlushBySuit(cardTypes, CardType.SuitType.SPADE);
 
         if (!spadeFlush.isEmpty()) {
@@ -468,7 +492,4 @@ public class HoldemCombinationService implements CombinationService {
         throw new RuntimeException("Global warning, in process checking duplicates cards");
     }
 
-    public static int getCombinationSize() {
-        return COMBINATION_SIZE;
-    }
 }
