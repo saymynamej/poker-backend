@@ -266,7 +266,7 @@ public class HoldemCombinationService implements CombinationService {
     private List<CardType> findStraitFlush(List<CardType> cardTypes) {
         final List<CardType> flush = findFlush(cardTypes);
         if (checkStrait(flush)) {
-            return flush;
+            return sortByPowerDesc(flush);
         }
         return Collections.emptyList();
     }
@@ -308,7 +308,7 @@ public class HoldemCombinationService implements CombinationService {
     private List<CardType> findFlushRoyal(List<CardType> cardTypes) {
         final List<CardType> flush = findFlush(cardTypes);
         if (checkFlushRoyal(flush)) {
-            return flush;
+            return sortByPowerDesc(flush);
         }
         return Collections.emptyList();
     }

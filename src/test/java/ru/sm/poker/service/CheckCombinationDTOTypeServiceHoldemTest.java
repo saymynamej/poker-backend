@@ -17,19 +17,49 @@ public class CheckCombinationDTOTypeServiceHoldemTest {
 
     private final HoldemCombinationService checkHoldemCombinationService = new HoldemCombinationService();
 
-    private static final List<CardType> FLUSH_ROUAL_FULL = new ArrayList<>(Arrays.asList(A_H, K_H, Q_H, J_H, TEN_H, FOUR_H, K_S));
-    private static final List<CardType> FLUSH_ROYAL_COMBINATION = new ArrayList<>(Arrays.asList(A_H, K_H, Q_H, J_H, TEN_H));
+    private static final List<CardType> FLUSH_ROYAL_HEART_FULL = new ArrayList<>(Arrays.asList(A_H, K_H, Q_H, J_H, TEN_H, FOUR_H, K_S));
+    private static final List<CardType> FLUSH_ROYAL_HEART_COMBINATION = new ArrayList<>(Arrays.asList(A_H, K_H, Q_H, J_H, TEN_H));
+
+    private static final List<CardType> FLUSH_ROYAL_SPADE_FULL = new ArrayList<>(Arrays.asList(FOUR_H, TWO_H, A_S, K_S, Q_S, J_S, TEN_S));
+    private static final List<CardType> FLUSH_ROYAL_SPADE_COMBINATION = new ArrayList<>(Arrays.asList(A_S, K_S, Q_S, J_S, TEN_S));
+
+    private static final List<CardType> FLUSH_ROYAL_DIAMOND_FULL = new ArrayList<>(Arrays.asList(TWO_C, TEN_D, A_D, K_D, Q_D, J_D, SEVEN_C));
+    private static final List<CardType> FLUSH_ROYAL_DIAMOND_COMBINATION = new ArrayList<>(Arrays.asList(A_D, K_D, Q_D, J_D, TEN_D));
+
+    private static final List<CardType> FLUSH_ROYAL_CLUB_FULL = new ArrayList<>(Arrays.asList(A_H, K_H, TEN_C, J_C, Q_C, K_C, A_C));
+    private static final List<CardType> FLUSH_ROYAL_CLUB_COMBINATION = new ArrayList<>(Arrays.asList(A_C, K_C, Q_C, J_C, TEN_C));
 
 
-    private static final List<CardType> STRAIT_FLUSH_FULL = new ArrayList<>(Arrays.asList(EIGHT_C, SEVEN_C, TEN_C, J_C, NINE_C, FOUR_H, K_S));
-    private static final List<CardType> STRAIT_FLUSH_COMBINATION = new ArrayList<>(Arrays.asList(EIGHT_C, SEVEN_C, TEN_C, J_C, NINE_C));
+
+    private static final List<CardType> STRAIT_FLUSH_CLUB_FULL = new ArrayList<>(Arrays.asList(EIGHT_C, SEVEN_C, TEN_C, J_C, NINE_C, FOUR_H, K_S));
+    private static final List<CardType> STRAIT_FLUSH_CLUB_COMBINATION = new ArrayList<>(Arrays.asList(J_C, TEN_C, NINE_C, EIGHT_C, SEVEN_C));
+
+    private static final List<CardType> STRAIT_FLUSH_HEART_FULL = new ArrayList<>(Arrays.asList(TWO_H, FOUR_D, EIGHT_H, NINE_H, TEN_H, J_H, Q_H));
+    private static final List<CardType> STRAIT_FLUSH_HEART_COMBINATION = new ArrayList<>(Arrays.asList(Q_H, J_H, TEN_H, NINE_H, EIGHT_H));
+
+    private static final List<CardType> STRAIT_FLUSH_DIAMOND_FULL = new ArrayList<>(Arrays.asList(TWO_H, THREE_D, FOUR_D, FIVE_D, SIX_D, SEVEN_D, Q_H));
+    private static final List<CardType> STRAIT_FLUSH_DIAMOND_COMBINATION = new ArrayList<>(Arrays.asList(SEVEN_D, SIX_D, FIVE_D, FOUR_D, THREE_D));
+
+    private static final List<CardType> STRAIT_FLUSH_SPADE_FULL = new ArrayList<>(Arrays.asList(TWO_S, THREE_S, FOUR_S, FIVE_S, SIX_S, SEVEN_S, EIGHT_S));
+    private static final List<CardType> STRAIT_FLUSH_SPADE_COMBINATION = new ArrayList<>(Arrays.asList(EIGHT_S, SEVEN_S, SIX_S, FIVE_S, FOUR_S));
+
+    private static final List<CardType> STRAIT_FLUSH_FULL = new ArrayList<>(Arrays.asList(TWO_H, SEVEN_C, EIGHT_C, NINE_C, TEN_C, J_C, K_H));
+    private static final List<CardType> STRAIT_FLUSH_COMBINATION = new ArrayList<>(Arrays.asList(J_C, TEN_C, NINE_C, EIGHT_C, SEVEN_C));
 
 
-    private static final List<CardType> STRAIT_FLUSH_FULL_2 = new ArrayList<>(Arrays.asList(TWO_H, FOUR_D, EIGHT_C, NINE_C, TEN_C, J_C, Q_C));
-    private static final List<CardType> STRAIT_FLUSH_COMBINATION_2 = new ArrayList<>(Arrays.asList(EIGHT_C, NINE_C, TEN_C, J_C, Q_C));
+
 
     private static final List<CardType> KARE_FULL = new ArrayList<>(Arrays.asList(NINE_C, FOUR_H, K_S, SIX_C, SIX_H, SIX_S, SIX_D));
     private static final List<CardType> KARE_COMBINATION = new ArrayList<>(Arrays.asList(SIX_C, SIX_H, SIX_S, SIX_D, K_S));
+
+    private static final List<CardType> KARE_FULL2 = new ArrayList<>(Arrays.asList(A_C, A_D, A_S, A_H, TEN_C, SIX_D, K_H));
+    private static final List<CardType> KARE_COMBINATION2 = new ArrayList<>(Arrays.asList(A_C, A_D, A_S, A_H, K_H));
+
+    private static final List<CardType> KARE_FULL3 = new ArrayList<>(Arrays.asList(Q_C, FOUR_H, NINE_C, NINE_H, NINE_D, NINE_S, SIX_D));
+    private static final List<CardType> KARE_COMBINATION3 = new ArrayList<>(Arrays.asList(NINE_C, NINE_H, NINE_D, NINE_S, Q_C));
+
+    private static final List<CardType> KARE_FULL4 = new ArrayList<>(Arrays.asList(SEVEN_S, FOUR_H, SEVEN_C, SIX_C, SEVEN_D, SEVEN_H, A_D));
+    private static final List<CardType> KARE_COMBINATION4 = new ArrayList<>(Arrays.asList(SEVEN_S, SEVEN_C, SEVEN_D, SEVEN_H, A_D));
 
 
     private static final List<CardType> FLUSH_FULL = new ArrayList<>(Arrays.asList(NINE_H, A_H, K_H, TWO_H, FIVE_H, FOUR_H, K_S));
@@ -87,24 +117,66 @@ public class CheckCombinationDTOTypeServiceHoldemTest {
 
 
     @Test
-    public void testFlushRoyal() {
-        final Pair<CombinationType, List<CardType>> flashRoyal = checkHoldemCombinationService.findCombination(FLUSH_ROUAL_FULL);
+    public void testHeardFlushRoyal() {
+        final Pair<CombinationType, List<CardType>> flashRoyal = checkHoldemCombinationService.findCombination(FLUSH_ROYAL_HEART_FULL);
         Assert.assertEquals(CombinationType.FLUSH_ROYAL, flashRoyal.getKey());
-        Assert.assertEquals(FLUSH_ROYAL_COMBINATION, flashRoyal.getValue());
+        Assert.assertEquals(FLUSH_ROYAL_HEART_COMBINATION, flashRoyal.getValue());
     }
 
     @Test
-    public void testStraitFlash() {
+    public void testSpadeFlushRoyal() {
+        final Pair<CombinationType, List<CardType>> flashRoyal = checkHoldemCombinationService.findCombination(FLUSH_ROYAL_SPADE_FULL);
+        Assert.assertEquals(CombinationType.FLUSH_ROYAL, flashRoyal.getKey());
+        Assert.assertEquals(FLUSH_ROYAL_SPADE_COMBINATION, flashRoyal.getValue());
+    }
+
+    @Test
+    public void testDiamondFlushRoyal() {
+        final Pair<CombinationType, List<CardType>> flashRoyal = checkHoldemCombinationService.findCombination(FLUSH_ROYAL_DIAMOND_FULL);
+        Assert.assertEquals(CombinationType.FLUSH_ROYAL, flashRoyal.getKey());
+        Assert.assertEquals(FLUSH_ROYAL_DIAMOND_COMBINATION, flashRoyal.getValue());
+    }
+
+    @Test
+    public void testClubFlushRoyal() {
+        final Pair<CombinationType, List<CardType>> flashRoyal = checkHoldemCombinationService.findCombination(FLUSH_ROYAL_CLUB_FULL);
+        Assert.assertEquals(CombinationType.FLUSH_ROYAL, flashRoyal.getKey());
+        Assert.assertEquals(FLUSH_ROYAL_CLUB_COMBINATION, flashRoyal.getValue());
+    }
+
+    @Test
+    public void testStraitFlush() {
         final Pair<CombinationType, List<CardType>> straitFlush = checkHoldemCombinationService.findCombination(STRAIT_FLUSH_FULL);
         Assert.assertEquals(CombinationType.STRAIT_FLUSH, straitFlush.getKey());
         Assert.assertEquals(STRAIT_FLUSH_COMBINATION, straitFlush.getValue());
     }
 
     @Test
-    public void testStraitFlash2() {
-        final Pair<CombinationType, List<CardType>> straitFlush2 = checkHoldemCombinationService.findCombination(STRAIT_FLUSH_FULL_2);
+    public void testClubStraitFlush() {
+        final Pair<CombinationType, List<CardType>> straitFlush = checkHoldemCombinationService.findCombination(STRAIT_FLUSH_CLUB_FULL);
+        Assert.assertEquals(CombinationType.STRAIT_FLUSH, straitFlush.getKey());
+        Assert.assertEquals(STRAIT_FLUSH_CLUB_COMBINATION, straitFlush.getValue());
+    }
+
+    @Test
+    public void testHeartStraitFlush() {
+        final Pair<CombinationType, List<CardType>> straitFlush2 = checkHoldemCombinationService.findCombination(STRAIT_FLUSH_HEART_FULL);
         Assert.assertEquals(CombinationType.STRAIT_FLUSH, straitFlush2.getKey());
-        Assert.assertEquals(STRAIT_FLUSH_COMBINATION_2, straitFlush2.getValue());
+        Assert.assertEquals(STRAIT_FLUSH_HEART_COMBINATION, straitFlush2.getValue());
+    }
+
+    @Test
+    public void testDiamondStraitFlush() {
+        final Pair<CombinationType, List<CardType>> straitFlush2 = checkHoldemCombinationService.findCombination(STRAIT_FLUSH_DIAMOND_FULL);
+        Assert.assertEquals(CombinationType.STRAIT_FLUSH, straitFlush2.getKey());
+        Assert.assertEquals(STRAIT_FLUSH_DIAMOND_COMBINATION, straitFlush2.getValue());
+    }
+
+    @Test
+    public void testSpadeStraitFlush() {
+        final Pair<CombinationType, List<CardType>> straitFlush2 = checkHoldemCombinationService.findCombination(STRAIT_FLUSH_SPADE_FULL);
+        Assert.assertEquals(CombinationType.STRAIT_FLUSH, straitFlush2.getKey());
+        Assert.assertEquals(STRAIT_FLUSH_SPADE_COMBINATION, straitFlush2.getValue());
     }
 
 
@@ -113,6 +185,27 @@ public class CheckCombinationDTOTypeServiceHoldemTest {
         final Pair<CombinationType, List<CardType>> kare = checkHoldemCombinationService.findCombination(KARE_FULL);
         Assert.assertEquals(CombinationType.KARE, kare.getKey());
         Assert.assertEquals(KARE_COMBINATION, kare.getValue());
+    }
+
+    @Test
+    public void testKare2() {
+        final Pair<CombinationType, List<CardType>> kare = checkHoldemCombinationService.findCombination(KARE_FULL2);
+        Assert.assertEquals(CombinationType.KARE, kare.getKey());
+        Assert.assertEquals(KARE_COMBINATION2, kare.getValue());
+    }
+
+    @Test
+    public void testKare3() {
+        final Pair<CombinationType, List<CardType>> kare = checkHoldemCombinationService.findCombination(KARE_FULL3);
+        Assert.assertEquals(CombinationType.KARE, kare.getKey());
+        Assert.assertEquals(KARE_COMBINATION3, kare.getValue());
+    }
+
+    @Test
+    public void testKare4() {
+        final Pair<CombinationType, List<CardType>> kare = checkHoldemCombinationService.findCombination(KARE_FULL4);
+        Assert.assertEquals(CombinationType.KARE, kare.getKey());
+        Assert.assertEquals(KARE_COMBINATION4, kare.getValue());
     }
 
     @Test
