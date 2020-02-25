@@ -53,7 +53,7 @@ public class RaiseTest {
         final long secondBet = 16L;
         final long lastBet = 64L;
 
-        final Map<PlayerDTO, List<CountAction>> history = holdemRoundSettingsDTO.getStageHistory();
+        final Map<PlayerDTO, List<Action>> history = holdemRoundSettingsDTO.getStageHistory();
         history.put(player, List.of(
                 new Raise(firstBet),
                 new Raise(secondBet))

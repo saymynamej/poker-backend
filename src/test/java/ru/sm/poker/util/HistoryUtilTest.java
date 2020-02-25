@@ -2,6 +2,7 @@ package ru.sm.poker.util;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import ru.sm.poker.action.Action;
 import ru.sm.poker.action.CountAction;
 import ru.sm.poker.action.holdem.Bet;
 import ru.sm.poker.action.holdem.Call;
@@ -24,7 +25,7 @@ public class HistoryUtilTest {
         final long secondRaise = 10;
         final long thirdRaise = 40;
         final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO();
-        final Map<PlayerDTO, List<CountAction>> history = roundSettingsDTO.getStageHistory();
+        final Map<PlayerDTO, List<Action>> history = roundSettingsDTO.getStageHistory();
         final PlayerDTO player = getPlayer();
         history.put(player, List.of(new Call(firstBet), new Raise(secondRaise), new Raise(thirdRaise)));
         final long result = HistoryUtil.sumStageHistoryBets(roundSettingsDTO, player);
@@ -38,7 +39,7 @@ public class HistoryUtilTest {
         final long thirdRaise = 40;
         final long newActionBet = 100;
         final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO();
-        final Map<PlayerDTO, List<CountAction>> history = roundSettingsDTO.getStageHistory();
+        final Map<PlayerDTO, List<Action>> history = roundSettingsDTO.getStageHistory();
         final PlayerDTO player = getPlayer();
         history.put(player, List.of(new Call(firstBet), new Raise(secondRaise), new Raise(thirdRaise)));
         final long result = sumAllHistoryBetsWithNewAction(roundSettingsDTO, player, new Bet(newActionBet));
@@ -52,7 +53,8 @@ public class HistoryUtilTest {
         final PlayerDTO player = getPlayer();
         player.setAction(new Call(callCount));
         addActionInHistory(roundSettingsDTO, player);
-        Assertions.assertEquals(roundSettingsDTO.getStageHistory().get(player).get(0).getCount(), callCount);
+        final CountAction action = (CountAction) roundSettingsDTO.getStageHistory().get(player).get(0);
+        Assertions.assertEquals(action.getCount(), callCount);
     }
 
     @Test
@@ -61,7 +63,8 @@ public class HistoryUtilTest {
         final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO();
         final PlayerDTO player = getPlayer();
         addActionInHistory(roundSettingsDTO, player, new Call(callCount));
-        Assertions.assertEquals(roundSettingsDTO.getStageHistory().get(player).get(0).getCount(), callCount);
+        CountAction action = (CountAction) roundSettingsDTO.getStageHistory().get(player).get(0);
+        Assertions.assertEquals(action.getCount(), callCount);
     }
 
     @Test

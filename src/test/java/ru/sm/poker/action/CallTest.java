@@ -100,7 +100,7 @@ class CallTest {
         final long secondBet = 8L;
         final long thirdBet = 100L;
 
-        final Map<PlayerDTO, List<CountAction>> history = holdemRoundSettingsDTO.getStageHistory();
+        final Map<PlayerDTO, List<Action>> history = holdemRoundSettingsDTO.getStageHistory();
         history.put(player, List.of(
                 new Call(firstBet),
                 new Call(secondBet),

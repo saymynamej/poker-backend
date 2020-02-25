@@ -103,6 +103,9 @@ public class CheckCombinationDTOTypeServiceHoldemTest {
     private static final List<CardType> STRAIT_FULL_6 = new ArrayList<>(Arrays.asList(TWO_H, SEVEN_C, EIGHT_C, NINE_C, TEN_H, J_H, K_H));
     private static final List<CardType> STRAIT_COMBINATION_6 = new ArrayList<>(Arrays.asList(J_H, TEN_H, NINE_C, EIGHT_C, SEVEN_C));
 
+    private static final List<CardType> STRAIT_FULL_7 = new ArrayList<>(Arrays.asList(TWO_H, THREE_C, FOUR_S, FIVE_H, SIX_C, J_H, K_H));
+    private static final List<CardType> STRAIT_COMBINATION_7 = new ArrayList<>(Arrays.asList(SIX_C, FIVE_H, FOUR_S, THREE_C, TWO_H));
+
     private static final List<CardType> TWO_PAIR_FULL = new ArrayList<>(Arrays.asList(A_H, A_D, FOUR_H, FOUR_C, SEVEN_S, SEVEN_C, K_D));
     private static final List<CardType> TWO_PAIR_COMBINATION = new ArrayList<>(Arrays.asList(SEVEN_S, SEVEN_C, A_H, A_D, K_D));
 
@@ -317,6 +320,13 @@ public class CheckCombinationDTOTypeServiceHoldemTest {
         Pair<CombinationType, List<CardType>> strait6 = checkHoldemCombinationService.findCombination(STRAIT_FULL_6);
         Assert.assertEquals(CombinationType.STRAIT, strait6.getKey());
         Assert.assertEquals(STRAIT_COMBINATION_6, strait6.getValue());
+    }
+
+    @Test
+    public void testStraight7() {
+        Pair<CombinationType, List<CardType>> strait7 = checkHoldemCombinationService.findCombination(STRAIT_FULL_7);
+        Assert.assertEquals(CombinationType.STRAIT, strait7.getKey());
+        Assert.assertEquals(STRAIT_COMBINATION_7, strait7.getValue());
     }
 
     @Test
