@@ -1,5 +1,6 @@
 package ru.sm.poker.util;
 
+import ru.sm.poker.action.Action;
 import ru.sm.poker.action.CountAction;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.PlayerDTO;
@@ -28,8 +29,8 @@ public class HistoryUtil {
 
 
     public static long sumRoundHistoryBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO playerDTO) {
-        final Map<PlayerDTO, List<CountAction>> fullHistory = holdemRoundSettingsDTO.getFullHistory();
-        final List<CountAction> countActions = fullHistory.get(playerDTO);
+        final Map<PlayerDTO, List<Action>> fullHistory = holdemRoundSettingsDTO.getFullHistory();
+        final List<Action> countActions = fullHistory.get(playerDTO);
         long sum = 0;
         if (countActions != null) {
             sum = sumBets(countActions);
@@ -39,8 +40,8 @@ public class HistoryUtil {
 
 
     public static long sumStageHistoryBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO playerDTO) {
-        final Map<PlayerDTO, List<CountAction>> history = holdemRoundSettingsDTO.getStageHistory();
-        final List<CountAction> countActions = history.get(playerDTO);
+        final Map<PlayerDTO, List<Action>> history = holdemRoundSettingsDTO.getStageHistory();
+        final List<Action> countActions = history.get(playerDTO);
         long sum = 0;
         if (countActions != null) {
             sum = sumBets(countActions);
@@ -48,39 +49,34 @@ public class HistoryUtil {
         return sum;
     }
 
-    private static long sumBets(List<CountAction> actions) {
+    private static long sumBets(List<Action> actions) {
         long sum = 0;
-        for (CountAction ca : actions) {
-            sum += ca.getCount();
+        for (Action action : actions) {
+            if (action instanceof CountAction) {
+                sum += ((CountAction) action).getCount();
+            }
         }
         return sum;
     }
 
 
     public static long sumAllHistoryBetsWithNewAction(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO playerDTO, CountAction countAction) {
-        final Map<PlayerDTO, List<CountAction>> history = holdemRoundSettingsDTO.getStageHistory();
-        final List<CountAction> countActions = history.get(playerDTO);
-        long summ = countAction.getCount();
-
-        if (countActions != null) {
-            for (CountAction ca : countActions) {
-                summ += ca.getCount();
-            }
-        }
-        return summ;
+        final Map<PlayerDTO, List<Action>> history = holdemRoundSettingsDTO.getStageHistory();
+        final List<Action> actions = history.get(playerDTO);
+        return countAction.getCount() + sumBets(actions);
     }
 
 
     public static void addActionInHistory(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO playerDTO, CountAction action) {
-        final Map<PlayerDTO, List<CountAction>> history = holdemRoundSettingsDTO.getStageHistory();
+        final Map<PlayerDTO, List<Action>> history = holdemRoundSettingsDTO.getStageHistory();
 
-        final List<CountAction> newActionsList = history.get(playerDTO);
+        final List<Action> newActionsList = history.get(playerDTO);
         if (newActionsList != null) {
             newActionsList.add(action);
             return;
         }
 
-        final List<CountAction> actionsList = new ArrayList<>();
+        final List<Action> actionsList = new ArrayList<>();
         actionsList.add(action);
         history.put(playerDTO, actionsList);
     }
@@ -91,11 +87,11 @@ public class HistoryUtil {
         }
     }
 
-    public static Map<PlayerDTO, List<CountAction>> unionHistory(Map<PlayerDTO, List<CountAction>> firstHistory, Map<PlayerDTO, List<CountAction>> secondHistory) {
-        final Map<PlayerDTO, List<CountAction>> unionActions = new HashMap<>(firstHistory);
+    public static Map<PlayerDTO, List<Action>> unionHistory(Map<PlayerDTO, List<Action>> firstHistory, Map<PlayerDTO, List<Action>> secondHistory) {
+        final Map<PlayerDTO, List<Action>> unionActions = new HashMap<>(firstHistory);
 
         secondHistory.forEach((key, value) -> {
-            final List<CountAction> countActions = unionActions.get(key);
+            final List<Action> countActions = unionActions.get(key);
             if (countActions != null) {
                 countActions.addAll(value);
             } else {

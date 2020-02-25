@@ -40,19 +40,44 @@ public class HoldemWinnerService implements WinnerService {
             return;
         }
 
-        final List<Pair<PlayerDTO, CombinationDTO>> moreStrongerCombinations = combinationService.findMoreStrongerCombinations(playersAndCombos);
+        final List<Pair<PlayerDTO, CombinationDTO>> moreStrongerCombinations = combinationService.findMoreStrongerCombinations(winners);
+
         if (moreStrongerCombinations.size() == 1) {
             processBets(holdemRoundSettingsDTO, moreStrongerCombinations.get(0).getKey());
             securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettingsDTO);
             return;
         }
-        returnBets(holdemRoundSettingsDTO);
+        processBets(moreStrongerCombinations, holdemRoundSettingsDTO);
         securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettingsDTO);
     }
 
-    private void returnBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
+    private void processBets(List<Pair<PlayerDTO, CombinationDTO>> winners, HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
+        long bank = holdemRoundSettingsDTO.getBank();
+
         final Map<PlayerDTO, Long> playersBets = getPlayersBets(holdemRoundSettingsDTO);
-        playersBets.forEach(PlayerDTO::addChips);
+
+        bank = getBankWithoutPlayersBets(winners, bank, playersBets);
+
+        processBets(winners, bank);
+    }
+
+    private void processBets(List<Pair<PlayerDTO, CombinationDTO>> winners, long bank) {
+        if (bank > 0) {
+            for (Pair<PlayerDTO, CombinationDTO> winner : winners) {
+                final PlayerDTO player = winner.getKey();
+                player.addChips(bank / winners.size());
+            }
+        }
+    }
+
+    private long getBankWithoutPlayersBets(List<Pair<PlayerDTO, CombinationDTO>> winners, long bank, Map<PlayerDTO, Long> playersBets) {
+        for (Pair<PlayerDTO, CombinationDTO> winner : winners) {
+            final PlayerDTO player = winner.getLeft();
+            final Long bets = playersBets.get(player);
+            player.addChips(bets);
+            bank-=bets;
+        }
+        return bank;
     }
 
     private void processBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO winner) {

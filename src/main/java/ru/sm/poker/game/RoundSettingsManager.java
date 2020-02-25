@@ -1,6 +1,6 @@
 package ru.sm.poker.game;
 
-import ru.sm.poker.action.CountAction;
+import ru.sm.poker.action.Action;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.PlayerDTO;
 
@@ -11,9 +11,9 @@ public interface RoundSettingsManager {
 
     HoldemRoundSettingsDTO getPreflopSettings();
 
-    HoldemRoundSettingsDTO getPostFlopSettings(long bank, Map<PlayerDTO, List<CountAction>> prevHistory);
+    HoldemRoundSettingsDTO getPostFlopSettings(long bank, Map<PlayerDTO, List<Action>> prevHistory);
 
-    HoldemRoundSettingsDTO getPostFlopSettingsWithTern(long bank, Map<PlayerDTO, List<CountAction>> fullHistory);
+    HoldemRoundSettingsDTO getPostFlopSettingsWithTern(long bank, Map<PlayerDTO, List<Action>> fullHistory);
 
-    HoldemRoundSettingsDTO getPostFlopSettingsWithRiver(long bank, Map<PlayerDTO, List<CountAction>> fullHistory);
+    HoldemRoundSettingsDTO getPostFlopSettingsWithRiver(long bank, Map<PlayerDTO, List<Action>> fullHistory);
 }

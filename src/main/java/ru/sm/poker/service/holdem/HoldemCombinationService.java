@@ -15,14 +15,11 @@ import java.util.stream.Collectors;
 @Service
 public class HoldemCombinationService implements CombinationService {
 
-    private final static int ONE_POWER = 1;
     private final static int COMBINATION_SIZE = 5;
     private final static int FULL_COMBINATION_SIZE = 7;
     private final static int KARE_SIZE = 4;
     private final static int PAIR_SIZE = 2;
     private final static int THREE_SIZE = 3;
-    private final static int NUMBER_OF_COMPARISONS = 4;
-
 
     @Override
     public List<Pair<PlayerDTO, CombinationDTO>> findMoreStrongerCombinations(

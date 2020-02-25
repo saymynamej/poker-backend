@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import ru.sm.poker.action.Action;
 import ru.sm.poker.action.CountAction;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.StageType;
@@ -16,8 +17,8 @@ import java.util.Map;
 @Setter
 @ToString
 public class HoldemRoundSettingsDTO {
-    private final Map<PlayerDTO, List<CountAction>> stageHistory;
-    private final Map<PlayerDTO, List<CountAction>> fullHistory;
+    private final Map<PlayerDTO, List<Action>> stageHistory;
+    private final Map<PlayerDTO, List<Action>> fullHistory;
     private final List<PlayerDTO> players;
     private final List<CardType> flop;
     private final CardType tern;

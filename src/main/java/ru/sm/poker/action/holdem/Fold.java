@@ -11,7 +11,6 @@ import ru.sm.poker.enums.ActionType;
 @ToString
 public class Fold implements Action {
 
-
     @Override
     public ActionType getActionType() {
         return ActionType.FOLD;

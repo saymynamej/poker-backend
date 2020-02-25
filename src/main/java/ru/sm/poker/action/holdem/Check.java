@@ -17,7 +17,6 @@ public class Check implements ExecutableAction {
     @Getter
     private final long count = 0;
 
-
     @Override
     public ActionType getActionType() {
         return ActionType.CHECK;

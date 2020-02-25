@@ -1,6 +1,7 @@
 package ru.sm.poker.game.holdem;
 
 import lombok.RequiredArgsConstructor;
+import ru.sm.poker.action.Action;
 import ru.sm.poker.action.CountAction;
 import ru.sm.poker.action.holdem.Call;
 import ru.sm.poker.action.holdem.Fold;
@@ -56,7 +57,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .build();
     }
 
-    public HoldemRoundSettingsDTO getPostFlopSettings(long bank, Map<PlayerDTO, List<CountAction>> prevHistory) {
+    public HoldemRoundSettingsDTO getPostFlopSettings(long bank, Map<PlayerDTO, List<Action>> prevHistory) {
         setAllActivePlayersTest();
         return HoldemRoundSettingsDTO
                 .builder()
@@ -77,7 +78,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .build();
     }
 
-    public HoldemRoundSettingsDTO getPostFlopSettingsWithTern(long bank, Map<PlayerDTO, List<CountAction>> fullHistory) {
+    public HoldemRoundSettingsDTO getPostFlopSettingsWithTern(long bank, Map<PlayerDTO, List<Action>> fullHistory) {
         setAllActivePlayersTest();
         return HoldemRoundSettingsDTO
                 .builder()
@@ -100,7 +101,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
     }
 
 
-    public HoldemRoundSettingsDTO getPostFlopSettingsWithRiver(long bank, Map<PlayerDTO, List<CountAction>> fullHistory) {
+    public HoldemRoundSettingsDTO getPostFlopSettingsWithRiver(long bank, Map<PlayerDTO, List<Action>> fullHistory) {
         setAllActivePlayersTest();
         return HoldemRoundSettingsDTO
                 .builder()
@@ -214,8 +215,8 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .findFirst();
     }
 
-    private Map<PlayerDTO, List<CountAction>> setBlindsHistory() {
-        final Map<PlayerDTO, List<CountAction>> history = new HashMap<>();
+    private Map<PlayerDTO, List<Action>> setBlindsHistory() {
+        final Map<PlayerDTO, List<Action>> history = new HashMap<>();
         final Optional<PlayerDTO> optionalSmallBlind = getPlayerByRole(RoleType.SMALL_BLIND);
         final Optional<PlayerDTO> optionalBigBlind = getPlayerByRole(RoleType.BIG_BLIND);
 
@@ -225,9 +226,9 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
 
         final PlayerDTO bigBlind = optionalBigBlind.get();
         final PlayerDTO smallBlind = optionalSmallBlind.get();
-        final List<CountAction> forBigBlind = new ArrayList<>();
+        final List<Action> forBigBlind = new ArrayList<>();
         forBigBlind.add(new Call(bigBlindBet));
-        final List<CountAction> forSmallBlind = new ArrayList<>();
+        final List<Action> forSmallBlind = new ArrayList<>();
         forSmallBlind.add(new Call(smallBlindBet));
         history.put(bigBlind, forBigBlind);
         history.put(smallBlind, forSmallBlind);

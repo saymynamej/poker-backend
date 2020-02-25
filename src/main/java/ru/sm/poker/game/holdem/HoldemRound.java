@@ -38,7 +38,6 @@ public class HoldemRound implements Round {
         final boolean isSkipNext = orderService.start(holdemRoundSettingsDTO);
 
         if (!isSkipNext) {
-
             this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettings(
                     this.holdemRoundSettingsDTO.getBank(),
                     this.holdemRoundSettingsDTO.getStageHistory()
