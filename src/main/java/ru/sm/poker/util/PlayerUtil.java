@@ -33,7 +33,7 @@ public class PlayerUtil {
                 .collect(Collectors.toList());
     }
 
-    public static boolean checkPlayerHasEnoughChips(Player player, CountAction countAction) {
+    public static boolean hasPlayerEnoughChips(Player player, CountAction countAction) {
         return player.getChipsCount() >= countAction.getCount();
     }
 

@@ -8,13 +8,13 @@ import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
 
 import static ru.sm.poker.util.HistoryUtil.sumAllHistoryBetsWithNewAction;
-import static ru.sm.poker.util.PlayerUtil.checkPlayerHasEnoughChips;
+import static ru.sm.poker.util.PlayerUtil.hasPlayerEnoughChips;
 
 public class CallStrategy implements ActionStrategy {
 
     @Override
     public void execute(Player player, GameService gameService, ActionService actionService, CountAction countAction, HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-        if (!checkPlayerHasEnoughChips(player, countAction)) {
+        if (!hasPlayerEnoughChips(player, countAction)) {
             actionService.waitUntilPlayerWillHasAction(player, holdemRoundSettingsDTO);
             return;
         }

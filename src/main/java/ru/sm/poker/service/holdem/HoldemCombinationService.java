@@ -262,8 +262,17 @@ public class HoldemCombinationService implements CombinationService {
 
     private List<CardType> findStraitFlush(List<CardType> cardTypes) {
         final List<CardType> flush = findFlush(cardTypes);
-        if (checkStrait(flush)) {
+
+        if (!flush.isEmpty() && checkStrait(flush)) {
             return sortByPowerDesc(flush);
+        }
+
+        final List<CardType> straitWithAce = checkStraitWithAce(cardTypes);
+        if (!straitWithAce.isEmpty()){
+            final List<CardType> straitFlushWithAce = findFlush(straitWithAce);
+            if (!straitFlushWithAce.isEmpty()){
+                return straitFlushWithAce;
+            }
         }
         return Collections.emptyList();
     }
@@ -341,6 +350,42 @@ public class HoldemCombinationService implements CombinationService {
                 sortedCards.remove(0);
             }
         }
+        final List<CardType> straitWithAce = checkStraitWithAce(cards);
+
+        if (!straitWithAce.isEmpty()){
+            return straitWithAce;
+        }
+        return Collections.emptyList();
+    }
+
+    private List<CardType> checkStraitWithAce(List<CardType> cards){
+
+        final List<CardType> distinctList = sortByPowerAsc(removeCardsWithSamePower(cards));
+
+        final Optional<CardType> ace = distinctList.stream()
+                .filter(cardType -> cardType.getPowerAsInt() == PowerType.A_POWER.getPowerAsInt())
+                .findAny();
+
+        final Optional<CardType> two = distinctList.stream()
+                .filter(cardType -> cardType.getPowerAsInt() == PowerType.TWO_POWER.getPowerAsInt())
+                .findAny();
+
+        final Optional<CardType> three = distinctList.stream()
+                .filter(cardType -> cardType.getPowerAsInt() == PowerType.THREE_POWER.getPowerAsInt())
+                .findAny();
+
+        final Optional<CardType> four = distinctList.stream()
+                .filter(cardType -> cardType.getPowerAsInt() == PowerType.FOUR_POWER.getPowerAsInt())
+                .findAny();
+
+        final Optional<CardType> five = distinctList.stream()
+                .filter(cardType -> cardType.getPowerAsInt() == PowerType.FIVE_POWER.getPowerAsInt())
+                .findAny();
+
+        if (ace.isPresent() && two.isPresent() && three.isPresent() && four.isPresent() && five.isPresent()){
+            return Arrays.asList(ace.get(), two.get(), three.get(), four.get(), five.get());
+        }
+
         return Collections.emptyList();
     }
 
