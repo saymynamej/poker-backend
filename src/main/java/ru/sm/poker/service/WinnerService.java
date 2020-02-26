@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface WinnerService {
 
-    void sendPrizes(HoldemRoundSettingsDTO holdemRoundSettingsDTO);
+    void sendPrizes(HoldemRoundSettingsDTO holdemRoundSettingsDTO, boolean isNotOpen);
 
     List<Pair<Player, CombinationDTO>> findCombinations(List<Player> players, List<CardType> deck);
 }

@@ -35,7 +35,7 @@ public class HoldemRound implements Round {
 
         this.holdemRoundSettingsDTO = roundSettingsManager.getPreflopSettings();
 
-        final boolean isSkipNext = orderService.start(holdemRoundSettingsDTO);
+        boolean isSkipNext = orderService.start(holdemRoundSettingsDTO);
 
         if (!isSkipNext) {
             this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettings(
@@ -43,8 +43,8 @@ public class HoldemRound implements Round {
                     this.holdemRoundSettingsDTO.getStageHistory()
             );
 
-            final boolean isSkipNext2 = orderService.start(this.holdemRoundSettingsDTO);
-            if (!isSkipNext2) {
+            isSkipNext = orderService.start(this.holdemRoundSettingsDTO);
+            if (!isSkipNext) {
                 this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithTern(
                         this.holdemRoundSettingsDTO.getBank(),
                         HistoryUtil.unionHistory(
@@ -53,8 +53,8 @@ public class HoldemRound implements Round {
                         )
                 );
 
-                final boolean isSkipNext3 = orderService.start(this.holdemRoundSettingsDTO);
-                if (!isSkipNext3) {
+                isSkipNext = orderService.start(this.holdemRoundSettingsDTO);
+                if (!isSkipNext) {
                     this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithRiver(
                             this.holdemRoundSettingsDTO.getBank(),
                             HistoryUtil.unionHistory(
@@ -66,12 +66,8 @@ public class HoldemRound implements Round {
                 }
             }
         }
-        ThreadUtil.sleep(3);
 
-        winnerService.sendPrizes(holdemRoundSettingsDTO);
-
-        ThreadUtil.sleep(3);
-
+        winnerService.sendPrizes(holdemRoundSettingsDTO, isSkipNext);
     }
 
     @Override

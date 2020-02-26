@@ -27,7 +27,7 @@ public interface GameManager {
 
     void addChips(String name);
 
-    void addChips(String name, long count);
+    void addChips(Player player, long count);
 
     Player getActivePlayerInGame(String game);
 

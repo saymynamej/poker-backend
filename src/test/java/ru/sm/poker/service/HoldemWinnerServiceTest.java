@@ -63,7 +63,7 @@ public class HoldemWinnerServiceTest {
         winner1.removeChips(firstBets);
         winner2.removeChips(secondBets);
 
-        holdemWinnerService.sendPrizes(roundSettingsDTO);
+        holdemWinnerService.sendPrizes(roundSettingsDTO, false);
 
         Assertions.assertEquals(DEFAULT_CHIPS_COUNT, winner1.getChipsCount());
         Assertions.assertEquals(DEFAULT_CHIPS_COUNT, winner2.getChipsCount());
@@ -107,7 +107,7 @@ public class HoldemWinnerServiceTest {
         winner2.removeChips(secondBets);
         looser.removeChips(thirdBets);
 
-        holdemWinnerService.sendPrizes(roundSettingsDTO);
+        holdemWinnerService.sendPrizes(roundSettingsDTO, false);
 
         Assertions.assertEquals(DEFAULT_CHIPS_COUNT + (thirdBets / 2), winner1.getChipsCount());
         Assertions.assertEquals(DEFAULT_CHIPS_COUNT + (thirdBets / 2), winner2.getChipsCount());
@@ -142,7 +142,7 @@ public class HoldemWinnerServiceTest {
         winner.removeChips(firstBets);
         looser.removeChips(secondBets);
 
-        holdemWinnerService.sendPrizes(roundSettingsDTO);
+        holdemWinnerService.sendPrizes(roundSettingsDTO, false);
 
         Assertions.assertEquals(winner.getChipsCount(), DEFAULT_CHIPS_COUNT + firstBets);
         Assertions.assertEquals(looser.getChipsCount(), DEFAULT_CHIPS_COUNT - secondBets);
@@ -174,9 +174,42 @@ public class HoldemWinnerServiceTest {
         winner.removeChips(firstBets);
         looser.removeChips(secondBets);
 
-        holdemWinnerService.sendPrizes(roundSettingsDTO);
+        holdemWinnerService.sendPrizes(roundSettingsDTO, false);
 
         Assertions.assertEquals(winner.getChipsCount(), DEFAULT_CHIPS_COUNT + firstBets);
+        Assertions.assertEquals(looser.getChipsCount(), DEFAULT_CHIPS_COUNT - secondBets);
+    }
+
+    @Test
+    public void testWhenCardsWereNotOpened() {
+        final Player winner = getPlayer();
+        final Player looser = getPlayer();
+
+        winner.addCards(Arrays.asList(CardType.TWO_H, CardType.TEN_D));
+        looser.addCards(Arrays.asList(CardType.TWO_D, CardType.THREE_D));
+
+        final Map<Player, List<Action>> fullHistory = Map.of(
+                winner, Arrays.asList(new Call(firstBet), new Call(secondBet)),
+                looser, Arrays.asList(new Raise(firstBet), new Raise(secondBet))
+        );
+
+        final HoldemRoundSettingsDTO roundSettingsDTO = HoldemRoundSettingsDTO.builder()
+                .flop(Arrays.asList(CardType.TWO_C, CardType.THREE_C, CardType.FOUR_C))
+                .fullHistory(fullHistory)
+                .players(Arrays.asList(winner, looser))
+                .build();
+
+        final long firstBets = HistoryUtil.sumRoundHistoryBets(roundSettingsDTO, winner);
+        final long secondBets = HistoryUtil.sumRoundHistoryBets(roundSettingsDTO, looser);
+
+        roundSettingsDTO.setBank(firstBets + secondBets);
+
+        winner.removeChips(firstBets);
+        looser.removeChips(secondBets);
+        looser.setAction(new Fold());
+        holdemWinnerService.sendPrizes(roundSettingsDTO, true);
+
+        Assertions.assertEquals(winner.getChipsCount(), DEFAULT_CHIPS_COUNT + secondBets);
         Assertions.assertEquals(looser.getChipsCount(), DEFAULT_CHIPS_COUNT - secondBets);
     }
 

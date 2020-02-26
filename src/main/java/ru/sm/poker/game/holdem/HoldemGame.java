@@ -6,10 +6,11 @@ import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.Round;
+import ru.sm.poker.game.common.CommonGameManager;
 import ru.sm.poker.util.ThreadUtil;
 
 import java.util.List;
-
+import java.util.Map;
 
 public class HoldemGame extends Game {
 
@@ -26,6 +27,7 @@ public class HoldemGame extends Game {
         while (isEnable()) {
             ThreadUtil.sleep(DELAY_IN_SECONDS);
             if (isReady()) {
+                addChips();
                 getRound().startRound();
             }
         }
@@ -53,6 +55,21 @@ public class HoldemGame extends Game {
 
     private void setAllPlayersActive() {
         getPlayers().forEach(player -> player.setStateType(StateType.IN_GAME));
+    }
+
+    private void addChips(){
+        final Map<Player, Long> chipsMap = CommonGameManager.getChipsMap();
+
+        final List<Player> players = getPlayers();
+
+        players.forEach(player -> {
+            final Long chipsCount = chipsMap.get(player);
+            if (chipsCount != null && chipsCount != 0){
+                player.addChips(chipsCount);
+            }
+            chipsMap.remove(player);
+        });
+
     }
 
     private boolean isReady() {

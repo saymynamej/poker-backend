@@ -20,6 +20,7 @@ import static java.lang.String.format;
 public class CommonGameManager implements GameManager {
 
     private final static Map<String, Game> games = new ConcurrentHashMap<>();
+    private final static Map<Player, Long> CHIPS_MAP = new ConcurrentHashMap<>();
 
     @Override
     public Optional<Player> getPlayerByName(String name) {
@@ -39,17 +40,21 @@ public class CommonGameManager implements GameManager {
 
 
     @Override
-    public void addChips(String name, long count) {
-        final Optional<Player> optionalPlayer = getPlayerByName(name);
-        if (optionalPlayer.isPresent()) {
-            final Player player = optionalPlayer.get();
-            player.addChips(count);
+    public void addChips(Player player, long count) {
+        if (player == null) {
+            return;
         }
+        player.addChips(count);
     }
 
     @Override
     public void addChips(String name) {
-        addChips(name, 5000L);
+        final Optional<Player> playerByName = getPlayerByName(name);
+        if (playerByName.isEmpty()) {
+            return;
+        }
+        final Player player = playerByName.get();
+        CHIPS_MAP.put(player, 5000L);
     }
 
     @Override
@@ -124,6 +129,17 @@ public class CommonGameManager implements GameManager {
     @Override
     public Map<String, Game> getGames() {
         return games;
+    }
+
+    public static Map<Player, Long> getChipsMap() {
+        return CHIPS_MAP;
+    }
+
+    private void addChipsToMap(Player player, Long chips) {
+        if (CHIPS_MAP.containsKey(player)) {
+            return;
+        }
+        CHIPS_MAP.put(player, chips);
     }
 
     private boolean checkGameName(String gameName) {
