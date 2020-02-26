@@ -5,7 +5,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.dto.CombinationDTO;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.CombinationType;
 import ru.sm.poker.service.CombinationService;
@@ -29,10 +29,10 @@ public class HoldemWinnerService implements WinnerService {
     @Override
     public void sendPrizes(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
         checkCardsIntersect(getAllCards(holdemRoundSettingsDTO));
-        final List<PlayerDTO> players = PlayerUtil.getPlayersInGame(holdemRoundSettingsDTO.getPlayers());
+        final List<Player> players = PlayerUtil.getPlayersInGame(holdemRoundSettingsDTO.getPlayers());
         final List<CardType> deck = getDeck(holdemRoundSettingsDTO);
-        final List<Pair<PlayerDTO, CombinationDTO>> playersAndCombos = findCombinations(players, deck);
-        final List<Pair<PlayerDTO, CombinationDTO>> winners = findWinners(playersAndCombos);
+        final List<Pair<Player, CombinationDTO>> playersAndCombos = findCombinations(players, deck);
+        final List<Pair<Player, CombinationDTO>> winners = findWinners(playersAndCombos);
 
         if (winners.size() == 1) {
             processBets(holdemRoundSettingsDTO, winners.get(0).getKey());
@@ -40,7 +40,7 @@ public class HoldemWinnerService implements WinnerService {
             return;
         }
 
-        final List<Pair<PlayerDTO, CombinationDTO>> moreStrongerCombinations = combinationService.findMoreStrongerCombinations(winners);
+        final List<Pair<Player, CombinationDTO>> moreStrongerCombinations = combinationService.findMoreStrongerCombinations(winners);
 
         if (moreStrongerCombinations.size() == 1) {
             processBets(holdemRoundSettingsDTO, moreStrongerCombinations.get(0).getKey());
@@ -51,28 +51,28 @@ public class HoldemWinnerService implements WinnerService {
         securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettingsDTO);
     }
 
-    private void processBets(List<Pair<PlayerDTO, CombinationDTO>> winners, HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
+    private void processBets(List<Pair<Player, CombinationDTO>> winners, HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
         long bank = holdemRoundSettingsDTO.getBank();
 
-        final Map<PlayerDTO, Long> playersBets = getPlayersBets(holdemRoundSettingsDTO);
+        final Map<Player, Long> playersBets = getPlayersBets(holdemRoundSettingsDTO);
 
         bank = getBankWithoutPlayersBets(winners, bank, playersBets);
 
         processBets(winners, bank);
     }
 
-    private void processBets(List<Pair<PlayerDTO, CombinationDTO>> winners, long bank) {
+    private void processBets(List<Pair<Player, CombinationDTO>> winners, long bank) {
         if (bank > 0) {
-            for (Pair<PlayerDTO, CombinationDTO> winner : winners) {
-                final PlayerDTO player = winner.getKey();
+            for (Pair<Player, CombinationDTO> winner : winners) {
+                final Player player = winner.getKey();
                 player.addChips(bank / winners.size());
             }
         }
     }
 
-    private long getBankWithoutPlayersBets(List<Pair<PlayerDTO, CombinationDTO>> winners, long bank, Map<PlayerDTO, Long> playersBets) {
-        for (Pair<PlayerDTO, CombinationDTO> winner : winners) {
-            final PlayerDTO player = winner.getLeft();
+    private long getBankWithoutPlayersBets(List<Pair<Player, CombinationDTO>> winners, long bank, Map<Player, Long> playersBets) {
+        for (Pair<Player, CombinationDTO> winner : winners) {
+            final Player player = winner.getLeft();
             final Long bets = playersBets.get(player);
             player.addChips(bets);
             bank-=bets;
@@ -80,17 +80,17 @@ public class HoldemWinnerService implements WinnerService {
         return bank;
     }
 
-    private void processBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO winner) {
+    private void processBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player winner) {
         long calculate = 0;
-        final Map<PlayerDTO, Long> playersBets = getPlayersBets(holdemRoundSettingsDTO);
+        final Map<Player, Long> playersBets = getPlayersBets(holdemRoundSettingsDTO);
         final Long winnerBets = playersBets.get(winner);
         calculate += winnerBets;
-        for (Map.Entry<PlayerDTO, Long> otherPlayerBets : playersBets.entrySet()) {
+        for (Map.Entry<Player, Long> otherPlayerBets : playersBets.entrySet()) {
             if (otherPlayerBets.getKey().equals(winner)) {
                 continue;
             }
             final Long bets = otherPlayerBets.getValue();
-            final PlayerDTO player = otherPlayerBets.getKey();
+            final Player player = otherPlayerBets.getKey();
 
             if (bets > winnerBets) {
                 long returnChips = bets - winnerBets;
@@ -103,10 +103,10 @@ public class HoldemWinnerService implements WinnerService {
         winner.addChips(calculate);
     }
 
-    private Map<PlayerDTO, Long> getPlayersBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-        final Map<PlayerDTO, Long> bets = new HashMap<>();
+    private Map<Player, Long> getPlayersBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
+        final Map<Player, Long> bets = new HashMap<>();
 
-        final List<PlayerDTO> players = holdemRoundSettingsDTO.getPlayers();
+        final List<Player> players = holdemRoundSettingsDTO.getPlayers();
 
         players.forEach(player -> {
             final long allBets = sumRoundHistoryBets(holdemRoundSettingsDTO, player);
@@ -118,9 +118,9 @@ public class HoldemWinnerService implements WinnerService {
     }
 
     @Override
-    public List<Pair<PlayerDTO, CombinationDTO>> findCombinations(List<PlayerDTO> players, List<CardType> deck) {
-        final List<Pair<PlayerDTO, CombinationDTO>> playersComb = new ArrayList<>();
-        for (PlayerDTO player : players) {
+    public List<Pair<Player, CombinationDTO>> findCombinations(List<Player> players, List<CardType> deck) {
+        final List<Pair<Player, CombinationDTO>> playersComb = new ArrayList<>();
+        for (Player player : players) {
             final List<CardType> allCards = player.getCards();
             allCards.addAll(deck);
             final Pair<CombinationType, List<CardType>> combination = combinationService.findCombination(allCards);
@@ -149,7 +149,7 @@ public class HoldemWinnerService implements WinnerService {
     }
 
 
-    private List<Pair<PlayerDTO, CombinationDTO>> findWinners(List<Pair<PlayerDTO, CombinationDTO>> playersAndCombinations) {
+    private List<Pair<Player, CombinationDTO>> findWinners(List<Pair<Player, CombinationDTO>> playersAndCombinations) {
 
         final List<CombinationDTO> allCombinations = getCombinations(playersAndCombinations);
 
@@ -160,8 +160,8 @@ public class HoldemWinnerService implements WinnerService {
     }
 
 
-    private final List<Pair<PlayerDTO, CombinationDTO>> findPlayersWithTheStrongestCombination(
-            List<Pair<PlayerDTO, CombinationDTO>> playersAndCombinations,
+    private final List<Pair<Player, CombinationDTO>> findPlayersWithTheStrongestCombination(
+            List<Pair<Player, CombinationDTO>> playersAndCombinations,
             CombinationDTO strongestCombo
     ) {
         return playersAndCombinations.stream()
@@ -169,7 +169,7 @@ public class HoldemWinnerService implements WinnerService {
                 .collect(Collectors.toList());
     }
 
-    private List<CombinationDTO> getCombinations(List<Pair<PlayerDTO, CombinationDTO>> combinations) {
+    private List<CombinationDTO> getCombinations(List<Pair<Player, CombinationDTO>> combinations) {
         return combinations.stream()
                 .map(Pair::getValue)
                 .collect(Collectors.toList());

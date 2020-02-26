@@ -3,7 +3,7 @@ package ru.sm.poker.service.common;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.game.SecurityService;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class SecurityNotificationService {
     public void sendToAllWithSecurityWhoIsNotInTheGame(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
         final List<String> filter = getPlayersInGame(holdemRoundSettingsDTO.getPlayers())
                 .stream()
-                .map(PlayerDTO::getName)
+                .map(Player::getName)
                 .collect(Collectors.toList());
 
         final HoldemRoundSettingsDTO secureSettings = securityService.secureCards(filter, holdemRoundSettingsDTO);

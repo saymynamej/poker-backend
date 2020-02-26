@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.MessageType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
@@ -32,14 +32,14 @@ public class SocketListeners {
     public void handleWebsocketConnectListener(SessionSubscribeEvent event) {
         final Principal user = event.getUser();
         if (user != null) {
-            final Optional<PlayerDTO> optionalPlayer = gameManager.getPlayerByName(user.getName());
+            final Optional<Player> optionalPlayer = gameManager.getPlayerByName(user.getName());
             if (optionalPlayer.isPresent()) {
-                final PlayerDTO playerDTO = optionalPlayer.get();
+                final Player player = optionalPlayer.get();
                 final Map<String, Game> allGames = gameManager.getGames();
-                if (playerDTO.getGameName() != null) {
-                    final Game game = allGames.get(playerDTO.getGameName());
+                if (player.getGameName() != null) {
+                    final Game game = allGames.get(player.getGameName());
                     final HoldemRoundSettingsDTO holdemRoundSettingsDTO = game.getRoundSettings();
-                    simpleNotificationService.sendGameInformationToUser(playerDTO.getName(), securityService.secureCards(List.of(user.getName()), holdemRoundSettingsDTO));
+                    simpleNotificationService.sendGameInformationToUser(player.getName(), securityService.secureCards(List.of(user.getName()), holdemRoundSettingsDTO));
                 }
             }
         }

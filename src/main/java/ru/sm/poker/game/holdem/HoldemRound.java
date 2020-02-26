@@ -3,7 +3,7 @@ package ru.sm.poker.game.holdem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.game.RoundSettingsManager;
@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 public class HoldemRound implements Round {
 
-    private final List<PlayerDTO> playerDTOS;
+    private final List<Player> players;
     private final String gameName;
     private final OrderService orderService;
     private final WinnerService winnerService;
@@ -31,7 +31,7 @@ public class HoldemRound implements Round {
         log.info("game was started, because found enough persons");
 
         final RoundSettingsManager roundSettingsManager =
-                new HoldemRoundSettingsManager(playerDTOS, gameName, bigBlindBet, smallBlindBet);
+                new HoldemRoundSettingsManager(players, gameName, bigBlindBet, smallBlindBet);
 
         this.holdemRoundSettingsDTO = roundSettingsManager.getPreflopSettings();
 
@@ -71,7 +71,7 @@ public class HoldemRound implements Round {
 
         ThreadUtil.sleep(10);
 
-        playerDTOS.forEach(player -> {
+        players.forEach(player -> {
             if (player.getChipsCount() == 0) {
                 player.addChips(5000L);
             }
@@ -80,8 +80,8 @@ public class HoldemRound implements Round {
     }
 
     @Override
-    public List<PlayerDTO> getPlayers() {
-        return this.playerDTOS;
+    public List<Player> getPlayers() {
+        return this.players;
     }
 
     @Override

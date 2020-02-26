@@ -10,7 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.sm.poker.action.holdem.Raise;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
@@ -41,19 +41,19 @@ public class RaiseTest {
         final long raiseCount = 4;
         final long lastBet = 2;
         final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO(lastBet);
-        final PlayerDTO player = getPlayer();
+        final Player player = getPlayer();
         final Raise raise = new Raise(raiseCount);
         executorService.submit(() -> raise.doAction(roundSettingsDTO, player, gameService, actionService));
         waitAction(player, ActionType.RAISE);
         Assertions.assertEquals(DEFAULT_CHIPS_COUNT - raise.getCount(), player.getChipsCount());
     }
 
-    private long setHistoryForPlayer(PlayerDTO player, HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
+    private long setHistoryForPlayer(Player player, HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
         final long firstBet = 4L;
         final long secondBet = 16L;
         final long lastBet = 64L;
 
-        final Map<PlayerDTO, List<Action>> history = holdemRoundSettingsDTO.getStageHistory();
+        final Map<Player, List<Action>> history = holdemRoundSettingsDTO.getStageHistory();
         history.put(player, List.of(
                 new Raise(firstBet),
                 new Raise(secondBet))

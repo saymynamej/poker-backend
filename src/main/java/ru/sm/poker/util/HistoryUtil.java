@@ -3,12 +3,9 @@ package ru.sm.poker.util;
 import ru.sm.poker.action.Action;
 import ru.sm.poker.action.CountAction;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static ru.sm.poker.util.PlayerUtil.getPlayersInGame;
@@ -17,20 +14,20 @@ public class HistoryUtil {
 
 
     public static boolean allPlayersInGameHaveSameCountOfBet(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-        final List<PlayerDTO> playersInGame = getPlayersInGame(holdemRoundSettingsDTO.getPlayers());
+        final List<Player> playersInGame = getPlayersInGame(holdemRoundSettingsDTO.getPlayers());
 
-        final List<PlayerDTO> playerDTOS = playersInGame.stream()
+        final List<Player> players = playersInGame.stream()
                 .filter(player -> player.getChipsCount() > 0)
                 .collect(Collectors.toList());
 
-        return playerDTOS.stream()
+        return players.stream()
                 .noneMatch(player -> sumStageHistoryBets(holdemRoundSettingsDTO, player) != holdemRoundSettingsDTO.getLastBet());
     }
 
 
-    public static long sumRoundHistoryBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO playerDTO) {
-        final Map<PlayerDTO, List<Action>> fullHistory = holdemRoundSettingsDTO.getFullHistory();
-        final List<Action> countActions = fullHistory.get(playerDTO);
+    public static long sumRoundHistoryBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player) {
+        final Map<Player, List<Action>> fullHistory = holdemRoundSettingsDTO.getFullHistory();
+        final List<Action> countActions = fullHistory.get(player);
         long sum = 0;
         if (countActions != null) {
             sum = sumBets(countActions);
@@ -39,9 +36,9 @@ public class HistoryUtil {
     }
 
 
-    public static long sumStageHistoryBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO playerDTO) {
-        final Map<PlayerDTO, List<Action>> history = holdemRoundSettingsDTO.getStageHistory();
-        final List<Action> countActions = history.get(playerDTO);
+    public static long sumStageHistoryBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player) {
+        final Map<Player, List<Action>> history = holdemRoundSettingsDTO.getStageHistory();
+        final List<Action> countActions = history.get(player);
         long sum = 0;
         if (countActions != null) {
             sum = sumBets(countActions);
@@ -50,27 +47,33 @@ public class HistoryUtil {
     }
 
     private static long sumBets(List<Action> actions) {
-        long sum = 0;
-        for (Action action : actions) {
-            if (action instanceof CountAction) {
-                sum += ((CountAction) action).getCount();
-            }
+        if (actions == null){
+            return 0;
         }
-        return sum;
+
+        final Optional<Long> reduce = actions.stream()
+                .filter(action -> action instanceof CountAction)
+                .map(action -> ((CountAction) action).getCount())
+                .reduce(Long::sum);
+
+        if (reduce.isPresent()){
+            return reduce.get();
+        }
+        return 0;
     }
 
 
-    public static long sumAllHistoryBetsWithNewAction(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO playerDTO, CountAction countAction) {
-        final Map<PlayerDTO, List<Action>> history = holdemRoundSettingsDTO.getStageHistory();
-        final List<Action> actions = history.get(playerDTO);
-        return countAction.getCount() + sumBets(actions);
+    public static long sumAllHistoryBetsWithNewAction(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player, CountAction countAction) {
+        final Map<Player, List<Action>> history = holdemRoundSettingsDTO.getStageHistory();
+        final List<Action> countActions = history.get(player);
+        return sumBets(countActions) + countAction.getCount();
     }
 
 
-    public static void addActionInHistory(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO playerDTO, CountAction action) {
-        final Map<PlayerDTO, List<Action>> history = holdemRoundSettingsDTO.getStageHistory();
+    public static void addActionInHistory(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player, CountAction action) {
+        final Map<Player, List<Action>> history = holdemRoundSettingsDTO.getStageHistory();
 
-        final List<Action> newActionsList = history.get(playerDTO);
+        final List<Action> newActionsList = history.get(player);
         if (newActionsList != null) {
             newActionsList.add(action);
             return;
@@ -78,17 +81,17 @@ public class HistoryUtil {
 
         final List<Action> actionsList = new ArrayList<>();
         actionsList.add(action);
-        history.put(playerDTO, actionsList);
+        history.put(player, actionsList);
     }
 
-    public static void addActionInHistory(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO playerDTO) {
-        if (playerDTO.getAction() instanceof CountAction) {
-            addActionInHistory(holdemRoundSettingsDTO, playerDTO, (CountAction) playerDTO.getAction());
+    public static void addActionInHistory(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player) {
+        if (player.getAction() instanceof CountAction) {
+            addActionInHistory(holdemRoundSettingsDTO, player, (CountAction) player.getAction());
         }
     }
 
-    public static Map<PlayerDTO, List<Action>> unionHistory(Map<PlayerDTO, List<Action>> firstHistory, Map<PlayerDTO, List<Action>> secondHistory) {
-        final Map<PlayerDTO, List<Action>> unionActions = new HashMap<>(firstHistory);
+    public static Map<Player, List<Action>> unionHistory(Map<Player, List<Action>> firstHistory, Map<Player, List<Action>> secondHistory) {
+        final Map<Player, List<Action>> unionActions = new HashMap<>(firstHistory);
 
         secondHistory.forEach((key, value) -> {
             final List<Action> countActions = unionActions.get(key);

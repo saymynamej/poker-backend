@@ -3,7 +3,7 @@ package ru.sm.poker.service.holdem;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.dto.CombinationDTO;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.CombinationType;
 import ru.sm.poker.enums.PowerType;
@@ -22,8 +22,8 @@ public class HoldemCombinationService implements CombinationService {
     private final static int THREE_SIZE = 3;
 
     @Override
-    public List<Pair<PlayerDTO, CombinationDTO>> findMoreStrongerCombinations(
-            List<Pair<PlayerDTO, CombinationDTO>> playersAndCombinations
+    public List<Pair<Player, CombinationDTO>> findMoreStrongerCombinations(
+            List<Pair<Player, CombinationDTO>> playersAndCombinations
     ) {
 
         int max = findMaxSumCards(playersAndCombinations);
@@ -33,10 +33,10 @@ public class HoldemCombinationService implements CombinationService {
                 .collect(Collectors.toList());
     }
 
-    private int findMaxSumCards(List<Pair<PlayerDTO, CombinationDTO>> playersAndCombinations) {
+    private int findMaxSumCards(List<Pair<Player, CombinationDTO>> playersAndCombinations) {
         int max = 0;
 
-        for (Pair<PlayerDTO, CombinationDTO> playerDTOCombinationDTOPair : playersAndCombinations) {
+        for (Pair<Player, CombinationDTO> playerDTOCombinationDTOPair : playersAndCombinations) {
             int result = sumCards(playerDTOCombinationDTOPair.getRight().getCards());
             if (result > max) {
                 max = result;

@@ -2,7 +2,7 @@ package ru.sm.poker.game.holdem;
 
 import ru.sm.poker.config.game.GameSettings;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.Round;
@@ -56,8 +56,8 @@ public class HoldemGame extends Game {
     }
 
     private boolean isReady() {
-        final List<PlayerDTO> playerDTOS = getPlayers();
-        return playerDTOS.size() >= getGameSettings().getMinPlayersForStart() && playerDTOS.stream()
+        final List<Player> players = getPlayers();
+        return players.size() >= getGameSettings().getMinPlayersForStart() && players.stream()
                 .filter(player -> player.getStateType() == StateType.IN_GAME)
                 .count() >= getGameSettings().getMinActivePlayers();
     }

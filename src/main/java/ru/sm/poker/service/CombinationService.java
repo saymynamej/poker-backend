@@ -2,7 +2,7 @@ package ru.sm.poker.service;
 
 import org.apache.commons.lang3.tuple.Pair;
 import ru.sm.poker.dto.CombinationDTO;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.CombinationType;
 
@@ -10,8 +10,8 @@ import java.util.List;
 
 public interface CombinationService {
 
-    List<Pair<PlayerDTO, CombinationDTO>> findMoreStrongerCombinations(
-            List<Pair<PlayerDTO, CombinationDTO>> playersAndCombinations
+    List<Pair<Player, CombinationDTO>> findMoreStrongerCombinations(
+            List<Pair<Player, CombinationDTO>> playersAndCombinations
     );
 
     Pair<CombinationType, List<CardType>> findCombination(List<CardType> cards);

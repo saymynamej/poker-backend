@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.ActionType;
 
 import java.util.List;
@@ -17,25 +17,25 @@ import static ru.sm.poker.util.HistoryUtil.addActionInHistory;
 @Slf4j
 public class GameService {
 
-    public void doAction(PlayerDTO playerDTO, HoldemRoundSettingsDTO holdemRoundSettingsDTO, long removeChips, long lastBet) {
-        playerDTO.removeChips(removeChips);
+    public void doAction(Player player, HoldemRoundSettingsDTO holdemRoundSettingsDTO, long removeChips, long lastBet) {
+        player.removeChips(removeChips);
         addBank(holdemRoundSettingsDTO, removeChips);
         setLastBet(holdemRoundSettingsDTO, lastBet);
-        addActionInHistory(holdemRoundSettingsDTO, playerDTO);
+        addActionInHistory(holdemRoundSettingsDTO, player);
     }
 
     public void addBank(HoldemRoundSettingsDTO holdemRoundSettingsDTO, long count) {
         holdemRoundSettingsDTO.setBank(holdemRoundSettingsDTO.getBank() + count);
     }
 
-    public void setActivePlayer(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO playerDTO) {
-        playerDTO.setActive(true);
-        holdemRoundSettingsDTO.setActivePlayerDTO(playerDTO);
+    public void setActivePlayer(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player) {
+        player.setActive(true);
+        holdemRoundSettingsDTO.setActivePlayer(player);
     }
 
-    public void setInActivePlayer(HoldemRoundSettingsDTO holdemRoundSettingsDTO, PlayerDTO playerDTO) {
-        playerDTO.setActive(false);
-        holdemRoundSettingsDTO.setActivePlayerDTO(null);
+    public void setInActivePlayer(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player) {
+        player.setActive(false);
+        holdemRoundSettingsDTO.setActivePlayer(null);
     }
 
     public void setLastBet(HoldemRoundSettingsDTO holdemRoundSettingsDTO, long count) {
@@ -46,10 +46,10 @@ public class GameService {
     }
 
     public boolean checkLastPlayer(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-        final List<PlayerDTO> activePlayerDTOS = holdemRoundSettingsDTO.getPlayers().stream()
+        final List<Player> activePlayers = holdemRoundSettingsDTO.getPlayers().stream()
                 .filter(pl -> !(pl.getAction().getActionType() == ActionType.FOLD))
                 .collect(Collectors.toList());
 
-        return activePlayerDTOS.size() == 1;
+        return activePlayers.size() == 1;
     }
 }

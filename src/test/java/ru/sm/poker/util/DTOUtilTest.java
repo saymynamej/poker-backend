@@ -3,7 +3,7 @@ package ru.sm.poker.util;
 import com.github.javafaker.Faker;
 import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.RoleType;
 import ru.sm.poker.enums.StageType;
@@ -38,7 +38,7 @@ public class DTOUtilTest {
         return getRoundSettingsDTO(DEFAULT_LAST_BET, stageType, getPlayers(countPlayers));
     }
 
-    public static HoldemRoundSettingsDTO getRoundSettingsDTO(long lastBet, StageType stageType, List<PlayerDTO> players) {
+    public static HoldemRoundSettingsDTO getRoundSettingsDTO(long lastBet, StageType stageType, List<Player> players) {
         return HoldemRoundSettingsDTO.builder()
                 .lastBet(lastBet)
                 .stageType(stageType)
@@ -64,12 +64,12 @@ public class DTOUtilTest {
     }
 
 
-    public static List<PlayerDTO> getPlayers(int count) {
+    public static List<Player> getPlayers(int count) {
         return IntStream.range(0, count).mapToObj(i -> getPlayer()).collect(Collectors.toList());
     }
 
-    public static PlayerDTO getPlayer() {
-        return PlayerDTO.builder()
+    public static Player getPlayer() {
+        return Player.builder()
                 .gameName(DEFAULT_GAME_NAME)
                 .chipsCount(DEFAULT_CHIPS_COUNT)
                 .name(faker.name().name())
@@ -81,8 +81,8 @@ public class DTOUtilTest {
                 .build();
     }
 
-    public static PlayerDTO getPlayer(RoleType roleType) {
-        return PlayerDTO.builder()
+    public static Player getPlayer(RoleType roleType) {
+        return Player.builder()
                 .gameName(DEFAULT_GAME_NAME)
                 .chipsCount(DEFAULT_CHIPS_COUNT)
                 .roleType(roleType)

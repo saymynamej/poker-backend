@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.enums.StageType;
 import ru.sm.poker.enums.StateType;
@@ -31,7 +31,7 @@ public class OrderActionService implements OrderService {
 
     @Override
     public boolean start(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-        final List<PlayerDTO> sortedPlayerDTOS = getPlayersInGame(
+        final List<Player> sortedPlayers = getPlayersInGame(
                 sort(
                         holdemRoundSettingsDTO.getPlayers(),
                         holdemRoundSettingsDTO.getStageType()
@@ -49,22 +49,22 @@ public class OrderActionService implements OrderService {
             if (allPlayersInGameHaveSameCountOfBet(holdemRoundSettingsDTO) && holdemRoundSettingsDTO.getLastBet() != 0) {
                 break;
             }
-            if (allChecks(sortedPlayerDTOS)) {
+            if (allChecks(sortedPlayers)) {
                 break;
             }
-            if (isOnePlayerLeft(sortedPlayerDTOS)) {
+            if (isOnePlayerLeft(sortedPlayers)) {
                 isSkipNext = true;
                 break;
             }
 
-            for (PlayerDTO player : sortedPlayerDTOS) {
+            for (Player player : sortedPlayers) {
                 if (player.getStateType() == null || player.getStateType() == StateType.AFK || player.getStateType() == StateType.LEAVE) {
                     continue;
                 }
                 if (playersHasNotChips(player)) {
                     continue;
                 }
-                if (isOnePlayerLeft(sortedPlayerDTOS)) {
+                if (isOnePlayerLeft(sortedPlayers)) {
                     isSkipNext = true;
                     break;
                 }
@@ -84,12 +84,12 @@ public class OrderActionService implements OrderService {
     }
 
 
-    private List<PlayerDTO> sort(List<PlayerDTO> playerDTOS, StageType stageType) {
-        return stageType == StageType.PREFLOP ? sortPreflop(playerDTOS) : sortPostflop(playerDTOS);
+    private List<Player> sort(List<Player> players, StageType stageType) {
+        return stageType == StageType.PREFLOP ? sortPreflop(players) : sortPostflop(players);
     }
 
-    private boolean playersHasNotChips(PlayerDTO playerDTO) {
-        return playerDTO.getChipsCount() == 0;
+    private boolean playersHasNotChips(Player player) {
+        return player.getChipsCount() == 0;
     }
 
     private boolean allPlayersInAllIn(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
@@ -98,16 +98,16 @@ public class OrderActionService implements OrderService {
 
     }
 
-    private boolean allChecks(List<PlayerDTO> playerDTOS) {
-        return playerDTOS.stream()
+    private boolean allChecks(List<Player> players) {
+        return players.stream()
                 .filter(playerInAllIn().negate())
                 .allMatch(playersHasCheck());
     }
 
-    private boolean isOnePlayerLeft(List<PlayerDTO> playerDTOS) {
-        return playerDTOS.stream()
+    private boolean isOnePlayerLeft(List<Player> players) {
+        return players.stream()
                 .filter(player -> player.getAction().getActionType() == ActionType.FOLD && player.getStateType() == StateType.IN_GAME)
-                .count() == playerDTOS.size() - 1;
+                .count() == players.size() - 1;
     }
 
 }

@@ -3,7 +3,7 @@ package ru.sm.poker.game.common;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 
@@ -22,7 +22,7 @@ public class CommonGameManager implements GameManager {
     private final static Map<String, Game> games = new ConcurrentHashMap<>();
 
     @Override
-    public Optional<PlayerDTO> getPlayerByName(String name) {
+    public Optional<Player> getPlayerByName(String name) {
         return games.values().stream()
                 .flatMap(game -> game.getPlayers().stream())
                 .filter(player -> player.getName().equals(name))
@@ -40,10 +40,10 @@ public class CommonGameManager implements GameManager {
 
     @Override
     public void addChips(String name, long count) {
-        final Optional<PlayerDTO> optionalPlayer = getPlayerByName(name);
+        final Optional<Player> optionalPlayer = getPlayerByName(name);
         if (optionalPlayer.isPresent()) {
-            final PlayerDTO playerDTO = optionalPlayer.get();
-            playerDTO.addChips(count);
+            final Player player = optionalPlayer.get();
+            player.addChips(count);
         }
     }
 
@@ -53,14 +53,14 @@ public class CommonGameManager implements GameManager {
     }
 
     @Override
-    public void removePlayer(String gameName, PlayerDTO playerDTO) {
+    public void removePlayer(String gameName, Player player) {
         final Game game = games.get(gameName);
         if (game != null) {
-            game.removePlayer(playerDTO);
-            log.info("Player removed :" + playerDTO.getName());
+            game.removePlayer(player);
+            log.info("Player removed :" + player.getName());
             return;
         }
-        throw new RuntimeException(format("could not found player in game =%s, player=%s", gameName, playerDTO.getName()));
+        throw new RuntimeException(format("could not found player in game =%s, player=%s", gameName, player.getName()));
     }
 
     @Override
@@ -72,10 +72,10 @@ public class CommonGameManager implements GameManager {
     }
 
     @Override
-    public void removePlayer(PlayerDTO playerDTO) {
+    public void removePlayer(Player player) {
         games.forEach((name, game) -> {
-            final List<PlayerDTO> playerDTOS = game.getRoundSettings().getPlayers();
-            playerDTOS.remove(playerDTO);
+            final List<Player> players = game.getRoundSettings().getPlayers();
+            players.remove(player);
         });
     }
 
@@ -101,11 +101,11 @@ public class CommonGameManager implements GameManager {
     }
 
     @Override
-    public PlayerDTO getActivePlayerInGame(String game) {
+    public Player getActivePlayerInGame(String game) {
         return getGameByName(game).getRoundSettings()
                 .getPlayers()
                 .stream()
-                .filter(PlayerDTO::isActive)
+                .filter(Player::isActive)
                 .findFirst().orElseThrow(() -> new RuntimeException("cannot find active player in game:" + game));
     }
 

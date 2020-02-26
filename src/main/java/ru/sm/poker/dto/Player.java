@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @ToString
 @EqualsAndHashCode(of = "name")
-public class PlayerDTO {
+public class Player {
 
     private String name;
     private List<CardType> cards;
@@ -35,7 +35,7 @@ public class PlayerDTO {
     private String gameName;
 
     @Builder
-    public PlayerDTO(String name, List<CardType> cards, RoleType roleType, long chipsCount, StateType stateType, long timeBank, Action action, boolean active, String gameName) {
+    public Player(String name, List<CardType> cards, RoleType roleType, long chipsCount, StateType stateType, long timeBank, Action action, boolean active, String gameName) {
         this.name = name;
         this.cards = cards;
         this.roleType = roleType;
@@ -47,7 +47,7 @@ public class PlayerDTO {
         this.gameName = gameName;
     }
 
-    public PlayerDTO(String name, long chipsCount) {
+    public Player(String name, long chipsCount) {
         this.name = name;
         this.chipsCount = chipsCount;
     }
@@ -100,8 +100,8 @@ public class PlayerDTO {
         this.cards = new ArrayList<>(cards);
     }
 
-    public PlayerDTO copy() {
-        return PlayerDTO
+    public Player copy() {
+        return Player
                 .builder()
                 .name(name)
                 .action(action)

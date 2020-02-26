@@ -12,7 +12,7 @@ import ru.sm.poker.action.holdem.Call;
 import ru.sm.poker.action.holdem.Fold;
 import ru.sm.poker.action.holdem.Raise;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.service.holdem.HoldemWinnerService;
 import ru.sm.poker.util.HistoryUtil;
@@ -38,13 +38,13 @@ public class HoldemWinnerServiceTest {
 
     @Test
     public void testWhenPlayersHaveSameCombinationsAndNoOtherBetsFound() {
-        final PlayerDTO winner1 = getPlayer();
-        final PlayerDTO winner2 = getPlayer();
+        final Player winner1 = getPlayer();
+        final Player winner2 = getPlayer();
 
         winner1.addCards(Arrays.asList(CardType.TWO_H, CardType.THREE_S));
         winner2.addCards(Arrays.asList(CardType.TWO_D, CardType.THREE_D));
 
-        final Map<PlayerDTO, List<Action>> fullHistory = Map.of(
+        final Map<Player, List<Action>> fullHistory = Map.of(
                 winner1, Arrays.asList(new Call(firstBet), new Call(secondBet), new Call(thirdBet)),
                 winner2, Arrays.asList(new Raise(firstBet), new Raise(secondBet), new Raise(thirdBet))
         );
@@ -71,15 +71,15 @@ public class HoldemWinnerServiceTest {
 
     @Test
     public void testWhenPlayersHaveSameCombinationsAndOtherBetsFound() {
-        final PlayerDTO winner1 = getPlayer();
-        final PlayerDTO winner2 = getPlayer();
-        final PlayerDTO looser = getPlayer();
+        final Player winner1 = getPlayer();
+        final Player winner2 = getPlayer();
+        final Player looser = getPlayer();
 
         winner1.addCards(Arrays.asList(CardType.FIVE_H, CardType.SIX_C));
         winner2.addCards(Arrays.asList(CardType.FIVE_D, CardType.SIX_D));
         looser.addCards(Arrays.asList(CardType.J_D, CardType.TEN_D));
 
-        final Map<PlayerDTO, List<Action>> fullHistory = Map.of(
+        final Map<Player, List<Action>> fullHistory = Map.of(
                 winner1, Arrays.asList(new Call(firstBet), new Call(secondBet), new Call(thirdBet)),
                 winner2, Arrays.asList(new Raise(firstBet), new Raise(secondBet), new Raise(thirdBet)),
                 looser, Arrays.asList(new Call(firstBet), new Call(secondBet), new Fold())
@@ -117,13 +117,13 @@ public class HoldemWinnerServiceTest {
 
     @Test
     public void testWhenPlayersHaveDifferentCombinations() {
-        final PlayerDTO winner = getPlayer();
-        final PlayerDTO looser = getPlayer();
+        final Player winner = getPlayer();
+        final Player looser = getPlayer();
 
         winner.addCards(Arrays.asList(CardType.K_C, CardType.A_C));
         looser.addCards(Arrays.asList(CardType.TWO_D, CardType.FIVE_H));
 
-        final Map<PlayerDTO, List<Action>> fullHistory = Map.of(
+        final Map<Player, List<Action>> fullHistory = Map.of(
                 winner, Arrays.asList(new Call(firstBet), new Call(secondBet), new Call(thirdBet)),
                 looser, Arrays.asList(new Raise(firstBet), new Raise(secondBet), new Raise(thirdBet))
         );
@@ -150,13 +150,13 @@ public class HoldemWinnerServiceTest {
 
     @Test
     public void testWhenPlayersHaveSameCombinationsButDifferentPower() {
-        final PlayerDTO winner = getPlayer();
-        final PlayerDTO looser = getPlayer();
+        final Player winner = getPlayer();
+        final Player looser = getPlayer();
 
         winner.addCards(Arrays.asList(CardType.TWO_H, CardType.TEN_D));
         looser.addCards(Arrays.asList(CardType.TWO_D, CardType.THREE_D));
 
-        final Map<PlayerDTO, List<Action>> fullHistory = Map.of(
+        final Map<Player, List<Action>> fullHistory = Map.of(
                 winner, Arrays.asList(new Call(firstBet), new Call(secondBet), new Call(thirdBet)),
                 looser, Arrays.asList(new Raise(firstBet), new Raise(secondBet), new Raise(thirdBet))
         );
