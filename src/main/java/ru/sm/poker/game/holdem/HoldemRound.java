@@ -66,16 +66,11 @@ public class HoldemRound implements Round {
                 }
             }
         }
+        ThreadUtil.sleep(3);
 
         winnerService.sendPrizes(holdemRoundSettingsDTO);
 
-        ThreadUtil.sleep(10);
-
-        players.forEach(player -> {
-            if (player.getChipsCount() == 0) {
-                player.addChips(5000L);
-            }
-        });
+        ThreadUtil.sleep(3);
 
     }
 

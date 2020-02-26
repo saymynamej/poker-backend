@@ -45,11 +45,4 @@ public class GameService {
         holdemRoundSettingsDTO.setLastBet(count);
     }
 
-    public boolean checkLastPlayer(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-        final List<Player> activePlayers = holdemRoundSettingsDTO.getPlayers().stream()
-                .filter(pl -> !(pl.getAction().getActionType() == ActionType.FOLD))
-                .collect(Collectors.toList());
-
-        return activePlayers.size() == 1;
-    }
 }

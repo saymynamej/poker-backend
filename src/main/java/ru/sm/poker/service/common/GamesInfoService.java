@@ -24,7 +24,6 @@ public class GamesInfoService implements InfoService {
     private final GameManager holdemGameManager;
     private final SimpleNotificationService simpleNotificationService;
 
-
     @Scheduled(cron = "*/2 * * * * *")
     @Override
     public void send() {

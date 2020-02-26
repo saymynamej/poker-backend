@@ -60,54 +60,54 @@ public class HoldemCombinationService implements CombinationService {
         }
 
         final List<CardType> flushRoyal = findFlushRoyal(new ArrayList<>(cards));
-        if (!flushRoyal.isEmpty() && checkSize(flushRoyal) && checkDuplicate(flushRoyal)) {
+        if (!flushRoyal.isEmpty() && checkSize(flushRoyal) && isDuplicateExist(flushRoyal)) {
             return Pair.of(CombinationType.FLUSH_ROYAL, flushRoyal);
         }
 
         final List<CardType> straitFlush = findStraitFlush(new ArrayList<>(cards));
-        if (!straitFlush.isEmpty() && checkSize(straitFlush) && checkDuplicate(straitFlush)) {
+        if (!straitFlush.isEmpty() && checkSize(straitFlush) && isDuplicateExist(straitFlush)) {
             return Pair.of(CombinationType.STRAIT_FLUSH, straitFlush);
         }
 
         final List<CardType> kare = findKare(new ArrayList<>(cards));
-        if (!kare.isEmpty() && checkSize(kare) && checkDuplicate(kare)) {
+        if (!kare.isEmpty() && checkSize(kare) && isDuplicateExist(kare)) {
             return Pair.of(CombinationType.KARE, kare);
         }
 
         final List<CardType> fullHouse = findFullHouse(new ArrayList<>(cards));
-        if (!fullHouse.isEmpty() && checkSize(fullHouse) && checkDuplicate(fullHouse)) {
+        if (!fullHouse.isEmpty() && checkSize(fullHouse) && isDuplicateExist(fullHouse)) {
             return Pair.of(CombinationType.FULL_HOUSE, fullHouse);
         }
 
         final List<CardType> flush = findFlush(new ArrayList<>(cards));
-        if (!flush.isEmpty() && checkSize(flush) && checkDuplicate(flush)) {
+        if (!flush.isEmpty() && checkSize(flush) && isDuplicateExist(flush)) {
             return Pair.of(CombinationType.FLUSH, flush);
         }
 
         final List<CardType> strait = findStrait(new ArrayList<>(cards));
-        if (!strait.isEmpty() && checkSize(strait) && checkDuplicate(strait)) {
+        if (!strait.isEmpty() && checkSize(strait) && isDuplicateExist(strait)) {
             return Pair.of(CombinationType.STRAIT, strait);
         }
 
         final List<CardType> three = findThree(new ArrayList<>(cards));
-        if (!three.isEmpty() && checkSize(three) && checkDuplicate(three)) {
+        if (!three.isEmpty() && checkSize(three) && isDuplicateExist(three)) {
             return Pair.of(CombinationType.THREE, three);
         }
 
         final List<CardType> twoPair = findTwoPair(new ArrayList<>(cards));
-        if (!twoPair.isEmpty() && checkSize(twoPair) && checkDuplicate(twoPair)) {
+        if (!twoPair.isEmpty() && checkSize(twoPair) && isDuplicateExist(twoPair)) {
             return Pair.of(CombinationType.TWO_PAIR, twoPair);
         }
 
         final List<CardType> pair = findPair(new ArrayList<>(cards));
 
-        if (!pair.isEmpty() && checkSize(pair) && checkDuplicate(pair)) {
+        if (!pair.isEmpty() && checkSize(pair) && isDuplicateExist(pair)) {
             return Pair.of(CombinationType.PAIR, pair);
         }
 
         final List<CardType> highCards = findHighCard(new ArrayList<>(cards));
 
-        if (!highCards.isEmpty() && checkSize(highCards) && checkDuplicate(highCards)) {
+        if (!highCards.isEmpty() && checkSize(highCards) && isDuplicateExist(highCards)) {
             return Pair.of(CombinationType.HIGH_CARD, highCards);
         }
 
@@ -259,11 +259,10 @@ public class HoldemCombinationService implements CombinationService {
         return highCards;
     }
 
-
     private List<CardType> findStraitFlush(List<CardType> cardTypes) {
         final List<CardType> flush = findFlush(cardTypes);
 
-        if (!flush.isEmpty() && checkStrait(flush)) {
+        if (!flush.isEmpty() && isStrait(flush)) {
             return sortByPowerDesc(flush);
         }
 
@@ -332,7 +331,7 @@ public class HoldemCombinationService implements CombinationService {
 
 
     private List<CardType> findStrait(List<CardType> cards) {
-        if (checkStrait(cards)) {
+        if (isStrait(cards)) {
             final List<CardType> sortedCards = sortByPowerDesc(removeCardsWithSamePower(cards));
 
             if (sortedCards.size() == 5) {
@@ -344,7 +343,7 @@ public class HoldemCombinationService implements CombinationService {
                         .limit(5)
                         .collect(Collectors.toList());
 
-                if (checkStrait(firstFiveCards)){
+                if (isStrait(firstFiveCards)){
                   return firstFiveCards;
                 }
                 sortedCards.remove(0);
@@ -389,7 +388,7 @@ public class HoldemCombinationService implements CombinationService {
         return Collections.emptyList();
     }
 
-    private boolean checkStrait(List<CardType> cards) {
+    private boolean isStrait(List<CardType> cards) {
         final List<CardType> distinctList = sortByPowerAsc(removeCardsWithSamePower(cards));
         int i = 0;
         for (CardType cardFromFirstLoop : distinctList) {
@@ -525,7 +524,7 @@ public class HoldemCombinationService implements CombinationService {
         return distinctList;
     }
 
-    private boolean checkDuplicate(List<CardType> cards) {
+    private boolean isDuplicateExist(List<CardType> cards) {
         if (cards.stream()
                 .distinct()
                 .count() == COMBINATION_SIZE) {

@@ -42,14 +42,14 @@ public class OrderActionService implements OrderService {
         boolean isSkipNext = false;
 
         while (true) {
-            if (allPlayersInAllIn(holdemRoundSettingsDTO)) {
+            if (playersInAllIn(holdemRoundSettingsDTO)) {
                 securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettingsDTO);
                 break;
             }
             if (allPlayersInGameHaveSameCountOfBet(holdemRoundSettingsDTO) && holdemRoundSettingsDTO.getLastBet() != 0) {
                 break;
             }
-            if (allChecks(sortedPlayers)) {
+            if (playersCheck(sortedPlayers)) {
                 break;
             }
             if (isOnePlayerLeft(sortedPlayers)) {
@@ -61,7 +61,7 @@ public class OrderActionService implements OrderService {
                 if (player.getStateType() == null || player.getStateType() == StateType.AFK || player.getStateType() == StateType.LEAVE) {
                     continue;
                 }
-                if (playersHasNotChips(player)) {
+                if (isNotEnoughChips(player)) {
                     continue;
                 }
                 if (isOnePlayerLeft(sortedPlayers)) {
@@ -88,17 +88,16 @@ public class OrderActionService implements OrderService {
         return stageType == StageType.PREFLOP ? sortPreflop(players) : sortPostflop(players);
     }
 
-    private boolean playersHasNotChips(Player player) {
+    private boolean isNotEnoughChips(Player player) {
         return player.getChipsCount() == 0;
     }
 
-    private boolean allPlayersInAllIn(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
+    private boolean playersInAllIn(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
         return getPlayersInGame(holdemRoundSettingsDTO.getPlayers()).stream()
                 .allMatch(playerInAllIn());
-
     }
 
-    private boolean allChecks(List<Player> players) {
+    private boolean playersCheck(List<Player> players) {
         return players.stream()
                 .filter(playerInAllIn().negate())
                 .allMatch(playersHasCheck());
