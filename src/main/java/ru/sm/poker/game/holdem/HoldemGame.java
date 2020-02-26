@@ -26,8 +26,8 @@ public class HoldemGame extends Game {
         enable();
         while (isEnable()) {
             ThreadUtil.sleep(DELAY_IN_SECONDS);
+            addChips();
             if (isReady()) {
-                addChips();
                 getRound().startRound();
             }
         }
@@ -60,12 +60,17 @@ public class HoldemGame extends Game {
     private void addChips(){
         final Map<Player, Long> chipsMap = CommonGameManager.getChipsMap();
 
+        if (chipsMap.isEmpty()){
+            return;
+        }
+
         final List<Player> players = getPlayers();
 
         players.forEach(player -> {
             final Long chipsCount = chipsMap.get(player);
-            if (chipsCount != null && chipsCount != 0){
+            if (chipsCount != null && chipsCount == 0){
                 player.addChips(chipsCount);
+                player.setStateType(StateType.IN_GAME);
             }
             chipsMap.remove(player);
         });

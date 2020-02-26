@@ -35,6 +35,7 @@ public class HoldemWinnerService implements WinnerService {
         }
 
         checkCardsIntersect(getAllCards(holdemRoundSettingsDTO));
+
         final List<Pair<Player, CombinationDTO>> playersAndCombos = findCombinations(
                 PlayerUtil.getPlayersInGame(holdemRoundSettingsDTO.getPlayers()),
                 getDeck(holdemRoundSettingsDTO)
@@ -51,7 +52,6 @@ public class HoldemWinnerService implements WinnerService {
             giveOutPrizeToSingleWinner(holdemRoundSettingsDTO, moreStrongerCombinations.get(0).getKey());
             return;
         }
-
         processBets(moreStrongerCombinations, holdemRoundSettingsDTO);
 
     }
@@ -75,7 +75,7 @@ public class HoldemWinnerService implements WinnerService {
 
         final Player player = lastPlayer.get(0);
         player.addChips(holdemRoundSettingsDTO.getBank());
-        securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettingsDTO);
+        securityNotificationService.sendToAllWithSecurity(holdemRoundSettingsDTO);
     }
 
     private void processBets(List<Pair<Player, CombinationDTO>> winners, HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
@@ -95,8 +95,11 @@ public class HoldemWinnerService implements WinnerService {
         }
     }
 
-    private long getBankWithoutPlayersBets(List<Pair<Player, CombinationDTO>> winners, long bank, Map<
-            Player, Long> playersBets) {
+    private long getBankWithoutPlayersBets(
+            List<Pair<Player, CombinationDTO>> winners,
+            long bank, Map<Player,
+            Long> playersBets
+    ) {
         for (Pair<Player, CombinationDTO> winner : winners) {
             final Player player = winner.getLeft();
             final Long bets = playersBets.get(player);
@@ -175,15 +178,12 @@ public class HoldemWinnerService implements WinnerService {
     }
 
 
-    private List<Pair<Player, CombinationDTO>> findWinners
-            (List<Pair<Player, CombinationDTO>> playersAndCombinations) {
-
+    private List<Pair<Player, CombinationDTO>> findWinners(
+            List<Pair<Player, CombinationDTO>> playersAndCombinations
+    ) {
         final List<CombinationDTO> allCombinations = getCombinations(playersAndCombinations);
-
         final CombinationDTO theStrongestCombination = findTheStrongestCombination(allCombinations);
-
         return findPlayersWithTheStrongestCombination(playersAndCombinations, theStrongestCombination);
-
     }
 
 

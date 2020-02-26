@@ -9,7 +9,7 @@ import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
 
-import static ru.sm.poker.base.StrategyBase.CHECK_STRATEGIES;
+import static ru.sm.poker.data.StrategyData.CHECK_STRATEGIES;
 
 @ToString
 public class Check implements ExecutableAction {

@@ -6,6 +6,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.action.Action;
 import ru.sm.poker.action.ExecutableAction;
+import ru.sm.poker.action.holdem.Fold;
 import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.Player;
@@ -55,11 +56,20 @@ public class SimpleActionService implements ActionService {
             }
 
             final HoldemRoundSettingsDTO roundSettings = game.getRoundSettings();
-            player.setStateType(player.getStateType() == StateType.AFK ? StateType.IN_GAME : StateType.AFK);
-
+            setStateType(player);
             securityNotificationService.sendToAllWithSecurity(roundSettings);
             log.info(format(InformationType.CHANGED_STATE_TYPE_INFO.getMessage(), playerName, player.getStateType()));
         }
+    }
+
+    private void setStateType(Player player){
+        if (player.getStateType() == StateType.IN_GAME){
+            player.setStateType(StateType.AFK);
+            player.setAction(new Fold());
+            return;
+        }
+        player.setStateType(StateType.IN_GAME);
+        player.setAction(new Wait());
     }
 
 

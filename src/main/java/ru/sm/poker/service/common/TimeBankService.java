@@ -19,8 +19,9 @@ public class TimeBankService {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                player.setStateType(StateType.AFK);
                 player.setAction(new Fold());
+                player.setStateType(StateType.AFK);
+                player.setTimeBank(0L);
             }
         }, player.getTimeBank() * 1000L);
         return Pair.of(timer, startTime);

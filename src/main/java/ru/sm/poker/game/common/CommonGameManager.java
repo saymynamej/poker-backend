@@ -49,11 +49,11 @@ public class CommonGameManager implements GameManager {
 
     @Override
     public void addChips(String name) {
-        final Optional<Player> playerByName = getPlayerByName(name);
-        if (playerByName.isEmpty()) {
+        final Optional<Player> optionalPlayer = getPlayerByName(name);
+        if (optionalPlayer.isEmpty()) {
             return;
         }
-        final Player player = playerByName.get();
+        final Player player = optionalPlayer.get();
         CHIPS_MAP.put(player, 5000L);
     }
 

@@ -25,7 +25,6 @@ public class HoldemCombinationService implements CombinationService {
     public List<Pair<Player, CombinationDTO>> findMoreStrongerCombinations(
             List<Pair<Player, CombinationDTO>> playersAndCombinations
     ) {
-
         int max = findMaxSumCards(playersAndCombinations);
 
         return playersAndCombinations.stream()
@@ -34,23 +33,16 @@ public class HoldemCombinationService implements CombinationService {
     }
 
     private int findMaxSumCards(List<Pair<Player, CombinationDTO>> playersAndCombinations) {
-        int max = 0;
-
-        for (Pair<Player, CombinationDTO> playerDTOCombinationDTOPair : playersAndCombinations) {
-            int result = sumCards(playerDTOCombinationDTOPair.getRight().getCards());
-            if (result > max) {
-                max = result;
-            }
-        }
-        return max;
+       return playersAndCombinations.stream()
+                .map(pair -> sumCards(pair.getRight().getCards()))
+                .max(Comparator.comparingInt(num -> num))
+                .orElseThrow(() -> new RuntimeException("cannot find max cards"));
     }
 
     private int sumCards(List<CardType> cards) {
-        int sum = 0;
-        for (CardType card : cards) {
-            sum += card.getPowerAsInt();
-        }
-        return sum;
+        return cards.stream().map(CardType::getPowerAsInt)
+                .reduce(Integer::sum)
+                .orElseThrow(() -> new RuntimeException("cannot calculate sum"));
     }
 
     @Override
@@ -267,9 +259,9 @@ public class HoldemCombinationService implements CombinationService {
         }
 
         final List<CardType> straitWithAce = checkStraitWithAce(cardTypes);
-        if (!straitWithAce.isEmpty()){
+        if (!straitWithAce.isEmpty()) {
             final List<CardType> straitFlushWithAce = findFlush(straitWithAce);
-            if (!straitFlushWithAce.isEmpty()){
+            if (!straitFlushWithAce.isEmpty()) {
                 return straitFlushWithAce;
             }
         }
@@ -343,21 +335,21 @@ public class HoldemCombinationService implements CombinationService {
                         .limit(5)
                         .collect(Collectors.toList());
 
-                if (isStrait(firstFiveCards)){
-                  return firstFiveCards;
+                if (isStrait(firstFiveCards)) {
+                    return firstFiveCards;
                 }
                 sortedCards.remove(0);
             }
         }
         final List<CardType> straitWithAce = checkStraitWithAce(cards);
 
-        if (!straitWithAce.isEmpty()){
+        if (!straitWithAce.isEmpty()) {
             return straitWithAce;
         }
         return Collections.emptyList();
     }
 
-    private List<CardType> checkStraitWithAce(List<CardType> cards){
+    private List<CardType> checkStraitWithAce(List<CardType> cards) {
 
         final List<CardType> distinctList = sortByPowerAsc(removeCardsWithSamePower(cards));
 
@@ -381,7 +373,7 @@ public class HoldemCombinationService implements CombinationService {
                 .filter(cardType -> cardType.getPowerAsInt() == PowerType.FIVE_POWER.getPowerAsInt())
                 .findAny();
 
-        if (ace.isPresent() && two.isPresent() && three.isPresent() && four.isPresent() && five.isPresent()){
+        if (ace.isPresent() && two.isPresent() && three.isPresent() && four.isPresent() && five.isPresent()) {
             return Arrays.asList(ace.get(), two.get(), three.get(), four.get(), five.get());
         }
 

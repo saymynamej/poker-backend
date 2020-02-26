@@ -1,4 +1,4 @@
-package ru.sm.poker.base;
+package ru.sm.poker.data;
 
 import ru.sm.poker.action.ActionStrategy;
 import ru.sm.poker.action.holdem.strategy.*;
@@ -7,7 +7,7 @@ import ru.sm.poker.enums.RoleType;
 import java.util.HashMap;
 import java.util.Map;
 
-public class StrategyBase {
+public class StrategyData {
 
     public final static Map<RoleType, ActionStrategy> CALL_STRATEGIES = new HashMap<>();
     public final static Map<RoleType, ActionStrategy> BET_STRATEGIES = new HashMap<>();

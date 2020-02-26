@@ -9,9 +9,10 @@ import ru.sm.poker.game.Round;
 import ru.sm.poker.game.RoundSettingsManager;
 import ru.sm.poker.service.OrderService;
 import ru.sm.poker.service.WinnerService;
-import ru.sm.poker.util.HistoryUtil;
 
 import java.util.List;
+
+import static ru.sm.poker.util.HistoryUtil.*;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -46,7 +47,7 @@ public class HoldemRound implements Round {
             if (!isSkipNext) {
                 this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithTern(
                         this.holdemRoundSettingsDTO.getBank(),
-                        HistoryUtil.unionHistory(
+                        unionHistory(
                                 this.holdemRoundSettingsDTO.getStageHistory(),
                                 this.holdemRoundSettingsDTO.getFullHistory()
                         )
@@ -56,7 +57,7 @@ public class HoldemRound implements Round {
                 if (!isSkipNext) {
                     this.holdemRoundSettingsDTO = roundSettingsManager.getPostFlopSettingsWithRiver(
                             this.holdemRoundSettingsDTO.getBank(),
-                            HistoryUtil.unionHistory(
+                            unionHistory(
                                     this.holdemRoundSettingsDTO.getStageHistory(),
                                     this.holdemRoundSettingsDTO.getFullHistory()
                             )

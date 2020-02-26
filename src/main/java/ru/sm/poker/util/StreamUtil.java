@@ -28,6 +28,7 @@ public class StreamUtil {
         return (Predicate<Player>) player -> player.getAction() != null &&
                 player.getAction().getActionType() != ActionType.FOLD &&
                 player.getRoleType() != null &&
+                player.getStateType() != null &&
                 player.getStateType() != StateType.AFK &&
                 player.getStateType() != StateType.LEAVE &&
                 player.getCards() != null;

@@ -12,7 +12,7 @@ import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
 
-import static ru.sm.poker.base.StrategyBase.RAISE_STRATEGIES;
+import static ru.sm.poker.data.StrategyData.RAISE_STRATEGIES;
 
 @Getter
 @Setter

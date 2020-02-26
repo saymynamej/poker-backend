@@ -32,10 +32,7 @@ public class OrderActionService implements OrderService {
     @Override
     public boolean start(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
         final List<Player> sortedPlayers = getPlayersInGame(
-                sort(
-                        holdemRoundSettingsDTO.getPlayers(),
-                        holdemRoundSettingsDTO.getStageType()
-                )
+                sort(holdemRoundSettingsDTO.getPlayers(), holdemRoundSettingsDTO.getStageType())
         );
 
         boolean isFirstStart = true;
@@ -58,17 +55,17 @@ public class OrderActionService implements OrderService {
             }
 
             for (Player player : sortedPlayers) {
-                if (player.getStateType() == null || player.getStateType() == StateType.AFK || player.getStateType() == StateType.LEAVE) {
+                if (player.isNotInGame()) {
                     continue;
                 }
-                if (isNotEnoughChips(player)) {
+                if (player.chipsEnough()) {
                     continue;
                 }
                 if (isOnePlayerLeft(sortedPlayers)) {
                     isSkipNext = true;
                     break;
                 }
-                if (player.getAction().getActionType() == ActionType.FOLD) {
+                if (player.isFolded()) {
                     continue;
                 }
                 if (sumStageHistoryBets(holdemRoundSettingsDTO, player) == holdemRoundSettingsDTO.getLastBet()) {
@@ -83,13 +80,8 @@ public class OrderActionService implements OrderService {
         return isSkipNext;
     }
 
-
     private List<Player> sort(List<Player> players, StageType stageType) {
         return stageType == StageType.PREFLOP ? sortPreflop(players) : sortPostflop(players);
-    }
-
-    private boolean isNotEnoughChips(Player player) {
-        return player.getChipsCount() == 0;
     }
 
     private boolean playersInAllIn(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
@@ -106,7 +98,7 @@ public class OrderActionService implements OrderService {
     private boolean isOnePlayerLeft(List<Player> players) {
         return players.stream()
                 .filter(player -> player.getAction().getActionType() == ActionType.FOLD && player.getStateType() == StateType.IN_GAME)
-                .count() == players.size() - 1;
+                .count() == players.size() - 1 || players.stream().filter(pl -> pl.getStateType().equals(StateType.IN_GAME)).count() == 1;
     }
 
 }

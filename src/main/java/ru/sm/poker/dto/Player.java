@@ -3,6 +3,7 @@ package ru.sm.poker.dto;
 import lombok.*;
 import ru.sm.poker.action.Action;
 import ru.sm.poker.action.holdem.Wait;
+import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.RoleType;
 import ru.sm.poker.enums.StateType;
@@ -94,6 +95,18 @@ public class Player {
             return;
         }
         this.chipsCount -= chips;
+    }
+
+    public boolean chipsEnough(){
+        return getChipsCount() == 0;
+    }
+
+    public boolean isFolded(){
+        return getAction().getActionType() == ActionType.FOLD;
+    }
+
+    public boolean isNotInGame(){
+       return getStateType() == null || getStateType() == StateType.AFK || getStateType() == StateType.LEAVE;
     }
 
     public void addCards(List<CardType> cards) {
