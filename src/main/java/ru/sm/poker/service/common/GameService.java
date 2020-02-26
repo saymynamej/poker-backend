@@ -5,10 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.Player;
-import ru.sm.poker.enums.ActionType;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static ru.sm.poker.util.HistoryUtil.addActionInHistory;
 

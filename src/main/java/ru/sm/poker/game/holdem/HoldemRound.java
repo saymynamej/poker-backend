@@ -10,7 +10,6 @@ import ru.sm.poker.game.RoundSettingsManager;
 import ru.sm.poker.service.OrderService;
 import ru.sm.poker.service.WinnerService;
 import ru.sm.poker.util.HistoryUtil;
-import ru.sm.poker.util.ThreadUtil;
 
 import java.util.List;
 
