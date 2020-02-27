@@ -1,6 +1,6 @@
 package ru.sm.poker.util;
 
-import ru.sm.poker.action.CountAction;
+import ru.sm.poker.dto.Bot;
 import ru.sm.poker.dto.Player;
 
 import java.util.ArrayList;
@@ -15,6 +15,12 @@ public class PlayerUtil {
         return copyPlayers;
     }
 
+    public static Bot getDefaultBotForHoldem(String playerName){
+        return Bot.builder().name(playerName)
+                .chipsCount(5000L)
+                .build();
+    }
+
     public static Player getDefaultPlayerForHoldem(String playerName) {
         return getDefaultPlayerForHoldem(playerName, 5000L);
     }
@@ -22,19 +28,28 @@ public class PlayerUtil {
     public static Player getDefaultPlayerForHoldem(String playerName, long chipsCount) {
         return Player.builder()
                 .name(playerName)
-                .timeBank(5L)
+                .timeBank(30L)
                 .chipsCount(chipsCount)
                 .build();
+    }
+
+    public static List<String> getNamesOfPlayersInGame(List<Player> players){
+        return getPlayersInGame(players)
+                .stream()
+                .map(Player::getName)
+                .collect(Collectors.toList());
+    }
+
+    public static List<Player> getNotFoldedPlayers(List<Player> players) {
+        return players.stream()
+                .filter(Player::isNotFolded)
+                .collect(Collectors.toList());
     }
 
     public static List<Player> getPlayersInGame(List<Player> players) {
         return players.stream()
                 .filter(StreamUtil.playerInGame())
                 .collect(Collectors.toList());
-    }
-
-    public static boolean hasPlayerEnoughChips(Player player, CountAction countAction) {
-        return player.getChipsCount() >= countAction.getCount();
     }
 
 }

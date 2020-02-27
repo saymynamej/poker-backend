@@ -15,7 +15,8 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
-public class HoldemRoundSettingsDTO {
+public class HoldemRoundSettings {
+
     private final Map<Player, List<Action>> stageHistory;
     private final Map<Player, List<Action>> fullHistory;
     private final List<Player> players;
@@ -33,4 +34,10 @@ public class HoldemRoundSettingsDTO {
     private long bank;
     private Player activePlayer;
     private boolean isAfk;
+
+    public boolean canRaise(){
+       return getStageType() == StageType.PREFLOP ?
+               lastBet == bigBlindBet :
+               lastBet == 0;
+    }
 }

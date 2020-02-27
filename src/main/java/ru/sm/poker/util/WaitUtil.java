@@ -9,7 +9,7 @@ public class WaitUtil {
 
     public static void waitOfCondition(BooleanSupplier supplier) {
         try {
-            waitCondition(3L, TimeUnit.SECONDS, supplier);
+            waitCondition(5L, TimeUnit.SECONDS, supplier);
         } catch (Exception e) {
 //            throw new RuntimeException("error while wait of condition", e);
         }

@@ -5,13 +5,15 @@ import ru.sm.poker.action.Action;
 import ru.sm.poker.action.holdem.Call;
 import ru.sm.poker.action.holdem.Fold;
 import ru.sm.poker.action.holdem.Wait;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
 import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.*;
 import ru.sm.poker.game.RoundSettingsManager;
 
 import java.security.SecureRandom;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public final class HoldemRoundSettingsManager implements RoundSettingsManager {
@@ -30,7 +32,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
         players.forEach(player -> player.setGameName(gameName));
     }
 
-    public HoldemRoundSettingsDTO getPreflopSettings() {
+    public HoldemRoundSettings getPreflopSettings() {
         setAllPlayersGameName();
         dealCards();
         setButton();
@@ -38,7 +40,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
         setBigBlind();
         setAllActivePlayers();
 
-        return HoldemRoundSettingsDTO
+        return HoldemRoundSettings
                 .builder()
                 .gameName(gameName)
                 .bank(bigBlindBet + smallBlindBet)
@@ -56,9 +58,9 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .build();
     }
 
-    public HoldemRoundSettingsDTO getPostFlopSettings(long bank, Map<Player, List<Action>> prevHistory) {
+    public HoldemRoundSettings getPostFlopSettings(long bank, Map<Player, List<Action>> prevHistory) {
         setAllActivePlayersTest();
-        return HoldemRoundSettingsDTO
+        return HoldemRoundSettings
                 .builder()
                 .flop(flop)
                 .gameName(gameName)
@@ -77,9 +79,9 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .build();
     }
 
-    public HoldemRoundSettingsDTO getPostFlopSettingsWithTern(long bank, Map<Player, List<Action>> fullHistory) {
+    public HoldemRoundSettings getPostFlopSettingsWithTern(long bank, Map<Player, List<Action>> fullHistory) {
         setAllActivePlayersTest();
-        return HoldemRoundSettingsDTO
+        return HoldemRoundSettings
                 .builder()
                 .flop(flop)
                 .tern(tern)
@@ -100,9 +102,9 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
     }
 
 
-    public HoldemRoundSettingsDTO getPostFlopSettingsWithRiver(long bank, Map<Player, List<Action>> fullHistory) {
+    public HoldemRoundSettings getPostFlopSettingsWithRiver(long bank, Map<Player, List<Action>> fullHistory) {
         setAllActivePlayersTest();
-        return HoldemRoundSettingsDTO
+        return HoldemRoundSettings
                 .builder()
                 .flop(flop)
                 .tern(tern)
@@ -244,11 +246,8 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
     }
 
     private List<CardType> setFlop() {
-        final List<CardType> generatedFlop = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            generatedFlop.add(getRandomCard());
-        }
-        return generatedFlop;
+       return Stream.generate(this::getRandomCard).limit(3)
+                .collect(Collectors.toList());
     }
 
     private Player getPlayer(int indexOfSmallBlind) {
@@ -267,8 +266,8 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
 
     private void setAllActivePlayers() {
         this.players.forEach(player -> {
-            if (!player.isSmallBlind() && !player.isBigBlind() && !player.isButton()) {
-                player.setRole(RoleType.PLAYER);
+            if (player.hasNotSpecialRoles()) {
+                player.setRole(RoleType.ORDINARY);
             }
             player.setAction(new Wait());
         });

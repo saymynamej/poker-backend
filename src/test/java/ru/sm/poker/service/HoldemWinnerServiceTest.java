@@ -11,7 +11,7 @@ import ru.sm.poker.action.Action;
 import ru.sm.poker.action.holdem.Call;
 import ru.sm.poker.action.holdem.Fold;
 import ru.sm.poker.action.holdem.Raise;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
 import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.service.holdem.HoldemWinnerService;
@@ -48,7 +48,7 @@ public class HoldemWinnerServiceTest {
                 winner1, Arrays.asList(new Call(firstBet), new Call(secondBet), new Call(thirdBet)),
                 winner2, Arrays.asList(new Raise(firstBet), new Raise(secondBet), new Raise(thirdBet))
         );
-        final HoldemRoundSettingsDTO roundSettingsDTO = HoldemRoundSettingsDTO.builder()
+        final HoldemRoundSettings roundSettingsDTO = HoldemRoundSettings.builder()
                 .flop(Arrays.asList(CardType.TWO_C, CardType.THREE_C, CardType.FOUR_C))
                 .tern(CardType.SEVEN_H)
                 .river(CardType.TEN_H)
@@ -85,7 +85,7 @@ public class HoldemWinnerServiceTest {
                 looser, Arrays.asList(new Call(firstBet), new Call(secondBet), new Fold())
         );
 
-        final HoldemRoundSettingsDTO roundSettingsDTO = HoldemRoundSettingsDTO.builder()
+        final HoldemRoundSettings roundSettingsDTO = HoldemRoundSettings.builder()
                 .flop(Arrays.asList(CardType.TWO_C, CardType.THREE_C, CardType.FOUR_C))
                 .tern(CardType.SEVEN_H)
                 .river(CardType.TEN_H)
@@ -128,7 +128,7 @@ public class HoldemWinnerServiceTest {
                 looser, Arrays.asList(new Raise(firstBet), new Raise(secondBet), new Raise(thirdBet))
         );
 
-        final HoldemRoundSettingsDTO roundSettingsDTO = HoldemRoundSettingsDTO.builder()
+        final HoldemRoundSettings roundSettingsDTO = HoldemRoundSettings.builder()
                 .flop(Arrays.asList(CardType.TWO_C, CardType.THREE_C, CardType.FOUR_C))
                 .tern(CardType.SEVEN_H)
                 .river(CardType.TEN_H)
@@ -160,7 +160,7 @@ public class HoldemWinnerServiceTest {
                 winner, Arrays.asList(new Call(firstBet), new Call(secondBet), new Call(thirdBet)),
                 looser, Arrays.asList(new Raise(firstBet), new Raise(secondBet), new Raise(thirdBet))
         );
-        final HoldemRoundSettingsDTO roundSettingsDTO = HoldemRoundSettingsDTO.builder()
+        final HoldemRoundSettings roundSettingsDTO = HoldemRoundSettings.builder()
                 .flop(Arrays.asList(CardType.TWO_C, CardType.THREE_C, CardType.FOUR_C))
                 .tern(CardType.SEVEN_H)
                 .river(CardType.TEN_H)
@@ -193,7 +193,7 @@ public class HoldemWinnerServiceTest {
                 looser, Arrays.asList(new Raise(firstBet), new Raise(secondBet))
         );
 
-        final HoldemRoundSettingsDTO roundSettingsDTO = HoldemRoundSettingsDTO.builder()
+        final HoldemRoundSettings roundSettingsDTO = HoldemRoundSettings.builder()
                 .flop(Arrays.asList(CardType.TWO_C, CardType.THREE_C, CardType.FOUR_C))
                 .fullHistory(fullHistory)
                 .players(Arrays.asList(winner, looser))

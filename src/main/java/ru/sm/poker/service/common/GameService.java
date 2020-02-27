@@ -3,7 +3,7 @@ package ru.sm.poker.service.common;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
 import ru.sm.poker.dto.Player;
 
 import static ru.sm.poker.util.HistoryUtil.addActionInHistory;
@@ -13,32 +13,32 @@ import static ru.sm.poker.util.HistoryUtil.addActionInHistory;
 @Slf4j
 public class GameService {
 
-    public void doAction(Player player, HoldemRoundSettingsDTO holdemRoundSettingsDTO, long removeChips, long lastBet) {
+    public void doAction(Player player, HoldemRoundSettings holdemRoundSettings, long removeChips, long lastBet) {
         player.removeChips(removeChips);
-        addBank(holdemRoundSettingsDTO, removeChips);
-        setLastBet(holdemRoundSettingsDTO, lastBet);
-        addActionInHistory(holdemRoundSettingsDTO, player);
+        addBank(holdemRoundSettings, removeChips);
+        setLastBet(holdemRoundSettings, lastBet);
+        addActionInHistory(holdemRoundSettings, player);
     }
 
-    public void addBank(HoldemRoundSettingsDTO holdemRoundSettingsDTO, long count) {
-        holdemRoundSettingsDTO.setBank(holdemRoundSettingsDTO.getBank() + count);
+    public void addBank(HoldemRoundSettings holdemRoundSettings, long count) {
+        holdemRoundSettings.setBank(holdemRoundSettings.getBank() + count);
     }
 
-    public void setActivePlayer(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player) {
+    public void setActivePlayer(HoldemRoundSettings holdemRoundSettings, Player player) {
         player.setActive(true);
-        holdemRoundSettingsDTO.setActivePlayer(player);
+        holdemRoundSettings.setActivePlayer(player);
     }
 
-    public void setInActivePlayer(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player) {
+    public void setInActivePlayer(HoldemRoundSettings holdemRoundSettings, Player player) {
         player.setActive(false);
-        holdemRoundSettingsDTO.setActivePlayer(null);
+        holdemRoundSettings.setActivePlayer(null);
     }
 
-    public void setLastBet(HoldemRoundSettingsDTO holdemRoundSettingsDTO, long count) {
-        if (holdemRoundSettingsDTO.getLastBet() < count) {
+    public void setLastBet(HoldemRoundSettings holdemRoundSettings, long count) {
+        if (holdemRoundSettings.getLastBet() < count) {
             log.info("prev last bet less than new last bet");
         }
-        holdemRoundSettingsDTO.setLastBet(count);
+        holdemRoundSettings.setLastBet(count);
     }
 
 }

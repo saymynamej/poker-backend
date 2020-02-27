@@ -2,7 +2,7 @@ package ru.sm.poker.game;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.sm.poker.config.game.GameSettings;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
 import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.StateType;
 
@@ -76,6 +76,6 @@ public abstract class Game {
 
     public abstract void reload();
 
-    public abstract HoldemRoundSettingsDTO getRoundSettings();
+    public abstract HoldemRoundSettings getRoundSettings();
 
 }

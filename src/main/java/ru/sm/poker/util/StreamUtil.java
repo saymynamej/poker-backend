@@ -24,6 +24,10 @@ public class StreamUtil {
         return (Predicate<Player>) player -> player.getStateType() != StateType.AFK;
     }
 
+    public static Predicate<? super Player> playerHasChips(){
+        return (Predicate<Player>) player -> player.getChipsCount() > 0;
+    }
+
     public static Predicate<? super Player> playerInGame() {
         return (Predicate<Player>) player -> player.getAction() != null &&
                 player.getAction().getActionType() != ActionType.FOLD &&

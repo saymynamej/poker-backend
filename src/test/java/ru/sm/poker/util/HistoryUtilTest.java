@@ -7,7 +7,7 @@ import ru.sm.poker.action.CountAction;
 import ru.sm.poker.action.holdem.Bet;
 import ru.sm.poker.action.holdem.Call;
 import ru.sm.poker.action.holdem.Raise;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
 import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.StageType;
 
@@ -24,7 +24,7 @@ public class HistoryUtilTest {
         final long firstBet = 2;
         final long secondRaise = 10;
         final long thirdRaise = 40;
-        final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO();
+        final HoldemRoundSettings roundSettingsDTO = getRoundSettingsDTO();
         final Map<Player, List<Action>> history = roundSettingsDTO.getStageHistory();
         final Player player = getPlayer();
         history.put(player, List.of(new Call(firstBet), new Raise(secondRaise), new Raise(thirdRaise)));
@@ -38,7 +38,7 @@ public class HistoryUtilTest {
         final long secondRaise = 10;
         final long thirdRaise = 40;
         final long newActionBet = 100;
-        final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO();
+        final HoldemRoundSettings roundSettingsDTO = getRoundSettingsDTO();
         final Map<Player, List<Action>> history = roundSettingsDTO.getStageHistory();
         final Player player = getPlayer();
         history.put(player, List.of(new Call(firstBet), new Raise(secondRaise), new Raise(thirdRaise)));
@@ -49,7 +49,7 @@ public class HistoryUtilTest {
     @Test
     public void addActionInHistoryTest() {
         long callCount = 100;
-        final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO();
+        final HoldemRoundSettings roundSettingsDTO = getRoundSettingsDTO();
         final Player player = getPlayer();
         player.setAction(new Call(callCount));
         addActionInHistory(roundSettingsDTO, player);
@@ -60,7 +60,7 @@ public class HistoryUtilTest {
     @Test
     public void addActionInHistoryTest2() {
         long callCount = 100;
-        final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO();
+        final HoldemRoundSettings roundSettingsDTO = getRoundSettingsDTO();
         final Player player = getPlayer();
         addActionInHistory(roundSettingsDTO, player, new Call(callCount));
         CountAction action = (CountAction) roundSettingsDTO.getStageHistory().get(player).get(0);
@@ -69,7 +69,7 @@ public class HistoryUtilTest {
 
     @Test
     public void allPlayersInGameHaveSameCountOfBetSuccessTest() {
-        final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO(DEFAULT_PLAYERS_SIZE, StageType.PREFLOP);
+        final HoldemRoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_PLAYERS_SIZE, StageType.PREFLOP);
         final List<Player> players = roundSettingsDTO.getPlayers();
         for (Player player : players) {
             addActionInHistory(roundSettingsDTO, player, new Call(DEFAULT_BIG_BLIND_BET));
@@ -80,7 +80,7 @@ public class HistoryUtilTest {
 
     @Test
     public void allPlayersInGameHaveSameCountOfBetSuccessFail() {
-        final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO(DEFAULT_PLAYERS_SIZE, StageType.PREFLOP);
+        final HoldemRoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_PLAYERS_SIZE, StageType.PREFLOP);
         final List<Player> players = roundSettingsDTO.getPlayers();
         for (Player player : players) {
             addActionInHistory(roundSettingsDTO, player, new Call(DEFAULT_BIG_BLIND_BET));

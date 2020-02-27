@@ -30,7 +30,6 @@ public class CommonGameManager implements GameManager {
                 .findAny();
     }
 
-
     @Override
     public boolean playerExistByName(String gameName, String name) {
         final Game game = games.get(gameName);

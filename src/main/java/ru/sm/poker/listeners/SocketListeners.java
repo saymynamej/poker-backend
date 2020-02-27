@@ -5,7 +5,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
 import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.MessageType;
 import ru.sm.poker.game.Game;
@@ -38,8 +38,8 @@ public class SocketListeners {
                 final Map<String, Game> allGames = gameManager.getGames();
                 if (player.getGameName() != null) {
                     final Game game = allGames.get(player.getGameName());
-                    final HoldemRoundSettingsDTO holdemRoundSettingsDTO = game.getRoundSettings();
-                    simpleNotificationService.sendGameInformationToUser(player.getName(), securityService.secureCards(List.of(user.getName()), holdemRoundSettingsDTO));
+                    final HoldemRoundSettings holdemRoundSettings = game.getRoundSettings();
+                    simpleNotificationService.sendGameInformationToUser(player.getName(), securityService.secureCards(List.of(user.getName()), holdemRoundSettings));
                 }
             }
         }

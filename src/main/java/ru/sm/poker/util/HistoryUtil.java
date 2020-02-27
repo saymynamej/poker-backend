@@ -2,7 +2,7 @@ package ru.sm.poker.util;
 
 import ru.sm.poker.action.Action;
 import ru.sm.poker.action.CountAction;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
 import ru.sm.poker.dto.Player;
 
 import java.util.*;
@@ -12,27 +12,27 @@ import static ru.sm.poker.util.PlayerUtil.getPlayersInGame;
 
 public class HistoryUtil {
 
-    public static boolean allPlayersInGameHaveSameCountOfBet(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-        final List<Player> playersInGame = getPlayersInGame(holdemRoundSettingsDTO.getPlayers());
+    public static boolean allPlayersInGameHaveSameCountOfBet(HoldemRoundSettings holdemRoundSettings) {
+        final List<Player> playersInGame = getPlayersInGame(holdemRoundSettings.getPlayers());
 
         final List<Player> players = playersInGame.stream()
                 .filter(StreamUtil.playerHasChips())
                 .collect(Collectors.toList());
 
         return players.stream()
-                .noneMatch(player -> sumStageHistoryBets(holdemRoundSettingsDTO, player) != holdemRoundSettingsDTO.getLastBet());
+                .noneMatch(player -> sumStageHistoryBets(holdemRoundSettings, player) != holdemRoundSettings.getLastBet());
     }
 
 
-    public static long sumRoundHistoryBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player) {
-        final Map<Player, List<Action>> fullHistory = holdemRoundSettingsDTO.getFullHistory();
+    public static long sumRoundHistoryBets(HoldemRoundSettings holdemRoundSettings, Player player) {
+        final Map<Player, List<Action>> fullHistory = holdemRoundSettings.getFullHistory();
         final List<Action> countActions = fullHistory.get(player);
         return sumBets(countActions);
     }
 
 
-    public static long sumStageHistoryBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player) {
-        final Map<Player, List<Action>> history = holdemRoundSettingsDTO.getStageHistory();
+    public static long sumStageHistoryBets(HoldemRoundSettings holdemRoundSettings, Player player) {
+        final Map<Player, List<Action>> history = holdemRoundSettings.getStageHistory();
         final List<Action> countActions = history.get(player);
         return sumBets(countActions);
     }
@@ -54,15 +54,15 @@ public class HistoryUtil {
     }
 
 
-    public static long sumAllHistoryBetsWithNewAction(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player, CountAction countAction) {
-        final Map<Player, List<Action>> history = holdemRoundSettingsDTO.getStageHistory();
+    public static long sumAllHistoryBetsWithNewAction(HoldemRoundSettings holdemRoundSettings, Player player, CountAction countAction) {
+        final Map<Player, List<Action>> history = holdemRoundSettings.getStageHistory();
         final List<Action> countActions = history.get(player);
         return sumBets(countActions) + countAction.getCount();
     }
 
 
-    public static void addActionInHistory(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player, Action action) {
-        final Map<Player, List<Action>> history = holdemRoundSettingsDTO.getStageHistory();
+    public static void addActionInHistory(HoldemRoundSettings holdemRoundSettings, Player player, Action action) {
+        final Map<Player, List<Action>> history = holdemRoundSettings.getStageHistory();
         final List<Action> newActionsList = history.get(player);
         if (newActionsList != null) {
             newActionsList.add(action);
@@ -74,8 +74,8 @@ public class HistoryUtil {
         history.put(player, actionsList);
     }
 
-    public static void addActionInHistory(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player) {
-        addActionInHistory(holdemRoundSettingsDTO, player, player.getAction());
+    public static void addActionInHistory(HoldemRoundSettings holdemRoundSettings, Player player) {
+        addActionInHistory(holdemRoundSettings, player, player.getAction());
     }
 
     public static Map<Player, List<Action>> unionHistory(Map<Player, List<Action>> firstHistory, Map<Player, List<Action>> secondHistory) {

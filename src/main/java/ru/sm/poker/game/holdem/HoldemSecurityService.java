@@ -3,7 +3,7 @@ package ru.sm.poker.game.holdem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
 import ru.sm.poker.dto.Player;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
@@ -23,7 +23,7 @@ public class HoldemSecurityService implements SecurityService {
     @Override
     public boolean isLegalPlayer(String gameName, Player player) {
         final Game game = holdemGameManager.getGameByName(gameName);
-        if (game != null && player != null && game.getRoundSettings() != null && game.getRoundSettings().getActivePlayer() != null) {
+        if (player != null && game.getRoundSettings() != null && game.getRoundSettings().getActivePlayer() != null) {
             return game.getRoundSettings()
                     .getActivePlayer()
                     .equals(player);
@@ -39,8 +39,8 @@ public class HoldemSecurityService implements SecurityService {
     }
 
     @Override
-    public HoldemRoundSettingsDTO secureCards(List<String> filterName, HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-        return RoundSettingsUtil.copyWithSecureCard(holdemRoundSettingsDTO, filterName);
+    public HoldemRoundSettings secureCards(List<String> filterName, HoldemRoundSettings holdemRoundSettings) {
+        return RoundSettingsUtil.copyWithSecureCard(holdemRoundSettings, filterName);
     }
 
     @Override

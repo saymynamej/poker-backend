@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.sm.poker.action.holdem.Call;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
 import ru.sm.poker.dto.Player;
 import ru.sm.poker.service.common.GameService;
 
@@ -23,12 +23,10 @@ public class GameServiceTest {
     @Autowired
     private GameService gameService;
 
-
-
     @Test
     public void testDoAction(){
         final long countCall = 4;
-        final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO();
+        final HoldemRoundSettings roundSettingsDTO = getRoundSettingsDTO();
         final Player player = getPlayer();
         final Call call = new Call(countCall);
         gameService.doAction(player, roundSettingsDTO, call.getCount(), call.getCount());

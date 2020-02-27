@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import ru.sm.poker.action.ExecutableAction;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
 import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.service.ActionService;
@@ -28,13 +28,13 @@ public class Bet implements ExecutableAction {
     }
 
     @Override
-    public void doAction(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player, GameService gameService, ActionService actionService) {
+    public void doAction(HoldemRoundSettings holdemRoundSettings, Player player, GameService gameService, ActionService actionService) {
         BET_STRATEGIES.get(player.getRoleType()).execute(
                 player,
                 gameService,
                 actionService,
                 this,
-                holdemRoundSettingsDTO
+                holdemRoundSettings
         );
     }
 }

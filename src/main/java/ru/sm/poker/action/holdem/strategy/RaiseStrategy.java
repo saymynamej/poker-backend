@@ -3,35 +3,37 @@ package ru.sm.poker.action.holdem.strategy;
 import ru.sm.poker.action.ActionStrategy;
 import ru.sm.poker.action.CountAction;
 import ru.sm.poker.action.holdem.Raise;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
 import ru.sm.poker.dto.Player;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
 
 import static ru.sm.poker.util.HistoryUtil.sumStageHistoryBets;
-import static ru.sm.poker.util.PlayerUtil.hasPlayerEnoughChips;
 
 public class RaiseStrategy implements ActionStrategy {
 
     @Override
-    public void execute(Player player, GameService gameService, ActionService actionService, CountAction countAction, HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-
-        if (!hasPlayerEnoughChips(player, countAction)) {
-            actionService.waitUntilPlayerWillHasAction(player, holdemRoundSettingsDTO);
+    public void execute(Player player, GameService gameService, ActionService actionService, CountAction countAction, HoldemRoundSettings holdemRoundSettings) {
+        if (player.hasNotChipsForAction(countAction)) {
+            actionService.waitUntilPlayerWillHasAction(player, holdemRoundSettings);
             return;
         }
 
-        if (countAction.getCount() < holdemRoundSettingsDTO.getLastBet() * 2) {
-            actionService.waitUntilPlayerWillHasAction(player, holdemRoundSettingsDTO);
+        if (countAction.getCount() < holdemRoundSettings.getLastBet() * 2) {
+            actionService.waitUntilPlayerWillHasAction(player, holdemRoundSettings);
             return;
         }
 
-        final long prevBets = sumStageHistoryBets(holdemRoundSettingsDTO, player);
+        final long prevBets = sumStageHistoryBets(holdemRoundSettings, player);
 
-        //CHANGE ACTION FOR HISTORY
-        player.setAction(new Raise(countAction.getCount() - prevBets));
+        changeActionForHistory(player, countAction, prevBets);
 
-        gameService.doAction(player, holdemRoundSettingsDTO, countAction.getCount() - prevBets, countAction.getCount());
+        gameService.doAction(player, holdemRoundSettings, countAction.getCount() - prevBets, countAction.getCount());
 
     }
+
+    private void changeActionForHistory(Player player, CountAction countAction, long prevBets) {
+        player.setAction(new Raise(countAction.getCount() - prevBets));
+    }
+
 }

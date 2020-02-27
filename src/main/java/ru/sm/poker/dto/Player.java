@@ -1,12 +1,11 @@
 package ru.sm.poker.dto;
 
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import ru.sm.poker.action.Action;
+import ru.sm.poker.action.CountAction;
 import ru.sm.poker.action.holdem.Wait;
-import ru.sm.poker.enums.ActionType;
-import ru.sm.poker.enums.CardType;
-import ru.sm.poker.enums.RoleType;
-import ru.sm.poker.enums.StateType;
+import ru.sm.poker.enums.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +13,15 @@ import java.util.List;
 @Getter
 @ToString
 @EqualsAndHashCode(of = "name")
+@SuperBuilder
 public class Player {
 
     private String name;
+
     private List<CardType> cards;
-    private RoleType roleType = RoleType.PLAYER;
+
+    private RoleType roleType = RoleType.ORDINARY;
+
     private long chipsCount;
     @Setter
     private StateType stateType = StateType.IN_GAME;
@@ -35,8 +38,17 @@ public class Player {
     @Setter
     private String gameName;
 
-    @Builder
-    public Player(String name, List<CardType> cards, RoleType roleType, long chipsCount, StateType stateType, long timeBank, Action action, boolean active, String gameName) {
+    public Player(
+            String name,
+            List<CardType> cards,
+            RoleType roleType,
+            long chipsCount,
+            StateType stateType,
+            long timeBank,
+            Action action,
+            boolean active,
+            String gameName
+    ) {
         this.name = name;
         this.cards = cards;
         this.roleType = roleType;
@@ -54,7 +66,7 @@ public class Player {
     }
 
     public boolean isPlayer() {
-        return roleType == RoleType.PLAYER;
+        return roleType == RoleType.ORDINARY;
     }
 
     public boolean isButton() {
@@ -78,7 +90,7 @@ public class Player {
     }
 
     public void removeRole() {
-        this.roleType = RoleType.PLAYER;
+        this.roleType = RoleType.ORDINARY;
     }
 
     public void addChips(long chips) {
@@ -89,6 +101,10 @@ public class Player {
         this.chipsCount = chipsCount;
     }
 
+    public boolean hasGame() {
+        return this.gameName != null;
+    }
+
     public void removeChips(long chips) {
         if (chips > this.chipsCount) {
             this.chipsCount = 0;
@@ -97,20 +113,52 @@ public class Player {
         this.chipsCount -= chips;
     }
 
-    public boolean chipsEnough(){
+    public boolean hasMoreChipsThanZero() {
         return getChipsCount() == 0;
     }
 
-    public boolean isFolded(){
+    public boolean hasChipsForAction(CountAction countAction) {
+        return getChipsCount() >= countAction.getCount();
+    }
+
+    public boolean hasNotChipsForAction(CountAction countAction) {
+        return !hasChipsForAction(countAction);
+    }
+
+    public boolean didAction() {
+        return getAction().getActionType() != ActionType.WAIT;
+    }
+
+    public boolean isFolded() {
         return getAction().getActionType() == ActionType.FOLD;
     }
 
-    public boolean isNotInGame(){
-       return getStateType() == null || getStateType() == StateType.AFK || getStateType() == StateType.LEAVE;
+    public boolean isNotFolded() {
+        return !isFolded();
+    }
+
+    public boolean hasNotSpecialRoles() {
+        return !isSmallBlind() && !isBigBlind() && !isButton();
+    }
+
+    public boolean isNotInGame() {
+        return getStateType() == null || getStateType() == StateType.AFK || getStateType() == StateType.LEAVE;
     }
 
     public void addCards(List<CardType> cards) {
         this.cards = new ArrayList<>(cards);
+    }
+
+    public boolean isBot(){
+        return getPlayerType() == PlayerType.BOT;
+    }
+
+    public boolean isOrdinaryPlayer(){
+        return getPlayerType() == PlayerType.ORDINARY;
+    }
+
+    public PlayerType getPlayerType(){
+        return PlayerType.ORDINARY;
     }
 
     public Player copy() {

@@ -18,35 +18,35 @@ public class StrategyData {
     static {
         CALL_STRATEGIES.put(RoleType.BIG_BLIND, new CallStrategy());
         CALL_STRATEGIES.put(RoleType.SMALL_BLIND, new CallStrategy());
-        CALL_STRATEGIES.put(RoleType.PLAYER, new CallStrategy());
+        CALL_STRATEGIES.put(RoleType.ORDINARY, new CallStrategy());
         CALL_STRATEGIES.put(RoleType.BUTTON, new CallStrategy());
     }
 
     static {
         BET_STRATEGIES.put(RoleType.BIG_BLIND, new BetStrategy());
         BET_STRATEGIES.put(RoleType.SMALL_BLIND, new BetStrategy());
-        BET_STRATEGIES.put(RoleType.PLAYER, new BetStrategy());
+        BET_STRATEGIES.put(RoleType.ORDINARY, new BetStrategy());
         BET_STRATEGIES.put(RoleType.BUTTON, new BetStrategy());
     }
 
     static {
         RAISE_STRATEGIES.put(RoleType.BIG_BLIND, new RaiseStrategy());
         RAISE_STRATEGIES.put(RoleType.SMALL_BLIND, new RaiseStrategy());
-        RAISE_STRATEGIES.put(RoleType.PLAYER, new RaiseStrategy());
+        RAISE_STRATEGIES.put(RoleType.ORDINARY, new RaiseStrategy());
         RAISE_STRATEGIES.put(RoleType.BUTTON, new RaiseStrategy());
     }
 
     static {
         CHECK_STRATEGIES.put(RoleType.BIG_BLIND, new CheckStrategy());
         CHECK_STRATEGIES.put(RoleType.SMALL_BLIND, new CheckStrategy());
-        CHECK_STRATEGIES.put(RoleType.PLAYER, new CheckStrategy());
+        CHECK_STRATEGIES.put(RoleType.ORDINARY, new CheckStrategy());
         CHECK_STRATEGIES.put(RoleType.BUTTON, new CheckStrategy());
     }
 
     static {
         ALLIN_STRATEGIES.put(RoleType.BIG_BLIND, new AllStrategy());
         ALLIN_STRATEGIES.put(RoleType.SMALL_BLIND, new AllStrategy());
-        ALLIN_STRATEGIES.put(RoleType.PLAYER, new AllStrategy());
+        ALLIN_STRATEGIES.put(RoleType.ORDINARY, new AllStrategy());
         ALLIN_STRATEGIES.put(RoleType.BUTTON, new AllStrategy());
     }
 }

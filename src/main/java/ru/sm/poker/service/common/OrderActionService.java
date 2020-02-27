@@ -3,7 +3,7 @@ package ru.sm.poker.service.common;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
 import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.enums.StageType;
@@ -30,26 +30,32 @@ public class OrderActionService implements OrderService {
     private final SecurityNotificationService securityNotificationService;
 
     @Override
-    public boolean start(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
+    public boolean start(HoldemRoundSettings holdemRoundSettings) {
         final List<Player> sortedPlayers = getPlayersInGame(
-                sort(holdemRoundSettingsDTO.getPlayers(), holdemRoundSettingsDTO.getStageType())
+                sort(holdemRoundSettings.getPlayers(), holdemRoundSettings.getStageType())
         );
 
         boolean isFirstStart = true;
         boolean isSkipNext = false;
 
         while (true) {
-            if (playersInAllIn(holdemRoundSettingsDTO)) {
-                securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettingsDTO);
+
+            if (playersInAllIn(holdemRoundSettings)) {
+                securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettings);
                 break;
             }
-            if (allPlayersInGameHaveSameCountOfBet(holdemRoundSettingsDTO) && holdemRoundSettingsDTO.getLastBet() != 0) {
+            if (allPlayersInGameHaveSameCountOfBet(holdemRoundSettings) && holdemRoundSettings.getLastBet() != 0) {
                 break;
             }
             if (playersCheck(sortedPlayers)) {
                 break;
             }
+
             if (isOnePlayerLeft(sortedPlayers)) {
+                isSkipNext = true;
+                break;
+            }
+            if (isOnePlayerWhoHasChips(sortedPlayers)){
                 isSkipNext = true;
                 break;
             }
@@ -58,7 +64,7 @@ public class OrderActionService implements OrderService {
                 if (player.isNotInGame()) {
                     continue;
                 }
-                if (player.chipsEnough()) {
+                if (player.hasMoreChipsThanZero()) {
                     continue;
                 }
                 if (isOnePlayerLeft(sortedPlayers)) {
@@ -68,12 +74,12 @@ public class OrderActionService implements OrderService {
                 if (player.isFolded()) {
                     continue;
                 }
-                if (sumStageHistoryBets(holdemRoundSettingsDTO, player) == holdemRoundSettingsDTO.getLastBet()) {
+                if (sumStageHistoryBets(holdemRoundSettings, player) == holdemRoundSettings.getLastBet()) {
                     if (!isFirstStart) {
                         continue;
                     }
                 }
-                actionServiceHoldem.waitUntilPlayerWillHasAction(player, holdemRoundSettingsDTO);
+                actionServiceHoldem.waitUntilPlayerWillHasAction(player, holdemRoundSettings);
             }
             isFirstStart = false;
         }
@@ -84,8 +90,8 @@ public class OrderActionService implements OrderService {
         return stageType == StageType.PREFLOP ? sortPreflop(players) : sortPostflop(players);
     }
 
-    private boolean playersInAllIn(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
-        return getPlayersInGame(holdemRoundSettingsDTO.getPlayers()).stream()
+    private boolean playersInAllIn(HoldemRoundSettings holdemRoundSettings) {
+        return getPlayersInGame(holdemRoundSettings.getPlayers()).stream()
                 .allMatch(playerInAllIn());
     }
 
@@ -98,7 +104,17 @@ public class OrderActionService implements OrderService {
     private boolean isOnePlayerLeft(List<Player> players) {
         return players.stream()
                 .filter(player -> player.getAction().getActionType() == ActionType.FOLD && player.getStateType() == StateType.IN_GAME)
-                .count() == players.size() - 1 || players.stream().filter(pl -> pl.getStateType().equals(StateType.IN_GAME)).count() == 1;
+                .count() == players.size() - 1
+                ||
+                players.stream()
+                        .filter(pl -> pl.getStateType().equals(StateType.IN_GAME))
+                        .count() == 1;
+    }
+
+    private boolean isOnePlayerWhoHasChips(List<Player> players){
+        return players.stream()
+                .filter(player -> player.getChipsCount() != 0)
+                .count() == 1;
     }
 
 }

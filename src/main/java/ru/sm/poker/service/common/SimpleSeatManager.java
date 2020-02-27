@@ -10,14 +10,12 @@ import ru.sm.poker.game.common.CommonGameManager;
 import ru.sm.poker.service.NotificationService;
 import ru.sm.poker.service.SeatManager;
 
-import javax.annotation.PostConstruct;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static java.lang.String.format;
 import static ru.sm.poker.enums.MessageType.PLAYER_ALREADY_EXIST;
 import static ru.sm.poker.enums.MessageType.SUCCESS_JOIN_IN_QUEUE;
-import static ru.sm.poker.util.PlayerUtil.getDefaultPlayerForHoldem;
 
 @RequiredArgsConstructor
 @Component
@@ -65,12 +63,9 @@ public class SimpleSeatManager implements SeatManager {
     @Override
     public void leaveGame(String playerName, String gameName) {
         final Game game = commonGameManager.getGameByName(gameName);
-        if (game != null) {
-            if (game.removePlayer(playerName)) {
-                log.info(format("player %s leave the game %s", playerName, gameName));
-            }
+        if (game.removePlayer(playerName)) {
+            log.info(format("player %s leave the game %s", playerName, gameName));
         }
-
     }
 
     @Override
@@ -78,11 +73,4 @@ public class SimpleSeatManager implements SeatManager {
         return players;
     }
 
-
-    @PostConstruct
-    public void init() {
-        joinInQueue(getDefaultPlayerForHoldem("1"));
-        joinInQueue(getDefaultPlayerForHoldem("2"));
-        joinInQueue(getDefaultPlayerForHoldem("3"));
-    }
 }

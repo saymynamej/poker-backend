@@ -2,7 +2,7 @@ package ru.sm.poker.service;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
 import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.StageType;
 import ru.sm.poker.game.RoundSettingsManager;
@@ -21,7 +21,8 @@ class HoldemRoundSettingsManagerTest {
 
         final RoundSettingsManager roundSettingsManager = getRoundSettingsManager(players);
 
-        final HoldemRoundSettingsDTO preflopSettings = roundSettingsManager.getPreflopSettings();
+        final HoldemRoundSettings preflopSettings = roundSettingsManager.getPreflopSettings();
+
         Assertions.assertEquals(
                 preflopSettings.getBigBlindBet() + preflopSettings.getSmallBlindBet(),
                 preflopSettings.getBank()
@@ -62,11 +63,11 @@ class HoldemRoundSettingsManagerTest {
         for (int i = 0; i < 10_000; i++) {
             final RoundSettingsManager firstRound = getRoundSettingsManager(players);
 
-            final HoldemRoundSettingsDTO preflopSettings = firstRound.getPreflopSettings();
+            final HoldemRoundSettings preflopSettings = firstRound.getPreflopSettings();
 
             final RoundSettingsManager secondRound = getRoundSettingsManager(players);
 
-            final HoldemRoundSettingsDTO preflopSettings2 = secondRound.getPreflopSettings();
+            final HoldemRoundSettings preflopSettings2 = secondRound.getPreflopSettings();
 
             final int firstButtonIndex = preflopSettings.getPlayers().indexOf(preflopSettings.getButton());
             final int secondButtonIndex = preflopSettings2.getPlayers().indexOf(preflopSettings2.getButton());
@@ -95,9 +96,9 @@ class HoldemRoundSettingsManagerTest {
 
         final RoundSettingsManager firstRound = getRoundSettingsManager(players);
 
-        final HoldemRoundSettingsDTO preflopSettings = firstRound.getPreflopSettings();
+        final HoldemRoundSettings preflopSettings = firstRound.getPreflopSettings();
 
-        final HoldemRoundSettingsDTO postFlopSettings = firstRound.getPostFlopSettings(preflopSettings.getBank(), preflopSettings.getStageHistory());
+        final HoldemRoundSettings postFlopSettings = firstRound.getPostFlopSettings(preflopSettings.getBank(), preflopSettings.getStageHistory());
 
         Assertions.assertEquals(
                 preflopSettings.getBank(),
@@ -133,6 +134,7 @@ class HoldemRoundSettingsManagerTest {
         Assertions.assertEquals(preflopSettings.getBigBlind(), postFlopSettings.getBigBlind());
 
         Assertions.assertNotNull(postFlopSettings.getFlop());
+        Assertions.assertEquals(3, postFlopSettings.getFlop().size());
         Assertions.assertNull(postFlopSettings.getTern());
         Assertions.assertNull(postFlopSettings.getRiver());
 
@@ -145,11 +147,11 @@ class HoldemRoundSettingsManagerTest {
 
         final RoundSettingsManager firstRound = getRoundSettingsManager(players);
 
-        final HoldemRoundSettingsDTO preflopSettings = firstRound.getPreflopSettings();
+        final HoldemRoundSettings preflopSettings = firstRound.getPreflopSettings();
 
-        final HoldemRoundSettingsDTO postFlopSettings = firstRound.getPostFlopSettings(preflopSettings.getBank(), preflopSettings.getStageHistory());
+        final HoldemRoundSettings postFlopSettings = firstRound.getPostFlopSettings(preflopSettings.getBank(), preflopSettings.getStageHistory());
 
-        final HoldemRoundSettingsDTO postFlopSettingsWithTern = firstRound.getPostFlopSettingsWithTern(postFlopSettings.getBank(), preflopSettings.getStageHistory());
+        final HoldemRoundSettings postFlopSettingsWithTern = firstRound.getPostFlopSettingsWithTern(postFlopSettings.getBank(), preflopSettings.getStageHistory());
 
         Assertions.assertEquals(
                 postFlopSettings.getBank(),
@@ -208,13 +210,13 @@ class HoldemRoundSettingsManagerTest {
 
         final RoundSettingsManager firstRound = getRoundSettingsManager(players);
 
-        final HoldemRoundSettingsDTO preflopSettings = firstRound.getPreflopSettings();
+        final HoldemRoundSettings preflopSettings = firstRound.getPreflopSettings();
 
-        final HoldemRoundSettingsDTO postFlopSettings = firstRound.getPostFlopSettings(preflopSettings.getBank(), preflopSettings.getStageHistory());
+        final HoldemRoundSettings postFlopSettings = firstRound.getPostFlopSettings(preflopSettings.getBank(), preflopSettings.getStageHistory());
 
-        final HoldemRoundSettingsDTO postFlopSettingsWithTern = firstRound.getPostFlopSettingsWithTern(postFlopSettings.getBank(), preflopSettings.getStageHistory());
+        final HoldemRoundSettings postFlopSettingsWithTern = firstRound.getPostFlopSettingsWithTern(postFlopSettings.getBank(), preflopSettings.getStageHistory());
 
-        final HoldemRoundSettingsDTO postFlopSettingsWithRiver = firstRound.getPostFlopSettingsWithRiver(postFlopSettingsWithTern.getBank(), preflopSettings.getStageHistory());
+        final HoldemRoundSettings postFlopSettingsWithRiver = firstRound.getPostFlopSettingsWithRiver(postFlopSettingsWithTern.getBank(), preflopSettings.getStageHistory());
 
 
         Assertions.assertEquals(
