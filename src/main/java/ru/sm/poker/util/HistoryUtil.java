@@ -12,12 +12,11 @@ import static ru.sm.poker.util.PlayerUtil.getPlayersInGame;
 
 public class HistoryUtil {
 
-
     public static boolean allPlayersInGameHaveSameCountOfBet(HoldemRoundSettingsDTO holdemRoundSettingsDTO) {
         final List<Player> playersInGame = getPlayersInGame(holdemRoundSettingsDTO.getPlayers());
 
         final List<Player> players = playersInGame.stream()
-                .filter(player -> player.getChipsCount() > 0)
+                .filter(StreamUtil.playerHasChips())
                 .collect(Collectors.toList());
 
         return players.stream()
@@ -28,36 +27,28 @@ public class HistoryUtil {
     public static long sumRoundHistoryBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player) {
         final Map<Player, List<Action>> fullHistory = holdemRoundSettingsDTO.getFullHistory();
         final List<Action> countActions = fullHistory.get(player);
-        long sum = 0;
-        if (countActions != null) {
-            sum = sumBets(countActions);
-        }
-        return sum;
+        return sumBets(countActions);
     }
 
 
     public static long sumStageHistoryBets(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player) {
         final Map<Player, List<Action>> history = holdemRoundSettingsDTO.getStageHistory();
         final List<Action> countActions = history.get(player);
-        long sum = 0;
-        if (countActions != null) {
-            sum = sumBets(countActions);
-        }
-        return sum;
+        return sumBets(countActions);
     }
 
     private static long sumBets(List<Action> actions) {
-        if (actions == null){
+        if (actions == null) {
             return 0;
         }
 
-        final Optional<Long> reduce = actions.stream()
-                .filter(action -> action instanceof CountAction)
+        final Optional<Long> reduced = actions.stream()
+                .filter(CountAction.class::isInstance)
                 .map(action -> ((CountAction) action).getCount())
                 .reduce(Long::sum);
 
-        if (reduce.isPresent()){
-            return reduce.get();
+        if (reduced.isPresent()) {
+            return reduced.get();
         }
         return 0;
     }
@@ -70,9 +61,8 @@ public class HistoryUtil {
     }
 
 
-    public static void addActionInHistory(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player, CountAction action) {
+    public static void addActionInHistory(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player, Action action) {
         final Map<Player, List<Action>> history = holdemRoundSettingsDTO.getStageHistory();
-
         final List<Action> newActionsList = history.get(player);
         if (newActionsList != null) {
             newActionsList.add(action);
@@ -85,9 +75,7 @@ public class HistoryUtil {
     }
 
     public static void addActionInHistory(HoldemRoundSettingsDTO holdemRoundSettingsDTO, Player player) {
-        if (player.getAction() instanceof CountAction) {
-            addActionInHistory(holdemRoundSettingsDTO, player, (CountAction) player.getAction());
-        }
+        addActionInHistory(holdemRoundSettingsDTO, player, player.getAction());
     }
 
     public static Map<Player, List<Action>> unionHistory(Map<Player, List<Action>> firstHistory, Map<Player, List<Action>> secondHistory) {
