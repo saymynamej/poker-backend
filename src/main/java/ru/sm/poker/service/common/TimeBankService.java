@@ -12,26 +12,53 @@ import java.util.TimerTask;
 @Service
 public class TimeBankService {
 
-    public Pair<Timer, Long> activateTimeBank(Player player) {
-        final long startTime = System.currentTimeMillis();
-        final Timer timer = new Timer();
+    private final static long MILLISECONDS_IN_SECONDS = 1000L;
+    private final static long DEFAULT_TIME_FOR_ACTION = 15L;
 
+    public Pair<Timer, Result> activateTime(Player player) {
+        final Timer timer = new Timer();
+        final Result result = new Result();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                player.setAction(new Fold());
-                player.setStateType(StateType.AFK);
-                player.setTimeBank(0L);
+                fillResult(result);
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        setInActivePlayer(player);
+                    }
+                }, player.getTimeBank() * MILLISECONDS_IN_SECONDS);
             }
-        }, player.getTimeBank() * 1000L);
-        return Pair.of(timer, startTime);
+        }, DEFAULT_TIME_FOR_ACTION * MILLISECONDS_IN_SECONDS);
+
+        return Pair.of(timer, result);
     }
 
-    public void cancel(long startTime, Player player, Timer timer){
-      timer.cancel();
-      final long endTime = System.currentTimeMillis();
-      final long result = (endTime - startTime) / 1000;
-      player.setTimeBank(player.getTimeBank() - result);
+    private void fillResult(Result result){
+        final long startTime = System.currentTimeMillis();
+        result.isDone = true;
+        result.startTime = startTime;
+    }
+
+    private void setInActivePlayer(Player player){
+        player.setAction(new Fold());
+        player.setStateType(StateType.AFK);
+        player.setTimeBank(0L);
+    }
+
+    public void cancel(Result result, Player player, Timer timer) {
+        timer.cancel();
+        if (result.isDone){
+            final long startTime = result.startTime;
+            final long endTime = System.currentTimeMillis();
+            final long calculatedTime = (endTime - startTime) / MILLISECONDS_IN_SECONDS;
+            player.setTimeBank(player.getTimeBank() - calculatedTime);
+        }
+    }
+
+    public static class Result {
+        private boolean isDone = false;
+        private long startTime;
     }
 
 }

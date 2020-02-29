@@ -20,6 +20,10 @@ public class StreamUtil {
         return (Predicate<Player>) player -> player.getAction().getActionType() == ActionType.CHECK;
     }
 
+    public static Predicate<? super Player> playerFolded() {
+        return (Predicate<Player>) player -> player.getAction().getActionType() == ActionType.FOLD;
+    }
+
     public static Predicate<? super Player> playerIsNotAfk() {
         return (Predicate<Player>) player -> player.getStateType() != StateType.AFK;
     }
@@ -29,12 +33,6 @@ public class StreamUtil {
     }
 
     public static Predicate<? super Player> playerInGame() {
-        return (Predicate<Player>) player -> player.getAction() != null &&
-                player.getAction().getActionType() != ActionType.FOLD &&
-                player.getRoleType() != null &&
-                player.getStateType() != null &&
-                player.getStateType() != StateType.AFK &&
-                player.getStateType() != StateType.LEAVE &&
-                player.getCards() != null;
+        return (Predicate<Player>) player -> player.getStateType() == StateType.IN_GAME;
     }
 }

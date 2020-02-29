@@ -5,9 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.dto.HoldemRoundSettings;
 import ru.sm.poker.dto.Player;
-import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.enums.StageType;
-import ru.sm.poker.enums.StateType;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.OrderService;
 
@@ -18,8 +16,7 @@ import static ru.sm.poker.util.HistoryUtil.sumStageHistoryBets;
 import static ru.sm.poker.util.PlayerUtil.getPlayersInGame;
 import static ru.sm.poker.util.SortUtil.sortPostflop;
 import static ru.sm.poker.util.SortUtil.sortPreflop;
-import static ru.sm.poker.util.StreamUtil.playerInAllIn;
-import static ru.sm.poker.util.StreamUtil.playersHasCheck;
+import static ru.sm.poker.util.StreamUtil.*;
 
 @RequiredArgsConstructor
 @Service
@@ -27,7 +24,6 @@ import static ru.sm.poker.util.StreamUtil.playersHasCheck;
 public class OrderActionService implements OrderService {
 
     private final ActionService actionServiceHoldem;
-    private final SecurityNotificationService securityNotificationService;
 
     @Override
     public boolean start(HoldemRoundSettings holdemRoundSettings) {
@@ -39,23 +35,19 @@ public class OrderActionService implements OrderService {
         boolean isSkipNext = false;
 
         while (true) {
+            if (playersInAllIn(sortedPlayers)) {
+                break;
+            }
 
-            if (playersInAllIn(holdemRoundSettings)) {
-                securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettings);
+            if (allPlayersInGameHaveSameCountOfBet(holdemRoundSettings) && lastBetIsZero(holdemRoundSettings.getLastBet())) {
                 break;
             }
-            if (allPlayersInGameHaveSameCountOfBet(holdemRoundSettings) && holdemRoundSettings.getLastBet() != 0) {
-                break;
-            }
+
             if (playersCheck(sortedPlayers)) {
                 break;
             }
 
-            if (isOnePlayerLeft(sortedPlayers)) {
-                isSkipNext = true;
-                break;
-            }
-            if (isOnePlayerWhoHasChips(sortedPlayers)){
+            if (isOnePlayerLeft(sortedPlayers) || isOnePlayerWhoHasChips(sortedPlayers)) {
                 isSkipNext = true;
                 break;
             }
@@ -64,7 +56,7 @@ public class OrderActionService implements OrderService {
                 if (player.isNotInGame()) {
                     continue;
                 }
-                if (player.hasMoreChipsThanZero()) {
+                if (player.hasZeroChips()) {
                     continue;
                 }
                 if (isOnePlayerLeft(sortedPlayers)) {
@@ -86,29 +78,31 @@ public class OrderActionService implements OrderService {
         return isSkipNext;
     }
 
+    private boolean lastBetIsZero(Long lastBet) {
+        return lastBet != 0;
+    }
+
     private List<Player> sort(List<Player> players, StageType stageType) {
         return stageType == StageType.PREFLOP ? sortPreflop(players) : sortPostflop(players);
     }
 
-    private boolean playersInAllIn(HoldemRoundSettings holdemRoundSettings) {
-        return getPlayersInGame(holdemRoundSettings.getPlayers()).stream()
+    private boolean playersInAllIn(List<Player> players) {
+        return getPlayersInGame(players)
+                .stream()
+                .filter(playerFolded().negate())
                 .allMatch(playerInAllIn());
     }
 
     private boolean playersCheck(List<Player> players) {
         return players.stream()
-                .filter(playerInAllIn().negate())
+                .filter(playerFolded().negate())
                 .allMatch(playersHasCheck());
     }
 
     private boolean isOnePlayerLeft(List<Player> players) {
         return players.stream()
-                .filter(player -> player.getAction().getActionType() == ActionType.FOLD && player.getStateType() == StateType.IN_GAME)
-                .count() == players.size() - 1
-                ||
-                players.stream()
-                        .filter(pl -> pl.getStateType().equals(StateType.IN_GAME))
-                        .count() == 1;
+                .filter(playerFolded().negate())
+                .count() == 1;
     }
 
     private boolean isOnePlayerWhoHasChips(List<Player> players){

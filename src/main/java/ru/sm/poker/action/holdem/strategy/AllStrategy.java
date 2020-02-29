@@ -13,17 +13,25 @@ public class AllStrategy implements ActionStrategy {
 
     @Override
     public void execute(Player player, GameService gameService, ActionService actionService, CountAction countAction, HoldemRoundSettings holdemRoundSettings) {
-        if (countAction.getCount() != player.getChipsCount()) {
+        if (countActionNotEqualsChipsCount(countAction, player)) {
             actionService.waitUntilPlayerWillHasAction(player, holdemRoundSettings);
             return;
         }
-        final long allBets = sumAllHistoryBetsWithNewAction(holdemRoundSettings, player, countAction);
 
-        if (allBets >= holdemRoundSettings.getLastBet()) {
+        final long allBets = sumAllHistoryBetsWithNewAction(holdemRoundSettings, player, countAction);
+        if (allBetsMoreThanLastBet(allBets, holdemRoundSettings.getLastBet())) {
             gameService.doAction(player, holdemRoundSettings, countAction.getCount(), allBets);
             return;
         }
-        gameService.doAction(player, holdemRoundSettings, countAction.getCount(), holdemRoundSettings.getLastBet());
 
+        gameService.doAction(player, holdemRoundSettings, countAction.getCount(), holdemRoundSettings.getLastBet());
+    }
+
+    private boolean allBetsMoreThanLastBet(long allBets, long lastBet){
+        return allBets >= lastBet;
+    }
+
+    private boolean countActionNotEqualsChipsCount(CountAction countAction, Player player){
+        return countAction.getCount() != player.getChipsCount();
     }
 }

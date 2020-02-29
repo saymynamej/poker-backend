@@ -16,7 +16,9 @@ public class SecurityNotificationService {
 
     public void sendToAllWithSecurityWhoIsNotInTheGame(HoldemRoundSettings holdemRoundSettings) {
         final List<String> filter = PlayerUtil.getNamesOfPlayersInGame(holdemRoundSettings.getPlayers());
+
         final HoldemRoundSettings secureSettings = securityService.secureCards(filter, holdemRoundSettings);
+
         secureSettings.getPlayers()
                 .forEach(player -> simpleNotificationService.sendGameInformationToUser(player.getName(), secureSettings));
     }

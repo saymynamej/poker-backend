@@ -28,7 +28,7 @@ public class PlayerUtil {
     public static Player getDefaultPlayerForHoldem(String playerName, long chipsCount) {
         return Player.builder()
                 .name(playerName)
-                .timeBank(30L)
+                .timeBank(20L)
                 .chipsCount(chipsCount)
                 .build();
     }
@@ -36,6 +36,7 @@ public class PlayerUtil {
     public static List<String> getNamesOfPlayersInGame(List<Player> players){
         return getPlayersInGame(players)
                 .stream()
+                .filter(StreamUtil.playerFolded().negate())
                 .map(Player::getName)
                 .collect(Collectors.toList());
     }

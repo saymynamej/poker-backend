@@ -113,7 +113,7 @@ public class Player {
         this.chipsCount -= chips;
     }
 
-    public boolean hasMoreChipsThanZero() {
+    public boolean hasZeroChips() {
         return getChipsCount() == 0;
     }
 

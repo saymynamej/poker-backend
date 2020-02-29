@@ -20,10 +20,15 @@ public class CallStrategy implements ActionStrategy {
 
         final long bets = sumAllHistoryBetsWithNewAction(holdemRoundSettings, player, countAction);
 
-        if (bets == holdemRoundSettings.getLastBet()) {
-            gameService.doAction(player, holdemRoundSettings, countAction.getCount(), bets);
+        if (allBetsNotEqualsLastBet(bets, holdemRoundSettings.getLastBet())) {
+            actionService.waitUntilPlayerWillHasAction(player, holdemRoundSettings);
             return;
         }
-        actionService.waitUntilPlayerWillHasAction(player, holdemRoundSettings);
+
+        gameService.doAction(player, holdemRoundSettings, countAction.getCount(), bets);
+    }
+
+    private boolean allBetsNotEqualsLastBet(long allBets, long lastBet){
+        return allBets != lastBet;
     }
 }

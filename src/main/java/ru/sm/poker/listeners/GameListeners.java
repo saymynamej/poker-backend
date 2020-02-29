@@ -105,8 +105,8 @@ public class GameListeners {
                     round
             );
 
-            holdemGame.addPlayer(PlayerUtil.getDefaultBotForHoldem("3"));
-            holdemGame.addPlayer(PlayerUtil.getDefaultBotForHoldem("2"));
+            holdemGame.addPlayer(PlayerUtil.getDefaultPlayerForHoldem("3"));
+            holdemGame.addPlayer(PlayerUtil.getDefaultPlayerForHoldem("2"));
             gameManager.createNewGame(randomGameName, holdemGame);
             executorServiceForGames.submit(holdemGame::start);
         }

@@ -35,9 +35,4 @@ public class HoldemRoundSettings {
     private Player activePlayer;
     private boolean isAfk;
 
-    public boolean canRaise(){
-       return getStageType() == StageType.PREFLOP ?
-               lastBet == bigBlindBet :
-               lastBet == 0;
-    }
 }

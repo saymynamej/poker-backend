@@ -17,4 +17,5 @@ public class HealthController {
     public ResponseEntity<String> healthCheck(){
         return ResponseEntity.of(Optional.of("OK"));
     }
+
 }

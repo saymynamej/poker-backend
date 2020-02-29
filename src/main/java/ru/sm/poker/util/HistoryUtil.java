@@ -9,6 +9,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static ru.sm.poker.util.PlayerUtil.getPlayersInGame;
+import static ru.sm.poker.util.StreamUtil.*;
 
 public class HistoryUtil {
 
@@ -16,7 +17,8 @@ public class HistoryUtil {
         final List<Player> playersInGame = getPlayersInGame(holdemRoundSettings.getPlayers());
 
         final List<Player> players = playersInGame.stream()
-                .filter(StreamUtil.playerHasChips())
+                .filter(playerFolded().negate())
+                .filter(playerHasChips())
                 .collect(Collectors.toList());
 
         return players.stream()

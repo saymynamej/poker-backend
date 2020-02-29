@@ -96,22 +96,19 @@ public class SimpleActionService implements ActionService {
     }
 
     private void waitPlayerAction(Player player, HoldemRoundSettings holdemRoundSettings) {
-        final Pair<Timer, Long> timeBank = timeBankService.activateTimeBank(player);
-
+        final Pair<Timer, TimeBankService.Result> time = timeBankService.activateTime(player);
         while (true) {
             if (player.isNotInGame()) {
                 break;
             }
-            if (player.isBot()) {
-                holdemAutoBot.doRandomAction(player, holdemRoundSettings);
-            }
             if (player.didAction()) {
-                timeBankService.cancel(timeBank.getValue(), player, timeBank.getKey());
+                timeBankService.cancel(time.getValue(), player, time.getKey());
                 doAction(player, holdemRoundSettings);
                 break;
             }
         }
     }
+
 
     private void doAction(Player player, HoldemRoundSettings holdemRoundSettings) {
         final Action action = player.getAction();

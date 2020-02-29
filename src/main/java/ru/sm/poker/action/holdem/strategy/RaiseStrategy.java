@@ -19,21 +19,22 @@ public class RaiseStrategy implements ActionStrategy {
             return;
         }
 
-        if (countAction.getCount() < holdemRoundSettings.getLastBet() * 2) {
+        if (raiseLessThanPrevBetByFormulas(holdemRoundSettings, countAction)) {
             actionService.waitUntilPlayerWillHasAction(player, holdemRoundSettings);
             return;
         }
 
         final long prevBets = sumStageHistoryBets(holdemRoundSettings, player);
-
         changeActionForHistory(player, countAction, prevBets);
-
         gameService.doAction(player, holdemRoundSettings, countAction.getCount() - prevBets, countAction.getCount());
 
     }
 
     private void changeActionForHistory(Player player, CountAction countAction, long prevBets) {
         player.setAction(new Raise(countAction.getCount() - prevBets));
+    }
+    private boolean raiseLessThanPrevBetByFormulas(HoldemRoundSettings holdemRoundSettings, CountAction countAction){
+        return countAction.getCount() < holdemRoundSettings.getLastBet() * 2;
     }
 
 }
