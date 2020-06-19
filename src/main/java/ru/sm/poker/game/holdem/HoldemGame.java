@@ -57,6 +57,8 @@ public class HoldemGame extends Game {
     }
 
     private void addChips(){
+
+        getPlayers().forEach(playerDTO -> { playerDTO.addChips(5000L); playerDTO.setStateType(StateType.IN_GAME);});
         final Map<PlayerDTO, Long> chipsMap = CommonGameManager.getChipsMap();
 
         if (chipsMap.isEmpty()){

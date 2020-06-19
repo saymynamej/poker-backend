@@ -52,6 +52,7 @@ public class PlayerUtil {
     public static List<PlayerDTO> getPlayersInGame(List<PlayerDTO> players) {
         return players.stream()
                 .filter(playerInGame())
+                .filter(playerFolded().negate())
                 .collect(Collectors.toList());
     }
 

@@ -113,6 +113,10 @@ public class PlayerDTO {
         this.chipsCount -= chips;
     }
 
+    public boolean isNotFirstMoveOnBigBlind(){
+        return isBigBlind() && action.getActionType() != ActionType.WAIT;
+    }
+
     public boolean hasZeroChips() {
         return getChipsCount() == 0;
     }
@@ -135,6 +139,10 @@ public class PlayerDTO {
 
     public boolean isNotFolded() {
         return !isFolded();
+    }
+
+    public boolean isInAllIn(){
+        return action.getActionType() == ActionType.ALLIN;
     }
 
     public boolean hasNotSpecialRoles() {

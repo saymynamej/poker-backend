@@ -5,11 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.action.Action;
 import ru.sm.poker.action.ExecutableAction;
+import ru.sm.poker.action.holdem.All;
+import ru.sm.poker.action.holdem.Call;
 import ru.sm.poker.action.holdem.Fold;
 import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.dto.ResultTimeDTO;
+import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.enums.InformationType;
 import ru.sm.poker.enums.MessageType;
 import ru.sm.poker.enums.StateType;
@@ -67,12 +70,24 @@ public class SimpleActionService implements ActionService {
         final PlayerDTO player = holdemGameManager.getPlayerByName(playerName)
                 .orElseThrow(() -> new RuntimeException("cannot find player with name:" + playerName));
 
+        action = changeCallOnAllInIfNeeded(action, player);
+
         if (!holdemSecurityService.isLegalPlayer(player.getGameName(), player)) {
             simpleNotificationService.sendSystemMessageToUser(playerName, format(MessageType.QUEUE_ERROR.getMessage(), player.getName()));
             log.info(format(QUEUE_ERROR.getMessage(), player.getName()));
             return;
         }
         player.setAction(action);
+    }
+
+    private Action changeCallOnAllInIfNeeded(Action action, PlayerDTO player) {
+        if (action.getActionType() == ActionType.CALL){
+            final Call call = (Call) action;
+            if (call.getCount() == player.getChipsCount()){
+                action = new All(call.getCount());
+            }
+        }
+        return action;
     }
 
     @Override

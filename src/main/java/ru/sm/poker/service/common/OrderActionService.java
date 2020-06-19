@@ -10,8 +10,8 @@ import ru.sm.poker.service.OrderService;
 
 import java.util.List;
 
-import static ru.sm.poker.util.HistoryUtil.allPlayersInGameHaveSameCountOfBet;
-import static ru.sm.poker.util.HistoryUtil.sumStageHistoryBets;
+import static ru.sm.poker.util.HistoryUtil.canMoveNext;
+import static ru.sm.poker.util.HistoryUtil.canMoveNextAndStageRiver;
 import static ru.sm.poker.util.PlayerUtil.getPlayersInGame;
 import static ru.sm.poker.util.SortUtil.sort;
 
@@ -20,6 +20,7 @@ import static ru.sm.poker.util.SortUtil.sort;
 @Slf4j
 public class OrderActionService implements OrderService {
     private final ActionService actionServiceHoldem;
+    private final SecurityNotificationService securityNotificationService;
 
     @Override
     public boolean start(HoldemRoundSettingsDTO holdemRoundSettings) {
@@ -27,49 +28,32 @@ public class OrderActionService implements OrderService {
                 sort(holdemRoundSettings.getPlayers(), holdemRoundSettings.getStageType())
         );
 
-        boolean isFirstStart = true;
-        boolean isSkipNext = false;
-
         while (true) {
             if (holdemRoundSettings.playersInAllIn()) {
-                break;
+                securityNotificationService.sendToAllWithSecurity(holdemRoundSettings);
+                return false;
             }
-
-            if (allPlayersInGameHaveSameCountOfBet(holdemRoundSettings) && holdemRoundSettings.lastBetIsNotZero()) {
-                break;
+            if (canMoveNextAndStageRiver(holdemRoundSettings)){
+                securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettings);
+                return false;
             }
-
-            if (holdemRoundSettings.playersCheck()) {
-                break;
+            if (canMoveNext(holdemRoundSettings)) {
+                return false;
             }
-
-            if (holdemRoundSettings.isOnePlayerLeft() || holdemRoundSettings.isOnePlayerWhoHasChips()) {
-                isSkipNext = true;
-                break;
-            }
-
-            for (PlayerDTO player : sortedPlayers) {
-                if (player.isNotInGame()) {
-                    continue;
-                }
-                if (player.hasZeroChips()) {
-                    continue;
+            for (PlayerDTO player : getPlayersInGame(sortedPlayers)) {
+                if (player.isNotFirstMoveOnBigBlind() && canMoveNext(holdemRoundSettings)) {
+                    return false;
                 }
                 if (holdemRoundSettings.isOnePlayerLeft()) {
-                    isSkipNext = true;
-                    break;
+                    return true;
                 }
-                if (player.isFolded()) {
+                if (player.isInAllIn()) {
                     continue;
-                }
-                if (sumStageHistoryBets(holdemRoundSettings, player) == holdemRoundSettings.getLastBet() && !isFirstStart) {
-                        continue;
                 }
                 actionServiceHoldem.waitUntilPlayerWillHasAction(player, holdemRoundSettings);
             }
-            isFirstStart = false;
+
         }
-        return isSkipNext;
     }
 
 }

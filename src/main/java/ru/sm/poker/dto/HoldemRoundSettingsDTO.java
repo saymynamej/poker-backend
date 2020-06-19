@@ -49,23 +49,20 @@ public class HoldemRoundSettingsDTO {
     public boolean playersInAllIn() {
         return getPlayersInGame(this.players)
                 .stream()
-                .filter(playerFolded().negate())
                 .allMatch(playerInAllIn());
     }
 
-    public boolean playersCheck() {
-        return this.players.stream()
-                .filter(playerFolded().negate())
+    public boolean allPlayersCheck() {
+        return getPlayersInGame(this.players)
+                .stream()
                 .allMatch(playersHasCheck());
     }
 
     public boolean isOnePlayerLeft() {
-        return this.players.stream()
-                .filter(playerFolded().negate())
-                .count() == 1;
+        return getPlayersInGame(this.players).size() == 1;
     }
 
-    public boolean isOnePlayerWhoHasChips(){
+    public boolean isOnePlayerWhoHasChips() {
         return this.players.stream()
                 .filter(player -> player.getAction().getActionType() != ActionType.ALLIN && player.getChipsCount() != 0)
                 .count() == 1;

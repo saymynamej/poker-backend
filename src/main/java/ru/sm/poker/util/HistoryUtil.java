@@ -4,6 +4,8 @@ import ru.sm.poker.action.Action;
 import ru.sm.poker.action.CountAction;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.enums.StageType;
+import ru.sm.poker.game.holdem.HoldemRound;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -12,6 +14,15 @@ import static ru.sm.poker.util.PlayerUtil.getPlayersInGame;
 import static ru.sm.poker.util.StreamUtil.*;
 
 public class HistoryUtil {
+
+
+    public static boolean canMoveNextAndStageRiver(HoldemRoundSettingsDTO holdemRoundSettingsDTO){
+        return canMoveNext(holdemRoundSettingsDTO) && holdemRoundSettingsDTO.getStageType() == StageType.RIVER;
+    }
+
+    public static boolean canMoveNext(HoldemRoundSettingsDTO holdemRoundSettings) {
+        return allPlayersInGameHaveSameCountOfBet(holdemRoundSettings) && holdemRoundSettings.lastBetIsNotZero() || holdemRoundSettings.allPlayersCheck();
+    }
 
     public static boolean allPlayersInGameHaveSameCountOfBet(HoldemRoundSettingsDTO holdemRoundSettings) {
         final List<PlayerDTO> playersInGame = getPlayersInGame(holdemRoundSettings.getPlayers());
