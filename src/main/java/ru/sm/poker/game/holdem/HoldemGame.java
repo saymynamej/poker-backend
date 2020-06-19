@@ -63,6 +63,7 @@ public class HoldemGame extends Game {
         if (chipsMap.isEmpty()){
             return;
         }
+
         final List<Player> players = getPlayers();
 
         players.forEach(player -> {

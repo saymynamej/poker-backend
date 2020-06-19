@@ -39,7 +39,7 @@ public class HistoryUtil {
         return sumBets(countActions);
     }
 
-    private static long sumBets(List<Action> actions) {
+    public static long sumBets(List<Action> actions) {
         if (actions == null) {
             return 0;
         }

@@ -40,8 +40,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
         setBigBlind();
         setAllActivePlayers();
 
-        return HoldemRoundSettings
-                .builder()
+        return HoldemRoundSettings.builder()
                 .gameName(gameName)
                 .bank(bigBlindBet + smallBlindBet)
                 .smallBlindBet(smallBlindBet)
@@ -60,8 +59,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
 
     public HoldemRoundSettings getPostFlopSettings(long bank, Map<Player, List<Action>> prevHistory) {
         setAllActivePlayersTest();
-        return HoldemRoundSettings
-                .builder()
+        return HoldemRoundSettings.builder()
                 .flop(flop)
                 .gameName(gameName)
                 .bank(bank)
@@ -81,8 +79,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
 
     public HoldemRoundSettings getPostFlopSettingsWithTern(long bank, Map<Player, List<Action>> fullHistory) {
         setAllActivePlayersTest();
-        return HoldemRoundSettings
-                .builder()
+        return HoldemRoundSettings.builder()
                 .flop(flop)
                 .tern(tern)
                 .gameName(gameName)

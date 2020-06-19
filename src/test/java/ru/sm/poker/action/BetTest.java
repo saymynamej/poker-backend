@@ -10,7 +10,6 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.sm.poker.action.holdem.Bet;
-import ru.sm.poker.action.holdem.Call;
 import ru.sm.poker.dto.HoldemRoundSettings;
 import ru.sm.poker.dto.Player;
 import ru.sm.poker.service.ActionService;

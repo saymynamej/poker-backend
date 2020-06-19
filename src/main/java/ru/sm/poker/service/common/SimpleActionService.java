@@ -2,15 +2,14 @@ package ru.sm.poker.service.common;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.action.Action;
 import ru.sm.poker.action.ExecutableAction;
 import ru.sm.poker.action.holdem.Fold;
 import ru.sm.poker.action.holdem.Wait;
-import ru.sm.poker.auto.HoldemAutoBot;
 import ru.sm.poker.dto.HoldemRoundSettings;
 import ru.sm.poker.dto.Player;
+import ru.sm.poker.dto.ResultTime;
 import ru.sm.poker.enums.InformationType;
 import ru.sm.poker.enums.MessageType;
 import ru.sm.poker.enums.StateType;
@@ -18,8 +17,6 @@ import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.game.SecurityService;
 import ru.sm.poker.service.ActionService;
-
-import java.util.Timer;
 
 import static java.lang.String.format;
 import static ru.sm.poker.enums.MessageType.QUEUE_ERROR;
@@ -34,9 +31,8 @@ public class SimpleActionService implements ActionService {
     private final GameManager holdemGameManager;
     private final SecurityNotificationService securityNotificationService;
     private final SimpleNotificationService simpleNotificationService;
-    private final TimeBankService timeBankService = new TimeBankService();
+    private final SimpleTimeBankService simpleTimeBankService = new SimpleTimeBankService();
     private final GameService gameService;
-    private final HoldemAutoBot holdemAutoBot;
 
     @Override
     public void changeStateType(String playerName) {
@@ -96,13 +92,13 @@ public class SimpleActionService implements ActionService {
     }
 
     private void waitPlayerAction(Player player, HoldemRoundSettings holdemRoundSettings) {
-        final Pair<Timer, TimeBankService.Result> time = timeBankService.activateTime(player);
+        final ResultTime timer = simpleTimeBankService.activateTime(player);
         while (true) {
             if (player.isNotInGame()) {
                 break;
             }
             if (player.didAction()) {
-                timeBankService.cancel(time.getValue(), player, time.getKey());
+                simpleTimeBankService.cancel(timer, player);
                 doAction(player, holdemRoundSettings);
                 break;
             }

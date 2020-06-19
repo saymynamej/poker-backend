@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.dto.HoldemRoundSettings;
 import ru.sm.poker.dto.Player;
+import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.enums.StageType;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.OrderService;
@@ -39,7 +40,7 @@ public class OrderActionService implements OrderService {
                 break;
             }
 
-            if (allPlayersInGameHaveSameCountOfBet(holdemRoundSettings) && lastBetIsZero(holdemRoundSettings.getLastBet())) {
+            if (allPlayersInGameHaveSameCountOfBet(holdemRoundSettings) && lastBetIsNotZero(holdemRoundSettings.getLastBet())) {
                 break;
             }
 
@@ -66,10 +67,8 @@ public class OrderActionService implements OrderService {
                 if (player.isFolded()) {
                     continue;
                 }
-                if (sumStageHistoryBets(holdemRoundSettings, player) == holdemRoundSettings.getLastBet()) {
-                    if (!isFirstStart) {
+                if (sumStageHistoryBets(holdemRoundSettings, player) == holdemRoundSettings.getLastBet() && !isFirstStart) {
                         continue;
-                    }
                 }
                 actionServiceHoldem.waitUntilPlayerWillHasAction(player, holdemRoundSettings);
             }
@@ -78,7 +77,7 @@ public class OrderActionService implements OrderService {
         return isSkipNext;
     }
 
-    private boolean lastBetIsZero(Long lastBet) {
+    private boolean lastBetIsNotZero(Long lastBet) {
         return lastBet != 0;
     }
 
@@ -107,7 +106,7 @@ public class OrderActionService implements OrderService {
 
     private boolean isOnePlayerWhoHasChips(List<Player> players){
         return players.stream()
-                .filter(player -> player.getChipsCount() != 0)
+                .filter(player -> player.getAction().getActionType() != ActionType.ALLIN && player.getChipsCount() != 0)
                 .count() == 1;
     }
 

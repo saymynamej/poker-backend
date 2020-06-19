@@ -28,7 +28,7 @@ public class PlayerUtil {
     public static Player getDefaultPlayerForHoldem(String playerName, long chipsCount) {
         return Player.builder()
                 .name(playerName)
-                .timeBank(20L)
+                .timeBank(60L)
                 .chipsCount(chipsCount)
                 .build();
     }

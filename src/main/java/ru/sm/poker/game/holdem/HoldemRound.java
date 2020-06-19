@@ -8,7 +8,6 @@ import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.game.RoundSettingsManager;
 import ru.sm.poker.service.OrderService;
-import ru.sm.poker.service.WinnerService;
 
 import java.util.List;
 
@@ -21,7 +20,6 @@ public class HoldemRound implements Round {
     private final List<Player> players;
     private final String gameName;
     private final OrderService orderService;
-    private final WinnerService winnerService;
     private final long smallBlindBet;
     private final long bigBlindBet;
     private HoldemRoundSettings holdemRoundSettings;
@@ -66,8 +64,6 @@ public class HoldemRound implements Round {
                 }
             }
         }
-
-        winnerService.sendPrizes(holdemRoundSettings, isSkipNext);
         setAfkForPlayerWhichHaveNotEnoughChips();
     }
 

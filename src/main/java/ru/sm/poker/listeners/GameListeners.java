@@ -14,7 +14,6 @@ import ru.sm.poker.game.holdem.HoldemGame;
 import ru.sm.poker.game.holdem.HoldemRound;
 import ru.sm.poker.service.OrderService;
 import ru.sm.poker.service.SeatManager;
-import ru.sm.poker.service.WinnerService;
 import ru.sm.poker.util.PlayerUtil;
 import ru.sm.poker.util.ThreadUtil;
 
@@ -38,7 +37,6 @@ public class GameListeners {
     private final OrderService orderService;
     private final GameManager gameManager;
     private final SeatManager seatManager;
-    private final WinnerService winnerService;
     private boolean isEnable = true;
 
     @PostConstruct
@@ -60,7 +58,6 @@ public class GameListeners {
                             extractQueue(),
                             randomGameName,
                             orderService,
-                            winnerService,
                             gameSettings.getStartSmallBlindBet(),
                             gameSettings.getStartBigBlindBet());
 
@@ -96,7 +93,6 @@ public class GameListeners {
                     players,
                     randomGameName,
                     orderService,
-                    winnerService,
                     gameSettings.getStartSmallBlindBet(),
                     gameSettings.getStartBigBlindBet());
 

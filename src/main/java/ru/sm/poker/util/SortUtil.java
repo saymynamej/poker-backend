@@ -11,7 +11,6 @@ import java.util.Optional;
 public class SortUtil {
 
     public static List<Player> sortPreflop(List<Player> players) {
-
         final List<Player> sortedPlayers = new ArrayList<>(players);
 
         final Optional<Player> bigBlind = getPlayerByRole(players, RoleType.BIG_BLIND);

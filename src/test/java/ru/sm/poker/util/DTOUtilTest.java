@@ -25,7 +25,6 @@ public class DTOUtilTest {
     public final static long DEFAULT_LAST_BET = DEFAULT_BIG_BLIND_BET;
     public final static int DEFAULT_PLAYERS_SIZE = 9;
 
-
     public static HoldemRoundSettings getRoundSettingsDTO() {
         return getRoundSettingsDTO(DEFAULT_LAST_BET, Collections.emptyList());
     }
@@ -69,7 +68,6 @@ public class DTOUtilTest {
                 .players(players)
                 .build();
     }
-
 
     public static List<Player> getPlayers(int count) {
         return IntStream.range(0, count).mapToObj(i -> getPlayer()).collect(Collectors.toList());
