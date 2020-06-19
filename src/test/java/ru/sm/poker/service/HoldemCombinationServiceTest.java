@@ -13,7 +13,7 @@ import java.util.List;
 
 import static ru.sm.poker.enums.CardType.*;
 
-public class CheckCombinationDTODTOTypeServiceHoldemTest {
+public class HoldemCombinationServiceTest {
 
     private final HoldemCombinationService checkHoldemCombinationService = new HoldemCombinationService();
 

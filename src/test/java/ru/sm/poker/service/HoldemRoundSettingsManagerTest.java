@@ -13,7 +13,7 @@ import java.util.List;
 
 import static ru.sm.poker.util.DTOUtilTest.*;
 
-class HoldemRoundSettingsDTOManagerTest {
+class HoldemRoundSettingsManagerTest {
 
     @Test
     void testCommonSettingsPreflop() {

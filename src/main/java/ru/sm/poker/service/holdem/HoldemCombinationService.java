@@ -15,7 +15,6 @@ import static ru.sm.poker.dto.CombinationDTO.of;
 
 @Service
 public class HoldemCombinationService implements CombinationService {
-
     private final static int COMBINATION_SIZE = 5;
     private final static int FULL_COMBINATION_SIZE = 7;
     private final static int KARE_SIZE = 4;

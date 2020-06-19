@@ -17,9 +17,9 @@ import ru.sm.poker.service.common.GameService;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static ru.sm.poker.util.DTOUtilTest.*;
-import static ru.sm.poker.util.WaitUtilTest.waitAction;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -35,26 +35,26 @@ public class RaiseTest {
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @Test
-    public void testSuccessRaise() {
+    public void testSuccessRaise() throws InterruptedException {
         final long raiseCount = 4;
         final long lastBet = 2;
         final HoldemRoundSettingsDTO roundSettings = getRoundSettingsDTO(lastBet);
         final PlayerDTO player = getPlayer();
         final Raise raise = new Raise(raiseCount);
         executorService.submit(() -> raise.doAction(roundSettings, player, gameService, actionService));
-        waitAction(player);
+        executorService.awaitTermination(2L, TimeUnit.SECONDS);
         Assertions.assertEquals(DEFAULT_CHIPS_COUNT - raise.getCount(), player.getChipsCount());
     }
 
     @Test
-    public void testFailRaise() {
+    public void testFailRaise() throws InterruptedException {
         final long raiseCount = 2;
         final long lastBet = 2;
         final HoldemRoundSettingsDTO roundSettings = getRoundSettingsDTO(lastBet);
         final PlayerDTO player = getPlayer();
         final Raise raise = new Raise(raiseCount);
         executorService.submit(() -> raise.doAction(roundSettings, player, gameService, actionService));
-        waitAction(player);
+        executorService.awaitTermination(2L, TimeUnit.SECONDS);
         Mockito.verify(actionService, Mockito.times(1))
                 .waitUntilPlayerWillHasAction(player, roundSettings);
     }

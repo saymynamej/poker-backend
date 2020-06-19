@@ -26,7 +26,6 @@ import static ru.sm.poker.enums.MessageType.SETTINGS_NOT_FOUND;
 @Slf4j
 @Component
 public class SimpleActionService implements ActionService {
-
     private final SecurityService holdemSecurityService;
     private final GameManager holdemGameManager;
     private final SecurityNotificationService securityNotificationService;
@@ -67,7 +66,6 @@ public class SimpleActionService implements ActionService {
     public void setAction(String playerName, Action action) {
         final PlayerDTO player = holdemGameManager.getPlayerByName(playerName)
                 .orElseThrow(() -> new RuntimeException("cannot find player with name:" + playerName));
-        ;
 
         if (!holdemSecurityService.isLegalPlayer(player.getGameName(), player)) {
             simpleNotificationService.sendSystemMessageToUser(playerName, format(MessageType.QUEUE_ERROR.getMessage(), player.getName()));

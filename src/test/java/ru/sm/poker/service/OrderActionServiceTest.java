@@ -15,7 +15,7 @@ import java.util.concurrent.Executors;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
-public class OrderActionDTOServiceTest {
+public class OrderActionServiceTest {
 
     @Autowired
     private OrderActionService orderActionService;
@@ -24,12 +24,6 @@ public class OrderActionDTOServiceTest {
 
     @Test
     public void test() {
-//        final HoldemRoundSettings roundSettingsDTO = DTOUtilTest.getRoundSettingsDTOWithPlayers(3);
-//        executorService.submit(() -> orderActionService.start(roundSettingsDTO));
-//
-//        WaitUtil.waitOfCondition(()-> roundSettingsDTO.getActivePlayer().getName() != null);
-//
-//        System.out.println(roundSettingsDTO.getActivePlayer().getName());
-
+//        orderActionService.start()
     }
 }

@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.PlayerDTO;
-import ru.sm.poker.enums.ActionType;
-import ru.sm.poker.enums.StageType;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.OrderService;
 
@@ -15,15 +13,12 @@ import java.util.List;
 import static ru.sm.poker.util.HistoryUtil.allPlayersInGameHaveSameCountOfBet;
 import static ru.sm.poker.util.HistoryUtil.sumStageHistoryBets;
 import static ru.sm.poker.util.PlayerUtil.getPlayersInGame;
-import static ru.sm.poker.util.SortUtil.sortPostflop;
-import static ru.sm.poker.util.SortUtil.sortPreflop;
-import static ru.sm.poker.util.StreamUtil.*;
+import static ru.sm.poker.util.SortUtil.sort;
 
 @RequiredArgsConstructor
 @Service
 @Slf4j
 public class OrderActionService implements OrderService {
-
     private final ActionService actionServiceHoldem;
 
     @Override
@@ -36,19 +31,19 @@ public class OrderActionService implements OrderService {
         boolean isSkipNext = false;
 
         while (true) {
-            if (playersInAllIn(sortedPlayers)) {
+            if (holdemRoundSettings.playersInAllIn()) {
                 break;
             }
 
-            if (allPlayersInGameHaveSameCountOfBet(holdemRoundSettings) && lastBetIsNotZero(holdemRoundSettings.getLastBet())) {
+            if (allPlayersInGameHaveSameCountOfBet(holdemRoundSettings) && holdemRoundSettings.lastBetIsNotZero()) {
                 break;
             }
 
-            if (playersCheck(sortedPlayers)) {
+            if (holdemRoundSettings.playersCheck()) {
                 break;
             }
 
-            if (isOnePlayerLeft(sortedPlayers) || isOnePlayerWhoHasChips(sortedPlayers)) {
+            if (holdemRoundSettings.isOnePlayerLeft() || holdemRoundSettings.isOnePlayerWhoHasChips()) {
                 isSkipNext = true;
                 break;
             }
@@ -60,7 +55,7 @@ public class OrderActionService implements OrderService {
                 if (player.hasZeroChips()) {
                     continue;
                 }
-                if (isOnePlayerLeft(sortedPlayers)) {
+                if (holdemRoundSettings.isOnePlayerLeft()) {
                     isSkipNext = true;
                     break;
                 }
@@ -75,39 +70,6 @@ public class OrderActionService implements OrderService {
             isFirstStart = false;
         }
         return isSkipNext;
-    }
-
-    private boolean lastBetIsNotZero(Long lastBet) {
-        return lastBet != 0;
-    }
-
-    private List<PlayerDTO> sort(List<PlayerDTO> players, StageType stageType) {
-        return stageType == StageType.PREFLOP ? sortPreflop(players) : sortPostflop(players);
-    }
-
-    private boolean playersInAllIn(List<PlayerDTO> players) {
-        return getPlayersInGame(players)
-                .stream()
-                .filter(playerFolded().negate())
-                .allMatch(playerInAllIn());
-    }
-
-    private boolean playersCheck(List<PlayerDTO> players) {
-        return players.stream()
-                .filter(playerFolded().negate())
-                .allMatch(playersHasCheck());
-    }
-
-    private boolean isOnePlayerLeft(List<PlayerDTO> players) {
-        return players.stream()
-                .filter(playerFolded().negate())
-                .count() == 1;
-    }
-
-    private boolean isOnePlayerWhoHasChips(List<PlayerDTO> players){
-        return players.stream()
-                .filter(player -> player.getAction().getActionType() != ActionType.ALLIN && player.getChipsCount() != 0)
-                .count() == 1;
     }
 
 }

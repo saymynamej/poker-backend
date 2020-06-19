@@ -17,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class HoldemSecurityService implements SecurityService {
-
     private final GameManager holdemGameManager;
 
     @Override

@@ -21,7 +21,6 @@ import static ru.sm.poker.util.PlayerUtil.getDefaultPlayerForHoldem;
 @RequiredArgsConstructor
 @Slf4j
 public class CommonGameController {
-
     private final GameManager gameManager;
     private final ActionService actionService;
     private final SeatManager seatManager;

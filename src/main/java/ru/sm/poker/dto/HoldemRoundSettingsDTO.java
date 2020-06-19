@@ -5,18 +5,24 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import ru.sm.poker.action.Action;
+import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.StageType;
+import ru.sm.poker.game.Game;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static ru.sm.poker.util.PlayerUtil.getPlayersInGame;
+import static ru.sm.poker.util.StreamUtil.*;
+import static ru.sm.poker.util.StreamUtil.playerFolded;
 
 @Builder
 @Getter
 @Setter
 @ToString
 public class HoldemRoundSettingsDTO {
-
     private final Map<PlayerDTO, List<Action>> stageHistory;
     private final Map<PlayerDTO, List<Action>> fullHistory;
     private final List<PlayerDTO> players;
@@ -35,4 +41,33 @@ public class HoldemRoundSettingsDTO {
     private PlayerDTO activePlayer;
     private boolean isAfk;
 
+
+    public boolean lastBetIsNotZero() {
+        return this.lastBet != 0;
+    }
+
+    public boolean playersInAllIn() {
+        return getPlayersInGame(this.players)
+                .stream()
+                .filter(playerFolded().negate())
+                .allMatch(playerInAllIn());
+    }
+
+    public boolean playersCheck() {
+        return this.players.stream()
+                .filter(playerFolded().negate())
+                .allMatch(playersHasCheck());
+    }
+
+    public boolean isOnePlayerLeft() {
+        return this.players.stream()
+                .filter(playerFolded().negate())
+                .count() == 1;
+    }
+
+    public boolean isOnePlayerWhoHasChips(){
+        return this.players.stream()
+                .filter(player -> player.getAction().getActionType() != ActionType.ALLIN && player.getChipsCount() != 0)
+                .count() == 1;
+    }
 }

@@ -17,7 +17,6 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public final class HoldemRoundSettingsManager implements RoundSettingsManager {
-
     private final SecureRandom random = new SecureRandom();
     private final List<CardType> allCards = CardType.getAllCardsAsList();
     private final List<PlayerDTO> players;

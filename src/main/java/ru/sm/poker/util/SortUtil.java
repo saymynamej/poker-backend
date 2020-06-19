@@ -2,6 +2,7 @@ package ru.sm.poker.util;
 
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.RoleType;
+import ru.sm.poker.enums.StageType;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -9,6 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class SortUtil {
+
+    public static List<PlayerDTO> sort(List<PlayerDTO> players, StageType stageType) {
+        return stageType == StageType.PREFLOP ? sortPreflop(players) : sortPostflop(players);
+    }
 
     public static List<PlayerDTO> sortPreflop(List<PlayerDTO> players) {
         final List<PlayerDTO> sortedPlayers = new ArrayList<>(players);

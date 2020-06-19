@@ -31,7 +31,6 @@ import static ru.sm.poker.util.GameUtil.getRandomGOTCityName;
 @RequiredArgsConstructor
 @Slf4j
 public class GameListeners {
-
     private final ExecutorService executorServiceForStart = Executors.newFixedThreadPool(1);
     private final ExecutorService executorServiceForGames = Executors.newFixedThreadPool(15);
     private final OrderService orderService;

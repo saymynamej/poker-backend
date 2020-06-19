@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static ru.sm.poker.util.StreamUtil.*;
+
 public class PlayerUtil {
 
     public static List<PlayerDTO> copies(List<PlayerDTO> players) {
@@ -36,7 +38,7 @@ public class PlayerUtil {
     public static List<String> getNamesOfPlayersInGame(List<PlayerDTO> players){
         return getPlayersInGame(players)
                 .stream()
-                .filter(StreamUtil.playerFolded().negate())
+                .filter(playerFolded().negate())
                 .map(PlayerDTO::getName)
                 .collect(Collectors.toList());
     }
@@ -49,7 +51,7 @@ public class PlayerUtil {
 
     public static List<PlayerDTO> getPlayersInGame(List<PlayerDTO> players) {
         return players.stream()
-                .filter(StreamUtil.playerInGame())
+                .filter(playerInGame())
                 .collect(Collectors.toList());
     }
 

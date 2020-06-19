@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 public class HoldemGame extends Game {
-
     private final static long DELAY_IN_SECONDS = 2L;
 
     public HoldemGame(GameSettings gameSettings, Round round) {

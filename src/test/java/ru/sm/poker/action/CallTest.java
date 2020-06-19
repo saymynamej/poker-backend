@@ -18,11 +18,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static ru.sm.poker.util.DTOUtilTest.*;
-import static ru.sm.poker.util.WaitUtilTest.waitAction;
 
 
 @ExtendWith(SpringExtension.class)
@@ -39,58 +39,58 @@ class CallTest {
     private ExecutorService executorServiceForActions = Executors.newSingleThreadExecutor();
 
     @Test
-    void testSuccessCall() {
+    void testSuccessCall() throws InterruptedException {
         final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
         final Call call = new Call(DEFAULT_LAST_BET);
         final PlayerDTO player = getPlayer();
         executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
-        waitAction(player);
+        executorServiceForActions.awaitTermination(2L, TimeUnit.SECONDS);
         Assertions.assertEquals(DEFAULT_CHIPS_COUNT - DEFAULT_LAST_BET, player.getChipsCount());
         Assertions.assertEquals(call.getCount(), roundSettingsDTO.getLastBet());
     }
 
     @Test
-    void testCallWhenChipsAreNotEnough() {
+    void testCallWhenChipsAreNotEnough() throws InterruptedException {
         final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
         final PlayerDTO player = getPlayer();
         final Call call = new Call(player.getChipsCount() + 1);
         executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
-        waitAction(player);
+        executorServiceForActions.awaitTermination(2L, TimeUnit.SECONDS);
         verify(actionService, times(1)).waitUntilPlayerWillHasAction(player, roundSettingsDTO);
         Assertions.assertEquals(roundSettingsDTO.getBigBlindBet(), roundSettingsDTO.getLastBet());
     }
 
     @Test
-    void testFailBet() {
+    void testFailBet() throws InterruptedException {
         final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
         final PlayerDTO player = getPlayer();
         final Call call = new Call(DEFAULT_BIG_BLIND_BET + 1);
         executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
-        waitAction(player);
+        executorServiceForActions.awaitTermination(2L, TimeUnit.SECONDS);
         verify(actionService, times(1)).waitUntilPlayerWillHasAction(player, roundSettingsDTO);
         Assertions.assertEquals(roundSettingsDTO.getBigBlindBet(), roundSettingsDTO.getLastBet());
     }
 
     @Test
-    void testSuccessCallWithHistory() {
+    void testSuccessCallWithHistory() throws InterruptedException {
         final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
         final PlayerDTO player = getPlayer();
         final long sumAllBets = setHistoryForPlayer(player, roundSettingsDTO);
         final Call call = new Call(roundSettingsDTO.getLastBet() - sumAllBets);
         executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
-        waitAction(player);
+        executorServiceForActions.awaitTermination(2L, TimeUnit.SECONDS);
         Assertions.assertEquals(player.getChipsCount(), DEFAULT_CHIPS_COUNT - roundSettingsDTO.getLastBet());
     }
 
 
     @Test
-    void testFailCallWithHistory() {
+    void testFailCallWithHistory() throws InterruptedException {
         final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
         final PlayerDTO player = getPlayer();
         final long sumAllBets = setHistoryForPlayer(player, roundSettingsDTO);
         final Call call = new Call(roundSettingsDTO.getLastBet() - sumAllBets + 1L);
         executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
-        waitAction(player);
+        executorServiceForActions.awaitTermination(2L, TimeUnit.SECONDS);
         verify(actionService, times(1)).waitUntilPlayerWillHasAction(player, roundSettingsDTO);
         Assertions.assertEquals(player.getChipsCount(), DEFAULT_CHIPS_COUNT - sumAllBets);
     }

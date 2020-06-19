@@ -18,7 +18,6 @@ import static java.lang.String.format;
 @RequiredArgsConstructor
 @Slf4j
 public class CommonGameManager implements GameManager {
-
     private final static Map<String, Game> games = new ConcurrentHashMap<>();
     private final static Map<PlayerDTO, Long> CHIPS_MAP = new ConcurrentHashMap<>();
 
