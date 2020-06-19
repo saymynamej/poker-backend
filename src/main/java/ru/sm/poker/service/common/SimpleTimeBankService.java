@@ -2,8 +2,8 @@ package ru.sm.poker.service.common;
 
 import org.springframework.stereotype.Service;
 import ru.sm.poker.action.holdem.Fold;
-import ru.sm.poker.dto.Player;
-import ru.sm.poker.dto.ResultTime;
+import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.ResultTimeDTO;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.service.TimeBankService;
 
@@ -17,9 +17,9 @@ public class SimpleTimeBankService implements TimeBankService {
     private final static long DEFAULT_TIME_FOR_ACTION = 15L;
 
     @Override
-    public ResultTime activateTime(Player player) {
+    public ResultTimeDTO activateTime(PlayerDTO player) {
         final Timer timer = new Timer();
-        final ResultTime result = new ResultTime();
+        final ResultTimeDTO result = new ResultTimeDTO();
         result.setTimer(timer);
         timer.schedule(new TimerTask() {
             @Override
@@ -38,7 +38,7 @@ public class SimpleTimeBankService implements TimeBankService {
     }
 
     @Override
-    public void cancel(ResultTime result, Player player) {
+    public void cancel(ResultTimeDTO result, PlayerDTO player) {
         result.getTimer().cancel();
         if (result.isDone()){
             final long startTime = result.getStartTime();
@@ -48,13 +48,13 @@ public class SimpleTimeBankService implements TimeBankService {
         }
     }
 
-    private void fillResult(ResultTime result){
+    private void fillResult(ResultTimeDTO result){
         final long startTime = System.currentTimeMillis();
         result.setDone(true);
         result.setStartTime(startTime);
     }
 
-    private void setInActivePlayer(Player player){
+    private void setInActivePlayer(PlayerDTO player){
         player.setAction(new Fold());
         player.setStateType(StateType.AFK);
         player.setTimeBank(0L);

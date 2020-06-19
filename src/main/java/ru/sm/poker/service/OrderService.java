@@ -1,7 +1,7 @@
 package ru.sm.poker.service;
 
-import ru.sm.poker.dto.HoldemRoundSettings;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 
 public interface OrderService {
-    boolean start(HoldemRoundSettings holdemRoundSettings);
+    boolean start(HoldemRoundSettingsDTO holdemRoundSettings);
 }

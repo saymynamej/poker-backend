@@ -14,7 +14,7 @@ import java.util.List;
 @ToString
 @EqualsAndHashCode(of = "name")
 @SuperBuilder
-public class Player {
+public class PlayerDTO {
 
     private String name;
 
@@ -38,7 +38,7 @@ public class Player {
     @Setter
     private String gameName;
 
-    public Player(
+    public PlayerDTO(
             String name,
             List<CardType> cards,
             RoleType roleType,
@@ -60,7 +60,7 @@ public class Player {
         this.gameName = gameName;
     }
 
-    public Player(String name, long chipsCount) {
+    public PlayerDTO(String name, long chipsCount) {
         this.name = name;
         this.chipsCount = chipsCount;
     }
@@ -161,8 +161,8 @@ public class Player {
         return PlayerType.ORDINARY;
     }
 
-    public Player copy() {
-        return Player
+    public PlayerDTO copy() {
+        return PlayerDTO
                 .builder()
                 .name(name)
                 .action(action)

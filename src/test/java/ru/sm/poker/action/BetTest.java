@@ -10,8 +10,8 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.sm.poker.action.holdem.Bet;
-import ru.sm.poker.dto.HoldemRoundSettings;
-import ru.sm.poker.dto.Player;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
 
@@ -36,9 +36,9 @@ public class BetTest {
 
     @Test
     public void testFailBet(){
-        final HoldemRoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
+        final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
         final Bet bet = new Bet(DEFAULT_LAST_BET);
-        final Player player = getPlayer();
+        final PlayerDTO player = getPlayer();
         executorServiceForActions.submit(() -> bet.doAction(roundSettingsDTO, player, gameService, actionService));
         waitAction(player);
         Mockito.verify(actionService, Mockito.times(1)).waitUntilPlayerWillHasAction(player, roundSettingsDTO);
@@ -47,9 +47,9 @@ public class BetTest {
 
     @Test
     public void testSuccessBet(){
-        final HoldemRoundSettings roundSettingsDTO = getRoundSettingsDTO(0);
+        final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO(0);
         final Bet bet = new Bet(DEFAULT_LAST_BET);
-        final Player player = getPlayer();
+        final PlayerDTO player = getPlayer();
         executorServiceForActions.submit(() -> bet.doAction(roundSettingsDTO, player, gameService, actionService));
         waitAction(player);
         Mockito.verify(actionService, Mockito.times(0)).waitUntilPlayerWillHasAction(player, roundSettingsDTO);

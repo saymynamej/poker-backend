@@ -1,7 +1,7 @@
 package ru.sm.poker.util;
 
 import ru.sm.poker.dto.Bot;
-import ru.sm.poker.dto.Player;
+import ru.sm.poker.dto.PlayerDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 
 public class PlayerUtil {
 
-    public static List<Player> copies(List<Player> players) {
-        final List<Player> copyPlayers = new ArrayList<>();
+    public static List<PlayerDTO> copies(List<PlayerDTO> players) {
+        final List<PlayerDTO> copyPlayers = new ArrayList<>();
         players.forEach(player -> copyPlayers.add(player.copy()));
         return copyPlayers;
     }
@@ -21,33 +21,33 @@ public class PlayerUtil {
                 .build();
     }
 
-    public static Player getDefaultPlayerForHoldem(String playerName) {
+    public static PlayerDTO getDefaultPlayerForHoldem(String playerName) {
         return getDefaultPlayerForHoldem(playerName, 5000L);
     }
 
-    public static Player getDefaultPlayerForHoldem(String playerName, long chipsCount) {
-        return Player.builder()
+    public static PlayerDTO getDefaultPlayerForHoldem(String playerName, long chipsCount) {
+        return PlayerDTO.builder()
                 .name(playerName)
                 .timeBank(60L)
                 .chipsCount(chipsCount)
                 .build();
     }
 
-    public static List<String> getNamesOfPlayersInGame(List<Player> players){
+    public static List<String> getNamesOfPlayersInGame(List<PlayerDTO> players){
         return getPlayersInGame(players)
                 .stream()
                 .filter(StreamUtil.playerFolded().negate())
-                .map(Player::getName)
+                .map(PlayerDTO::getName)
                 .collect(Collectors.toList());
     }
 
-    public static List<Player> getNotFoldedPlayers(List<Player> players) {
+    public static List<PlayerDTO> getNotFoldedPlayers(List<PlayerDTO> players) {
         return players.stream()
-                .filter(Player::isNotFolded)
+                .filter(PlayerDTO::isNotFolded)
                 .collect(Collectors.toList());
     }
 
-    public static List<Player> getPlayersInGame(List<Player> players) {
+    public static List<PlayerDTO> getPlayersInGame(List<PlayerDTO> players) {
         return players.stream()
                 .filter(StreamUtil.playerInGame())
                 .collect(Collectors.toList());

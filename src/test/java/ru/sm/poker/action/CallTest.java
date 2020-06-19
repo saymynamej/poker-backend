@@ -9,8 +9,8 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.sm.poker.action.holdem.Call;
-import ru.sm.poker.dto.HoldemRoundSettings;
-import ru.sm.poker.dto.Player;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
 
@@ -40,9 +40,9 @@ class CallTest {
 
     @Test
     void testSuccessCall() {
-        final HoldemRoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
+        final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
         final Call call = new Call(DEFAULT_LAST_BET);
-        final Player player = getPlayer();
+        final PlayerDTO player = getPlayer();
         executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
         waitAction(player);
         Assertions.assertEquals(DEFAULT_CHIPS_COUNT - DEFAULT_LAST_BET, player.getChipsCount());
@@ -51,8 +51,8 @@ class CallTest {
 
     @Test
     void testCallWhenChipsAreNotEnough() {
-        final HoldemRoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
-        final Player player = getPlayer();
+        final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
+        final PlayerDTO player = getPlayer();
         final Call call = new Call(player.getChipsCount() + 1);
         executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
         waitAction(player);
@@ -62,8 +62,8 @@ class CallTest {
 
     @Test
     void testFailBet() {
-        final HoldemRoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
-        final Player player = getPlayer();
+        final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
+        final PlayerDTO player = getPlayer();
         final Call call = new Call(DEFAULT_BIG_BLIND_BET + 1);
         executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
         waitAction(player);
@@ -73,8 +73,8 @@ class CallTest {
 
     @Test
     void testSuccessCallWithHistory() {
-        final HoldemRoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
-        final Player player = getPlayer();
+        final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
+        final PlayerDTO player = getPlayer();
         final long sumAllBets = setHistoryForPlayer(player, roundSettingsDTO);
         final Call call = new Call(roundSettingsDTO.getLastBet() - sumAllBets);
         executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
@@ -85,8 +85,8 @@ class CallTest {
 
     @Test
     void testFailCallWithHistory() {
-        final HoldemRoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
-        final Player player = getPlayer();
+        final HoldemRoundSettingsDTO roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
+        final PlayerDTO player = getPlayer();
         final long sumAllBets = setHistoryForPlayer(player, roundSettingsDTO);
         final Call call = new Call(roundSettingsDTO.getLastBet() - sumAllBets + 1L);
         executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
@@ -95,12 +95,12 @@ class CallTest {
         Assertions.assertEquals(player.getChipsCount(), DEFAULT_CHIPS_COUNT - sumAllBets);
     }
 
-    private long setHistoryForPlayer(Player player, HoldemRoundSettings holdemRoundSettings) {
+    private long setHistoryForPlayer(PlayerDTO player, HoldemRoundSettingsDTO holdemRoundSettings) {
         final long firstBet = 2L;
         final long secondBet = 8L;
         final long thirdBet = 100L;
 
-        final Map<Player, List<Action>> history = holdemRoundSettings.getStageHistory();
+        final Map<PlayerDTO, List<Action>> history = holdemRoundSettings.getStageHistory();
         history.put(player, List.of(
                 new Call(firstBet),
                 new Call(secondBet),

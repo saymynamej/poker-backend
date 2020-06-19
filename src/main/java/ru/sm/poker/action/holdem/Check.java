@@ -3,8 +3,8 @@ package ru.sm.poker.action.holdem;
 import lombok.Getter;
 import lombok.ToString;
 import ru.sm.poker.action.ExecutableAction;
-import ru.sm.poker.dto.HoldemRoundSettings;
-import ru.sm.poker.dto.Player;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
@@ -23,7 +23,7 @@ public class Check implements ExecutableAction {
     }
 
     @Override
-    public void doAction(HoldemRoundSettings holdemRoundSettings, Player player, GameService gameService, ActionService actionService) {
+    public void doAction(HoldemRoundSettingsDTO holdemRoundSettings, PlayerDTO player, GameService gameService, ActionService actionService) {
         CHECK_STRATEGIES.get(player.getRoleType()).execute(
                 player,
                 gameService,

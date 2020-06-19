@@ -6,6 +6,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class WinnerDTO {
-    private final Player player;
+    private final PlayerDTO player;
     private final CombinationDTO combinationDTO;
 }

@@ -1,16 +1,16 @@
 package ru.sm.poker.service;
 
-import ru.sm.poker.dto.Player;
+import ru.sm.poker.dto.PlayerDTO;
 
 import java.util.Queue;
 
 public interface SeatManager {
 
-    void joinInGame(String gameName, Player player);
+    void joinInGame(String gameName, PlayerDTO player);
 
-    void joinInQueue(Player player);
+    void joinInQueue(PlayerDTO player);
 
     void leaveGame(String playerName, String gameName);
 
-    Queue<Player> getQueue();
+    Queue<PlayerDTO> getQueue();
 }

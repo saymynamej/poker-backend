@@ -5,8 +5,8 @@ import ru.sm.poker.action.Action;
 import ru.sm.poker.action.holdem.Call;
 import ru.sm.poker.action.holdem.Fold;
 import ru.sm.poker.action.holdem.Wait;
-import ru.sm.poker.dto.HoldemRoundSettings;
-import ru.sm.poker.dto.Player;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.*;
 import ru.sm.poker.game.RoundSettingsManager;
 
@@ -20,7 +20,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
 
     private final SecureRandom random = new SecureRandom();
     private final List<CardType> allCards = CardType.getAllCardsAsList();
-    private final List<Player> players;
+    private final List<PlayerDTO> players;
     private final List<CardType> flop = setFlop();
     private final CardType tern = getRandomCard();
     private final CardType river = getRandomCard();
@@ -32,7 +32,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
         players.forEach(player -> player.setGameName(gameName));
     }
 
-    public HoldemRoundSettings getPreflopSettings() {
+    public HoldemRoundSettingsDTO getPreflopSettings() {
         setAllPlayersGameName();
         dealCards();
         setButton();
@@ -40,7 +40,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
         setBigBlind();
         setAllActivePlayers();
 
-        return HoldemRoundSettings.builder()
+        return HoldemRoundSettingsDTO.builder()
                 .gameName(gameName)
                 .bank(bigBlindBet + smallBlindBet)
                 .smallBlindBet(smallBlindBet)
@@ -57,9 +57,9 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .build();
     }
 
-    public HoldemRoundSettings getPostFlopSettings(long bank, Map<Player, List<Action>> prevHistory) {
+    public HoldemRoundSettingsDTO getPostFlopSettings(long bank, Map<PlayerDTO, List<Action>> prevHistory) {
         setAllActivePlayersTest();
-        return HoldemRoundSettings.builder()
+        return HoldemRoundSettingsDTO.builder()
                 .flop(flop)
                 .gameName(gameName)
                 .bank(bank)
@@ -77,9 +77,9 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .build();
     }
 
-    public HoldemRoundSettings getPostFlopSettingsWithTern(long bank, Map<Player, List<Action>> fullHistory) {
+    public HoldemRoundSettingsDTO getPostFlopSettingsWithTern(long bank, Map<PlayerDTO, List<Action>> fullHistory) {
         setAllActivePlayersTest();
-        return HoldemRoundSettings.builder()
+        return HoldemRoundSettingsDTO.builder()
                 .flop(flop)
                 .tern(tern)
                 .gameName(gameName)
@@ -99,9 +99,9 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
     }
 
 
-    public HoldemRoundSettings getPostFlopSettingsWithRiver(long bank, Map<Player, List<Action>> fullHistory) {
+    public HoldemRoundSettingsDTO getPostFlopSettingsWithRiver(long bank, Map<PlayerDTO, List<Action>> fullHistory) {
         setAllActivePlayersTest();
-        return HoldemRoundSettings
+        return HoldemRoundSettingsDTO
                 .builder()
                 .flop(flop)
                 .tern(tern)
@@ -145,10 +145,10 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
     }
 
     private void setButton() {
-        final List<Player> players = this.players;
-        final Optional<Player> foundButton = players
+        final List<PlayerDTO> players = this.players;
+        final Optional<PlayerDTO> foundButton = players
                 .stream()
-                .filter(Player::isButton)
+                .filter(PlayerDTO::isButton)
                 .findAny();
 
         if (foundButton.isEmpty()) {
@@ -156,7 +156,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
             return;
         }
 
-        final Player button = foundButton.get();
+        final PlayerDTO button = foundButton.get();
         button.removeRole();
         int indexOfButton = players.indexOf(button);
 
@@ -178,7 +178,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
         clearRole(RoleType.SMALL_BLIND);
         final int indexOfButton = getIndexOfButton();
         int indexOfSmallBlind = 0;
-        Player smallBlind;
+        PlayerDTO smallBlind;
         if (indexOfButton + 1 < players.size()) {
             indexOfSmallBlind = indexOfButton + 1;
         }
@@ -190,40 +190,40 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
     private void setBigBlind() {
         clearRole(RoleType.BIG_BLIND);
         final int indexOfSmallBlind = getIndexOfSmallBlind();
-        Player bigBlind = getPlayer(indexOfSmallBlind);
+        PlayerDTO bigBlind = getPlayer(indexOfSmallBlind);
         bigBlind.setRole(RoleType.BIG_BLIND);
         removeChipsFromPlayer(bigBlind, bigBlindBet);
     }
 
     private void clearRole(RoleType roleType) {
-        final Optional<Player> playerByRole = players.stream()
+        final Optional<PlayerDTO> playerByRole = players.stream()
                 .filter(player -> player.getRoleType() == roleType)
                 .findAny();
 
-        playerByRole.ifPresent(Player::removeRole);
+        playerByRole.ifPresent(PlayerDTO::removeRole);
     }
 
-    private void removeChipsFromPlayer(Player player, long chips) {
+    private void removeChipsFromPlayer(PlayerDTO player, long chips) {
         removeChips(player, chips);
     }
 
-    private Optional<Player> getPlayerByRole(RoleType roleType) {
+    private Optional<PlayerDTO> getPlayerByRole(RoleType roleType) {
         return this.players.stream()
                 .filter(player -> player.getRoleType() == roleType)
                 .findFirst();
     }
 
-    private Map<Player, List<Action>> setBlindsHistory() {
-        final Map<Player, List<Action>> history = new HashMap<>();
-        final Optional<Player> optionalSmallBlind = getPlayerByRole(RoleType.SMALL_BLIND);
-        final Optional<Player> optionalBigBlind = getPlayerByRole(RoleType.BIG_BLIND);
+    private Map<PlayerDTO, List<Action>> setBlindsHistory() {
+        final Map<PlayerDTO, List<Action>> history = new HashMap<>();
+        final Optional<PlayerDTO> optionalSmallBlind = getPlayerByRole(RoleType.SMALL_BLIND);
+        final Optional<PlayerDTO> optionalBigBlind = getPlayerByRole(RoleType.BIG_BLIND);
 
         if (optionalSmallBlind.isEmpty() || optionalBigBlind.isEmpty()) {
             throw new RuntimeException("global error, cannot find blinds");
         }
 
-        final Player bigBlind = optionalBigBlind.get();
-        final Player smallBlind = optionalSmallBlind.get();
+        final PlayerDTO bigBlind = optionalBigBlind.get();
+        final PlayerDTO smallBlind = optionalSmallBlind.get();
         final List<Action> forBigBlind = new ArrayList<>();
         forBigBlind.add(new Call(bigBlindBet));
         final List<Action> forSmallBlind = new ArrayList<>();
@@ -247,9 +247,9 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .collect(Collectors.toList());
     }
 
-    private Player getPlayer(int indexOfSmallBlind) {
+    private PlayerDTO getPlayer(int indexOfSmallBlind) {
         int indexOfBigBlind = 0;
-        Player bigBlind;
+        PlayerDTO bigBlind;
         if (indexOfSmallBlind + 1 < players.size()) {
             indexOfBigBlind = indexOfSmallBlind + 1;
         }
@@ -257,7 +257,7 @@ public final class HoldemRoundSettingsManager implements RoundSettingsManager {
         return bigBlind;
     }
 
-    private void removeChips(Player player, long chips) {
+    private void removeChips(PlayerDTO player, long chips) {
         player.removeChips(chips);
     }
 

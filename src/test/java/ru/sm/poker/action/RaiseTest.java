@@ -10,9 +10,8 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.sm.poker.action.holdem.Raise;
-import ru.sm.poker.dto.HoldemRoundSettings;
-import ru.sm.poker.dto.Player;
-import ru.sm.poker.enums.ActionType;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
 
@@ -39,8 +38,8 @@ public class RaiseTest {
     public void testSuccessRaise() {
         final long raiseCount = 4;
         final long lastBet = 2;
-        final HoldemRoundSettings roundSettings = getRoundSettingsDTO(lastBet);
-        final Player player = getPlayer();
+        final HoldemRoundSettingsDTO roundSettings = getRoundSettingsDTO(lastBet);
+        final PlayerDTO player = getPlayer();
         final Raise raise = new Raise(raiseCount);
         executorService.submit(() -> raise.doAction(roundSettings, player, gameService, actionService));
         waitAction(player);
@@ -51,8 +50,8 @@ public class RaiseTest {
     public void testFailRaise() {
         final long raiseCount = 2;
         final long lastBet = 2;
-        final HoldemRoundSettings roundSettings = getRoundSettingsDTO(lastBet);
-        final Player player = getPlayer();
+        final HoldemRoundSettingsDTO roundSettings = getRoundSettingsDTO(lastBet);
+        final PlayerDTO player = getPlayer();
         final Raise raise = new Raise(raiseCount);
         executorService.submit(() -> raise.doAction(roundSettings, player, gameService, actionService));
         waitAction(player);

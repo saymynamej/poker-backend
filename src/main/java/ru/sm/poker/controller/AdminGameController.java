@@ -7,7 +7,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.sm.poker.action.holdem.*;
 import ru.sm.poker.dto.AdminActionDTO;
-import ru.sm.poker.dto.Player;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.SeatManager;
@@ -83,7 +83,7 @@ public class AdminGameController {
 
     @MessageMapping("/admin/doAllIn")
     public void doAllIn(AdminActionDTO actionDTO) {
-        final Optional<Player> playerByName = gameManager.getPlayerByName(actionDTO.getName());
+        final Optional<PlayerDTO> playerByName = gameManager.getPlayerByName(actionDTO.getName());
         playerByName.ifPresent(
                 player -> actionService.setAction(actionDTO.getName(), new All(player.getChipsCount()))
         );

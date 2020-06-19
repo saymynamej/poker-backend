@@ -4,9 +4,7 @@ import com.github.javafaker.Faker;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import ru.sm.poker.dto.Player;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.RoleType;
 
 import java.util.ArrayList;
@@ -16,22 +14,22 @@ import java.util.List;
 
 public class SortUtilTest {
 
-    private final List<Player> playersForTestingPreflop = new ArrayList<>();
+    private final List<PlayerDTO> playersForTestingPreflop = new ArrayList<>();
 
-    private final List<Player> playerForTestingPostFlop = new ArrayList<>();
+    private final List<PlayerDTO> playerForTestingPostFlop = new ArrayList<>();
 
     private final Faker faker = new Faker();
 
 
     @Before
     public void before() {
-        final Player button = new Player(faker.name().name(), 5000);
+        final PlayerDTO button = new PlayerDTO(faker.name().name(), 5000);
         button.setButton();
-        final Player sm = new Player(faker.name().name(), 5000);
+        final PlayerDTO sm = new PlayerDTO(faker.name().name(), 5000);
         sm.setRole(RoleType.SMALL_BLIND);
-        final Player bb = new Player(faker.name().name(), 5000);
+        final PlayerDTO bb = new PlayerDTO(faker.name().name(), 5000);
         bb.setRole(RoleType.BIG_BLIND);
-        final Player simplePlayer = new Player(faker.name().name(), 5000);
+        final PlayerDTO simplePlayer = new PlayerDTO(faker.name().name(), 5000);
         simplePlayer.setRole(RoleType.ORDINARY);
         playersForTestingPreflop.addAll(Arrays.asList(sm, button, simplePlayer, bb));
         playerForTestingPostFlop.addAll(Arrays.asList(sm, button, simplePlayer, bb));
@@ -39,7 +37,7 @@ public class SortUtilTest {
 
     @Test
     public void testSortPreflop() {
-        final List<Player> sortedPlayers = SortUtil.sortPreflop(playersForTestingPreflop);
+        final List<PlayerDTO> sortedPlayers = SortUtil.sortPreflop(playersForTestingPreflop);
 
         Assertions.assertEquals(sortedPlayers.get(0).getRoleType(), RoleType.ORDINARY);
         Assertions.assertEquals(sortedPlayers.get(1).getRoleType(), RoleType.BUTTON);
@@ -48,22 +46,22 @@ public class SortUtilTest {
 
         Collections.shuffle(playersForTestingPreflop);
 
-        final List<Player> sortedPlayerWithShuffle = SortUtil.sortPreflop(playersForTestingPreflop);
+        final List<PlayerDTO> sortedPlayerWithShuffle = SortUtil.sortPreflop(playersForTestingPreflop);
 
         Assertions.assertEquals(sortedPlayerWithShuffle.get(0).getRoleType(), RoleType.ORDINARY);
         Assertions.assertEquals(sortedPlayerWithShuffle.get(1).getRoleType(), RoleType.BUTTON);
         Assertions.assertEquals(sortedPlayerWithShuffle.get(2).getRoleType(), RoleType.SMALL_BLIND);
         Assertions.assertEquals(sortedPlayerWithShuffle.get(3).getRoleType(), RoleType.BIG_BLIND);
 
-        final Player simplePlayer1 = new Player(faker.name().name(), 5000);
+        final PlayerDTO simplePlayer1 = new PlayerDTO(faker.name().name(), 5000);
         simplePlayer1.setRole(RoleType.ORDINARY);
 
-        final Player simplePlayer2 = new Player(faker.name().name(), 5000);
+        final PlayerDTO simplePlayer2 = new PlayerDTO(faker.name().name(), 5000);
         simplePlayer1.setRole(RoleType.ORDINARY);
 
         playersForTestingPreflop.addAll(Arrays.asList(simplePlayer1, simplePlayer2));
 
-        List<Player> sortedPlayers2 = SortUtil.sortPreflop(this.playersForTestingPreflop);
+        List<PlayerDTO> sortedPlayers2 = SortUtil.sortPreflop(this.playersForTestingPreflop);
 
         Assertions.assertEquals(sortedPlayers2.get(0).getRoleType(), RoleType.ORDINARY);
         Assertions.assertEquals(sortedPlayers2.get(1).getRoleType(), RoleType.ORDINARY);
@@ -73,18 +71,18 @@ public class SortUtilTest {
         Assertions.assertEquals(sortedPlayers2.get(5).getRoleType(), RoleType.BIG_BLIND);
 
 
-        final Player simplePlayer3 = new Player(faker.name().name(), 5000);
+        final PlayerDTO simplePlayer3 = new PlayerDTO(faker.name().name(), 5000);
         simplePlayer1.setRole(RoleType.ORDINARY);
 
-        final Player simplePlayer4 = new Player(faker.name().name(), 5000);
+        final PlayerDTO simplePlayer4 = new PlayerDTO(faker.name().name(), 5000);
         simplePlayer1.setRole(RoleType.ORDINARY);
 
-        final Player simplePlayer5 = new Player(faker.name().name(), 5000);
+        final PlayerDTO simplePlayer5 = new PlayerDTO(faker.name().name(), 5000);
         simplePlayer1.setRole(RoleType.ORDINARY);
 
         playersForTestingPreflop.addAll(Arrays.asList(simplePlayer3, simplePlayer4, simplePlayer5));
 
-        final List<Player> sortedPlayer3 = SortUtil.sortPreflop(this.playersForTestingPreflop);
+        final List<PlayerDTO> sortedPlayer3 = SortUtil.sortPreflop(this.playersForTestingPreflop);
 
         Assertions.assertEquals(sortedPlayer3.get(0).getRoleType(), RoleType.ORDINARY);
         Assertions.assertEquals(sortedPlayer3.get(1).getRoleType(), RoleType.ORDINARY);
@@ -101,17 +99,17 @@ public class SortUtilTest {
 
     @Test
     public void testSortPostFlop() {
-        final List<Player> players = SortUtil.sortPostflop(playerForTestingPostFlop);
+        final List<PlayerDTO> players = SortUtil.sortPostflop(playerForTestingPostFlop);
 
         Assertions.assertEquals(players.get(0).getRoleType(), RoleType.SMALL_BLIND);
         Assertions.assertEquals(players.get(1).getRoleType(), RoleType.BIG_BLIND);
         Assertions.assertEquals(players.get(2).getRoleType(), RoleType.ORDINARY);
         Assertions.assertEquals(players.get(3).getRoleType(), RoleType.BUTTON);
 
-        final Player simplePlayer1 = new Player(faker.name().name(), 5000);
+        final PlayerDTO simplePlayer1 = new PlayerDTO(faker.name().name(), 5000);
         simplePlayer1.setRole(RoleType.ORDINARY);
 
-        final Player simplePlayer2 = new Player(faker.name().name(), 5000);
+        final PlayerDTO simplePlayer2 = new PlayerDTO(faker.name().name(), 5000);
         simplePlayer1.setRole(RoleType.ORDINARY);
 
 
@@ -119,7 +117,7 @@ public class SortUtilTest {
 
         Collections.shuffle(playerForTestingPostFlop);
 
-        final List<Player> sortedPlayersWithShuffle = SortUtil.sortPostflop(playerForTestingPostFlop);
+        final List<PlayerDTO> sortedPlayersWithShuffle = SortUtil.sortPostflop(playerForTestingPostFlop);
 
 
         Assertions.assertEquals(sortedPlayersWithShuffle.get(0).getRoleType(), RoleType.SMALL_BLIND);
@@ -130,20 +128,20 @@ public class SortUtilTest {
         Assertions.assertEquals(sortedPlayersWithShuffle.get(5).getRoleType(), RoleType.BUTTON);
 
 
-        final Player simplePlayer3 = new Player(faker.name().name(), 5000);
+        final PlayerDTO simplePlayer3 = new PlayerDTO(faker.name().name(), 5000);
         simplePlayer1.setRole(RoleType.ORDINARY);
 
-        final Player simplePlayer4 = new Player(faker.name().name(), 5000);
+        final PlayerDTO simplePlayer4 = new PlayerDTO(faker.name().name(), 5000);
         simplePlayer1.setRole(RoleType.ORDINARY);
 
-        final Player simplePlayer5 = new Player(faker.name().name(), 5000);
+        final PlayerDTO simplePlayer5 = new PlayerDTO(faker.name().name(), 5000);
         simplePlayer1.setRole(RoleType.ORDINARY);
 
         playerForTestingPostFlop.addAll(Arrays.asList(simplePlayer3, simplePlayer4, simplePlayer5));
 
         Collections.shuffle(playerForTestingPostFlop);
 
-        final List<Player> sortedPlayersWithShuffle2 = SortUtil.sortPostflop(playerForTestingPostFlop);
+        final List<PlayerDTO> sortedPlayersWithShuffle2 = SortUtil.sortPostflop(playerForTestingPostFlop);
 
 
         Assertions.assertEquals(sortedPlayersWithShuffle2.get(0).getRoleType(), RoleType.SMALL_BLIND);
@@ -164,7 +162,7 @@ public class SortUtilTest {
         for (int i = 0; i < 1_000_000; i++) {
             Collections.shuffle(playersForTestingPreflop);
 
-            final List<Player> players = SortUtil.sortPreflop(playersForTestingPreflop);
+            final List<PlayerDTO> players = SortUtil.sortPreflop(playersForTestingPreflop);
 
             Assertions.assertEquals(players.get(0).getRoleType(), RoleType.ORDINARY);
             Assertions.assertEquals(players.get(1).getRoleType(), RoleType.BUTTON);
@@ -180,7 +178,7 @@ public class SortUtilTest {
         for (int i = 0; i < 1_000_000; i++) {
             Collections.shuffle(playerForTestingPostFlop);
 
-            final List<Player> players = SortUtil.sortPostflop(playerForTestingPostFlop);
+            final List<PlayerDTO> players = SortUtil.sortPostflop(playerForTestingPostFlop);
 
             Assertions.assertEquals(players.get(0).getRoleType(), RoleType.SMALL_BLIND);
             Assertions.assertEquals(players.get(1).getRoleType(), RoleType.BIG_BLIND);

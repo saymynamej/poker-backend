@@ -3,8 +3,8 @@ package ru.sm.poker.service.common;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.sm.poker.dto.HoldemRoundSettings;
-import ru.sm.poker.dto.Player;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.enums.StageType;
 import ru.sm.poker.service.ActionService;
@@ -27,8 +27,8 @@ public class OrderActionService implements OrderService {
     private final ActionService actionServiceHoldem;
 
     @Override
-    public boolean start(HoldemRoundSettings holdemRoundSettings) {
-        final List<Player> sortedPlayers = getPlayersInGame(
+    public boolean start(HoldemRoundSettingsDTO holdemRoundSettings) {
+        final List<PlayerDTO> sortedPlayers = getPlayersInGame(
                 sort(holdemRoundSettings.getPlayers(), holdemRoundSettings.getStageType())
         );
 
@@ -53,7 +53,7 @@ public class OrderActionService implements OrderService {
                 break;
             }
 
-            for (Player player : sortedPlayers) {
+            for (PlayerDTO player : sortedPlayers) {
                 if (player.isNotInGame()) {
                     continue;
                 }
@@ -81,30 +81,30 @@ public class OrderActionService implements OrderService {
         return lastBet != 0;
     }
 
-    private List<Player> sort(List<Player> players, StageType stageType) {
+    private List<PlayerDTO> sort(List<PlayerDTO> players, StageType stageType) {
         return stageType == StageType.PREFLOP ? sortPreflop(players) : sortPostflop(players);
     }
 
-    private boolean playersInAllIn(List<Player> players) {
+    private boolean playersInAllIn(List<PlayerDTO> players) {
         return getPlayersInGame(players)
                 .stream()
                 .filter(playerFolded().negate())
                 .allMatch(playerInAllIn());
     }
 
-    private boolean playersCheck(List<Player> players) {
+    private boolean playersCheck(List<PlayerDTO> players) {
         return players.stream()
                 .filter(playerFolded().negate())
                 .allMatch(playersHasCheck());
     }
 
-    private boolean isOnePlayerLeft(List<Player> players) {
+    private boolean isOnePlayerLeft(List<PlayerDTO> players) {
         return players.stream()
                 .filter(playerFolded().negate())
                 .count() == 1;
     }
 
-    private boolean isOnePlayerWhoHasChips(List<Player> players){
+    private boolean isOnePlayerWhoHasChips(List<PlayerDTO> players){
         return players.stream()
                 .filter(player -> player.getAction().getActionType() != ActionType.ALLIN && player.getChipsCount() != 0)
                 .count() == 1;

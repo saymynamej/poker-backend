@@ -61,13 +61,13 @@ public class CommonGameController {
     }
 
     @MessageMapping("/doRaise")
-    public void doRaise(Principal principal, ActionDTO actionDTO) {
-        actionService.setAction(principal.getName(), new Raise(Long.parseLong(actionDTO.getCount())));
+    public void doRaise(Principal principal, ActionDTO action) {
+        actionService.setAction(principal.getName(), new Raise(Long.parseLong(action.getCount())));
     }
 
     @MessageMapping("/doCall")
-    public void doCall(Principal principal, ActionDTO actionDTO) {
-        actionService.setAction(principal.getName(), new Call(Long.parseLong(actionDTO.getCount())));
+    public void doCall(Principal principal, ActionDTO action) {
+        actionService.setAction(principal.getName(), new Call(Long.parseLong(action.getCount())));
     }
 
     @MessageMapping("/doFold")
@@ -76,8 +76,8 @@ public class CommonGameController {
     }
 
     @MessageMapping("/doBet")
-    public void doBet(Principal principal, ActionDTO actionDTO) {
-        actionService.setAction(principal.getName(), new Bet(Long.parseLong(actionDTO.getCount())));
+    public void doBet(Principal principal, ActionDTO action) {
+        actionService.setAction(principal.getName(), new Bet(Long.parseLong(action.getCount())));
     }
 
     @MessageMapping("/doCheck")
@@ -86,7 +86,7 @@ public class CommonGameController {
     }
 
     @MessageMapping("/doAllIn")
-    public void doAllIn(Principal principal, ActionDTO actionDTO) {
-        actionService.setAction(principal.getName(), new All(Long.parseLong(actionDTO.getCount())));
+    public void doAllIn(Principal principal, ActionDTO action) {
+        actionService.setAction(principal.getName(), new All(Long.parseLong(action.getCount())));
     }
 }

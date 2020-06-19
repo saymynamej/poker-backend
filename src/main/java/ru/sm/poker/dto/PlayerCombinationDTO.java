@@ -8,6 +8,6 @@ import lombok.Getter;
 @Getter
 @Builder
 public class PlayerCombinationDTO {
-    private final Player player;
+    private final PlayerDTO player;
     private final CombinationDTO combination;
 }

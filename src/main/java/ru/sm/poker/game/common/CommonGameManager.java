@@ -3,7 +3,7 @@ package ru.sm.poker.game.common;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.sm.poker.dto.Player;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 
@@ -20,10 +20,10 @@ import static java.lang.String.format;
 public class CommonGameManager implements GameManager {
 
     private final static Map<String, Game> games = new ConcurrentHashMap<>();
-    private final static Map<Player, Long> CHIPS_MAP = new ConcurrentHashMap<>();
+    private final static Map<PlayerDTO, Long> CHIPS_MAP = new ConcurrentHashMap<>();
 
     @Override
-    public Optional<Player> getPlayerByName(String name) {
+    public Optional<PlayerDTO> getPlayerByName(String name) {
         return games.values().stream()
                 .flatMap(game -> game.getPlayers().stream())
                 .filter(player -> player.getName().equals(name))
@@ -39,7 +39,7 @@ public class CommonGameManager implements GameManager {
 
 
     @Override
-    public void addChips(Player player, long count) {
+    public void addChips(PlayerDTO player, long count) {
         if (player == null) {
             return;
         }
@@ -48,16 +48,16 @@ public class CommonGameManager implements GameManager {
 
     @Override
     public void addChips(String name) {
-        final Optional<Player> optionalPlayer = getPlayerByName(name);
+        final Optional<PlayerDTO> optionalPlayer = getPlayerByName(name);
         if (optionalPlayer.isEmpty()) {
             return;
         }
-        final Player player = optionalPlayer.get();
+        final PlayerDTO player = optionalPlayer.get();
         CHIPS_MAP.put(player, 5000L);
     }
 
     @Override
-    public void removePlayer(String gameName, Player player) {
+    public void removePlayer(String gameName, PlayerDTO player) {
         final Game game = games.get(gameName);
         if (game != null) {
             game.removePlayer(player);
@@ -76,9 +76,9 @@ public class CommonGameManager implements GameManager {
     }
 
     @Override
-    public void removePlayer(Player player) {
+    public void removePlayer(PlayerDTO player) {
         games.forEach((name, game) -> {
-            final List<Player> players = game.getRoundSettings().getPlayers();
+            final List<PlayerDTO> players = game.getRoundSettings().getPlayers();
             players.remove(player);
         });
     }
@@ -105,11 +105,11 @@ public class CommonGameManager implements GameManager {
     }
 
     @Override
-    public Player getActivePlayerInGame(String game) {
+    public PlayerDTO getActivePlayerInGame(String game) {
         return getGameByName(game).getRoundSettings()
                 .getPlayers()
                 .stream()
-                .filter(Player::isActive)
+                .filter(PlayerDTO::isActive)
                 .findFirst().orElseThrow(() -> new RuntimeException("cannot find active player in game:" + game));
     }
 
@@ -130,11 +130,11 @@ public class CommonGameManager implements GameManager {
         return games;
     }
 
-    public static Map<Player, Long> getChipsMap() {
+    public static Map<PlayerDTO, Long> getChipsMap() {
         return CHIPS_MAP;
     }
 
-    private void addChipsToMap(Player player, Long chips) {
+    private void addChipsToMap(PlayerDTO player, Long chips) {
         if (CHIPS_MAP.containsKey(player)) {
             return;
         }

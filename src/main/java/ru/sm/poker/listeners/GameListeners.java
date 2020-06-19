@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.config.game.GameSettings;
 import ru.sm.poker.config.game.holdem.HoldemFullTableSettings;
-import ru.sm.poker.dto.Player;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.GameType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
@@ -73,9 +73,9 @@ public class GameListeners {
         });
     }
 
-    private List<Player> extractQueue() {
-        final List<Player> players = new ArrayList<>();
-        final Queue<Player> queue = seatManager.getQueue();
+    private List<PlayerDTO> extractQueue() {
+        final List<PlayerDTO> players = new ArrayList<>();
+        final Queue<PlayerDTO> queue = seatManager.getQueue();
         final int size = queue.size();
         for (int i = 0; i < size; i++) {
             players.add(queue.poll());
@@ -87,7 +87,7 @@ public class GameListeners {
         for (int i = 0; i < 10; i++) {
             final String randomGameName = getRandomGOTCityName();
             final GameSettings gameSettings = new HoldemFullTableSettings(GameType.HOLDEM);
-            final List<Player> players = new ArrayList<>();
+            final List<PlayerDTO> players = new ArrayList<>();
 
             final Round round = new HoldemRound(
                     players,

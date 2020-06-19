@@ -3,7 +3,7 @@ package ru.sm.poker.service.common;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.sm.poker.dto.Player;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.MessageType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.common.CommonGameManager;
@@ -24,10 +24,10 @@ public class SimpleSeatManager implements SeatManager {
 
     private final CommonGameManager commonGameManager;
     private final NotificationService notificationService;
-    private final Queue<Player> players = new LinkedBlockingQueue<>();
+    private final Queue<PlayerDTO> players = new LinkedBlockingQueue<>();
 
     @Override
-    public void joinInGame(String gameName, Player player) {
+    public void joinInGame(String gameName, PlayerDTO player) {
         synchronized (this) {
             if (commonGameManager.getPlayerByName(player.getName()).isPresent()) {
                 notificationService.sendSystemMessageToUser(player.getName(), MessageType.ONLY_ONE_TABLE_MESSAGE.getMessage());
@@ -44,7 +44,7 @@ public class SimpleSeatManager implements SeatManager {
     }
 
     @Override
-    public void joinInQueue(Player player) {
+    public void joinInQueue(PlayerDTO player) {
         synchronized (this) {
             final boolean isExist = players.contains(player);
             if (isExist) {
@@ -69,7 +69,7 @@ public class SimpleSeatManager implements SeatManager {
     }
 
     @Override
-    public Queue<Player> getQueue() {
+    public Queue<PlayerDTO> getQueue() {
         return players;
     }
 

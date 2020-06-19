@@ -1,8 +1,8 @@
 package ru.sm.poker.game.holdem;
 
 import ru.sm.poker.config.game.GameSettings;
-import ru.sm.poker.dto.HoldemRoundSettings;
-import ru.sm.poker.dto.Player;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.Round;
@@ -49,7 +49,7 @@ public class HoldemGame extends Game {
     }
 
     @Override
-    public HoldemRoundSettings getRoundSettings() {
+    public HoldemRoundSettingsDTO getRoundSettings() {
         return getRound().getHoldemRoundSettings();
     }
 
@@ -58,13 +58,13 @@ public class HoldemGame extends Game {
     }
 
     private void addChips(){
-        final Map<Player, Long> chipsMap = CommonGameManager.getChipsMap();
+        final Map<PlayerDTO, Long> chipsMap = CommonGameManager.getChipsMap();
 
         if (chipsMap.isEmpty()){
             return;
         }
 
-        final List<Player> players = getPlayers();
+        final List<PlayerDTO> players = getPlayers();
 
         players.forEach(player -> {
             final Long chipsCount = chipsMap.get(player);
@@ -78,7 +78,7 @@ public class HoldemGame extends Game {
     }
 
     private boolean isReady() {
-        final List<Player> players = getPlayers();
+        final List<PlayerDTO> players = getPlayers();
         return players.size() >= getGameSettings().getMinPlayersForStart() && players.stream()
                 .filter(player -> player.getStateType() == StateType.IN_GAME)
                 .count() >= getGameSettings().getMinActivePlayers();

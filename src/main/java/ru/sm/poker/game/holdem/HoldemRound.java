@@ -2,8 +2,8 @@ package ru.sm.poker.game.holdem;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ru.sm.poker.dto.HoldemRoundSettings;
-import ru.sm.poker.dto.Player;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.game.RoundSettingsManager;
@@ -17,12 +17,12 @@ import static ru.sm.poker.util.HistoryUtil.unionHistory;
 @Slf4j
 public class HoldemRound implements Round {
 
-    private final List<Player> players;
+    private final List<PlayerDTO> players;
     private final String gameName;
     private final OrderService orderService;
     private final long smallBlindBet;
     private final long bigBlindBet;
-    private HoldemRoundSettings holdemRoundSettings;
+    private HoldemRoundSettingsDTO holdemRoundSettings;
 
     @Override
     public void startRound() {
@@ -76,7 +76,7 @@ public class HoldemRound implements Round {
     }
 
     @Override
-    public List<Player> getPlayers() {
+    public List<PlayerDTO> getPlayers() {
         return this.players;
     }
 
@@ -91,7 +91,7 @@ public class HoldemRound implements Round {
     }
 
     @Override
-    public synchronized HoldemRoundSettings getHoldemRoundSettings() {
+    public synchronized HoldemRoundSettingsDTO getHoldemRoundSettings() {
         return this.holdemRoundSettings;
     }
 }

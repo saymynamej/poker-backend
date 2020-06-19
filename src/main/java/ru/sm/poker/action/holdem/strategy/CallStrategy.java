@@ -2,8 +2,8 @@ package ru.sm.poker.action.holdem.strategy;
 
 import ru.sm.poker.action.ActionStrategy;
 import ru.sm.poker.action.CountAction;
-import ru.sm.poker.dto.HoldemRoundSettings;
-import ru.sm.poker.dto.Player;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
 
@@ -12,7 +12,7 @@ import static ru.sm.poker.util.HistoryUtil.sumAllHistoryBetsWithNewAction;
 public class CallStrategy implements ActionStrategy {
 
     @Override
-    public void execute(Player player, GameService gameService, ActionService actionService, CountAction countAction, HoldemRoundSettings holdemRoundSettings) {
+    public void execute(PlayerDTO player, GameService gameService, ActionService actionService, CountAction countAction, HoldemRoundSettingsDTO holdemRoundSettings) {
         if (player.hasNotChipsForAction(countAction)) {
             actionService.waitUntilPlayerWillHasAction(player, holdemRoundSettings);
             return;

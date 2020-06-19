@@ -2,8 +2,8 @@ package ru.sm.poker.game;
 
 import lombok.extern.slf4j.Slf4j;
 import ru.sm.poker.config.game.GameSettings;
-import ru.sm.poker.dto.HoldemRoundSettings;
-import ru.sm.poker.dto.Player;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.StateType;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public abstract class Game {
         return this.round;
     }
 
-    public List<Player> getPlayers() {
+    public List<PlayerDTO> getPlayers() {
         return this.round.getPlayers();
     }
 
@@ -45,23 +45,23 @@ public abstract class Game {
         return gameSettings;
     }
 
-    public void addPlayer(Player player) {
+    public void addPlayer(PlayerDTO player) {
         if (!this.getPlayers().contains(player)) {
             player.setStateType(StateType.IN_GAME);
             this.getPlayers().add(player);
         }
     }
 
-    public boolean removePlayer(Player player) {
+    public boolean removePlayer(PlayerDTO player) {
         return this.getPlayers().remove(player);
     }
 
     public boolean removePlayer(String name) {
-        final Optional<Player> optionalPlayer = getPlayers().stream()
+        final Optional<PlayerDTO> optionalPlayer = getPlayers().stream()
                 .filter(player -> player.getName().equals(name))
                 .findAny();
         if (optionalPlayer.isPresent()) {
-            final Player player = optionalPlayer.get();
+            final PlayerDTO player = optionalPlayer.get();
             player.setStateType(StateType.LEAVE);
             return this.removePlayer(player);
         }
@@ -76,6 +76,6 @@ public abstract class Game {
 
     public abstract void reload();
 
-    public abstract HoldemRoundSettings getRoundSettings();
+    public abstract HoldemRoundSettingsDTO getRoundSettings();
 
 }

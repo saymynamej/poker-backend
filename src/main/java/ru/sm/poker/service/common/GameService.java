@@ -3,8 +3,8 @@ package ru.sm.poker.service.common;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.sm.poker.dto.HoldemRoundSettings;
-import ru.sm.poker.dto.Player;
+import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.PlayerDTO;
 
 import static ru.sm.poker.util.HistoryUtil.addActionInHistory;
 
@@ -13,28 +13,28 @@ import static ru.sm.poker.util.HistoryUtil.addActionInHistory;
 @Slf4j
 public class GameService {
 
-    public void doAction(Player player, HoldemRoundSettings holdemRoundSettings, long removeChips, long lastBet) {
+    public void doAction(PlayerDTO player, HoldemRoundSettingsDTO holdemRoundSettings, long removeChips, long lastBet) {
         player.removeChips(removeChips);
         addBank(holdemRoundSettings, removeChips);
         setLastBet(holdemRoundSettings, lastBet);
         addActionInHistory(holdemRoundSettings, player);
     }
 
-    public void addBank(HoldemRoundSettings holdemRoundSettings, long count) {
+    public void addBank(HoldemRoundSettingsDTO holdemRoundSettings, long count) {
         holdemRoundSettings.setBank(holdemRoundSettings.getBank() + count);
     }
 
-    public void setActivePlayer(HoldemRoundSettings holdemRoundSettings, Player player) {
+    public void setActivePlayer(HoldemRoundSettingsDTO holdemRoundSettings, PlayerDTO player) {
         player.setActive(true);
         holdemRoundSettings.setActivePlayer(player);
     }
 
-    public void setInActivePlayer(HoldemRoundSettings holdemRoundSettings, Player player) {
+    public void setInActivePlayer(HoldemRoundSettingsDTO holdemRoundSettings, PlayerDTO player) {
         player.setActive(false);
         holdemRoundSettings.setActivePlayer(null);
     }
 
-    public void setLastBet(HoldemRoundSettings holdemRoundSettings, long count) {
+    public void setLastBet(HoldemRoundSettingsDTO holdemRoundSettings, long count) {
         if (holdemRoundSettings.getLastBet() < count) {
             log.info("prev last bet less than new last bet");
         }
