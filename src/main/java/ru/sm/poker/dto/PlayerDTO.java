@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import ru.sm.poker.action.Action;
 import ru.sm.poker.action.CountAction;
+import ru.sm.poker.action.holdem.Fold;
 import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.enums.*;
 
@@ -113,7 +114,7 @@ public class PlayerDTO {
         this.chipsCount -= chips;
     }
 
-    public boolean isNotFirstMoveOnBigBlind(){
+    public boolean isNotFirstMoveOnBigBlind() {
         return isBigBlind() && action.getActionType() != ActionType.WAIT;
     }
 
@@ -141,7 +142,14 @@ public class PlayerDTO {
         return !isFolded();
     }
 
-    public boolean isInAllIn(){
+
+    public void setInActive() {
+        setAction(new Fold());
+        setStateType(StateType.AFK);
+        setTimeBank(0L);
+    }
+
+    public boolean isInAllIn() {
         return action.getActionType() == ActionType.ALLIN;
     }
 
@@ -157,15 +165,15 @@ public class PlayerDTO {
         this.cards = new ArrayList<>(cards);
     }
 
-    public boolean isBot(){
+    public boolean isBot() {
         return getPlayerType() == PlayerType.BOT;
     }
 
-    public boolean isOrdinaryPlayer(){
+    public boolean isOrdinaryPlayer() {
         return getPlayerType() == PlayerType.ORDINARY;
     }
 
-    public PlayerType getPlayerType(){
+    public PlayerType getPlayerType() {
         return PlayerType.ORDINARY;
     }
 

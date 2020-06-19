@@ -12,7 +12,6 @@ import java.util.TimerTask;
 
 @Service
 public class SimpleTimeBankService implements TimeBankService {
-
     private final static long MILLISECONDS_IN_SECONDS = 1000L;
     private final static long DEFAULT_TIME_FOR_ACTION = 15L;
 
@@ -28,7 +27,7 @@ public class SimpleTimeBankService implements TimeBankService {
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        setInActivePlayer(player);
+                        player.setInActive();
                     }
                 }, player.getTimeBank() * MILLISECONDS_IN_SECONDS);
             }
@@ -40,24 +39,21 @@ public class SimpleTimeBankService implements TimeBankService {
     @Override
     public void cancel(ResultTimeDTO result, PlayerDTO player) {
         result.getTimer().cancel();
-        if (result.isDone()){
+        if (result.isDone()) {
             final long startTime = result.getStartTime();
             final long endTime = System.currentTimeMillis();
             final long calculatedTime = (endTime - startTime) / MILLISECONDS_IN_SECONDS;
-            player.setTimeBank(player.getTimeBank() - calculatedTime);
+            final long timeBank = player.getTimeBank() - calculatedTime;
+            player.setTimeBank(
+                    timeBank < 0 ? 0 : timeBank
+            );
         }
     }
 
-    private void fillResult(ResultTimeDTO result){
+    private void fillResult(ResultTimeDTO result) {
         final long startTime = System.currentTimeMillis();
         result.setDone(true);
         result.setStartTime(startTime);
-    }
-
-    private void setInActivePlayer(PlayerDTO player){
-        player.setAction(new Fold());
-        player.setStateType(StateType.AFK);
-        player.setTimeBank(0L);
     }
 
 }
