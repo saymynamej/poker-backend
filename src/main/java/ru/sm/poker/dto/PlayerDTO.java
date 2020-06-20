@@ -114,6 +114,20 @@ public class PlayerDTO {
         this.chipsCount -= chips;
     }
 
+    public void setWait() {
+        this.action = new Wait();
+    }
+
+    public void changeState() {
+        if (getStateType() == StateType.IN_GAME) {
+            setStateType(StateType.AFK);
+            setAction(new Fold());
+            return;
+        }
+        setStateType(StateType.IN_GAME);
+        setAction(new Wait());
+    }
+
     public boolean isNotFirstMoveOnBigBlind() {
         return isBigBlind() && action.getActionType() != ActionType.WAIT;
     }

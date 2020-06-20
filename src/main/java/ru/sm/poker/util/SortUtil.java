@@ -16,23 +16,30 @@ public class SortUtil {
     }
 
     public static List<PlayerDTO> sortPreflop(List<PlayerDTO> players) {
+        if (players.size() == 2){
+            final List<PlayerDTO> sortedPlayers  = new ArrayList<>();
+            final Optional<PlayerDTO> button = getPlayerByRole(players, RoleType.BUTTON);
+            final Optional<PlayerDTO> bigBlind = getPlayerByRole(players, RoleType.BIG_BLIND);
+            if (bigBlind.isEmpty() || button.isEmpty()) {
+                throw new RuntimeException("cannot find all roles for preflop");
+            }
+            sortedPlayers.add(button.get());
+            sortedPlayers.add(bigBlind.get());
+            return sortedPlayers;
+        }
         final List<PlayerDTO> sortedPlayers = new ArrayList<>(players);
-
         final Optional<PlayerDTO> bigBlind = getPlayerByRole(players, RoleType.BIG_BLIND);
         final Optional<PlayerDTO> smallBlind = getPlayerByRole(players, RoleType.SMALL_BLIND);
         final Optional<PlayerDTO> button = getPlayerByRole(players, RoleType.BUTTON);
-
         if (bigBlind.isEmpty() || smallBlind.isEmpty() || button.isEmpty()) {
             throw new RuntimeException("cannot find all roles for preflop");
         }
-
         sortedPlayers.remove(bigBlind.get());
         sortedPlayers.remove(smallBlind.get());
         sortedPlayers.remove(button.get());
         sortedPlayers.add(button.get());
         sortedPlayers.add(smallBlind.get());
         sortedPlayers.add(bigBlind.get());
-
         return sortedPlayers;
     }
 

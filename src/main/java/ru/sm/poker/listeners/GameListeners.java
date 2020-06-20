@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.config.game.GameSettings;
 import ru.sm.poker.config.game.holdem.HoldemFullTableSettings;
+import ru.sm.poker.config.game.holdem.HoldemHUTableSettings;
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.GameType;
 import ru.sm.poker.game.Game;
@@ -83,28 +84,27 @@ public class GameListeners {
     }
 
     public void fillHoldemCashGames() {
-        for (int i = 0; i < 10; i++) {
-            final String randomGameName = getRandomGOTCityName();
-            final GameSettings gameSettings = new HoldemFullTableSettings(GameType.HOLDEM);
-            final List<PlayerDTO> players = new ArrayList<>();
-
-            final Round round = new HoldemRound(
-                    players,
-                    randomGameName,
-                    orderService,
-                    gameSettings.getStartSmallBlindBet(),
-                    gameSettings.getStartBigBlindBet());
-
-            final Game holdemGame = new HoldemGame(
-                    gameSettings,
-                    round
-            );
-
-            holdemGame.addPlayer(PlayerUtil.getDefaultPlayerForHoldem("3"));
-            holdemGame.addPlayer(PlayerUtil.getDefaultPlayerForHoldem("2"));
-            gameManager.createNewGame(randomGameName, holdemGame);
-            executorServiceForGames.submit(holdemGame::start);
+        for (int i = 0; i < 5; i++) {
+            createGame(new HoldemHUTableSettings(GameType.HOLDEM));
         }
+    }
+
+    private void createGame(GameSettings gameSettings) {
+        final String randomGameName = getRandomGOTCityName();
+        final List<PlayerDTO> players = new ArrayList<>();
+        final Round round = new HoldemRound(
+                players,
+                randomGameName,
+                orderService,
+                gameSettings.getStartSmallBlindBet(),
+                gameSettings.getStartBigBlindBet());
+        final Game holdemGame = new HoldemGame(
+                gameSettings,
+                round
+        );
+        holdemGame.addPlayer(PlayerUtil.getDefaultPlayerForHoldem("3"));
+        gameManager.createNewGame(randomGameName, holdemGame);
+        executorServiceForGames.submit(holdemGame::start);
     }
 
 }

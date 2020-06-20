@@ -8,15 +8,14 @@ import ru.sm.poker.action.Action;
 import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.StageType;
-import ru.sm.poker.game.Game;
+import ru.sm.poker.enums.StateType;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static ru.sm.poker.util.PlayerUtil.getPlayersInGame;
-import static ru.sm.poker.util.StreamUtil.*;
-import static ru.sm.poker.util.StreamUtil.playerFolded;
+import static ru.sm.poker.util.StreamUtil.playerInAllIn;
+import static ru.sm.poker.util.StreamUtil.playersHasCheck;
 
 @Builder
 @Getter
@@ -56,6 +55,12 @@ public class HoldemRoundSettingsDTO {
         return getPlayersInGame(this.players)
                 .stream()
                 .allMatch(playersHasCheck());
+    }
+
+    public boolean isHU(){
+        return players.stream()
+                .filter(playerDTO -> playerDTO.getStateType() == StateType.IN_GAME)
+                .count() == 2;
     }
 
     public boolean isOnePlayerLeft() {

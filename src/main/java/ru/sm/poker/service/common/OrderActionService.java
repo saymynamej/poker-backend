@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.enums.StageType;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.OrderService;
 
@@ -30,10 +31,10 @@ public class OrderActionService implements OrderService {
 
         while (true) {
             if (holdemRoundSettings.playersInAllIn()) {
-                securityNotificationService.sendToAllWithSecurity(holdemRoundSettings);
+                securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettings);
                 return false;
             }
-            if (canMoveNextAndStageRiver(holdemRoundSettings)){
+            if (canMoveNextAndStageRiver(holdemRoundSettings)) {
                 securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettings);
                 return false;
             }
@@ -44,6 +45,10 @@ public class OrderActionService implements OrderService {
                 if (player.isNotFirstMoveOnBigBlind() && canMoveNext(holdemRoundSettings)) {
                     return false;
                 }
+                //THIS IS FOR HU
+                if (holdemRoundSettings.getStageType() != StageType.PREFLOP && canMoveNext(holdemRoundSettings)){
+                    return false;
+                }
                 if (holdemRoundSettings.isOnePlayerLeft()) {
                     return true;
                 }
@@ -52,8 +57,6 @@ public class OrderActionService implements OrderService {
                 }
                 actionServiceHoldem.waitUntilPlayerWillHasAction(player, holdemRoundSettings);
             }
-
         }
     }
-
 }

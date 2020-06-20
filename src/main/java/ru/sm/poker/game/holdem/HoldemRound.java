@@ -16,7 +16,6 @@ import static ru.sm.poker.util.HistoryUtil.unionHistory;
 @RequiredArgsConstructor
 @Slf4j
 public class HoldemRound implements Round {
-
     private final List<PlayerDTO> players;
     private final String gameName;
     private final OrderService orderService;
@@ -28,11 +27,10 @@ public class HoldemRound implements Round {
     public void startRound() {
         log.info("game was started, because found enough persons");
 
-        final RoundSettingsManager roundSettingsManager =
-                new HoldemRoundSettingsManager(players, gameName, bigBlindBet, smallBlindBet);
+        final RoundSettingsManager roundSettingsManager = HoldemRoundSettingsManagerFactory
+                .getRoundSettingsManager(players, gameName, bigBlindBet, smallBlindBet);
 
         this.holdemRoundSettings = roundSettingsManager.getPreflopSettings();
-
         boolean isSkipNext = orderService.start(holdemRoundSettings);
 
         if (!isSkipNext) {

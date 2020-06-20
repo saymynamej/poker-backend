@@ -48,20 +48,10 @@ public class SimpleActionService implements ActionService {
                 return;
             }
             final HoldemRoundSettingsDTO roundSettings = game.getRoundSettings();
-            setStateType(player);
+            player.changeState();
             securityNotificationService.sendToAllWithSecurity(roundSettings);
             log.info(format(InformationType.CHANGED_STATE_TYPE_INFO.getMessage(), playerName, player.getStateType()));
         }
-    }
-
-    private void setStateType(PlayerDTO player) {
-        if (player.getStateType() == StateType.IN_GAME) {
-            player.setStateType(StateType.AFK);
-            player.setAction(new Fold());
-            return;
-        }
-        player.setStateType(StateType.IN_GAME);
-        player.setAction(new Wait());
     }
 
 
@@ -93,15 +83,11 @@ public class SimpleActionService implements ActionService {
     @Override
     public void waitUntilPlayerWillHasAction(PlayerDTO player, HoldemRoundSettingsDTO holdemRoundSettings) {
         log.info("waiting action from player:" + player.getName());
-        setPlayerWait(player);
+        player.setWait();
         gameService.setActivePlayer(holdemRoundSettings, player);
         securityNotificationService.sendToAllWithSecurity(holdemRoundSettings);
         waitPlayerAction(player, holdemRoundSettings);
         gameService.setInActivePlayer(holdemRoundSettings, player);
-    }
-
-    public void setPlayerWait(PlayerDTO playerWait) {
-        playerWait.setAction(new Wait());
     }
 
     private void waitPlayerAction(PlayerDTO player, HoldemRoundSettingsDTO holdemRoundSettings) {
