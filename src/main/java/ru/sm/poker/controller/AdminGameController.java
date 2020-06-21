@@ -23,7 +23,6 @@ import static ru.sm.poker.util.LongUtil.parseLong;
 @RestController
 @Slf4j
 public class AdminGameController {
-
     private final GameManager gameManager;
     private final ActionService actionService;
     private final SeatManager seatManager;

@@ -9,11 +9,14 @@ import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.*;
 import ru.sm.poker.game.RoundSettingsManager;
+import ru.sm.poker.util.HistoryUtil;
 
 import java.security.SecureRandom;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static ru.sm.poker.util.HistoryUtil.*;
 
 @RequiredArgsConstructor
 public class HoldemRoundSettingsManager implements RoundSettingsManager {
@@ -29,6 +32,23 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
 
     private void setAllPlayersGameName() {
         players.forEach(player -> player.setGameName(gameName));
+    }
+
+
+    @Override
+    public HoldemRoundSettingsDTO getSettings(StageType stageType, HoldemRoundSettingsDTO prevSettings) {
+        switch (stageType) {
+            case PREFLOP: return getPostFlopSettings(prevSettings.getBank(), prevSettings.getStageHistory());
+            case FLOP: return getPostFlopSettingsWithTern(prevSettings.getBank(), unionHistory(
+                    prevSettings.getStageHistory(),
+                    prevSettings.getFullHistory())
+            );
+            case TERN: return getPostFlopSettingsWithRiver(prevSettings.getBank(), unionHistory(
+                    prevSettings.getStageHistory(),
+                    prevSettings.getFullHistory())
+            );
+            default: throw new RuntimeException();
+        }
     }
 
     public HoldemRoundSettingsDTO getPreflopSettings() {

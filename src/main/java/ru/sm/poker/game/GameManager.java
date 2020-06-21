@@ -23,7 +23,7 @@ public interface GameManager {
 
     void startGame(String gameName);
 
-    void createNewGame(String name, Game game);
+    void createGame(String name, Game game);
 
     void addChips(String name);
 

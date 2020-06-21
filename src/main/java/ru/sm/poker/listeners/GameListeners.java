@@ -66,7 +66,7 @@ public class GameListeners {
                             round
                     );
 
-                    gameManager.createNewGame(randomGameName, holdemGame);
+                    gameManager.createGame(randomGameName, holdemGame);
                     executorServiceForGames.submit(holdemGame::start);
                 }
             }
@@ -86,7 +86,27 @@ public class GameListeners {
     public void fillHoldemCashGames() {
         for (int i = 0; i < 5; i++) {
             createGame(new HoldemHUTableSettings(GameType.HOLDEM));
+            createGame2(new HoldemFullTableSettings(GameType.HOLDEM));
         }
+    }
+
+    private void createGame2(GameSettings gameSettings) {
+        final String randomGameName = getRandomGOTCityName();
+        final List<PlayerDTO> players = new ArrayList<>();
+        final Round round = new HoldemRound(
+                players,
+                randomGameName,
+                orderService,
+                gameSettings.getStartSmallBlindBet(),
+                gameSettings.getStartBigBlindBet());
+        final Game holdemGame = new HoldemGame(
+                gameSettings,
+                round
+        );
+        holdemGame.addPlayer(PlayerUtil.getDefaultPlayerForHoldem("1"));
+        holdemGame.addPlayer(PlayerUtil.getDefaultPlayerForHoldem("2"));
+        gameManager.createGame(randomGameName, holdemGame);
+        executorServiceForGames.submit(holdemGame::start);
     }
 
     private void createGame(GameSettings gameSettings) {
@@ -102,8 +122,8 @@ public class GameListeners {
                 gameSettings,
                 round
         );
-        holdemGame.addPlayer(PlayerUtil.getDefaultPlayerForHoldem("3"));
-        gameManager.createNewGame(randomGameName, holdemGame);
+//        holdemGame.addPlayer(PlayerUtil.getDefaultPlayerForHoldem("3"));
+        gameManager.createGame(randomGameName, holdemGame);
         executorServiceForGames.submit(holdemGame::start);
     }
 

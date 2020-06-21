@@ -67,7 +67,7 @@ public class CommonGameManager implements GameManager {
     }
 
     @Override
-    public void createNewGame(String name, Game game) {
+    public void createGame(String name, Game game) {
         if (checkGameName(name)) {
             games.put(name, game);
             log.info("game: " + name + " created");

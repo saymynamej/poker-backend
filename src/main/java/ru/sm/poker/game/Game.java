@@ -60,6 +60,7 @@ public abstract class Game {
         final Optional<PlayerDTO> optionalPlayer = getPlayers().stream()
                 .filter(player -> player.getName().equals(name))
                 .findAny();
+
         if (optionalPlayer.isPresent()) {
             final PlayerDTO player = optionalPlayer.get();
             player.setStateType(StateType.LEAVE);

@@ -7,15 +7,12 @@ import ru.sm.poker.action.Action;
 import ru.sm.poker.action.ExecutableAction;
 import ru.sm.poker.action.holdem.All;
 import ru.sm.poker.action.holdem.Call;
-import ru.sm.poker.action.holdem.Fold;
-import ru.sm.poker.action.holdem.Wait;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.dto.ResultTimeDTO;
 import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.enums.InformationType;
 import ru.sm.poker.enums.MessageType;
-import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.game.SecurityService;
@@ -94,6 +91,9 @@ public class SimpleActionService implements ActionService {
         final ResultTimeDTO timer = simpleTimeBankService.activateTime(player);
         while (true) {
             if (player.isNotInGame()) {
+                break;
+            }
+            if (holdemRoundSettings.isOnePlayerLeft()){
                 break;
             }
             if (player.didAction()) {
