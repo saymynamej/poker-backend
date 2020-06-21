@@ -21,7 +21,7 @@ class HoldemRoundSettingsManagerTest {
 
         final RoundSettingsManager roundSettingsManager = getRoundSettingsManager(players);
 
-        final HoldemRoundSettingsDTO preflopSettings = roundSettingsManager.getPreflopSettings();
+        final HoldemRoundSettingsDTO preflopSettings = roundSettingsManager.getSettings(null);
 
         Assertions.assertEquals(
                 preflopSettings.getBigBlindBet() + preflopSettings.getSmallBlindBet(),
@@ -63,11 +63,11 @@ class HoldemRoundSettingsManagerTest {
         for (int i = 0; i < 10_000; i++) {
             final RoundSettingsManager firstRound = getRoundSettingsManager(players);
 
-            final HoldemRoundSettingsDTO preflopSettings = firstRound.getPreflopSettings();
+            final HoldemRoundSettingsDTO preflopSettings = firstRound.getSettings(null);
 
             final RoundSettingsManager secondRound = getRoundSettingsManager(players);
 
-            final HoldemRoundSettingsDTO preflopSettings2 = secondRound.getPreflopSettings();
+            final HoldemRoundSettingsDTO preflopSettings2 = secondRound.getSettings(null);
 
             final int firstButtonIndex = preflopSettings.getPlayers().indexOf(preflopSettings.getButton());
             final int secondButtonIndex = preflopSettings2.getPlayers().indexOf(preflopSettings2.getButton());
@@ -96,9 +96,9 @@ class HoldemRoundSettingsManagerTest {
 
         final RoundSettingsManager firstRound = getRoundSettingsManager(players);
 
-        final HoldemRoundSettingsDTO preflopSettings = firstRound.getPreflopSettings();
+        final HoldemRoundSettingsDTO preflopSettings = firstRound.getSettings(null);
 
-        final HoldemRoundSettingsDTO postFlopSettings = firstRound.getPostFlopSettings(preflopSettings.getBank(), preflopSettings.getStageHistory());
+        final HoldemRoundSettingsDTO postFlopSettings = firstRound.getSettings(preflopSettings);
 
         Assertions.assertEquals(
                 preflopSettings.getBank(),
@@ -147,11 +147,11 @@ class HoldemRoundSettingsManagerTest {
 
         final RoundSettingsManager firstRound = getRoundSettingsManager(players);
 
-        final HoldemRoundSettingsDTO preflopSettings = firstRound.getPreflopSettings();
+        final HoldemRoundSettingsDTO preflopSettings = firstRound.getSettings(null);
 
-        final HoldemRoundSettingsDTO postFlopSettings = firstRound.getPostFlopSettings(preflopSettings.getBank(), preflopSettings.getStageHistory());
+        final HoldemRoundSettingsDTO postFlopSettings = firstRound.getSettings(preflopSettings);
 
-        final HoldemRoundSettingsDTO postFlopSettingsWithTern = firstRound.getPostFlopSettingsWithTern(postFlopSettings.getBank(), preflopSettings.getStageHistory());
+        final HoldemRoundSettingsDTO postFlopSettingsWithTern = firstRound.getSettings(postFlopSettings);
 
         Assertions.assertEquals(
                 postFlopSettings.getBank(),
@@ -210,13 +210,13 @@ class HoldemRoundSettingsManagerTest {
 
         final RoundSettingsManager firstRound = getRoundSettingsManager(players);
 
-        final HoldemRoundSettingsDTO preflopSettings = firstRound.getPreflopSettings();
+        final HoldemRoundSettingsDTO preflopSettings = firstRound.getSettings(null);
 
-        final HoldemRoundSettingsDTO postFlopSettings = firstRound.getPostFlopSettings(preflopSettings.getBank(), preflopSettings.getStageHistory());
+        final HoldemRoundSettingsDTO postFlopSettings = firstRound.getSettings(preflopSettings);
 
-        final HoldemRoundSettingsDTO postFlopSettingsWithTern = firstRound.getPostFlopSettingsWithTern(postFlopSettings.getBank(), preflopSettings.getStageHistory());
+        final HoldemRoundSettingsDTO postFlopSettingsWithTern = firstRound.getSettings(postFlopSettings);
 
-        final HoldemRoundSettingsDTO postFlopSettingsWithRiver = firstRound.getPostFlopSettingsWithRiver(postFlopSettingsWithTern.getBank(), preflopSettings.getStageHistory());
+        final HoldemRoundSettingsDTO postFlopSettingsWithRiver = firstRound.getSettings(postFlopSettingsWithTern);
 
 
         Assertions.assertEquals(

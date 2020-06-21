@@ -22,10 +22,21 @@ public class HoldemCombinationService implements CombinationService {
     private final static int THREE_SIZE = 3;
 
     @Override
-    public List<PlayerCombinationDTO> findMoreStrongerCombinations(List<PlayerCombinationDTO> playersAndCombinations) {
-        final int max = findMaxSumCards(playersAndCombinations);
+    public List<PlayerCombinationDTO> findWinners(List<PlayerCombinationDTO> playersAndCombinations) {
+        final Integer maxPowerOfCombination = playersAndCombinations.stream()
+                .map(player -> player.getCombination().getCombinationType().getPower())
+                .max(Comparator.comparingInt(value -> value)).orElseThrow();
 
-        return playersAndCombinations.stream()
+        final List<PlayerCombinationDTO> winners = playersAndCombinations.stream()
+                .filter(playerCombinationDTO -> playerCombinationDTO.getCombination().getCombinationType().getPower() == maxPowerOfCombination)
+                .collect(Collectors.toList());
+
+        if (winners.size() == 1) {
+            return winners;
+        }
+
+        final int max = findMaxSumCards(playersAndCombinations);
+        return winners.stream()
                 .filter(playerCombination -> sumCards(playerCombination.getCombination().getCards()) == max)
                 .collect(Collectors.toList());
     }

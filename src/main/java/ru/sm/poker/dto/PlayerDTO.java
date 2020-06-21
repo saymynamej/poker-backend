@@ -21,18 +21,23 @@ public class PlayerDTO {
 
     private List<CardType> cards;
 
+    @Builder.Default
     private RoleType roleType = RoleType.ORDINARY;
 
     private long chipsCount;
     @Setter
+    @Builder.Default
     private StateType stateType = StateType.IN_GAME;
     @Setter
+    @Builder.Default
     private long timeBank = 60L;
     @Setter
+    @Builder.Default
     private Action action = new Wait();
 
     @Setter
     @Getter
+    @Builder.Default
     private boolean active = false;
 
     @Getter

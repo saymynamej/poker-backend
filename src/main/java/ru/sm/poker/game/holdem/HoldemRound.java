@@ -9,6 +9,9 @@ import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.game.RoundSettingsManager;
 import ru.sm.poker.service.OrderService;
+import ru.sm.poker.service.WinnerService;
+import ru.sm.poker.service.common.SimpleWinnerService;
+import ru.sm.poker.service.holdem.HoldemCombinationService;
 
 import java.util.List;
 
@@ -20,6 +23,7 @@ public class HoldemRound implements Round {
     private final OrderService orderService;
     private final long smallBlindBet;
     private final long bigBlindBet;
+    private final WinnerService winnerService = new SimpleWinnerService(new HoldemCombinationService());
     private HoldemRoundSettingsDTO holdemRoundSettings;
 
     @Override
@@ -27,7 +31,12 @@ public class HoldemRound implements Round {
         log.info("game was started, because found enough persons");
 
         final RoundSettingsManager roundSettingsManager = HoldemRoundSettingsManagerFactory
-                .getRoundSettingsManager(players, gameName, bigBlindBet, smallBlindBet);
+                .getRoundSettingsManager(
+                        players,
+                        gameName,
+                        bigBlindBet,
+                        smallBlindBet
+                );
 
         while (true) {
             holdemRoundSettings = roundSettingsManager.getSettings(
@@ -35,10 +44,11 @@ public class HoldemRound implements Round {
             );
             final boolean skipNext = orderService.start(holdemRoundSettings);
 
-            if (skipNext || holdemRoundSettings.getStageType() == StageType.RIVER){
+            if (skipNext || holdemRoundSettings.getStageType() == StageType.RIVER) {
                 break;
             }
         }
+        winnerService.sendPrizes(holdemRoundSettings);
         setAfkForPlayerWhichHaveNotEnoughChips();
     }
 

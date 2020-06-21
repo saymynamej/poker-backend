@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.action.Action;
 import ru.sm.poker.action.ExecutableAction;
-import ru.sm.poker.action.holdem.All;
+import ru.sm.poker.action.holdem.AllIn;
 import ru.sm.poker.action.holdem.Call;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.PlayerDTO;
@@ -71,7 +71,7 @@ public class SimpleActionService implements ActionService {
         if (action.getActionType() == ActionType.CALL){
             final Call call = (Call) action;
             if (call.getCount() == player.getChipsCount()){
-                action = new All(call.getCount());
+                action = new AllIn(call.getCount());
             }
         }
         return action;
@@ -105,7 +105,7 @@ public class SimpleActionService implements ActionService {
     }
 
 
-    private void doAction(PlayerDTO player, HoldemRoundSettingsDTO holdemRoundSettings) {
+    public void doAction(PlayerDTO player, HoldemRoundSettingsDTO holdemRoundSettings) {
         final Action action = player.getAction();
         if (action instanceof ExecutableAction) {
             ((ExecutableAction) action).doAction(holdemRoundSettings, player, gameService, this);

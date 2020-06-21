@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface CombinationService {
 
-    List<PlayerCombinationDTO> findMoreStrongerCombinations(List<PlayerCombinationDTO> playersAndCombinations);
+    List<PlayerCombinationDTO> findWinners(List<PlayerCombinationDTO> playersAndCombinations);
 
     CombinationDTO findCombination(List<CardType> cards);
 }

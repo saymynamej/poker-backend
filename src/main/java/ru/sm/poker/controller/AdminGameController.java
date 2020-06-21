@@ -84,7 +84,7 @@ public class AdminGameController {
     public void doAllIn(AdminActionDTO actionDTO) {
         final Optional<PlayerDTO> playerByName = gameManager.getPlayerByName(actionDTO.getName());
         playerByName.ifPresent(
-                player -> actionService.setAction(actionDTO.getName(), new All(player.getChipsCount()))
+                player -> actionService.setAction(actionDTO.getName(), new AllIn(player.getChipsCount()))
         );
     }
 

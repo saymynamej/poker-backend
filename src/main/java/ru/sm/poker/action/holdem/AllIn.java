@@ -11,7 +11,7 @@ import ru.sm.poker.service.common.GameService;
 import static ru.sm.poker.data.StrategyData.ALLIN_STRATEGIES;
 
 @RequiredArgsConstructor
-public class All implements ExecutableAction {
+public class AllIn implements ExecutableAction {
 
     private final long count;
 

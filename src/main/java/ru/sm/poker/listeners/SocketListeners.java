@@ -39,7 +39,11 @@ public class SocketListeners {
                 if (player.getGameName() != null) {
                     final Game game = allGames.get(player.getGameName());
                     final HoldemRoundSettingsDTO holdemRoundSettings = game.getRoundSettings();
-                    simpleNotificationService.sendGameInformationToUser(player.getName(), securityService.secureCards(List.of(user.getName()), holdemRoundSettings));
+                    simpleNotificationService.sendGameInformationToUser(
+                            player.getName(),
+                            securityService.secureCards(List.of(user.getName()),
+                                    holdemRoundSettings)
+                    );
                 }
             }
         }

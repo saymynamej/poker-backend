@@ -11,6 +11,7 @@ import java.util.Timer;
 @NoArgsConstructor
 public class ResultTimeDTO {
     private Timer timer;
+    @Builder.Default
     private boolean isDone = false;
     private long startTime;
 }

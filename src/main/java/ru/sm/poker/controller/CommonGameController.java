@@ -86,6 +86,6 @@ public class CommonGameController {
 
     @MessageMapping("/doAllIn")
     public void doAllIn(Principal principal, ActionDTO action) {
-        actionService.setAction(principal.getName(), new All(Long.parseLong(action.getCount())));
+        actionService.setAction(principal.getName(), new AllIn(Long.parseLong(action.getCount())));
     }
 }
