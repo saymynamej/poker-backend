@@ -29,14 +29,13 @@ public class HoldemRound implements Round {
         final RoundSettingsManager roundSettingsManager = HoldemRoundSettingsManagerFactory
                 .getRoundSettingsManager(players, gameName, bigBlindBet, smallBlindBet);
 
-        holdemRoundSettings = roundSettingsManager.getPreflopSettings();
-
-        while (!orderService.start(holdemRoundSettings)) {
+        while (true) {
             holdemRoundSettings = roundSettingsManager.getSettings(
-                    holdemRoundSettings.getStageType(),
                     holdemRoundSettings
             );
-            if (holdemRoundSettings.getStageType() == StageType.RIVER){
+            final boolean skipNext = orderService.start(holdemRoundSettings);
+
+            if (skipNext || holdemRoundSettings.getStageType() == StageType.RIVER){
                 break;
             }
         }

@@ -6,7 +6,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public enum GameType {
-    HOLDEM("HOLDEM");
+    HOLDEM_FULL("HOLDEM_FULL"),
+    HOLDEM_HU("HOLDEM_HU");
 
     private final String gameName;
 

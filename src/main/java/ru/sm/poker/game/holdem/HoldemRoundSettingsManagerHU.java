@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public class HoldemRoundSettingsManagerHU extends HoldemRoundSettingsManager {
+
     public HoldemRoundSettingsManagerHU(List<PlayerDTO> players, String gameName, long bigBlindBet, long smallBlindBet) {
         super(players, gameName, bigBlindBet, smallBlindBet);
     }
@@ -38,10 +39,10 @@ public class HoldemRoundSettingsManagerHU extends HoldemRoundSettingsManager {
         final Map<PlayerDTO, List<Action>> history = new HashMap<>();
         final PlayerDTO button = getPlayerByRole(RoleType.BUTTON).orElseThrow();
         final List<Action> forButton = new ArrayList<>();
-        forButton.add(new Call(getSmallBlindBet()));
-        history.put(button, forButton);
         final PlayerDTO bigBlind = getPlayerByRole(RoleType.BIG_BLIND).orElseThrow();
         final List<Action> forBigBlind = new ArrayList<>();
+        forButton.add(new Call(getSmallBlindBet()));
+        history.put(button, forButton);
         forBigBlind.add(new Call(getBigBlindBet()));
         history.put(bigBlind, forBigBlind);
         return history;

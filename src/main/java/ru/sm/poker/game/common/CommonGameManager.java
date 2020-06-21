@@ -2,10 +2,18 @@ package ru.sm.poker.game.common;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import ru.sm.poker.config.game.GameSettings;
 import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.enums.GameType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
+import ru.sm.poker.game.Round;
+import ru.sm.poker.game.holdem.HoldemGame;
+import ru.sm.poker.game.holdem.HoldemRound;
+import ru.sm.poker.service.OrderService;
 
 import java.util.List;
 import java.util.Map;
@@ -13,13 +21,16 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.String.format;
+import static ru.sm.poker.util.GameUtil.getRandomGOTCityName;
 
-@Component
-@RequiredArgsConstructor
+@Service
 @Slf4j
+@RequiredArgsConstructor
 public class CommonGameManager implements GameManager {
     private final static Map<String, Game> games = new ConcurrentHashMap<>();
     private final static Map<PlayerDTO, Long> CHIPS_MAP = new ConcurrentHashMap<>();
+    private final Map<GameType, GameSettings> mapSettings;
+
 
     @Override
     public Optional<PlayerDTO> getPlayerByName(String name) {
@@ -67,11 +78,29 @@ public class CommonGameManager implements GameManager {
     }
 
     @Override
-    public void createGame(String name, Game game) {
-        if (checkGameName(name)) {
-            games.put(name, game);
-            log.info("game: " + name + " created");
+    public Game createGame(List<PlayerDTO> players, GameType gameType, OrderService orderService) {
+        final String randomGameName = getRandomGOTCityName();
+
+        final GameSettings gameSettings = mapSettings.get(gameType);
+
+        final Round round = new HoldemRound(
+                players,
+                randomGameName,
+                orderService,
+                gameSettings.getStartSmallBlindBet(),
+                gameSettings.getStartBigBlindBet()
+        );
+
+        final Game game = new HoldemGame(
+                gameSettings,
+                round
+        );
+
+        if (checkGameName(randomGameName)) {
+            games.put(randomGameName, game);
+            log.info("game: " + randomGameName + " created");
         }
+        return game;
     }
 
     @Override
