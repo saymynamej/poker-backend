@@ -3,6 +3,7 @@ package ru.sm.poker.listeners;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.sm.poker.data.GamePool;
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.GameType;
 import ru.sm.poker.game.Game;
@@ -15,19 +16,16 @@ import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class GameListeners {
-    private final ExecutorService executorServiceForStart = Executors.newFixedThreadPool(1);
-    private final ExecutorService executorServiceForGames = Executors.newFixedThreadPool(15);
     private final OrderService orderService;
     private final GameManager gameManager;
     private final SeatManager seatManager;
+    private final GamePool gamePool;
     private boolean isEnable = true;
 
     @PostConstruct
@@ -36,16 +34,16 @@ public class GameListeners {
     }
 
     private void enableQueueListener() {
-        executorServiceForStart.submit(() -> {
+        gamePool.addListener(() -> {
             while (isEnable) {
                 ThreadUtil.sleep(1);
                 if (seatManager.getQueue().size() >= 4) {
                     final Game game = gameManager.createGame(
                             extractQueue(),
                             GameType.HOLDEM_HU,
-                            orderService
+                            orderService,
+                            true
                     );
-                    executorServiceForGames.submit(game::start);
                 }
             }
         });
@@ -60,10 +58,4 @@ public class GameListeners {
         }
         return players;
     }
-
-    public void fillHoldemCashGames() {
-        for (int i = 0; i < 5; i++) {
-        }
-    }
-
 }
