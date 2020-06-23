@@ -9,11 +9,11 @@ import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.StageType;
 import ru.sm.poker.enums.StateType;
+import ru.sm.poker.util.PlayerUtil;
 
 import java.util.List;
 import java.util.Map;
 
-import static ru.sm.poker.util.PlayerUtil.getPlayersInGame;
 import static ru.sm.poker.util.StreamUtil.playerInAllIn;
 import static ru.sm.poker.util.StreamUtil.playersHasCheck;
 
@@ -46,14 +46,15 @@ public class HoldemRoundSettingsDTO {
     }
 
     public boolean playersInAllIn() {
-        return getPlayersInGame(this.players)
+        return getPlayersInGame()
                 .stream()
                 .allMatch(playerInAllIn());
     }
 
     public boolean allPlayersCheck() {
-        return getPlayersInGame(this.players)
+        return getPlayersInGame()
                 .stream()
+                .filter(playerInAllIn().negate())
                 .allMatch(playersHasCheck());
     }
 
@@ -63,8 +64,12 @@ public class HoldemRoundSettingsDTO {
                 .count() == 2;
     }
 
+    public List<PlayerDTO> getPlayersInGame(){
+        return PlayerUtil.getPlayersInGame(this.players);
+    }
+
     public boolean isOnePlayerLeft() {
-        return getPlayersInGame(this.players).size() == 1;
+        return getPlayersInGame().size() == 1;
     }
 
     public boolean isOnePlayerWhoHasChips() {

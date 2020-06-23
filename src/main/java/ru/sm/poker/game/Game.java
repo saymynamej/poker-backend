@@ -11,7 +11,6 @@ import java.util.Optional;
 
 @Slf4j
 public abstract class Game {
-
     private final GameSettings gameSettings;
     private final Round round;
     protected boolean isEnable = true;
@@ -47,7 +46,7 @@ public abstract class Game {
 
     public void addPlayer(PlayerDTO player) {
         if (!this.getPlayers().contains(player)) {
-            player.setStateType(StateType.IN_GAME);
+            player.setActive();
             this.getPlayers().add(player);
         }
     }

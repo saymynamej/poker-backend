@@ -6,26 +6,28 @@ import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.Round;
-import ru.sm.poker.game.common.CommonGameManager;
 import ru.sm.poker.util.ThreadUtil;
 
 import java.util.List;
-import java.util.Map;
 
 public class HoldemGame extends Game {
     private final static long DELAY_IN_SECONDS = 2L;
 
     public HoldemGame(GameSettings gameSettings, Round round) {
         super(gameSettings, round);
-        setAllPlayersActive();
     }
 
     @Override
     public void start() {
         enable();
+        setAllPlayersActive();
         while (isEnable()) {
             ThreadUtil.sleep(DELAY_IN_SECONDS);
-            addChips();
+            getPlayers().forEach(player -> {
+                if (player.getChipsCount() == 0){
+                    player.setInActive();
+                }
+            });
             if (isReady()) {
                 getRound().startRound();
             }
@@ -54,28 +56,6 @@ public class HoldemGame extends Game {
 
     private void setAllPlayersActive() {
         getPlayers().forEach(player -> player.setStateType(StateType.IN_GAME));
-    }
-
-    private void addChips(){
-
-        getPlayers().forEach(playerDTO -> { playerDTO.addChips(5000L); playerDTO.setStateType(StateType.IN_GAME);});
-        final Map<PlayerDTO, Long> chipsMap = CommonGameManager.getChipsMap();
-
-        if (chipsMap.isEmpty()){
-            return;
-        }
-
-        final List<PlayerDTO> players = getPlayers();
-
-        players.forEach(player -> {
-            final Long chipsCount = chipsMap.get(player);
-            if (chipsCount != null && chipsCount > 0){
-                player.addChips(chipsCount);
-                player.setStateType(StateType.IN_GAME);
-            }
-            chipsMap.remove(player);
-        });
-
     }
 
     private boolean isReady() {

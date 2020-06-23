@@ -168,6 +168,12 @@ public class PlayerDTO {
         setTimeBank(0L);
     }
 
+    public void setActive() {
+        setAction(new Wait());
+        setStateType(StateType.IN_GAME);
+        setTimeBank(60L);
+    }
+
     public boolean isInAllIn() {
         return action.getActionType() == ActionType.ALLIN;
     }

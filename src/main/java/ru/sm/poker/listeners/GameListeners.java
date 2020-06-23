@@ -9,10 +9,12 @@ import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.service.OrderService;
 import ru.sm.poker.service.SeatManager;
+import ru.sm.poker.util.PlayerUtil;
 import ru.sm.poker.util.ThreadUtil;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ExecutorService;
@@ -33,6 +35,7 @@ public class GameListeners {
     @PostConstruct
     public void init() {
         enableQueueListener();
+        fillHoldemCashGames();
     }
 
     private void enableQueueListener() {
@@ -62,7 +65,15 @@ public class GameListeners {
     }
 
     public void fillHoldemCashGames() {
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 1; i++) {
+            Game game = gameManager.createGame(
+                    Arrays.asList(
+                            PlayerUtil.getDefaultBotForHoldem("1"),
+                            PlayerUtil.getDefaultBotForHoldem("2")
+                    ),
+                    GameType.HOLDEM_FULL,
+                    orderService);
+            executorServiceForGames.submit(game::start);
         }
     }
 

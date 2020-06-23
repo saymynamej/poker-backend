@@ -28,7 +28,6 @@ public class OrderActionService implements OrderService {
         final List<PlayerDTO> sortedPlayers = getPlayersInGame(
                 sort(holdemRoundSettings.getPlayers(), holdemRoundSettings.getStageType())
         );
-
         while (true) {
             if (holdemRoundSettings.playersInAllIn()) {
                 securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettings);

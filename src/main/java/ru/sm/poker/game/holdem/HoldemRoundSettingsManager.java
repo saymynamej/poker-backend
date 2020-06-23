@@ -30,10 +30,9 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
     private final long bigBlindBet;
     private final long smallBlindBet;
 
-
     @Override
     public HoldemRoundSettingsDTO getSettings(HoldemRoundSettingsDTO prevSettings) {
-        if (prevSettings == null){
+        if (prevSettings == null || prevSettings.getStageType() == StageType.RIVER){
             return getPreflopSettings();
         }
         switch (prevSettings.getStageType()) {

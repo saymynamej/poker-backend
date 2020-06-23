@@ -35,8 +35,7 @@ public class HoldemRound implements Round {
                         players,
                         gameName,
                         bigBlindBet,
-                        smallBlindBet
-                );
+                        smallBlindBet);
 
         while (true) {
             holdemRoundSettings = roundSettingsManager.getSettings(
@@ -49,15 +48,6 @@ public class HoldemRound implements Round {
             }
         }
         winnerService.sendPrizes(holdemRoundSettings);
-        setAfkForPlayerWhichHaveNotEnoughChips();
-    }
-
-    private void setAfkForPlayerWhichHaveNotEnoughChips() {
-        getPlayers().forEach(player -> {
-            if (player.getChipsCount() == 0) {
-                player.setStateType(StateType.AFK);
-            }
-        });
     }
 
     @Override

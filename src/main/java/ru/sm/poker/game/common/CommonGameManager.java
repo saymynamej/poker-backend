@@ -15,6 +15,7 @@ import ru.sm.poker.game.holdem.HoldemGame;
 import ru.sm.poker.game.holdem.HoldemRound;
 import ru.sm.poker.service.OrderService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -84,7 +85,7 @@ public class CommonGameManager implements GameManager {
         final GameSettings gameSettings = mapSettings.get(gameType);
 
         final Round round = new HoldemRound(
-                players,
+                new ArrayList<>(players),
                 randomGameName,
                 orderService,
                 gameSettings.getStartSmallBlindBet(),
