@@ -1,56 +1,45 @@
 package ru.sm.poker.listeners;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import ru.sm.poker.data.GameManagement;
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.GameType;
-import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.service.OrderService;
 import ru.sm.poker.service.SeatManager;
 import ru.sm.poker.util.ThreadUtil;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-
-@Component
+@Service
 @RequiredArgsConstructor
-@Slf4j
-public class GameListeners {
-    private final ExecutorService executorServiceForStart = Executors.newFixedThreadPool(1);
-    private final ExecutorService executorServiceForGames = Executors.newFixedThreadPool(15);
-    private final OrderService orderService;
+public class HoldemQueueListener implements GameListener {
+    private final GameManagement gameManagement;
     private final GameManager gameManager;
     private final SeatManager seatManager;
-    private boolean isEnable = true;
+    private final OrderService orderService;
+    private boolean isEnable = false;
 
-    @PostConstruct
-    public void init() {
-        enableQueueListener();
-    }
-
-    private void enableQueueListener() {
-        executorServiceForStart.submit(() -> {
+    @Override
+    public void listen() {
+        isEnable = true;
+        gameManagement.addListener(() -> {
             while (isEnable) {
                 ThreadUtil.sleep(1);
                 if (seatManager.getQueue().size() >= 4) {
-                    final Game game = gameManager.createGame(
+                    gameManager.createGame(
                             extractQueue(),
                             GameType.HOLDEM_HU,
-                            orderService
+                            orderService,
+                            true
                     );
-                    executorServiceForGames.submit(game::start);
                 }
             }
         });
     }
-
     private List<PlayerDTO> extractQueue() {
         final List<PlayerDTO> players = new ArrayList<>();
         final Queue<PlayerDTO> queue = seatManager.getQueue();
@@ -61,9 +50,8 @@ public class GameListeners {
         return players;
     }
 
-    public void fillHoldemCashGames() {
-        for (int i = 0; i < 5; i++) {
-        }
+    @Override
+    public void stop() {
+        isEnable = false;
     }
-
 }

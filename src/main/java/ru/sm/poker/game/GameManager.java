@@ -9,18 +9,9 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface GameManager {
-
     Optional<PlayerDTO> getPlayerByName(String name);
 
-    void reloadByName(String gameName);
-
-    void disableByName(String gameName);
-
-    void enableByName(String gameName);
-
     Game createGame(List<PlayerDTO> players, GameType gameType, OrderService orderService, boolean needRun);
-
-    void addChips(String name);
 
     Game getGameByName(String gameName);
 

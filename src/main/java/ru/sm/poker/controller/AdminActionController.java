@@ -39,7 +39,7 @@ public class AdminActionController {
 
     @MessageMapping("/admin/addChips")
     public void addChips(String name) {
-        gameManager.addChips(name);
+
     }
 
     @MessageMapping("/admin/changeStateType")
@@ -90,17 +90,14 @@ public class AdminActionController {
 
     @MessageMapping("/admin/reload")
     public void reload(String gameName) {
-        gameManager.reloadByName(gameName);
     }
 
     @MessageMapping("/admin/disableGame")
     public void disableGame(String gameName) {
-        gameManager.disableByName(gameName);
     }
 
     @MessageMapping("/admin/enableGame")
     public void enableGame(String gameName) {
-        gameManager.enableByName(gameName);
     }
 
     @MessageMapping("/admin/addBotToQueue")

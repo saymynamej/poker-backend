@@ -1,9 +1,6 @@
 package ru.sm.poker.dto;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import ru.sm.poker.action.Action;
 import ru.sm.poker.action.CountAction;

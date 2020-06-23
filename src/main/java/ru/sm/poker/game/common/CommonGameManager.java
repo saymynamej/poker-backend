@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.config.game.GameSettings;
-import ru.sm.poker.data.GamePool;
+import ru.sm.poker.data.GameManagement;
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.GameType;
 import ru.sm.poker.game.Game;
@@ -27,9 +27,8 @@ import static ru.sm.poker.util.GameUtil.getRandomGOTCityName;
 @RequiredArgsConstructor
 public class CommonGameManager implements GameManager {
     private final static Map<String, Game> games = new ConcurrentHashMap<>();
-    private final static Map<PlayerDTO, Long> CHIPS_MAP = new ConcurrentHashMap<>();
     private final Map<GameType, GameSettings> mapSettings;
-    private final GamePool gamePool;
+    private final GameManagement gameManagement;
 
     @Override
     public Optional<PlayerDTO> getPlayerByName(String name) {
@@ -37,16 +36,6 @@ public class CommonGameManager implements GameManager {
                 .flatMap(game -> game.getPlayers().stream())
                 .filter(player -> player.getName().equals(name))
                 .findAny();
-    }
-
-    @Override
-    public void addChips(String name) {
-        final Optional<PlayerDTO> optionalPlayer = getPlayerByName(name);
-        if (optionalPlayer.isEmpty()) {
-            return;
-        }
-        final PlayerDTO player = optionalPlayer.get();
-        CHIPS_MAP.put(player, 5000L);
     }
 
     @Override
@@ -73,25 +62,9 @@ public class CommonGameManager implements GameManager {
             log.info("game: " + randomGameName + " created");
         }
         if (needRun){
-            gamePool.startGame(game);
+            gameManagement.startGame(game);
         }
         return game;
-    }
-
-    @Override
-    public void reloadByName(String gameName) {
-        getGameByName(gameName).reload();
-    }
-
-
-    @Override
-    public void disableByName(String gameName) {
-        getGameByName(gameName).disable();
-    }
-
-    @Override
-    public void enableByName(String gameName) {
-        getGameByName(gameName).enable();
     }
 
     @Override
@@ -111,16 +84,6 @@ public class CommonGameManager implements GameManager {
         return games;
     }
 
-    public static Map<PlayerDTO, Long> getChipsMap() {
-        return CHIPS_MAP;
-    }
-
-    private void addChipsToMap(PlayerDTO player, Long chips) {
-        if (CHIPS_MAP.containsKey(player)) {
-            return;
-        }
-        CHIPS_MAP.put(player, chips);
-    }
 
     private boolean checkGameName(String gameName) {
         return !games.containsKey(gameName);
