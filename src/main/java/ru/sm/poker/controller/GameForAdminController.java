@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.GameType;
-import ru.sm.poker.game.Game;
 import ru.sm.poker.game.GameManager;
 import ru.sm.poker.service.OrderService;
 
@@ -21,11 +20,11 @@ import java.util.List;
 public class GameForAdminController {
     private final GameManager gameManager;
     private final OrderService orderService;
-    private final List<PlayerDTO> playerDTOList = new ArrayList<>();
-
 
     @PostMapping("/api/game/create")
-    public Game createGame() {
-        return this.gameManager.createGame(playerDTOList, GameType.HOLDEM_HU, orderService);
+    public void createGame(GameType gameType, String gameName) {
+        final List<PlayerDTO> playerDTOList = new ArrayList<>();
+        gameManager.createGame(playerDTOList, gameType, orderService);
+        gameManager.startGame(gameName);
     }
 }
