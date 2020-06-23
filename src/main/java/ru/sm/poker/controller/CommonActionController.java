@@ -20,7 +20,7 @@ import static ru.sm.poker.util.PlayerUtil.getDefaultPlayerForHoldem;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-public class CommonGameController {
+public class CommonActionController {
     private final GameManager gameManager;
     private final ActionService actionService;
     private final SeatManager seatManager;

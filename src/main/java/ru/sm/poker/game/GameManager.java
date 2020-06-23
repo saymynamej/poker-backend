@@ -10,29 +10,17 @@ import java.util.Optional;
 
 public interface GameManager {
 
-    boolean playerExistByName(String gameName, String name);
-
     Optional<PlayerDTO> getPlayerByName(String name);
 
-    void removePlayer(String gameName, PlayerDTO player);
+    void reloadByName(String gameName);
 
-    void removePlayer(PlayerDTO player);
+    void disableByName(String gameName);
 
-    void reload(String gameName);
+    void enableByName(String gameName);
 
-    void disableGame(String gameName);
-
-    void enableGame(String gameName);
-
-    void startGame(String gameName);
-
-    Game createGame(List<PlayerDTO> players, GameType gameType, OrderService orderService);
+    Game createGame(List<PlayerDTO> players, GameType gameType, OrderService orderService, boolean needRun);
 
     void addChips(String name);
-
-    void addChips(PlayerDTO player, long count);
-
-    PlayerDTO getActivePlayerInGame(String game);
 
     Game getGameByName(String gameName);
 

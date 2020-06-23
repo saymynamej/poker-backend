@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.sm.poker.util.StreamUtil.*;
+import static ru.sm.poker.util.StreamUtil.playerFolded;
+import static ru.sm.poker.util.StreamUtil.playerInGame;
 
 public class PlayerUtil {
 

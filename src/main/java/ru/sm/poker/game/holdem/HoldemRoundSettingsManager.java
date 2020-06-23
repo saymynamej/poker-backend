@@ -9,14 +9,13 @@ import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.*;
 import ru.sm.poker.game.RoundSettingsManager;
-import ru.sm.poker.util.HistoryUtil;
 
 import java.security.SecureRandom;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static ru.sm.poker.util.HistoryUtil.*;
+import static ru.sm.poker.util.HistoryUtil.unionHistory;
 
 @RequiredArgsConstructor
 public class HoldemRoundSettingsManager implements RoundSettingsManager {

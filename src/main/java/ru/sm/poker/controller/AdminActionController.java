@@ -22,7 +22,7 @@ import static ru.sm.poker.util.LongUtil.parseLong;
 @RequiredArgsConstructor
 @RestController
 @Slf4j
-public class AdminGameController {
+public class AdminActionController {
     private final GameManager gameManager;
     private final ActionService actionService;
     private final SeatManager seatManager;
@@ -90,22 +90,17 @@ public class AdminGameController {
 
     @MessageMapping("/admin/reload")
     public void reload(String gameName) {
-        gameManager.reload(gameName);
+        gameManager.reloadByName(gameName);
     }
 
     @MessageMapping("/admin/disableGame")
     public void disableGame(String gameName) {
-        gameManager.disableGame(gameName);
+        gameManager.disableByName(gameName);
     }
 
     @MessageMapping("/admin/enableGame")
     public void enableGame(String gameName) {
-        gameManager.enableGame(gameName);
-    }
-
-    @MessageMapping("/admin/startGame")
-    public void startGame(String gameName) {
-        gameManager.startGame(gameName);
+        gameManager.enableByName(gameName);
     }
 
     @MessageMapping("/admin/addBotToQueue")
