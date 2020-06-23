@@ -2,10 +2,9 @@ package ru.sm.poker.game.common;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.config.game.GameSettings;
+import ru.sm.poker.data.GamePool;
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.GameType;
 import ru.sm.poker.game.Game;
@@ -20,7 +19,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static java.lang.String.format;
 import static ru.sm.poker.util.GameUtil.getRandomGOTCityName;
 
 @Service
@@ -30,7 +28,7 @@ public class CommonGameManager implements GameManager {
     private final static Map<String, Game> games = new ConcurrentHashMap<>();
     private final static Map<PlayerDTO, Long> CHIPS_MAP = new ConcurrentHashMap<>();
     private final Map<GameType, GameSettings> mapSettings;
-
+    private final GamePool gamePool;
 
     @Override
     public Optional<PlayerDTO> getPlayerByName(String name) {
@@ -38,22 +36,6 @@ public class CommonGameManager implements GameManager {
                 .flatMap(game -> game.getPlayers().stream())
                 .filter(player -> player.getName().equals(name))
                 .findAny();
-    }
-
-    @Override
-    public boolean playerExistByName(String gameName, String name) {
-        final Game game = games.get(gameName);
-        return game.getPlayers().stream()
-                .anyMatch(player -> player.getName().equals(name));
-    }
-
-
-    @Override
-    public void addChips(PlayerDTO player, long count) {
-        if (player == null) {
-            return;
-        }
-        player.addChips(count);
     }
 
     @Override
@@ -67,18 +49,7 @@ public class CommonGameManager implements GameManager {
     }
 
     @Override
-    public void removePlayer(String gameName, PlayerDTO player) {
-        final Game game = games.get(gameName);
-        if (game != null) {
-            game.removePlayer(player);
-            log.info("Player removed :" + player.getName());
-            return;
-        }
-        throw new RuntimeException(format("could not found player in game =%s, player=%s", gameName, player.getName()));
-    }
-
-    @Override
-    public Game createGame(List<PlayerDTO> players, GameType gameType, OrderService orderService) {
+    public Game createGame(List<PlayerDTO> players, GameType gameType, OrderService orderService, boolean needRun) {
         final String randomGameName = getRandomGOTCityName();
 
         final GameSettings gameSettings = mapSettings.get(gameType);
@@ -100,45 +71,26 @@ public class CommonGameManager implements GameManager {
             games.put(randomGameName, game);
             log.info("game: " + randomGameName + " created");
         }
+        if (needRun){
+            gamePool.startGame(game);
+        }
         return game;
     }
 
     @Override
-    public void removePlayer(PlayerDTO player) {
-        games.forEach((name, game) -> {
-            final List<PlayerDTO> players = game.getRoundSettings().getPlayers();
-            players.remove(player);
-        });
-    }
-
-    @Override
-    public void reload(String gameName) {
+    public void reloadByName(String gameName) {
         getGameByName(gameName).reload();
     }
 
 
     @Override
-    public void disableGame(String gameName) {
+    public void disableByName(String gameName) {
         getGameByName(gameName).disable();
     }
 
     @Override
-    public void enableGame(String gameName) {
+    public void enableByName(String gameName) {
         getGameByName(gameName).enable();
-    }
-
-    @Override
-    public void startGame(String gameName) {
-        getGameByName(gameName).start();
-    }
-
-    @Override
-    public PlayerDTO getActivePlayerInGame(String game) {
-        return getGameByName(game).getRoundSettings()
-                .getPlayers()
-                .stream()
-                .filter(PlayerDTO::isActive)
-                .findFirst().orElseThrow(() -> new RuntimeException("cannot find active player in game:" + game));
     }
 
     @Override

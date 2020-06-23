@@ -5,13 +5,13 @@ import ru.sm.poker.action.CountAction;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.StageType;
-import ru.sm.poker.game.holdem.HoldemRound;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 import static ru.sm.poker.util.PlayerUtil.getPlayersInGame;
-import static ru.sm.poker.util.StreamUtil.*;
+import static ru.sm.poker.util.StreamUtil.playerFolded;
+import static ru.sm.poker.util.StreamUtil.playerHasChips;
 
 public class HistoryUtil {
 

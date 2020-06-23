@@ -1,10 +1,8 @@
 package ru.sm.poker.service.common;
 
 import org.springframework.stereotype.Service;
-import ru.sm.poker.action.holdem.Fold;
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.dto.ResultTimeDTO;
-import ru.sm.poker.enums.StateType;
 import ru.sm.poker.service.TimeBankService;
 
 import java.util.Timer;
