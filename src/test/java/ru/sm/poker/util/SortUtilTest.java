@@ -57,11 +57,11 @@ public class SortUtilTest {
         simplePlayer1.setRole(RoleType.ORDINARY);
 
         final PlayerDTO simplePlayer2 = new PlayerDTO(faker.name().name(), 5000);
-        simplePlayer1.setRole(RoleType.ORDINARY);
+        simplePlayer2.setRole(RoleType.ORDINARY);
 
         playersForTestingPreflop.addAll(Arrays.asList(simplePlayer1, simplePlayer2));
 
-        List<PlayerDTO> sortedPlayers2 = SortUtil.sortPreflop(this.playersForTestingPreflop);
+        final List<PlayerDTO> sortedPlayers2 = SortUtil.sortPreflop(this.playersForTestingPreflop);
 
         Assertions.assertEquals(sortedPlayers2.get(0).getRoleType(), RoleType.ORDINARY);
         Assertions.assertEquals(sortedPlayers2.get(1).getRoleType(), RoleType.ORDINARY);
@@ -72,13 +72,13 @@ public class SortUtilTest {
 
 
         final PlayerDTO simplePlayer3 = new PlayerDTO(faker.name().name(), 5000);
-        simplePlayer1.setRole(RoleType.ORDINARY);
+        simplePlayer3.setRole(RoleType.ORDINARY);
 
         final PlayerDTO simplePlayer4 = new PlayerDTO(faker.name().name(), 5000);
-        simplePlayer1.setRole(RoleType.ORDINARY);
+        simplePlayer4.setRole(RoleType.ORDINARY);
 
         final PlayerDTO simplePlayer5 = new PlayerDTO(faker.name().name(), 5000);
-        simplePlayer1.setRole(RoleType.ORDINARY);
+        simplePlayer5.setRole(RoleType.ORDINARY);
 
         playersForTestingPreflop.addAll(Arrays.asList(simplePlayer3, simplePlayer4, simplePlayer5));
 
@@ -110,7 +110,7 @@ public class SortUtilTest {
         simplePlayer1.setRole(RoleType.ORDINARY);
 
         final PlayerDTO simplePlayer2 = new PlayerDTO(faker.name().name(), 5000);
-        simplePlayer1.setRole(RoleType.ORDINARY);
+        simplePlayer2.setRole(RoleType.ORDINARY);
 
 
         playerForTestingPostFlop.addAll(Arrays.asList(simplePlayer1, simplePlayer2));
@@ -129,13 +129,13 @@ public class SortUtilTest {
 
 
         final PlayerDTO simplePlayer3 = new PlayerDTO(faker.name().name(), 5000);
-        simplePlayer1.setRole(RoleType.ORDINARY);
+        simplePlayer3.setRole(RoleType.ORDINARY);
 
         final PlayerDTO simplePlayer4 = new PlayerDTO(faker.name().name(), 5000);
-        simplePlayer1.setRole(RoleType.ORDINARY);
+        simplePlayer4.setRole(RoleType.ORDINARY);
 
         final PlayerDTO simplePlayer5 = new PlayerDTO(faker.name().name(), 5000);
-        simplePlayer1.setRole(RoleType.ORDINARY);
+        simplePlayer5.setRole(RoleType.ORDINARY);
 
         playerForTestingPostFlop.addAll(Arrays.asList(simplePlayer3, simplePlayer4, simplePlayer5));
 
