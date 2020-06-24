@@ -69,8 +69,7 @@ public class SortUtil {
 
 
     private static Optional<PlayerDTO> getPlayerByRole(List<PlayerDTO> players, RoleType roleType) {
-        return players
-                .stream()
+        return players.stream()
                 .filter(player -> player.getRoleType() == roleType)
                 .findFirst();
     }
