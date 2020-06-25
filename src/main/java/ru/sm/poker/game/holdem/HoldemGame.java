@@ -19,15 +19,10 @@ public class HoldemGame extends Game {
 
     @Override
     public void start() {
-        enable();
+        isEnable = true;
         setAllPlayersActive();
         while (isEnable()) {
             ThreadUtil.sleep(DELAY_IN_SECONDS);
-            getPlayers().forEach(player -> {
-                if (player.getChipsCount() == 0){
-                    player.setInActive();
-                }
-            });
             if (isReady()) {
                 getRound().startRound();
             }
@@ -35,18 +30,8 @@ public class HoldemGame extends Game {
     }
 
     @Override
-    public void enable() {
-        isEnable = true;
-    }
-
-    @Override
-    public void disable() {
+    public void stop() {
         isEnable = false;
-    }
-
-    @Override
-    public void reload() {
-        getRound().reloadRound();
     }
 
     @Override
@@ -54,14 +39,15 @@ public class HoldemGame extends Game {
         return getRound().getHoldemRoundSettings();
     }
 
-    private void setAllPlayersActive() {
-        getPlayers().forEach(player -> player.setStateType(StateType.IN_GAME));
-    }
-
-    private boolean isReady() {
+    @Override
+    protected boolean isReady() {
         final List<PlayerDTO> players = getPlayers();
         return players.size() >= getGameSettings().getMinPlayersForStart() && players.stream()
                 .filter(player -> player.getStateType() == StateType.IN_GAME)
                 .count() >= getGameSettings().getMinActivePlayers();
+    }
+
+    private void setAllPlayersActive() {
+        getPlayers().forEach(player -> player.setStateType(StateType.IN_GAME));
     }
 }

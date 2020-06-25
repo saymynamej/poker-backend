@@ -30,8 +30,7 @@ public class HoldemRound implements Round {
     public void startRound() {
         log.info("game was started, because found enough persons");
 
-        final RoundSettingsManager roundSettingsManager = HoldemRoundSettingsManagerFactory
-                .getRoundSettingsManager(
+        final RoundSettingsManager roundSettingsManager = HoldemRoundSettingsManagerFactory.getRoundSettingsManager(
                         players,
                         gameName,
                         bigBlindBet,

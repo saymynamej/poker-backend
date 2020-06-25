@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.sm.poker.action.holdem.*;
 import ru.sm.poker.dto.ActionDTO;
-import ru.sm.poker.game.GameManager;
+import ru.sm.poker.service.GameDataService;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.SeatManager;
 
@@ -21,7 +21,7 @@ import static ru.sm.poker.util.PlayerUtil.getDefaultPlayerForHoldem;
 @RequiredArgsConstructor
 @Slf4j
 public class CommonActionController {
-    private final GameManager gameManager;
+    private final GameDataService gameDataService;
     private final ActionService actionService;
     private final SeatManager seatManager;
 
@@ -56,7 +56,6 @@ public class CommonActionController {
 
     @MessageMapping("/addChips")
     public void addChips(Principal principal) {
-        gameManager.addChips(principal.getName());
     }
 
     @MessageMapping("/doRaise")

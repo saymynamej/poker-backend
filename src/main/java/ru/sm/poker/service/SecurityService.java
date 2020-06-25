@@ -1,4 +1,4 @@
-package ru.sm.poker.game;
+package ru.sm.poker.service;
 
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.PlayerDTO;

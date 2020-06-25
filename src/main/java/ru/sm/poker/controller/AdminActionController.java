@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.sm.poker.action.holdem.*;
 import ru.sm.poker.dto.AdminActionDTO;
 import ru.sm.poker.dto.PlayerDTO;
-import ru.sm.poker.game.GameManager;
+import ru.sm.poker.service.GameDataService;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.SeatManager;
 import ru.sm.poker.util.PlayerUtil;
@@ -23,7 +23,7 @@ import static ru.sm.poker.util.LongUtil.parseLong;
 @RestController
 @Slf4j
 public class AdminActionController {
-    private final GameManager gameManager;
+    private final GameDataService gameDataService;
     private final ActionService actionService;
     private final SeatManager seatManager;
 
@@ -82,7 +82,7 @@ public class AdminActionController {
 
     @MessageMapping("/admin/doAllIn")
     public void doAllIn(AdminActionDTO actionDTO) {
-        final Optional<PlayerDTO> playerByName = gameManager.getPlayerByName(actionDTO.getName());
+        final Optional<PlayerDTO> playerByName = gameDataService.getPlayerByName(actionDTO.getName());
         playerByName.ifPresent(
                 player -> actionService.setAction(actionDTO.getName(), new AllIn(player.getChipsCount()))
         );

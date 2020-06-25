@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.MessageType;
 import ru.sm.poker.game.Game;
-import ru.sm.poker.game.common.CommonGameManager;
 import ru.sm.poker.service.NotificationService;
 import ru.sm.poker.service.SeatManager;
 
@@ -22,7 +21,7 @@ import static ru.sm.poker.enums.MessageType.SUCCESS_JOIN_IN_QUEUE;
 @Slf4j
 public class SimpleSeatManager implements SeatManager {
 
-    private final CommonGameManager commonGameManager;
+    private final CommonGameDataService commonGameManager;
     private final NotificationService notificationService;
     private final Queue<PlayerDTO> players = new LinkedBlockingQueue<>();
 

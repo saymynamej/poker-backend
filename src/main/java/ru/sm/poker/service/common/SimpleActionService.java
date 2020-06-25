@@ -14,8 +14,8 @@ import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.enums.InformationType;
 import ru.sm.poker.enums.MessageType;
 import ru.sm.poker.game.Game;
-import ru.sm.poker.game.GameManager;
-import ru.sm.poker.game.SecurityService;
+import ru.sm.poker.service.GameDataService;
+import ru.sm.poker.service.SecurityService;
 import ru.sm.poker.service.ActionService;
 
 import static java.lang.String.format;
@@ -27,7 +27,7 @@ import static ru.sm.poker.enums.MessageType.SETTINGS_NOT_FOUND;
 @Component
 public class SimpleActionService implements ActionService {
     private final SecurityService holdemSecurityService;
-    private final GameManager holdemGameManager;
+    private final GameDataService holdemGameDataService;
     private final SecurityNotificationService securityNotificationService;
     private final SimpleNotificationService simpleNotificationService;
     private final SimpleTimeBankService simpleTimeBankService = new SimpleTimeBankService();
@@ -35,11 +35,11 @@ public class SimpleActionService implements ActionService {
 
     @Override
     public void changeStateType(String playerName) {
-        final PlayerDTO player = holdemGameManager.getPlayerByName(playerName)
+        final PlayerDTO player = holdemGameDataService.getPlayerByName(playerName)
                 .orElseThrow(() -> new RuntimeException("cannot find player with name:" + playerName));
 
         if (player.hasGame()) {
-            final Game game = holdemGameManager.getGameByName(player.getGameName());
+            final Game game = holdemGameDataService.getGameByName(player.getGameName());
             if (game.getRoundSettings() == null) {
                 log.info(format(SETTINGS_NOT_FOUND.getMessage(), playerName));
                 return;
@@ -54,7 +54,7 @@ public class SimpleActionService implements ActionService {
 
     @Override
     public void setAction(String playerName, Action action) {
-        final PlayerDTO player = holdemGameManager.getPlayerByName(playerName)
+        final PlayerDTO player = holdemGameDataService.getPlayerByName(playerName)
                 .orElseThrow(() -> new RuntimeException("cannot find player with name:" + playerName));
 
         action = changeCallOnAllInIfNeeded(action, player);

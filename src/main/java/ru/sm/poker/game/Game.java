@@ -13,7 +13,7 @@ import java.util.Optional;
 public abstract class Game {
     private final GameSettings gameSettings;
     private final Round round;
-    protected boolean isEnable = true;
+    protected boolean isEnable;
 
     public Game(GameSettings gameSettings, Round round) {
         this.gameSettings = gameSettings;
@@ -34,10 +34,6 @@ public abstract class Game {
 
     public String getGameName() {
         return this.round.getGameName();
-    }
-
-    public int getMaxPlayersSize() {
-        return this.gameSettings.getMaxPlayerSize();
     }
 
     public GameSettings getGameSettings() {
@@ -68,13 +64,11 @@ public abstract class Game {
         return false;
     }
 
+    protected abstract boolean isReady();
+
     public abstract void start();
 
-    public abstract void enable();
-
-    public abstract void disable();
-
-    public abstract void reload();
+    public abstract void stop();
 
     public abstract HoldemRoundSettingsDTO getRoundSettings();
 

@@ -1,8 +1,9 @@
-package ru.sm.poker.listeners;
+package ru.sm.poker.bootstrap;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import ru.sm.poker.listeners.GameListener;
 
 import javax.annotation.PostConstruct;
 import java.util.List;

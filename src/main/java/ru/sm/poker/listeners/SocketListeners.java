@@ -9,8 +9,8 @@ import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.MessageType;
 import ru.sm.poker.game.Game;
-import ru.sm.poker.game.GameManager;
-import ru.sm.poker.game.SecurityService;
+import ru.sm.poker.service.GameDataService;
+import ru.sm.poker.service.SecurityService;
 import ru.sm.poker.service.common.SimpleNotificationService;
 
 import java.security.Principal;
@@ -23,21 +23,20 @@ import static java.lang.String.format;
 @Component
 @RequiredArgsConstructor
 public class SocketListeners {
-    private final GameManager gameManager;
+    private final GameDataService gameDataService;
     private final SimpleNotificationService simpleNotificationService;
     private final SecurityService securityService;
-
+    private final Map<String, Game> games;
 
     @EventListener(SessionSubscribeEvent.class)
     public void handleWebsocketConnectListener(SessionSubscribeEvent event) {
         final Principal user = event.getUser();
         if (user != null) {
-            final Optional<PlayerDTO> optionalPlayer = gameManager.getPlayerByName(user.getName());
+            final Optional<PlayerDTO> optionalPlayer = gameDataService.getPlayerByName(user.getName());
             if (optionalPlayer.isPresent()) {
                 final PlayerDTO player = optionalPlayer.get();
-                final Map<String, Game> allGames = gameManager.getGames();
                 if (player.getGameName() != null) {
-                    final Game game = allGames.get(player.getGameName());
+                    final Game game = games.get(player.getGameName());
                     final HoldemRoundSettingsDTO holdemRoundSettings = game.getRoundSettings();
                     simpleNotificationService.sendGameInformationToUser(
                             player.getName(),

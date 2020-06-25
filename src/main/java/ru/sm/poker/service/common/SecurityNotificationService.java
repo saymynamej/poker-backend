@@ -3,7 +3,7 @@ package ru.sm.poker.service.common;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.game.SecurityService;
+import ru.sm.poker.service.SecurityService;
 import ru.sm.poker.util.PlayerUtil;
 
 import java.util.List;
