@@ -9,6 +9,7 @@ import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.*;
 import ru.sm.poker.game.RoundSettingsManager;
+import ru.sm.poker.util.PlayerUtil;
 
 import java.security.SecureRandom;
 import java.util.*;
@@ -31,20 +32,24 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
 
     @Override
     public HoldemRoundSettingsDTO getSettings(HoldemRoundSettingsDTO prevSettings) {
-        if (prevSettings == null || prevSettings.getStageType() == StageType.RIVER){
+        if (prevSettings == null || prevSettings.getStageType() == StageType.RIVER) {
             return getPreflopSettings();
         }
         switch (prevSettings.getStageType()) {
-            case PREFLOP: return getPostFlopSettings(prevSettings.getBank(), prevSettings.getStageHistory());
-            case FLOP: return getPostFlopSettingsWithTern(prevSettings.getBank(), unionHistory(
-                    prevSettings.getStageHistory(),
-                    prevSettings.getFullHistory())
-            );
-            case TERN: return getPostFlopSettingsWithRiver(prevSettings.getBank(), unionHistory(
-                    prevSettings.getStageHistory(),
-                    prevSettings.getFullHistory())
-            );
-            default: throw new RuntimeException();
+            case PREFLOP:
+                return getPostFlopSettings(prevSettings.getBank(), prevSettings.getStageHistory());
+            case FLOP:
+                return getPostFlopSettingsWithTern(prevSettings.getBank(), unionHistory(
+                        prevSettings.getStageHistory(),
+                        prevSettings.getFullHistory())
+                );
+            case TERN:
+                return getPostFlopSettingsWithRiver(prevSettings.getBank(), unionHistory(
+                        prevSettings.getStageHistory(),
+                        prevSettings.getFullHistory())
+                );
+            default:
+                throw new RuntimeException();
         }
     }
 
@@ -143,7 +148,7 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
     }
 
     private void dealCards() {
-        players.forEach(
+        PlayerUtil.getPlayerWhichMayPlay(players).forEach(
                 player -> player.addCards(Arrays.asList(getRandomCard(), getRandomCard()))
         );
     }
@@ -220,7 +225,7 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
     }
 
     protected void setButton() {
-        final List<PlayerDTO> players = this.players;
+        final List<PlayerDTO> players = PlayerUtil.getPlayerWhichMayPlay(this.players);
         final Optional<PlayerDTO> foundButton = players
                 .stream()
                 .filter(PlayerDTO::isButton)

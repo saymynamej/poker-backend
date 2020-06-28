@@ -12,20 +12,12 @@ public class StreamUtil {
         return (Predicate<PlayerDTO>) player -> player.getAction().getActionType() == ActionType.ALLIN;
     }
 
-    public static Predicate<? super PlayerDTO> playerHasMoreThanZeroChips() {
-        return (Predicate<PlayerDTO>) player -> player.getChipsCount() > 0;
-    }
-
     public static Predicate<? super PlayerDTO> playersHasCheck() {
         return (Predicate<PlayerDTO>) player -> player.getAction().getActionType() == ActionType.CHECK;
     }
 
     public static Predicate<? super PlayerDTO> playerFolded() {
         return (Predicate<PlayerDTO>) player -> player.getAction().getActionType() == ActionType.FOLD;
-    }
-
-    public static Predicate<? super PlayerDTO> playerIsNotAfk() {
-        return (Predicate<PlayerDTO>) player -> player.getStateType() != StateType.AFK;
     }
 
     public static Predicate<? super PlayerDTO> playerHasChips(){

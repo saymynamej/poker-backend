@@ -44,6 +44,13 @@ public class PlayerUtil {
                 .collect(Collectors.toList());
     }
 
+    public static List<PlayerDTO> getPlayerWhichMayPlay(List<PlayerDTO> players) {
+        return players.stream()
+                .filter(StreamUtil.playerInGame())
+                .filter(StreamUtil.playerHasChips())
+                .collect(Collectors.toList());
+    }
+
     public static List<PlayerDTO> getNotFoldedPlayers(List<PlayerDTO> players) {
         return players.stream()
                 .filter(PlayerDTO::isNotFolded)

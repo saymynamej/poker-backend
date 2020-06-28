@@ -14,6 +14,11 @@ import ru.sm.poker.service.common.SimpleWinnerService;
 import ru.sm.poker.service.holdem.HoldemCombinationService;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+//Достаточное количество игроков ?
+//Если да то начали
+//Проставляем всем кто начал in-game
 
 @RequiredArgsConstructor
 @Slf4j
@@ -29,12 +34,12 @@ public class HoldemRound implements Round {
     @Override
     public void startRound() {
         log.info("game was started, because found enough persons");
-
         final RoundSettingsManager roundSettingsManager = HoldemRoundSettingsManagerFactory.getRoundSettingsManager(
-                        players,
-                        gameName,
-                        bigBlindBet,
-                        smallBlindBet);
+                players,
+                gameName,
+                bigBlindBet,
+                smallBlindBet
+        );
 
         while (true) {
             holdemRoundSettings = roundSettingsManager.getSettings(
@@ -50,7 +55,7 @@ public class HoldemRound implements Round {
     }
 
     @Override
-    public List<PlayerDTO> getPlayers() {
+    public synchronized List<PlayerDTO> getPlayers() {
         return this.players;
     }
 

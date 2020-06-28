@@ -9,6 +9,7 @@ import ru.sm.poker.game.Round;
 import ru.sm.poker.util.ThreadUtil;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class HoldemGame extends Game {
     private final static long DELAY_IN_SECONDS = 2L;
@@ -20,13 +21,20 @@ public class HoldemGame extends Game {
     @Override
     public void start() {
         isEnable = true;
-        setAllPlayersActive();
+        setInGame();
         while (isEnable()) {
+            removeInActivePlayers();
             ThreadUtil.sleep(DELAY_IN_SECONDS);
             if (isReady()) {
                 getRound().startRound();
             }
         }
+    }
+
+    private void removeInActivePlayers() {
+        getPlayers().removeAll(getPlayers().stream()
+                .filter(player -> player.getChipsCount() == 0 || player.getStateType() != StateType.IN_GAME)
+                .collect(Collectors.toList()));
     }
 
     @Override
@@ -47,7 +55,7 @@ public class HoldemGame extends Game {
                 .count() >= getGameSettings().getMinActivePlayers();
     }
 
-    private void setAllPlayersActive() {
+    private void setInGame() {
         getPlayers().forEach(player -> player.setStateType(StateType.IN_GAME));
     }
 }
