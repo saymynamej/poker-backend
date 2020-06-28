@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class HoldemGame extends Game {
-    private final static long DELAY_IN_SECONDS = 2L;
+    private final static long DELAY_IN_SECONDS = 1L;
 
     public HoldemGame(GameSettings gameSettings, Round round) {
         super(gameSettings, round);
