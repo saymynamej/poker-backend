@@ -29,6 +29,7 @@ public class HoldemQueueListener implements GameListener {
                             queueService.extractQueue(),
                             GameType.HOLDEM_HU,
                             orderService,
+                            true,
                             true
                     );
                 }

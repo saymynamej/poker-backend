@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.config.game.GameSettings;
 import ru.sm.poker.converter.GameConverter;
+import ru.sm.poker.dto.GameDTO;
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.GameType;
 import ru.sm.poker.game.Game;
@@ -33,10 +34,15 @@ public class CommonGameManagementService implements GameManagementService {
     private final ExecutorService executorForListeners = Executors.newCachedThreadPool();
     private final Map<GameType, GameSettings> mapSettings;
     private final GameService gameService;
-    private final GameConverter gameConverter;
 
     @Override
-    public Game createGame(List<PlayerDTO> players, GameType gameType, OrderService orderService, boolean needRun) {
+    public Game createGame(
+            List<PlayerDTO> players,
+            GameType gameType,
+            OrderService orderService,
+            boolean needRun,
+            boolean needSave
+    ) {
         final String randomGameName = getRandomGOTCityName();
 
         final GameSettings gameSettings = mapSettings.get(gameType);
@@ -56,13 +62,19 @@ public class CommonGameManagementService implements GameManagementService {
 
         if (checkGameName(randomGameName)) {
             games.put(randomGameName, game);
-            log.info("game: " + randomGameName + " created");
         }
         if (needRun) {
             startGame(game);
         }
-
-        gameService.saveGame(gameConverter.convertGameToGameEntity(game, players));
+        if (needSave) {
+            gameService.saveGame(GameConverter.toEntity(GameDTO.builder()
+                    .gameType(gameType)
+                    .players(game.getPlayers())
+                    .build()));
+            log.info("game: " + randomGameName + " created");
+            return game;
+        }
+        log.info("game: " + randomGameName + " restored");
         return game;
     }
 

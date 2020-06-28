@@ -25,6 +25,7 @@ public class AdminGameController {
                 new ArrayList<>(),
                 gameType,
                 orderService,
+                true,
                 true
         );
     }

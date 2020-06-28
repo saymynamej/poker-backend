@@ -5,5 +5,4 @@ import org.springframework.stereotype.Repository;
 import ru.sm.poker.model.CardEntity;
 
 @Repository
-public interface CardRepository extends JpaRepository<CardEntity, Long> {
-}
+public interface CardRepository extends JpaRepository<CardEntity, Long> {}

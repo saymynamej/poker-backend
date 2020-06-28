@@ -34,7 +34,7 @@ public class AdminActionController {
 
     @MessageMapping("/admin/addPlayerInGame")
     public void joinInGame(AdminActionDTO actionDTO) {
-        seatManager.joinInGame(actionDTO.getName(), PlayerUtil.getDefaultPlayerForHoldem(new Faker().name().name(), 50));
+        seatManager.joinInGame(actionDTO.getName(), PlayerUtil.getDefaultPlayerForHoldem(new Faker().name().name(), 5000));
     }
 
     @MessageMapping("/admin/addChips")

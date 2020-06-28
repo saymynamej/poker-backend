@@ -7,7 +7,11 @@ import ru.sm.poker.game.Game;
 import java.util.List;
 
 public interface GameManagementService {
-    Game createGame(List<PlayerDTO> players, GameType gameType, OrderService orderService, boolean needRun);
+    Game createGame(List<PlayerDTO> players,
+                    GameType gameType,
+                    OrderService orderService,
+                    boolean needRun,
+                    boolean needSave);
 
     void startGame(String gameName);
 

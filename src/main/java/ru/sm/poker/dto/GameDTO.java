@@ -1,16 +1,16 @@
 package ru.sm.poker.dto;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import ru.sm.poker.enums.GameType;
 
-@RequiredArgsConstructor
-@Data
+import java.util.List;
+
 @Builder
+@AllArgsConstructor
+@Getter
+@Setter
 public class GameDTO {
-    private final String name;
+    private final Long id;
     private final GameType gameType;
-    private final int countPlayers;
-    private final int maxPlayersSize;
+    private final List<PlayerDTO> players;
 }

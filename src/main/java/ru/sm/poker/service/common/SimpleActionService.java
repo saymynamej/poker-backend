@@ -7,6 +7,7 @@ import ru.sm.poker.action.Action;
 import ru.sm.poker.action.ExecutableAction;
 import ru.sm.poker.action.holdem.AllIn;
 import ru.sm.poker.action.holdem.Call;
+import ru.sm.poker.converter.PlayerConverter;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.dto.ResultTimeDTO;
@@ -32,6 +33,7 @@ public class SimpleActionService implements ActionService {
     private final SimpleNotificationService simpleNotificationService;
     private final SimpleTimeBankService simpleTimeBankService = new SimpleTimeBankService();
     private final GameService gameService;
+    private final ActionLogService actionLogService;
 
     @Override
     public void changeStateType(String playerName) {
@@ -68,9 +70,9 @@ public class SimpleActionService implements ActionService {
     }
 
     private Action changeCallOnAllInIfNeeded(Action action, PlayerDTO player) {
-        if (action.getActionType() == ActionType.CALL){
+        if (action.getActionType() == ActionType.CALL) {
             final Call call = (Call) action;
-            if (call.getCount() == player.getChipsCount()){
+            if (call.getCount() == player.getChipsCount()) {
                 action = new AllIn(call.getCount());
             }
         }
@@ -93,7 +95,7 @@ public class SimpleActionService implements ActionService {
             if (player.isNotInGame()) {
                 break;
             }
-            if (holdemRoundSettings.isOnePlayerLeft()){
+            if (holdemRoundSettings.isOnePlayerLeft()) {
                 break;
             }
             if (player.didAction()) {
@@ -111,5 +113,6 @@ public class SimpleActionService implements ActionService {
             ((ExecutableAction) action).doAction(holdemRoundSettings, player, gameService, this);
             log.info("player: " + player.getName() + " did action:" + action);
         }
+        actionLogService.log(player, action);
     }
 }

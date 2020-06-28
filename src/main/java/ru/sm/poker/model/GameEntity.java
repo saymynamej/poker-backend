@@ -21,7 +21,7 @@ public class GameEntity {
     @Enumerated(value = EnumType.STRING)
     private GameType gameType;
 
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "game_id")
     private List<PlayerEntity> players;
 }
