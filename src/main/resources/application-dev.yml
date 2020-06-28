@@ -1,15 +1,21 @@
 server:
   port: 1010
 spring:
-  application:
-    name: poker-server
-  datasource:
-    username: test
-    password: test
-    url: jdbc:postgresql://192.168.1.61:6789/postgres
   jpa:
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  datasource:
+    username: test
+    password: test
+    url: jdbc:postgresql://localhost:6789/postgres
+  application:
+    name: poker-server
     properties:
       hibernate:
         jdbc:
