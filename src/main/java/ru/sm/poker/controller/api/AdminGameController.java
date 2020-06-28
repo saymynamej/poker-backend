@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.sm.poker.enums.GameType;
+import ru.sm.poker.game.Game;
 import ru.sm.poker.game.holdem.HoldemRound;
 import ru.sm.poker.service.GameManagementService;
 import ru.sm.poker.service.OrderService;
@@ -32,7 +33,7 @@ public class AdminGameController {
     }
 
     @PostMapping("/stop")
-    public void stopGame() {
-        gameManagementService.stopGame(holdemRound.getGameName());
+    public void stopGame(Game game) {
+        gameManagementService.stopGame(game);
     }
 }
