@@ -3,8 +3,13 @@ package ru.sm.poker.service.common;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.model.GameEntity;
+import ru.sm.poker.repository.GameRepository;
+
+import java.util.List;
 
 import static ru.sm.poker.util.HistoryUtil.addActionInHistory;
 
@@ -12,6 +17,17 @@ import static ru.sm.poker.util.HistoryUtil.addActionInHistory;
 @RequiredArgsConstructor
 @Slf4j
 public class GameService {
+    private final GameRepository gameRepository;
+
+
+    public List<GameEntity> findAll(){
+        return gameRepository.findAll();
+    }
+
+    @Transactional
+    public void saveGame(GameEntity gameEntity) {
+        gameRepository.save(gameEntity);
+    }
 
     public void doAction(PlayerDTO player, HoldemRoundSettingsDTO holdemRoundSettings, long removeChips, long lastBet) {
         player.removeChips(removeChips);

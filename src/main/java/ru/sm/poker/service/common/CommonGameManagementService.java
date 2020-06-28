@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.config.game.GameSettings;
+import ru.sm.poker.converter.GameConverter;
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.GameType;
 import ru.sm.poker.game.Game;
@@ -31,6 +32,8 @@ public class CommonGameManagementService implements GameManagementService {
     private final Map<String, Game> games;
     private final ExecutorService executorForListeners = Executors.newCachedThreadPool();
     private final Map<GameType, GameSettings> mapSettings;
+    private final GameService gameService;
+    private final GameConverter gameConverter;
 
     @Override
     public Game createGame(List<PlayerDTO> players, GameType gameType, OrderService orderService, boolean needRun) {
@@ -55,9 +58,11 @@ public class CommonGameManagementService implements GameManagementService {
             games.put(randomGameName, game);
             log.info("game: " + randomGameName + " created");
         }
-        if (needRun){
+        if (needRun) {
             startGame(game);
         }
+
+        gameService.saveGame(gameConverter.convertGameToGameEntity(game, players));
         return game;
     }
 

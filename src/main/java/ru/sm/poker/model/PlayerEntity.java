@@ -12,16 +12,20 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table
-public class Player {
+@Table(name = "players")
+public class PlayerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String name;
 
-    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
-    private List<Card> cards;
+    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<CardEntity> cards;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "player_id")
+    private List<GameEntity> games;
 
     @Builder.Default
     @Enumerated(value = EnumType.STRING)

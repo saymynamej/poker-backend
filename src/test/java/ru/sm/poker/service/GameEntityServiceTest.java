@@ -18,7 +18,7 @@ import static ru.sm.poker.util.DTOUtilTest.*;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
-public class GameServiceTest {
+public class GameEntityServiceTest {
 
     @Autowired
     private GameService gameService;
