@@ -11,5 +11,12 @@ public enum GameType {
 
     private final String gameName;
 
+    public static GameType getGameTypeByName(String name){
+        if (name.equalsIgnoreCase(HOLDEM_FULL.gameName)){
+            return HOLDEM_FULL;
+        }
+        return HOLDEM_HU;
+    }
+
 }
 

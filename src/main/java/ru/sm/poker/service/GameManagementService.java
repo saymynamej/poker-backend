@@ -13,9 +13,9 @@ public interface GameManagementService {
 
     void startGame(Game game);
 
-    void stopGame(String gameName);
+    Game stopGame(String gameName);
 
-    void stopGame(Game game);
+    Game stopGame(Game game);
 
     void addListener(Runnable runnable);
 }
