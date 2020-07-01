@@ -1,10 +1,9 @@
 package ru.sm.poker.converter;
 
-import ru.sm.poker.dto.GameDTO;
 import ru.sm.poker.dto.PlayerDTO;
-import ru.sm.poker.model.CardEntity;
-import ru.sm.poker.model.GameEntity;
-import ru.sm.poker.model.PlayerEntity;
+import ru.sm.poker.entities.CardEntity;
+import ru.sm.poker.entities.GameEntity;
+import ru.sm.poker.entities.PlayerEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,7 +11,7 @@ import java.util.stream.Collectors;
 
 public class PlayerConverter {
 
-    public static List<PlayerEntity> toEntities(List<PlayerDTO> players){
+    public static List<PlayerEntity> toEntities(List<PlayerDTO> players) {
         return players.stream().map(PlayerConverter::toEntity)
                 .collect(Collectors.toList());
     }
@@ -22,12 +21,18 @@ public class PlayerConverter {
                 .name(playerDTO.getName())
                 .roleType(playerDTO.getRoleType())
                 .build();
-        final List<GameEntity> gameEntities = GameConverter.toEntities(playerDTO.getGames());
-        playerEntity.setGames(gameEntities);
-
-        //TODO need adapt it to mutli tables
-        final List<CardEntity> cardEntities = CardConverter.toEntities(playerDTO.getCards(), playerEntity, gameEntities.get(0));
-        playerEntity.setCards(cardEntities);
+        if (playerDTO.getId() != null){
+            playerEntity.setId(playerDTO.getId());
+        }
+        if (playerDTO.getGame() != null) {
+            final GameEntity gameEntities = GameConverter.toEntity(playerDTO.getGame());
+            playerEntity.setGames(gameEntities);
+            final List<CardEntity> cardEntities = CardConverter.toEntities(
+                    playerDTO.getCards(),
+                    playerEntity,
+                    gameEntities);
+            playerEntity.setCards(cardEntities);
+        }
         return playerEntity;
     }
 
@@ -39,6 +44,8 @@ public class PlayerConverter {
 
     public static PlayerDTO toDTO(PlayerEntity playerEntity) {
         return PlayerDTO.builder()
+                .chipsCount(playerEntity.getChipsCount().getCount())
+                .id(playerEntity.getId())
                 .name(playerEntity.getName())
                 .build();
     }

@@ -1,4 +1,4 @@
-package ru.sm.poker.model;
+package ru.sm.poker.entities;
 
 import lombok.*;
 import ru.sm.poker.enums.RoleType;
@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "players")
+@EqualsAndHashCode(of = "name")
 public class PlayerEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,9 +24,12 @@ public class PlayerEntity {
     @OneToMany(mappedBy = "player", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<CardEntity> cards;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "player_id")
-    private List<GameEntity> games;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "game_id")
+    private GameEntity games;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private ChipsCountEntity chipsCount;
 
     @Builder.Default
     @Enumerated(value = EnumType.STRING)

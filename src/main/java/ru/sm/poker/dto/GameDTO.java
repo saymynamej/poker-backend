@@ -11,6 +11,7 @@ import java.util.List;
 @Setter
 public class GameDTO {
     private final Long id;
+    private final String gameName;
     private final GameType gameType;
     private final List<PlayerDTO> players;
 }

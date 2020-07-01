@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.sm.poker.game.Game;
 import ru.sm.poker.service.GameManagementService;
 import ru.sm.poker.enums.GameType;
 import ru.sm.poker.service.OrderService;
@@ -21,12 +22,11 @@ public class AdminGameController {
 
     @PostMapping("/create")
     public void createGame(GameType gameType) {
-        gameManagementService.createGame(
+        final Game game = gameManagementService.createGame(
                 new ArrayList<>(),
                 gameType,
-                orderService,
-                true,
-                true
-        );
+                orderService);
+        gameManagementService.saveGame(game);
+        gameManagementService.startGame(game);
     }
 }

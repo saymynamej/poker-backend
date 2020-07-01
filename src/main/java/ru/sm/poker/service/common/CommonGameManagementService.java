@@ -3,15 +3,17 @@ package ru.sm.poker.service.common;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.sm.poker.config.game.GameSettings;
 import ru.sm.poker.converter.GameConverter;
-import ru.sm.poker.dto.GameDTO;
+import ru.sm.poker.converter.PlayerConverter;
 import ru.sm.poker.dto.PlayerDTO;
 import ru.sm.poker.enums.GameType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.game.holdem.HoldemGame;
 import ru.sm.poker.game.holdem.HoldemRound;
+import ru.sm.poker.entities.GameEntity;
 import ru.sm.poker.service.GameManagementService;
 import ru.sm.poker.service.OrderService;
 
@@ -29,19 +31,35 @@ import static ru.sm.poker.util.GameUtil.getRandomGOTCityName;
 @RequiredArgsConstructor
 @Slf4j
 public class CommonGameManagementService implements GameManagementService {
-    private final Map<Game, ExecutorService> runnableGames = new ConcurrentHashMap<>();
+    private final Map<Game, ExecutorService> runnableGames;
     private final Map<String, Game> games;
     private final ExecutorService executorForListeners = Executors.newCachedThreadPool();
     private final Map<GameType, GameSettings> mapSettings;
     private final GameService gameService;
+    private final OrderService orderService;
+
+    @Override
+    public Game restoreGame(GameEntity gameEntity) {
+        final Game game = createGame(
+                PlayerConverter.toDTOs(gameEntity.getPlayers()),
+                gameEntity.getGameType(),
+                orderService);
+        startGame(game);
+        return game;
+    }
+
+
+    @Override
+    @Transactional
+    public void saveGame(Game game) {
+        gameService.saveGame(GameConverter.toEntity(game));
+    }
 
     @Override
     public Game createGame(
             List<PlayerDTO> players,
             GameType gameType,
-            OrderService orderService,
-            boolean needRun,
-            boolean needSave
+            OrderService orderService
     ) {
         final String randomGameName = getRandomGOTCityName();
 
@@ -62,17 +80,6 @@ public class CommonGameManagementService implements GameManagementService {
 
         if (checkGameName(randomGameName)) {
             games.put(randomGameName, game);
-        }
-        if (needRun) {
-            startGame(game);
-        }
-        if (needSave) {
-            gameService.saveGame(GameConverter.toEntity(GameDTO.builder()
-                    .gameType(gameType)
-                    .players(game.getPlayers())
-                    .build()));
-            log.info("game: " + randomGameName + " created");
-            return game;
         }
         log.info("game: " + randomGameName + " restored");
         return game;

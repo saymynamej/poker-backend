@@ -6,8 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.sm.poker.dto.HoldemRoundSettingsDTO;
 import ru.sm.poker.dto.PlayerDTO;
-import ru.sm.poker.model.GameEntity;
+import ru.sm.poker.entities.GameEntity;
 import ru.sm.poker.repository.GameRepository;
+import ru.sm.poker.repository.PlayerRepository;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ import static ru.sm.poker.util.HistoryUtil.addActionInHistory;
 @Slf4j
 public class GameService {
     private final GameRepository gameRepository;
-
+    private final PlayerRepository playerRepository;
 
     public List<GameEntity> findAll(){
         return gameRepository.findAll();

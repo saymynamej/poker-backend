@@ -21,8 +21,9 @@ public class PlayerDTO {
 
     private List<CardType> cards;
 
-    @Builder.Default
-    private List<GameDTO> games = new ArrayList<>();
+    private Long id;
+
+    private GameDTO game;
 
     @Builder.Default
     private RoleType roleType = RoleType.ORDINARY;

@@ -12,19 +12,20 @@ import ru.sm.poker.service.InfoService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
 
 @Profile({"enableInfoService"})
 @RequiredArgsConstructor
 @Service
 @EnableScheduling
 public class GamesInfoService implements InfoService {
-    private final Map<String, Game> games;
+    private final Map<Game, ExecutorService> games;
     private final SimpleNotificationService simpleNotificationService;
 
     @Scheduled(cron = "*/2 * * * * *")
     @Override
     public void send() {
-        final List<GameInfoDTO> gamesDTO = GameInfoConverter.toDTOs(games);
+        final List<GameInfoDTO> gamesDTO = GameInfoConverter.toDTOs(games.keySet());
         simpleNotificationService.sendGamesInformationToAll(gamesDTO);
     }
 

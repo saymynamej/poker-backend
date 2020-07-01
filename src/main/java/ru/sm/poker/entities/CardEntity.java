@@ -1,9 +1,6 @@
-package ru.sm.poker.model;
+package ru.sm.poker.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.sm.poker.enums.CardType;
 
 import javax.persistence.*;
@@ -14,6 +11,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@EqualsAndHashCode(of = "player")
 public class CardEntity {
 
     @Id
