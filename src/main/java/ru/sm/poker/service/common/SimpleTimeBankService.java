@@ -34,6 +34,7 @@ public class SimpleTimeBankService implements TimeBankService {
         return result;
     }
 
+
     @Override
     public void cancel(ResultTimeDTO result, PlayerDTO player) {
         result.getTimer().cancel();

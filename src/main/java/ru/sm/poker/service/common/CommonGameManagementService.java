@@ -53,7 +53,7 @@ public class CommonGameManagementService implements GameManagementService {
 
         if (checkGameName(randomGameName)) {
             games.put(randomGameName, game);
-            log.info("game: " + randomGameName + " created");
+            log.info("game " + gameType + ": " + randomGameName + " created");
         }
         if (needRun){
             startGame(game);
@@ -77,12 +77,12 @@ public class CommonGameManagementService implements GameManagementService {
 
 
     @Override
-    public void stopGame(String gameName) {
-        stopGame(getGameByName(gameName));
+    public Game stopGame(String gameName) {
+      return  stopGame(getGameByName(gameName));
     }
 
     @Override
-    public void stopGame(Game game) {
+    public Game stopGame(Game game) {
         runnableGames.computeIfPresent(game, (game1, executorService) -> {
             try {
                 game.stop();
@@ -94,6 +94,7 @@ public class CommonGameManagementService implements GameManagementService {
             }
             return executorService;
         });
+        return game;
     }
 
     @Override
