@@ -1,15 +1,15 @@
 package ru.sm.poker.util;
 
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
+import ru.sm.poker.dto.Player;
 
 import java.util.Collections;
 import java.util.List;
 
 public class RoundSettingsUtil {
 
-    public static HoldemRoundSettingsDTO copyWithSecureCard(HoldemRoundSettingsDTO holdemRoundSettings, List<String> filters) {
-        final List<PlayerDTO> playersWithSecureCards = PlayerUtil.copies(holdemRoundSettings.getPlayers());
+    public static HoldemRoundSettings copyWithSecureCard(HoldemRoundSettings holdemRoundSettings, List<String> filters) {
+        final List<Player> playersWithSecureCards = PlayerUtil.copies(holdemRoundSettings.getPlayers());
         playersWithSecureCards.forEach(player -> {
             if (!filters.contains(player.getName())) {
                 player.addCards(Collections.emptyList());
@@ -19,8 +19,8 @@ public class RoundSettingsUtil {
         return copy(holdemRoundSettings, playersWithSecureCards);
     }
 
-    public static HoldemRoundSettingsDTO copy(HoldemRoundSettingsDTO holdemRoundSettings, List<PlayerDTO> players) {
-        return HoldemRoundSettingsDTO.builder()
+    public static HoldemRoundSettings copy(HoldemRoundSettings holdemRoundSettings, List<Player> players) {
+        return HoldemRoundSettings.builder()
                 .gameName(holdemRoundSettings.getGameName())
                 .bank(holdemRoundSettings.getBank())
                 .smallBlindBet(holdemRoundSettings.getSmallBlindBet())

@@ -9,7 +9,7 @@ import java.util.Timer;
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-public class ResultTimeDTO {
+public class ResultTime {
     private Timer timer;
     @Builder.Default
     private boolean isDone = false;

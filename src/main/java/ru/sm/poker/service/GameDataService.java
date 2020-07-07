@@ -1,12 +1,12 @@
 package ru.sm.poker.service;
 
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.game.Game;
 
 import java.util.Optional;
 
 public interface GameDataService {
-    Optional<PlayerDTO> getPlayerByName(String name);
+    Optional<Player> getPlayerByName(String name);
 
     Game getGameByName(String gameName);
 }

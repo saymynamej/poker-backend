@@ -2,8 +2,8 @@ package ru.sm.poker.game.holdem;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.StageType;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.game.Round;
@@ -14,22 +14,17 @@ import ru.sm.poker.service.common.SimpleWinnerService;
 import ru.sm.poker.service.holdem.HoldemCombinationService;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
-//Достаточное количество игроков ?
-//Если да то начали
-//Проставляем всем кто начал in-game
 
 @RequiredArgsConstructor
 @Slf4j
 public class HoldemRound implements Round {
-    private final List<PlayerDTO> players;
+    private final List<Player> players;
     private final String gameName;
     private final OrderService orderService;
     private final long smallBlindBet;
     private final long bigBlindBet;
     private final WinnerService winnerService = new SimpleWinnerService(new HoldemCombinationService());
-    private HoldemRoundSettingsDTO holdemRoundSettings;
+    private HoldemRoundSettings holdemRoundSettings;
 
     @Override
     public void startRound() {
@@ -55,7 +50,7 @@ public class HoldemRound implements Round {
     }
 
     @Override
-    public synchronized List<PlayerDTO> getPlayers() {
+    public synchronized List<Player> getPlayers() {
         return this.players;
     }
 
@@ -70,7 +65,7 @@ public class HoldemRound implements Round {
     }
 
     @Override
-    public synchronized HoldemRoundSettingsDTO getHoldemRoundSettings() {
+    public synchronized HoldemRoundSettings getHoldemRoundSettings() {
         return this.holdemRoundSettings;
     }
 }

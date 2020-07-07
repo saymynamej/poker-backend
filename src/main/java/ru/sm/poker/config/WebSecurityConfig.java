@@ -1,5 +1,6 @@
 package ru.sm.poker.config;
 
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -8,11 +9,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-@Component
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+import javax.sql.DataSource;
 
-  @Override
-  protected void configure(HttpSecurity http) throws Exception {
+@Component
+@AllArgsConstructor
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    private final DataSource dataSource;
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
         http
                 .httpBasic()
                 .and()
@@ -23,29 +28,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .anyRequest()
-                .permitAll()
-        ;
-  }
+                .authenticated();
+    }
 
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("4")
-                .password(passwordEncoder().encode("4"))
-                .roles("ADMIN");
-        auth.inMemoryAuthentication()
-                .withUser("5")
-                .password(passwordEncoder().encode("5"))
-                .roles("ADMIN");
-        auth.inMemoryAuthentication()
-                .withUser("6")
-                .password(passwordEncoder().encode("6"))
-                .roles("ADMIN");
-        auth.inMemoryAuthentication()
-                .withUser("7")
-                .password(passwordEncoder().encode("7"))
-                .roles("ADMIN");
+        auth.jdbcAuthentication()
+                .dataSource(dataSource)
+                .passwordEncoder(passwordEncoder())
+                .usersByUsernameQuery("select name as username, password, enable from players where name =?")
+                .authoritiesByUsernameQuery("select name as username, role_type from players where name =?");
     }
 
     @Bean

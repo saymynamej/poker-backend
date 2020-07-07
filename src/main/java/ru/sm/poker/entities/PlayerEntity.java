@@ -1,7 +1,9 @@
 package ru.sm.poker.entities;
 
 import lombok.*;
+import ru.sm.poker.enums.PlayerType;
 import ru.sm.poker.enums.RoleType;
+import ru.sm.poker.enums.StateType;
 
 import javax.persistence.*;
 import java.util.List;
@@ -15,24 +17,40 @@ import java.util.List;
 @Table(name = "players")
 @EqualsAndHashCode(of = "name")
 public class PlayerEntity {
+
+    private String name;
+
+    private String password;
+
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<CardEntity> cards;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String name;
-
-    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<CardEntity> cards;
-
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "game_id")
-    private GameEntity games;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    private ChipsCountEntity chipsCount;
+    private GameEntity game;
 
     @Builder.Default
     @Enumerated(value = EnumType.STRING)
     private RoleType roleType = RoleType.ORDINARY;
+
+    @Enumerated(value = EnumType.STRING)
+    private PlayerType playerType;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "chips_id")
+    private ChipsCountEntity chipsCount;
+
+    @Enumerated(value = EnumType.STRING)
+    private StateType stateType;
+
+    private long timeBank;
+
+    private boolean active;
+
+    private boolean enable;
 
 }

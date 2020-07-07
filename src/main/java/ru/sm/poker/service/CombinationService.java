@@ -1,14 +1,14 @@
 package ru.sm.poker.service;
 
-import ru.sm.poker.dto.CombinationDTO;
-import ru.sm.poker.dto.PlayerCombinationDTO;
+import ru.sm.poker.dto.Combination;
+import ru.sm.poker.dto.PlayerCombination;
 import ru.sm.poker.enums.CardType;
 
 import java.util.List;
 
 public interface CombinationService {
 
-    List<PlayerCombinationDTO> findWinners(List<PlayerCombinationDTO> playersAndCombinations);
+    List<PlayerCombination> findWinners(List<PlayerCombination> playersAndCombinations);
 
-    CombinationDTO findCombination(List<CardType> cards);
+    Combination findCombination(List<CardType> cards);
 }

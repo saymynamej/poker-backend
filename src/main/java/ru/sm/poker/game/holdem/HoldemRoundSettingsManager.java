@@ -5,8 +5,8 @@ import ru.sm.poker.action.Action;
 import ru.sm.poker.action.holdem.Call;
 import ru.sm.poker.action.holdem.Fold;
 import ru.sm.poker.action.holdem.Wait;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.*;
 import ru.sm.poker.game.RoundSettingsManager;
 import ru.sm.poker.util.PlayerUtil;
@@ -22,7 +22,7 @@ import static ru.sm.poker.util.HistoryUtil.unionHistory;
 public class HoldemRoundSettingsManager implements RoundSettingsManager {
     private final SecureRandom random = new SecureRandom();
     private final List<CardType> allCards = CardType.getAllCardsAsList();
-    private final List<PlayerDTO> players;
+    private final List<Player> players;
     private final List<CardType> flop = setFlop();
     private final CardType tern = getRandomCard();
     private final CardType river = getRandomCard();
@@ -31,7 +31,7 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
     private final long smallBlindBet;
 
     @Override
-    public HoldemRoundSettingsDTO getSettings(HoldemRoundSettingsDTO prevSettings) {
+    public HoldemRoundSettings getSettings(HoldemRoundSettings prevSettings) {
         if (prevSettings == null || prevSettings.getStageType() == StageType.RIVER) {
             return getPreflopSettings();
         }
@@ -53,14 +53,14 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
         }
     }
 
-    private HoldemRoundSettingsDTO getPreflopSettings() {
+    private HoldemRoundSettings getPreflopSettings() {
         setAllPlayersGameName();
         dealCards();
         setButton();
         setSmallBlind();
         setBigBlind();
         setAllActivePlayers();
-        return HoldemRoundSettingsDTO.builder()
+        return HoldemRoundSettings.builder()
                 .gameName(gameName)
                 .bank(bigBlindBet + smallBlindBet)
                 .smallBlindBet(smallBlindBet)
@@ -78,9 +78,9 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
     }
 
 
-    private HoldemRoundSettingsDTO getPostFlopSettings(long bank, Map<PlayerDTO, List<Action>> prevHistory) {
+    private HoldemRoundSettings getPostFlopSettings(long bank, Map<Player, List<Action>> prevHistory) {
         setAllActivePlayersTest();
-        return HoldemRoundSettingsDTO.builder()
+        return HoldemRoundSettings.builder()
                 .flop(flop)
                 .gameName(gameName)
                 .bank(bank)
@@ -98,9 +98,9 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .build();
     }
 
-    private HoldemRoundSettingsDTO getPostFlopSettingsWithTern(long bank, Map<PlayerDTO, List<Action>> fullHistory) {
+    private HoldemRoundSettings getPostFlopSettingsWithTern(long bank, Map<Player, List<Action>> fullHistory) {
         setAllActivePlayersTest();
-        return HoldemRoundSettingsDTO.builder()
+        return HoldemRoundSettings.builder()
                 .flop(flop)
                 .tern(tern)
                 .gameName(gameName)
@@ -120,9 +120,9 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
     }
 
 
-    private HoldemRoundSettingsDTO getPostFlopSettingsWithRiver(long bank, Map<PlayerDTO, List<Action>> fullHistory) {
+    private HoldemRoundSettings getPostFlopSettingsWithRiver(long bank, Map<Player, List<Action>> fullHistory) {
         setAllActivePlayersTest();
-        return HoldemRoundSettingsDTO
+        return HoldemRoundSettings
                 .builder()
                 .flop(flop)
                 .tern(tern)
@@ -187,9 +187,9 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .collect(Collectors.toList());
     }
 
-    private PlayerDTO getPlayer(int indexOfSmallBlind) {
+    private Player getPlayer(int indexOfSmallBlind) {
         int indexOfBigBlind = 0;
-        PlayerDTO bigBlind;
+        Player bigBlind;
         if (indexOfSmallBlind + 1 < players.size()) {
             indexOfBigBlind = indexOfSmallBlind + 1;
         }
@@ -197,7 +197,7 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
         return bigBlind;
     }
 
-    private void removeChips(PlayerDTO player, long chips) {
+    private void removeChips(Player player, long chips) {
         player.removeChips(chips);
     }
 
@@ -215,7 +215,7 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
         clearRole(RoleType.SMALL_BLIND);
         final int indexOfButton = getIndexOfButton();
         int indexOfSmallBlind = 0;
-        PlayerDTO smallBlind;
+        Player smallBlind;
         if (indexOfButton + 1 < players.size()) {
             indexOfSmallBlind = indexOfButton + 1;
         }
@@ -225,10 +225,10 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
     }
 
     protected void setButton() {
-        final List<PlayerDTO> players = PlayerUtil.getPlayerWhichMayPlay(this.players);
-        final Optional<PlayerDTO> foundButton = players
+        final List<Player> players = PlayerUtil.getPlayerWhichMayPlay(this.players);
+        final Optional<Player> foundButton = players
                 .stream()
-                .filter(PlayerDTO::isButton)
+                .filter(Player::isButton)
                 .findAny();
 
         if (foundButton.isEmpty()) {
@@ -236,7 +236,7 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
             return;
         }
 
-        final PlayerDTO button = foundButton.get();
+        final Player button = foundButton.get();
         button.removeRole();
         int indexOfButton = players.indexOf(button);
 
@@ -254,40 +254,40 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
     protected void setBigBlind() {
         clearRole(RoleType.BIG_BLIND);
         final int indexOfSmallBlind = getIndexOfSmallBlind();
-        PlayerDTO bigBlind = getPlayer(indexOfSmallBlind);
+        Player bigBlind = getPlayer(indexOfSmallBlind);
         bigBlind.setRole(RoleType.BIG_BLIND);
         removeChipsFromPlayer(bigBlind, bigBlindBet);
     }
 
     protected void clearRole(RoleType roleType) {
-        final Optional<PlayerDTO> playerByRole = players.stream()
+        final Optional<Player> playerByRole = players.stream()
                 .filter(player -> player.getRoleType() == roleType)
                 .findAny();
 
-        playerByRole.ifPresent(PlayerDTO::removeRole);
+        playerByRole.ifPresent(Player::removeRole);
     }
 
-    protected void removeChipsFromPlayer(PlayerDTO player, long chips) {
+    protected void removeChipsFromPlayer(Player player, long chips) {
         removeChips(player, chips);
     }
 
-    protected Optional<PlayerDTO> getPlayerByRole(RoleType roleType) {
+    protected Optional<Player> getPlayerByRole(RoleType roleType) {
         return this.players.stream()
                 .filter(player -> player.getRoleType() == roleType)
                 .findFirst();
     }
 
-    protected Map<PlayerDTO, List<Action>> setBlindsHistory() {
-        final Map<PlayerDTO, List<Action>> history = new HashMap<>();
-        final Optional<PlayerDTO> optionalSmallBlind = getPlayerByRole(RoleType.SMALL_BLIND);
-        final Optional<PlayerDTO> optionalBigBlind = getPlayerByRole(RoleType.BIG_BLIND);
+    protected Map<Player, List<Action>> setBlindsHistory() {
+        final Map<Player, List<Action>> history = new HashMap<>();
+        final Optional<Player> optionalSmallBlind = getPlayerByRole(RoleType.SMALL_BLIND);
+        final Optional<Player> optionalBigBlind = getPlayerByRole(RoleType.BIG_BLIND);
 
         if (optionalSmallBlind.isEmpty() || optionalBigBlind.isEmpty()) {
             throw new RuntimeException("global error, cannot find blinds");
         }
 
-        final PlayerDTO bigBlind = optionalBigBlind.get();
-        final PlayerDTO smallBlind = optionalSmallBlind.get();
+        final Player bigBlind = optionalBigBlind.get();
+        final Player smallBlind = optionalSmallBlind.get();
         final List<Action> forBigBlind = new ArrayList<>();
         forBigBlind.add(new Call(bigBlindBet));
         final List<Action> forSmallBlind = new ArrayList<>();
@@ -297,7 +297,7 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
         return history;
     }
 
-    protected List<PlayerDTO> getPlayers() {
+    protected List<Player> getPlayers() {
         return players;
     }
 

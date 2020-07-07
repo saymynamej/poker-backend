@@ -6,7 +6,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.sm.poker.action.holdem.*;
-import ru.sm.poker.dto.ActionDTO;
+import ru.sm.poker.dto.Action;
 import ru.sm.poker.service.GameDataService;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.SeatManager;
@@ -59,12 +59,12 @@ public class CommonActionController {
     }
 
     @MessageMapping("/doRaise")
-    public void doRaise(Principal principal, ActionDTO action) {
+    public void doRaise(Principal principal, Action action) {
         actionService.setAction(principal.getName(), new Raise(Long.parseLong(action.getCount())));
     }
 
     @MessageMapping("/doCall")
-    public void doCall(Principal principal, ActionDTO action) {
+    public void doCall(Principal principal, Action action) {
         actionService.setAction(principal.getName(), new Call(Long.parseLong(action.getCount())));
     }
 
@@ -74,7 +74,7 @@ public class CommonActionController {
     }
 
     @MessageMapping("/doBet")
-    public void doBet(Principal principal, ActionDTO action) {
+    public void doBet(Principal principal, Action action) {
         actionService.setAction(principal.getName(), new Bet(Long.parseLong(action.getCount())));
     }
 
@@ -84,7 +84,7 @@ public class CommonActionController {
     }
 
     @MessageMapping("/doAllIn")
-    public void doAllIn(Principal principal, ActionDTO action) {
+    public void doAllIn(Principal principal, Action action) {
         actionService.setAction(principal.getName(), new AllIn(Long.parseLong(action.getCount())));
     }
 }

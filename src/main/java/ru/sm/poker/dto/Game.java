@@ -9,9 +9,9 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class GameDTO {
+public class Game {
     private final Long id;
     private final String gameName;
     private final GameType gameType;
-    private final List<PlayerDTO> players;
+    private final List<Player> players;
 }

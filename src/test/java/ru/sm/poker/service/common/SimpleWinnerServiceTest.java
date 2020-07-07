@@ -6,8 +6,8 @@ import ru.sm.poker.action.holdem.AllIn;
 import ru.sm.poker.action.holdem.Call;
 import ru.sm.poker.action.holdem.Fold;
 import ru.sm.poker.action.holdem.Raise;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.StateType;
 import ru.sm.poker.service.WinnerService;
@@ -26,8 +26,8 @@ class SimpleWinnerServiceTest {
     void testWhenWinnerOnlyOne() {
         final long callCount = 100;
         final long raiseCount = 300;
-        final PlayerDTO player1 = PlayerUtil.getDefaultPlayerForHoldem("1");
-        final PlayerDTO player2 = PlayerUtil.getDefaultPlayerForHoldem("2");
+        final Player player1 = PlayerUtil.getDefaultPlayerForHoldem("1");
+        final Player player2 = PlayerUtil.getDefaultPlayerForHoldem("2");
         final Call call = new Call(callCount);
         final Raise raise = new Raise(raiseCount);
         final Fold fold = new Fold();
@@ -38,7 +38,7 @@ class SimpleWinnerServiceTest {
         player1.setStateType(StateType.IN_GAME);
         player2.setStateType(StateType.IN_GAME);
 
-        winnerService.sendPrizes(HoldemRoundSettingsDTO.builder()
+        winnerService.sendPrizes(HoldemRoundSettings.builder()
                 .fullHistory(Map.of(
                         player1, List.of(call),
                         player2, List.of(call, raise)
@@ -56,12 +56,12 @@ class SimpleWinnerServiceTest {
 
     @Test
     void testWhenNeedChop() {
-        final PlayerDTO player1 = PlayerUtil.getDefaultPlayerForHoldem("1");
+        final Player player1 = PlayerUtil.getDefaultPlayerForHoldem("1");
         player1.addCards(Arrays.asList(CardType.TWO_C, CardType.THREE_H));
         final AllIn allIn1 = new AllIn(player1.getChipsCount());
         player1.setAction(allIn1);
 
-        final PlayerDTO player2 = PlayerUtil.getDefaultPlayerForHoldem("2");
+        final Player player2 = PlayerUtil.getDefaultPlayerForHoldem("2");
         player2.addCards(Arrays.asList(CardType.TWO_D, CardType.THREE_S));
         final AllIn allIn2 = new AllIn(player2.getChipsCount());
         player2.setAction(allIn2);
@@ -69,7 +69,7 @@ class SimpleWinnerServiceTest {
         player1.setStateType(StateType.IN_GAME);
         player2.setStateType(StateType.IN_GAME);
 
-        HoldemRoundSettingsDTO holdemRoundSettings = HoldemRoundSettingsDTO.builder()
+        HoldemRoundSettings holdemRoundSettings = HoldemRoundSettings.builder()
                 .flop(Arrays.asList(
                         CardType.FOUR_C,
                         CardType.FIVE_D,
@@ -99,19 +99,19 @@ class SimpleWinnerServiceTest {
 
     @Test
     void testWhenNeedCalculate() {
-        final PlayerDTO player1 = PlayerUtil.getDefaultPlayerForHoldem("1");
+        final Player player1 = PlayerUtil.getDefaultPlayerForHoldem("1");
         player1.addCards(Arrays.asList(CardType.K_C, CardType.K_D));
         final AllIn allIn1 = new AllIn(5000);
         player1.setAction(allIn1);
         player1.setChipsCount(0);
 
-        final PlayerDTO player2 = PlayerUtil.getDefaultPlayerForHoldem("2");
+        final Player player2 = PlayerUtil.getDefaultPlayerForHoldem("2");
         player2.addCards(Arrays.asList(CardType.EIGHT_S, CardType.NINE_S));
         final AllIn allIn2 = new AllIn(2000);
         player2.setChipsCount(0);
         player2.setAction(allIn2);
 
-        final PlayerDTO player3 = PlayerUtil.getDefaultPlayerForHoldem("3");
+        final Player player3 = PlayerUtil.getDefaultPlayerForHoldem("3");
         player3.addCards(Arrays.asList(CardType.TWO_C, CardType.THREE_S));
         final AllIn allIn3 = new AllIn(100);
         player3.setChipsCount(0);
@@ -121,7 +121,7 @@ class SimpleWinnerServiceTest {
         player2.setStateType(StateType.IN_GAME);
         player3.setStateType(StateType.IN_GAME);
 
-        winnerService.sendPrizes(HoldemRoundSettingsDTO.builder()
+        winnerService.sendPrizes(HoldemRoundSettings.builder()
                 .flop(Arrays.asList(
                         CardType.Q_S,
                         CardType.TWO_D,

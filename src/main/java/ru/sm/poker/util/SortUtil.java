@@ -1,6 +1,6 @@
 package ru.sm.poker.util;
 
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.RoleType;
 import ru.sm.poker.enums.StageType;
 
@@ -11,15 +11,15 @@ import java.util.Optional;
 
 public class SortUtil {
 
-    public static List<PlayerDTO> sort(List<PlayerDTO> players, StageType stageType) {
+    public static List<Player> sort(List<Player> players, StageType stageType) {
         return stageType == StageType.PREFLOP ? sortPreflop(players) : sortPostflop(players);
     }
 
-    public static List<PlayerDTO> sortPreflop(List<PlayerDTO> players) {
+    public static List<Player> sortPreflop(List<Player> players) {
         if (players.size() == 2){
-            final List<PlayerDTO> sortedPlayers  = new ArrayList<>();
-            final Optional<PlayerDTO> button = getPlayerByRole(players, RoleType.BUTTON);
-            final Optional<PlayerDTO> bigBlind = getPlayerByRole(players, RoleType.BIG_BLIND);
+            final List<Player> sortedPlayers  = new ArrayList<>();
+            final Optional<Player> button = getPlayerByRole(players, RoleType.BUTTON);
+            final Optional<Player> bigBlind = getPlayerByRole(players, RoleType.BIG_BLIND);
             if (bigBlind.isEmpty() || button.isEmpty()) {
                 throw new RuntimeException("cannot find all roles for preflop");
             }
@@ -27,10 +27,10 @@ public class SortUtil {
             sortedPlayers.add(bigBlind.get());
             return sortedPlayers;
         }
-        final List<PlayerDTO> sortedPlayers = new ArrayList<>(players);
-        final Optional<PlayerDTO> bigBlind = getPlayerByRole(players, RoleType.BIG_BLIND);
-        final Optional<PlayerDTO> smallBlind = getPlayerByRole(players, RoleType.SMALL_BLIND);
-        final Optional<PlayerDTO> button = getPlayerByRole(players, RoleType.BUTTON);
+        final List<Player> sortedPlayers = new ArrayList<>(players);
+        final Optional<Player> bigBlind = getPlayerByRole(players, RoleType.BIG_BLIND);
+        final Optional<Player> smallBlind = getPlayerByRole(players, RoleType.SMALL_BLIND);
+        final Optional<Player> button = getPlayerByRole(players, RoleType.BUTTON);
         if (bigBlind.isEmpty() || smallBlind.isEmpty() || button.isEmpty()) {
             throw new RuntimeException("cannot find all roles for preflop");
         }
@@ -44,12 +44,12 @@ public class SortUtil {
     }
 
 
-    public static List<PlayerDTO> sortPostflop(List<PlayerDTO> players) {
-        final List<PlayerDTO> sortedList = new LinkedList<>(players);
+    public static List<Player> sortPostflop(List<Player> players) {
+        final List<Player> sortedList = new LinkedList<>(players);
 
-        final Optional<PlayerDTO> smallBlind = getPlayerByRole(players, RoleType.SMALL_BLIND);
-        final Optional<PlayerDTO> bigBlind = getPlayerByRole(players, RoleType.BIG_BLIND);
-        final Optional<PlayerDTO> button = getPlayerByRole(players, RoleType.BUTTON);
+        final Optional<Player> smallBlind = getPlayerByRole(players, RoleType.SMALL_BLIND);
+        final Optional<Player> bigBlind = getPlayerByRole(players, RoleType.BIG_BLIND);
+        final Optional<Player> button = getPlayerByRole(players, RoleType.BUTTON);
 
         if (smallBlind.isPresent()) {
             sortedList.remove(smallBlind.get());
@@ -68,7 +68,7 @@ public class SortUtil {
     }
 
 
-    private static Optional<PlayerDTO> getPlayerByRole(List<PlayerDTO> players, RoleType roleType) {
+    private static Optional<Player> getPlayerByRole(List<Player> players, RoleType roleType) {
         return players.stream()
                 .filter(player -> player.getRoleType() == roleType)
                 .findFirst();

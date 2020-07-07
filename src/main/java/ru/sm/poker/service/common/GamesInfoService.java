@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.sm.poker.converter.GameInfoConverter;
-import ru.sm.poker.dto.GameInfoDTO;
+import ru.sm.poker.dto.GameInfo;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.service.InfoService;
 
@@ -25,7 +25,7 @@ public class GamesInfoService implements InfoService {
     @Scheduled(cron = "*/2 * * * * *")
     @Override
     public void send() {
-        final List<GameInfoDTO> gamesDTO = GameInfoConverter.toDTOs(games.keySet());
+        final List<GameInfo> gamesDTO = GameInfoConverter.toDTOs(games.keySet());
         simpleNotificationService.sendGamesInformationToAll(gamesDTO);
     }
 

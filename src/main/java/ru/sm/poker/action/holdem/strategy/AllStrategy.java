@@ -2,8 +2,8 @@ package ru.sm.poker.action.holdem.strategy;
 
 import ru.sm.poker.action.ActionStrategy;
 import ru.sm.poker.action.CountAction;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.common.GameService;
 
@@ -12,7 +12,7 @@ import static ru.sm.poker.util.HistoryUtil.sumAllHistoryBetsWithNewAction;
 public class AllStrategy implements ActionStrategy {
 
     @Override
-    public void execute(PlayerDTO player, GameService gameService, ActionService actionService, CountAction countAction, HoldemRoundSettingsDTO holdemRoundSettings) {
+    public void execute(Player player, GameService gameService, ActionService actionService, CountAction countAction, HoldemRoundSettings holdemRoundSettings) {
         if (countActionNotEqualsChipsCount(countAction, player)) {
             actionService.waitUntilPlayerWillHasAction(player, holdemRoundSettings);
             return;
@@ -31,7 +31,7 @@ public class AllStrategy implements ActionStrategy {
         return allBets >= lastBet;
     }
 
-    private boolean countActionNotEqualsChipsCount(CountAction countAction, PlayerDTO player){
+    private boolean countActionNotEqualsChipsCount(CountAction countAction, Player player){
         return countAction.getCount() != player.getChipsCount();
     }
 }

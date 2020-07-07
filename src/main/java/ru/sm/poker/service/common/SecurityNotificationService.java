@@ -2,7 +2,7 @@ package ru.sm.poker.service.common;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
 import ru.sm.poker.service.SecurityService;
 import ru.sm.poker.util.PlayerUtil;
 
@@ -14,20 +14,20 @@ public class SecurityNotificationService {
     private final SimpleNotificationService simpleNotificationService;
     private final SecurityService securityService;
 
-    public void sendToAllWithSecurityWhoIsNotInTheGame(HoldemRoundSettingsDTO holdemRoundSettings) {
+    public void sendToAllWithSecurityWhoIsNotInTheGame(HoldemRoundSettings holdemRoundSettings) {
         final List<String> filter = PlayerUtil.getNamesOfPlayersInGame(holdemRoundSettings.getPlayers());
 
-        final HoldemRoundSettingsDTO secureSettings = securityService.secureCards(filter, holdemRoundSettings);
+        final HoldemRoundSettings secureSettings = securityService.secureCards(filter, holdemRoundSettings);
 
         secureSettings.getPlayers()
                 .forEach(player -> simpleNotificationService.sendGameInformationToUser(player.getName(), secureSettings));
     }
 
-    public void sendToAllWithSecurity(HoldemRoundSettingsDTO holdemRoundSettings) {
+    public void sendToAllWithSecurity(HoldemRoundSettings holdemRoundSettings) {
         holdemRoundSettings.getPlayers().forEach(player -> sendToUserWithSecurity(holdemRoundSettings, player.getName()));
     }
 
-    public void sendToUserWithSecurity(HoldemRoundSettingsDTO holdemRoundSettings, String userName) {
+    public void sendToUserWithSecurity(HoldemRoundSettings holdemRoundSettings, String userName) {
         simpleNotificationService.sendGameInformationToUser(userName, securityService.secureCards(List.of(userName), holdemRoundSettings));
     }
 }

@@ -1,19 +1,18 @@
 package ru.sm.poker.entities;
 
+
 import lombok.*;
 
 import javax.persistence.*;
 
+@Getter
+@Setter
 @Entity
-@Table(name = "chips_count")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@EqualsAndHashCode(of = "id")
-@Setter
-public class ChipsCountEntity {
-
+@Table(name = "rounds")
+public class RoundEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -22,5 +21,4 @@ public class ChipsCountEntity {
     @JoinColumn(name = "game_id")
     private GameEntity game;
 
-    private Long count;
 }

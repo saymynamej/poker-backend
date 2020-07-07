@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.entities.GameEntity;
 import ru.sm.poker.repository.GameRepository;
 import ru.sm.poker.repository.PlayerRepository;
@@ -30,28 +30,28 @@ public class GameService {
         gameRepository.save(gameEntity);
     }
 
-    public void doAction(PlayerDTO player, HoldemRoundSettingsDTO holdemRoundSettings, long removeChips, long lastBet) {
+    public void doAction(Player player, HoldemRoundSettings holdemRoundSettings, long removeChips, long lastBet) {
         player.removeChips(removeChips);
         addBank(holdemRoundSettings, removeChips);
         setLastBet(holdemRoundSettings, lastBet);
         addActionInHistory(holdemRoundSettings, player);
     }
 
-    public void addBank(HoldemRoundSettingsDTO holdemRoundSettings, long count) {
+    public void addBank(HoldemRoundSettings holdemRoundSettings, long count) {
         holdemRoundSettings.setBank(holdemRoundSettings.getBank() + count);
     }
 
-    public void setActivePlayer(HoldemRoundSettingsDTO holdemRoundSettings, PlayerDTO player) {
+    public void setActivePlayer(HoldemRoundSettings holdemRoundSettings, Player player) {
         player.setActive(true);
         holdemRoundSettings.setActivePlayer(player);
     }
 
-    public void setInActivePlayer(HoldemRoundSettingsDTO holdemRoundSettings, PlayerDTO player) {
+    public void setInActivePlayer(HoldemRoundSettings holdemRoundSettings, Player player) {
         player.setActive(false);
         holdemRoundSettings.setActivePlayer(null);
     }
 
-    public void setLastBet(HoldemRoundSettingsDTO holdemRoundSettings, long count) {
+    public void setLastBet(HoldemRoundSettings holdemRoundSettings, long count) {
         if (holdemRoundSettings.getLastBet() < count) {
             log.info("prev last bet less than new last bet");
         }

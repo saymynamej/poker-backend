@@ -1,9 +1,9 @@
 package ru.sm.poker.service;
 
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.Player;
 
 import java.util.List;
 
 public interface QueueService {
-    List<PlayerDTO> extractQueue();
+    List<Player> extractQueue();
 }

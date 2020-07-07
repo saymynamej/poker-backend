@@ -19,12 +19,13 @@ public class CardEntity {
     private Integer id;
 
     @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "game_id")
     private GameEntity game;
 
     @Enumerated(value = EnumType.STRING)
     private CardType cardType;
 
-    @ManyToOne(cascade = CascadeType.ALL, targetEntity = PlayerEntity.class)
-    @JoinColumn(name = "card_id")
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "player_id")
     private PlayerEntity player;
 }

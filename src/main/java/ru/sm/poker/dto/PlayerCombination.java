@@ -7,7 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 @Builder
-public class PlayerCombinationDTO {
-    private final PlayerDTO player;
-    private final CombinationDTO combination;
+public class PlayerCombination {
+    private final Player player;
+    private final Combination combination;
 }

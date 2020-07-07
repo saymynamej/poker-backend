@@ -4,16 +4,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.sm.poker.action.Action;
+import ru.sm.poker.action.CountAction;
 import ru.sm.poker.action.ExecutableAction;
 import ru.sm.poker.action.holdem.AllIn;
-import ru.sm.poker.action.holdem.Call;
-import ru.sm.poker.converter.PlayerConverter;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.dto.PlayerDTO;
-import ru.sm.poker.dto.ResultTimeDTO;
+import ru.sm.poker.auto.AutoBot;
+import ru.sm.poker.dto.HoldemRoundSettings;
+import ru.sm.poker.dto.Player;
+import ru.sm.poker.dto.ResultTime;
 import ru.sm.poker.enums.ActionType;
 import ru.sm.poker.enums.InformationType;
 import ru.sm.poker.enums.MessageType;
+import ru.sm.poker.enums.PlayerType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.service.GameDataService;
 import ru.sm.poker.service.SecurityService;
@@ -34,10 +35,11 @@ public class SimpleActionService implements ActionService {
     private final SimpleTimeBankService simpleTimeBankService = new SimpleTimeBankService();
     private final GameService gameService;
     private final ActionLogService actionLogService;
+    private final AutoBot autoBot;
 
     @Override
     public void changeStateType(String playerName) {
-        final PlayerDTO player = holdemGameDataService.getPlayerByName(playerName)
+        final Player player = holdemGameDataService.getPlayerByName(playerName)
                 .orElseThrow(() -> new RuntimeException("cannot find player with name:" + playerName));
 
         if (player.hasGame()) {
@@ -46,7 +48,7 @@ public class SimpleActionService implements ActionService {
                 log.info(format(SETTINGS_NOT_FOUND.getMessage(), playerName));
                 return;
             }
-            final HoldemRoundSettingsDTO roundSettings = game.getRoundSettings();
+            final HoldemRoundSettings roundSettings = game.getRoundSettings();
             player.changeState();
             securityNotificationService.sendToAllWithSecurity(roundSettings);
             log.info(format(InformationType.CHANGED_STATE_TYPE_INFO.getMessage(), playerName, player.getStateType()));
@@ -56,7 +58,7 @@ public class SimpleActionService implements ActionService {
 
     @Override
     public void setAction(String playerName, Action action) {
-        final PlayerDTO player = holdemGameDataService.getPlayerByName(playerName)
+        final Player player = holdemGameDataService.getPlayerByName(playerName)
                 .orElseThrow(() -> new RuntimeException("cannot find player with name:" + playerName));
 
         action = changeCallOnAllInIfNeeded(action, player);
@@ -69,18 +71,18 @@ public class SimpleActionService implements ActionService {
         player.setAction(action);
     }
 
-    private Action changeCallOnAllInIfNeeded(Action action, PlayerDTO player) {
-        if (action.getActionType() == ActionType.CALL) {
-            final Call call = (Call) action;
-            if (call.getCount() == player.getChipsCount()) {
-                action = new AllIn(call.getCount());
+    private Action changeCallOnAllInIfNeeded(Action action, Player player) {
+        if (action.getActionType() == ActionType.CALL || action.getActionType() == ActionType.RAISE) {
+            final CountAction countAction = (CountAction) action;
+            if (countAction.getCount() == player.getChipsCount()) {
+                action = new AllIn(countAction.getCount());
             }
         }
         return action;
     }
 
     @Override
-    public void waitUntilPlayerWillHasAction(PlayerDTO player, HoldemRoundSettingsDTO holdemRoundSettings) {
+    public void waitUntilPlayerWillHasAction(Player player, HoldemRoundSettings holdemRoundSettings) {
         log.info("waiting action from player:" + player.getName());
         player.setWait();
         gameService.setActivePlayer(holdemRoundSettings, player);
@@ -89,8 +91,13 @@ public class SimpleActionService implements ActionService {
         gameService.setInActivePlayer(holdemRoundSettings, player);
     }
 
-    private void waitPlayerAction(PlayerDTO player, HoldemRoundSettingsDTO holdemRoundSettings) {
-        final ResultTimeDTO timer = simpleTimeBankService.activateTime(player);
+    private void waitPlayerAction(Player player, HoldemRoundSettings holdemRoundSettings) {
+        if (player.getPlayerType() == PlayerType.BOT){
+            autoBot.auto(player, holdemRoundSettings);
+            return;
+        }
+
+        final ResultTime timer = simpleTimeBankService.activateTime(player);
         while (true) {
             if (player.isNotInGame()) {
                 break;
@@ -107,7 +114,7 @@ public class SimpleActionService implements ActionService {
     }
 
 
-    public void doAction(PlayerDTO player, HoldemRoundSettingsDTO holdemRoundSettings) {
+    public void doAction(Player player, HoldemRoundSettings holdemRoundSettings) {
         final Action action = player.getAction();
         if (action instanceof ExecutableAction) {
             ((ExecutableAction) action).doAction(holdemRoundSettings, player, gameService, this);

@@ -3,14 +3,15 @@ server:
 spring:
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         jdbc:
           lob:
             non_contextual_creation: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
+    show-sql: false
+    open-in-view: false
   datasource:
     username: test
     password: test

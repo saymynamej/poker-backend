@@ -1,6 +1,6 @@
 package ru.sm.poker.game.holdem;
 
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.game.RoundSettingsManager;
 
 import java.util.ArrayList;
@@ -9,7 +9,7 @@ import java.util.List;
 public class HoldemRoundSettingsManagerFactory {
 
     public static RoundSettingsManager getRoundSettingsManager(
-            List<PlayerDTO> players,
+            List<Player> players,
             String gameName,
             long bigBlindBet,
             long smallBlindBet

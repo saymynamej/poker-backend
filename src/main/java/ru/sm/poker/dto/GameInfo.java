@@ -8,7 +8,7 @@ import ru.sm.poker.enums.GameType;
 @RequiredArgsConstructor
 @Data
 @Builder
-public class GameInfoDTO {
+public class GameInfo {
     private final String name;
     private final GameType gameType;
     private final int countPlayers;

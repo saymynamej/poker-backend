@@ -2,8 +2,8 @@ package ru.sm.poker.util;
 
 import com.github.javafaker.Faker;
 import ru.sm.poker.action.holdem.Wait;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.RoleType;
 import ru.sm.poker.enums.StageType;
@@ -25,24 +25,24 @@ public class DTOUtilTest {
     public final static long DEFAULT_LAST_BET = DEFAULT_BIG_BLIND_BET;
     public final static int DEFAULT_PLAYERS_SIZE = 9;
 
-    public static HoldemRoundSettingsDTO getRoundSettingsDTO() {
+    public static HoldemRoundSettings getRoundSettingsDTO() {
         return getRoundSettingsDTO(DEFAULT_LAST_BET, Collections.emptyList());
     }
 
-    public static HoldemRoundSettingsDTO getRoundSettingsDTOWithPlayers(int count) {
+    public static HoldemRoundSettings getRoundSettingsDTOWithPlayers(int count) {
         return getRoundSettingsDTO(DEFAULT_LAST_BET, getPlayers(count));
     }
 
-    public static HoldemRoundSettingsDTO getRoundSettingsDTO(StageType stageType) {
+    public static HoldemRoundSettings getRoundSettingsDTO(StageType stageType) {
         return getRoundSettingsDTO(DEFAULT_PLAYERS_SIZE, stageType);
     }
 
-    public static HoldemRoundSettingsDTO getRoundSettingsDTO(int countPlayers, StageType stageType) {
+    public static HoldemRoundSettings getRoundSettingsDTO(int countPlayers, StageType stageType) {
         return getRoundSettingsDTO(DEFAULT_LAST_BET, stageType, getPlayers(countPlayers));
     }
 
-    public static HoldemRoundSettingsDTO getRoundSettingsDTO(long lastBet, StageType stageType, List<PlayerDTO> players) {
-        return HoldemRoundSettingsDTO.builder()
+    public static HoldemRoundSettings getRoundSettingsDTO(long lastBet, StageType stageType, List<Player> players) {
+        return HoldemRoundSettings.builder()
                 .lastBet(lastBet)
                 .stageType(stageType)
                 .bigBlindBet(DEFAULT_BIG_BLIND_BET)
@@ -53,12 +53,12 @@ public class DTOUtilTest {
                 .build();
     }
 
-    public static HoldemRoundSettingsDTO getRoundSettingsDTO(long lastBet) {
+    public static HoldemRoundSettings getRoundSettingsDTO(long lastBet) {
         return getRoundSettingsDTO(lastBet, Collections.emptyList());
     }
 
-    public static HoldemRoundSettingsDTO getRoundSettingsDTO(long lastBet, List<PlayerDTO> players) {
-        return HoldemRoundSettingsDTO.builder()
+    public static HoldemRoundSettings getRoundSettingsDTO(long lastBet, List<Player> players) {
+        return HoldemRoundSettings.builder()
                 .lastBet(lastBet)
                 .bigBlindBet(DEFAULT_BIG_BLIND_BET)
                 .smallBlindBet(DEFAULT_SMALL_BLIND_BET)
@@ -69,12 +69,12 @@ public class DTOUtilTest {
                 .build();
     }
 
-    public static List<PlayerDTO> getPlayers(int count) {
+    public static List<Player> getPlayers(int count) {
         return IntStream.range(0, count).mapToObj(i -> getPlayer()).collect(Collectors.toList());
     }
 
-    public static PlayerDTO getPlayer() {
-        return PlayerDTO.builder()
+    public static Player getPlayer() {
+        return Player.builder()
                 .gameName(DEFAULT_GAME_NAME)
                 .chipsCount(DEFAULT_CHIPS_COUNT)
                 .name(faker.name().name())
@@ -86,8 +86,8 @@ public class DTOUtilTest {
                 .build();
     }
 
-    public static PlayerDTO getPlayer(RoleType roleType) {
-        return PlayerDTO.builder()
+    public static Player getPlayer(RoleType roleType) {
+        return Player.builder()
                 .gameName(DEFAULT_GAME_NAME)
                 .chipsCount(DEFAULT_CHIPS_COUNT)
                 .roleType(roleType)

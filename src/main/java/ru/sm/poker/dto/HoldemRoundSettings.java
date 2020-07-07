@@ -21,28 +21,32 @@ import static ru.sm.poker.util.StreamUtil.playersHasCheck;
 @Getter
 @Setter
 @ToString
-public class HoldemRoundSettingsDTO {
-    private final Map<PlayerDTO, List<Action>> stageHistory;
-    private final Map<PlayerDTO, List<Action>> fullHistory;
-    private final List<PlayerDTO> players;
+public class HoldemRoundSettings {
+    private final Map<Player, List<Action>> stageHistory;
+    private final Map<Player, List<Action>> fullHistory;
+    private final List<Player> players;
     private final List<CardType> flop;
     private final CardType tern;
     private final CardType river;
     private final String gameName;
     private final long smallBlindBet;
     private final long bigBlindBet;
-    private final PlayerDTO button;
-    private final PlayerDTO smallBlind;
-    private final PlayerDTO bigBlind;
+    private final Player button;
+    private final Player smallBlind;
+    private final Player bigBlind;
     private final StageType stageType;
     private Long lastBet;
     private long bank;
-    private PlayerDTO activePlayer;
+    private Player activePlayer;
     private boolean isAfk;
 
 
     public boolean lastBetIsNotZero() {
         return this.lastBet != 0;
+    }
+
+    public boolean lastBetIsZero(){
+        return !lastBetIsNotZero();
     }
 
     public boolean playersInAllIn() {
@@ -64,7 +68,7 @@ public class HoldemRoundSettingsDTO {
                 .count() == 2;
     }
 
-    public List<PlayerDTO> getPlayersInGame(){
+    public List<Player> getPlayersInGame(){
         return PlayerUtil.getPlayersInGame(this.players);
     }
 

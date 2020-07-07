@@ -3,8 +3,8 @@ package ru.sm.poker.service.common;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
+import ru.sm.poker.dto.Player;
 import ru.sm.poker.enums.StageType;
 import ru.sm.poker.service.ActionService;
 import ru.sm.poker.service.OrderService;
@@ -24,8 +24,8 @@ public class OrderActionService implements OrderService {
     private final SecurityNotificationService securityNotificationService;
 
     @Override
-    public boolean start(HoldemRoundSettingsDTO holdemRoundSettings) {
-        final List<PlayerDTO> sortedPlayers = getPlayersInGame(
+    public boolean start(HoldemRoundSettings holdemRoundSettings) {
+        final List<Player> sortedPlayers = getPlayersInGame(
                 sort(holdemRoundSettings.getPlayers(), holdemRoundSettings.getStageType())
         );
         while (true) {
@@ -40,7 +40,7 @@ public class OrderActionService implements OrderService {
             if (canMoveNext(holdemRoundSettings)) {
                 return false;
             }
-            for (PlayerDTO player : getPlayersInGame(sortedPlayers)) {
+            for (Player player : getPlayersInGame(sortedPlayers)) {
                 if (player.isNotFirstMoveOnBigBlind() && canMoveNext(holdemRoundSettings)) {
                     return false;
                 }

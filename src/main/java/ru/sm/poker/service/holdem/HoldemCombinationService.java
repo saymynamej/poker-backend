@@ -1,8 +1,8 @@
 package ru.sm.poker.service.holdem;
 
 import org.springframework.stereotype.Service;
-import ru.sm.poker.dto.CombinationDTO;
-import ru.sm.poker.dto.PlayerCombinationDTO;
+import ru.sm.poker.dto.Combination;
+import ru.sm.poker.dto.PlayerCombination;
 import ru.sm.poker.enums.CardType;
 import ru.sm.poker.enums.CombinationType;
 import ru.sm.poker.enums.PowerType;
@@ -11,7 +11,7 @@ import ru.sm.poker.service.CombinationService;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static ru.sm.poker.dto.CombinationDTO.of;
+import static ru.sm.poker.dto.Combination.of;
 
 @Service
 public class HoldemCombinationService implements CombinationService {
@@ -22,13 +22,13 @@ public class HoldemCombinationService implements CombinationService {
     private final static int THREE_SIZE = 3;
 
     @Override
-    public List<PlayerCombinationDTO> findWinners(List<PlayerCombinationDTO> playersAndCombinations) {
+    public List<PlayerCombination> findWinners(List<PlayerCombination> playersAndCombinations) {
         final Integer maxPowerOfCombination = playersAndCombinations.stream()
                 .map(player -> player.getCombination().getCombinationType().getPower())
                 .max(Comparator.comparingInt(value -> value)).orElseThrow();
 
-        final List<PlayerCombinationDTO> winners = playersAndCombinations.stream()
-                .filter(playerCombinationDTO -> playerCombinationDTO.getCombination().getCombinationType().getPower() == maxPowerOfCombination)
+        final List<PlayerCombination> winners = playersAndCombinations.stream()
+                .filter(playerCombination -> playerCombination.getCombination().getCombinationType().getPower() == maxPowerOfCombination)
                 .collect(Collectors.toList());
 
         if (winners.size() == 1) {
@@ -42,7 +42,7 @@ public class HoldemCombinationService implements CombinationService {
     }
 
     @Override
-    public CombinationDTO findCombination(List<CardType> cards) {
+    public Combination findCombination(List<CardType> cards) {
         if (cards.size() != FULL_COMBINATION_SIZE) {
             throw new RuntimeException("cards size must be 7");
         }
@@ -59,50 +59,50 @@ public class HoldemCombinationService implements CombinationService {
 
         final List<CardType> kare = findKare(new ArrayList<>(cards));
         if (!kare.isEmpty() && checkSize(kare) && isDuplicateExist(kare)) {
-            return CombinationDTO.of(CombinationType.KARE, kare);
+            return Combination.of(CombinationType.KARE, kare);
         }
 
         final List<CardType> fullHouse = findFullHouse(new ArrayList<>(cards));
         if (!fullHouse.isEmpty() && checkSize(fullHouse) && isDuplicateExist(fullHouse)) {
-            return CombinationDTO.of(CombinationType.FULL_HOUSE, fullHouse);
+            return Combination.of(CombinationType.FULL_HOUSE, fullHouse);
         }
 
         final List<CardType> flush = findFlush(new ArrayList<>(cards));
         if (!flush.isEmpty() && checkSize(flush) && isDuplicateExist(flush)) {
-            return CombinationDTO.of(CombinationType.FLUSH, flush);
+            return Combination.of(CombinationType.FLUSH, flush);
         }
 
         final List<CardType> strait = findStrait(new ArrayList<>(cards));
         if (!strait.isEmpty() && checkSize(strait) && isDuplicateExist(strait)) {
-            return CombinationDTO.of(CombinationType.STRAIT, strait);
+            return Combination.of(CombinationType.STRAIT, strait);
         }
 
         final List<CardType> three = findThree(new ArrayList<>(cards));
         if (!three.isEmpty() && checkSize(three) && isDuplicateExist(three)) {
-            return CombinationDTO.of(CombinationType.THREE, three);
+            return Combination.of(CombinationType.THREE, three);
         }
 
         final List<CardType> twoPair = findTwoPair(new ArrayList<>(cards));
         if (!twoPair.isEmpty() && checkSize(twoPair) && isDuplicateExist(twoPair)) {
-            return CombinationDTO.of(CombinationType.TWO_PAIR, twoPair);
+            return Combination.of(CombinationType.TWO_PAIR, twoPair);
         }
 
         final List<CardType> pair = findPair(new ArrayList<>(cards));
 
         if (!pair.isEmpty() && checkSize(pair) && isDuplicateExist(pair)) {
-            return CombinationDTO.of(CombinationType.PAIR, pair);
+            return Combination.of(CombinationType.PAIR, pair);
         }
 
         final List<CardType> highCards = findHighCard(new ArrayList<>(cards));
 
         if (!highCards.isEmpty() && checkSize(highCards) && isDuplicateExist(highCards)) {
-            return CombinationDTO.of(CombinationType.HIGH_CARD, highCards);
+            return Combination.of(CombinationType.HIGH_CARD, highCards);
         }
 
         throw new RuntimeException("global error, could not found poker combination!");
     }
 
-    private int findMaxSumCards(List<PlayerCombinationDTO> playersAndCombinations) {
+    private int findMaxSumCards(List<PlayerCombination> playersAndCombinations) {
         return playersAndCombinations.stream()
                 .map(playerCombination -> sumCards(playerCombination.getCombination().getCards()))
                 .max(Comparator.comparingInt(num -> num))

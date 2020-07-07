@@ -1,12 +1,12 @@
 package ru.sm.poker.service;
 
-import ru.sm.poker.dto.PlayerDTO;
-import ru.sm.poker.dto.ResultTimeDTO;
+import ru.sm.poker.dto.Player;
+import ru.sm.poker.dto.ResultTime;
 
 
 public interface TimeBankService {
 
-    ResultTimeDTO activateTime(PlayerDTO player);
+    ResultTime activateTime(Player player);
 
-    void cancel(ResultTimeDTO resultTimeDTO, PlayerDTO player);
+    void cancel(ResultTime resultTime, Player player);
 }

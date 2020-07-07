@@ -24,11 +24,12 @@ public class GameEntity {
 
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "game_id")
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<PlayerEntity> players;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "game_id")
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
+    private List<RoundEntity> rounds;
+
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
     private List<ChipsCountEntity> counts;
 }

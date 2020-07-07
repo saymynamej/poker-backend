@@ -7,20 +7,19 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.sm.poker.config.game.GameSettings;
 import ru.sm.poker.converter.GameConverter;
 import ru.sm.poker.converter.PlayerConverter;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.Player;
+import ru.sm.poker.entities.GameEntity;
 import ru.sm.poker.enums.GameType;
 import ru.sm.poker.game.Game;
 import ru.sm.poker.game.Round;
 import ru.sm.poker.game.holdem.HoldemGame;
 import ru.sm.poker.game.holdem.HoldemRound;
-import ru.sm.poker.entities.GameEntity;
 import ru.sm.poker.service.GameManagementService;
 import ru.sm.poker.service.OrderService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -57,7 +56,7 @@ public class CommonGameManagementService implements GameManagementService {
 
     @Override
     public Game createGame(
-            List<PlayerDTO> players,
+            List<Player> players,
             GameType gameType,
             OrderService orderService
     ) {

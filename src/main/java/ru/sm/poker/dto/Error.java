@@ -6,6 +6,6 @@ import ru.sm.poker.enums.MessageType;
 
 @Builder
 @Getter
-public class ErrorDTO {
+public class Error {
     private final MessageType messageType;
 }

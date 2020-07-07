@@ -1,15 +1,15 @@
 package ru.sm.poker.service;
 
-import ru.sm.poker.dto.HoldemRoundSettingsDTO;
-import ru.sm.poker.dto.PlayerDTO;
+import ru.sm.poker.dto.HoldemRoundSettings;
+import ru.sm.poker.dto.Player;
 
 import java.util.List;
 
 public interface SecurityService {
 
-    boolean isLegalPlayer(String gameName, PlayerDTO player);
+    boolean isLegalPlayer(String gameName, Player player);
 
-    boolean isLegalPlayer(PlayerDTO player);
+    boolean isLegalPlayer(Player player);
 
-    HoldemRoundSettingsDTO secureCards(List<String> filter, HoldemRoundSettingsDTO holdemRoundSettings);
+    HoldemRoundSettings secureCards(List<String> filter, HoldemRoundSettings holdemRoundSettings);
 }

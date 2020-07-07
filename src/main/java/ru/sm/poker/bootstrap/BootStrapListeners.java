@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class BootstrapListeners {
+public class BootStrapListeners {
     private final List<GameListener> listeners;
 
     @PostConstruct

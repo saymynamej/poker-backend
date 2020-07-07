@@ -1,15 +1,14 @@
 package ru.sm.poker.dto;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@RequiredArgsConstructor
 @ToString
-public class AdminActionDTO {
-    private String name;
+public class Action {
     private String count;
 }

@@ -17,9 +17,11 @@ public class ActionEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "player_id")
     private PlayerEntity player;
 
+    @Enumerated(value = EnumType.STRING)
     private ActionType actionType;
 
     private Long count;

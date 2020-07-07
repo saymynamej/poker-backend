@@ -13,12 +13,12 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(of = "combinationType")
 @Builder
-public class CombinationDTO {
+public class Combination {
     private final CombinationType combinationType;
     private final List<CardType> cards;
 
-    public static CombinationDTO of(CombinationType type, List<CardType> cards){
-        return CombinationDTO.builder()
+    public static Combination of(CombinationType type, List<CardType> cards){
+        return Combination.builder()
                 .combinationType(type)
                 .cards(cards)
                 .build();
