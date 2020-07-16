@@ -10,7 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.smn.poker.action.holdem.Call;
 import ru.smn.poker.dto.Player;
-import ru.smn.poker.dto.RoundSettings;
+import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.service.common.GameService;
 
 import static ru.smn.poker.util.DTOUtilTest.*;

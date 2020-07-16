@@ -10,7 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.smn.poker.action.holdem.Check;
 import ru.smn.poker.dto.Player;
-import ru.smn.poker.dto.RoundSettings;
+import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.RoleType;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.service.ActionService;

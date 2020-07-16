@@ -1,7 +1,7 @@
 package ru.smn.poker.converter;
 
 import ru.smn.poker.dto.Player;
-import ru.smn.poker.dto.RoundSettings;
+import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.entities.ChipsCountEntity;
 import ru.smn.poker.entities.GameEntity;
 import ru.smn.poker.entities.PlayerEntity;

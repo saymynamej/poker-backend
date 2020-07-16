@@ -3,7 +3,6 @@ package ru.smn.poker.game;
 import lombok.extern.slf4j.Slf4j;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.dto.Player;
-import ru.smn.poker.dto.RoundSettings;
 import ru.smn.poker.enums.StateType;
 
 import java.util.List;

@@ -7,7 +7,7 @@ import lombok.ToString;
 import ru.smn.poker.action.CountAction;
 import ru.smn.poker.action.ExecutableAction;
 import ru.smn.poker.dto.Player;
-import ru.smn.poker.dto.RoundSettings;
+import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.ActionType;
 import ru.smn.poker.service.ActionService;
 import ru.smn.poker.service.common.GameService;

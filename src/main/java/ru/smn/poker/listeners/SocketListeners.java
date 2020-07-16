@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import ru.smn.poker.dto.Player;
-import ru.smn.poker.dto.RoundSettings;
+import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.MessageType;
 import ru.smn.poker.game.Game;
 import ru.smn.poker.service.GameDataService;

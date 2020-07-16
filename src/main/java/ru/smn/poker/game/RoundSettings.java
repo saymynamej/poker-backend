@@ -1,6 +1,7 @@
-package ru.smn.poker.dto;
+package ru.smn.poker.game;
 
 import ru.smn.poker.action.Action;
+import ru.smn.poker.dto.Player;
 import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.util.PlayerUtil;
@@ -10,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface RoundSettings {
-
 
     Map<Player, List<Action>> getStageHistory();
 
@@ -52,16 +52,13 @@ public interface RoundSettings {
 
     void setActivePlayer(Player activePlayer);
 
-
     default boolean lastBetIsNotZero() {
         return getLastBet() != 0;
     }
 
-
     default boolean lastBetIsZero(){
         return !lastBetIsNotZero();
     }
-
 
     default boolean playersInAllIn() {
         return getPlayersInGame()
@@ -69,14 +66,12 @@ public interface RoundSettings {
                 .allMatch(StreamUtil.playerInAllIn());
     }
 
-
     default boolean allPlayersCheck() {
         return getPlayersInGame()
                 .stream()
                 .filter(StreamUtil.playerInAllIn().negate())
                 .allMatch(StreamUtil.playersHasCheck());
     }
-
 
     default List<Player> getPlayersInGame(){
         return PlayerUtil.getPlayersInGame(getPlayers());

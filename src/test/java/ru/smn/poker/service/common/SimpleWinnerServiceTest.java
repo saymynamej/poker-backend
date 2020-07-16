@@ -13,12 +13,10 @@ import ru.smn.poker.action.holdem.Fold;
 import ru.smn.poker.action.holdem.Raise;
 import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
-import ru.smn.poker.dto.RoundSettings;
+import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.StateType;
-import ru.smn.poker.game.holdem.HoldemRound;
 import ru.smn.poker.service.WinnerService;
-import ru.smn.poker.service.holdem.HoldemCombinationService;
 import ru.smn.poker.util.PlayerUtil;
 
 import java.util.Arrays;

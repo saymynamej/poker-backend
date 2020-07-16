@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.smn.poker.action.Action;
 import ru.smn.poker.dto.PlayerCombination;
 import ru.smn.poker.dto.Player;
-import ru.smn.poker.dto.RoundSettings;
+import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.CardType;
 import ru.smn.poker.service.CombinationService;
 import ru.smn.poker.service.WinnerService;

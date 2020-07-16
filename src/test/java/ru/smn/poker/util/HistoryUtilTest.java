@@ -8,7 +8,7 @@ import ru.smn.poker.action.holdem.Bet;
 import ru.smn.poker.action.holdem.Call;
 import ru.smn.poker.action.holdem.Raise;
 import ru.smn.poker.dto.Player;
-import ru.smn.poker.dto.RoundSettings;
+import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.StageType;
 
 import java.util.List;

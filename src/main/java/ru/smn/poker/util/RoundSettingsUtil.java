@@ -2,7 +2,7 @@ package ru.smn.poker.util;
 
 import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
-import ru.smn.poker.dto.RoundSettings;
+import ru.smn.poker.game.RoundSettings;
 
 import java.util.Collections;
 import java.util.List;

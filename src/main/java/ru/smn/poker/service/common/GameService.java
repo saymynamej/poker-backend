@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.smn.poker.converter.RoundSettingsConverter;
 import ru.smn.poker.dto.Player;
-import ru.smn.poker.dto.RoundSettings;
+import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.entities.GameEntity;
 import ru.smn.poker.repository.GameRepository;
 import ru.smn.poker.repository.PlayerRepository;

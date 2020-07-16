@@ -4,7 +4,7 @@ import com.github.javafaker.Faker;
 import ru.smn.poker.action.holdem.Wait;
 import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
-import ru.smn.poker.dto.RoundSettings;
+import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.RoleType;
 import ru.smn.poker.enums.StageType;

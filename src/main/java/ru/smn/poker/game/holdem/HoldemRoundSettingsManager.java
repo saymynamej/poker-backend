@@ -7,7 +7,7 @@ import ru.smn.poker.action.holdem.Fold;
 import ru.smn.poker.action.holdem.Wait;
 import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
-import ru.smn.poker.dto.RoundSettings;
+import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.*;
 import ru.smn.poker.game.RoundSettingsManager;
 import ru.smn.poker.util.PlayerUtil;

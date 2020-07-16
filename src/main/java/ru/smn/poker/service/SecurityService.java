@@ -1,7 +1,7 @@
 package ru.smn.poker.service;
 
 import ru.smn.poker.dto.Player;
-import ru.smn.poker.dto.RoundSettings;
+import ru.smn.poker.game.RoundSettings;
 
 import java.util.List;
 

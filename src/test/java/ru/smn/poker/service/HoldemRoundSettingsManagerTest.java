@@ -3,7 +3,7 @@ package ru.smn.poker.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.smn.poker.dto.Player;
-import ru.smn.poker.dto.RoundSettings;
+import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.game.RoundSettingsManager;
 import ru.smn.poker.game.holdem.HoldemRoundSettingsManager;

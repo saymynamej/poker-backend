@@ -23,7 +23,7 @@ public class BootStrapGames {
 
     @PostConstruct
     public void init() {
-//        save();
+        save();
         final List<GameEntity> all = gameService.findAll();
         for (GameEntity gameEntity : all) {
             gameManagementService.restoreGame(gameEntity);

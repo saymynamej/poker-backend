@@ -10,7 +10,7 @@ import ru.smn.poker.action.holdem.AllIn;
 import ru.smn.poker.auto.AutoBot;
 import ru.smn.poker.dto.Player;
 import ru.smn.poker.dto.ResultTime;
-import ru.smn.poker.dto.RoundSettings;
+import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.ActionType;
 import ru.smn.poker.enums.InformationType;
 import ru.smn.poker.enums.MessageType;

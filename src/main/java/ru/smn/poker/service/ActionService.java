@@ -2,7 +2,7 @@ package ru.smn.poker.service;
 
 import ru.smn.poker.action.Action;
 import ru.smn.poker.dto.Player;
-import ru.smn.poker.dto.RoundSettings;
+import ru.smn.poker.game.RoundSettings;
 
 public interface ActionService {
 
