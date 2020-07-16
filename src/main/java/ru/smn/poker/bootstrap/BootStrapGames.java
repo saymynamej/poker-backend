@@ -33,10 +33,11 @@ public class BootStrapGames {
     public void save() {
         Game game = gameManagementService.createGame(Arrays.asList(
                 PlayerUtil.getDefaultPlayerForHoldem("3"),
-                PlayerUtil.getDefaultPlayerForHoldem("2"),
-                PlayerUtil.getDefaultPlayerForHoldem("1")),
-                GameType.HOLDEM_FULL,
-                orderService, 0);
+                PlayerUtil.getDefaultPlayerForHoldem("2")),
+                GameType.HOLDEM_HU,
+                orderService,
+                0
+        );
         gameManagementService.saveGame(game);
     }
 }

@@ -23,10 +23,20 @@ public class HoldemGame extends Game {
         isEnable = true;
         setInGame();
         while (isEnable()) {
+            addChipsToPlayers();
             removeInActivePlayers();
             ThreadUtil.sleep(DELAY_IN_SECONDS);
             if (isReady()) {
                 getRound().startRound();
+            }
+        }
+    }
+
+    private void addChipsToPlayers() {
+        final List<Player> players = getPlayers();
+        for (Player player : players) {
+            if (player.getChipsCount() == 0){
+                player.addChips(5000);
             }
         }
     }
