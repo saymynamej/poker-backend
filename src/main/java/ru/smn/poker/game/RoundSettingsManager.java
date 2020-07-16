@@ -1,7 +1,7 @@
 package ru.smn.poker.game;
 
-import ru.smn.poker.dto.HoldemRoundSettings;
+import ru.smn.poker.dto.RoundSettings;
 
 public interface RoundSettingsManager {
-    HoldemRoundSettings getSettings(HoldemRoundSettings prevSettings);
+    RoundSettings getSettings(RoundSettings prevSettings);
 }

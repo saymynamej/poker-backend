@@ -1,14 +1,12 @@
 package ru.smn.poker.service.common;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.smn.poker.action.Action;
-import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.PlayerCombination;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.dto.RoundSettings;
 import ru.smn.poker.enums.CardType;
-import ru.smn.poker.game.holdem.HoldemRound;
 import ru.smn.poker.service.CombinationService;
 import ru.smn.poker.service.WinnerService;
 import ru.smn.poker.util.PlayerUtil;
@@ -26,31 +24,31 @@ public class SimpleWinnerService implements WinnerService {
     private final GameService gameService;
 
     @Override
-    public void sendPrizes(HoldemRoundSettings holdemRoundSettings) {
-        final List<Player> playersInGame = PlayerUtil.getPlayersInGame(holdemRoundSettings.getPlayers());
-        if (holdemRoundSettings.isOnePlayerLeft()) {
-            playersInGame.get(0).addChips(holdemRoundSettings.getBank());
+    public void sendPrizes(RoundSettings roundSettings) {
+        final List<Player> playersInGame = PlayerUtil.getPlayersInGame(roundSettings.getPlayers());
+        if (roundSettings.isOnePlayerLeft()) {
+            playersInGame.get(0).addChips(roundSettings.getBank());
             return;
         }
-        final List<PlayerCombination> winners = findWinners(holdemRoundSettings);
-        calculate(winners, holdemRoundSettings);
-        gameService.update(holdemRoundSettings);
+        final List<PlayerCombination> winners = findWinners(roundSettings);
+        calculate(winners, roundSettings);
+        gameService.update(roundSettings);
     }
 
 
-    private void calculate(List<PlayerCombination> winners, HoldemRoundSettings holdemRoundSettings) {
-        if (!checkIfNeedReturnToAll(winners, holdemRoundSettings)) {
+    private void calculate(List<PlayerCombination> winners, RoundSettings roundSettings) {
+        if (!checkIfNeedReturnToAll(winners, roundSettings)) {
             for (PlayerCombination winnerFromLoop : winners) {
-                long winnerBets = sumBets(holdemRoundSettings.getFullHistory().get(winners.get(0).getPlayer()));
+                long winnerBets = sumBets(roundSettings.getFullHistory().get(winners.get(0).getPlayer()));
                 long generatedBank = winnerBets;
 
-                final List<Player> playersInGame = PlayerUtil.getPlayersInGame(holdemRoundSettings.getPlayers()).stream()
+                final List<Player> playersInGame = PlayerUtil.getPlayersInGame(roundSettings.getPlayers()).stream()
                         .filter(playerDTO -> !playerDTO.equals(winnerFromLoop.getPlayer()))
                         .collect(Collectors.toList());
 
 
                 for (Player player : playersInGame) {
-                    final List<Action> otherPlayerActions = holdemRoundSettings.getFullHistory().get(player);
+                    final List<Action> otherPlayerActions = roundSettings.getFullHistory().get(player);
                     long otherPlayer = sumBets(otherPlayerActions);
                     if (winnerBets > otherPlayer) {
                         generatedBank += otherPlayer;
@@ -65,34 +63,34 @@ public class SimpleWinnerService implements WinnerService {
         }
     }
 
-    private boolean checkIfNeedReturnToAll(List<PlayerCombination> winners, HoldemRoundSettings holdemRoundSettings) {
+    private boolean checkIfNeedReturnToAll(List<PlayerCombination> winners, RoundSettings roundSettings) {
         final List<Action> allWinnersActions = winners.stream()
-                .flatMap(player -> holdemRoundSettings.getFullHistory().get(player.getPlayer()).stream())
+                .flatMap(player -> roundSettings.getFullHistory().get(player.getPlayer()).stream())
                 .collect(Collectors.toList());
 
         final long allWinnersBets = sumBets(allWinnersActions);
-        if (allWinnersBets == holdemRoundSettings.getBank()) {
-            winners.forEach(playerCombination -> returnChips(holdemRoundSettings, playerCombination));
+        if (allWinnersBets == roundSettings.getBank()) {
+            winners.forEach(playerCombination -> returnChips(roundSettings, playerCombination));
             return true;
         }
         return false;
     }
 
 
-    private void returnChips(HoldemRoundSettings holdemRoundSettings, PlayerCombination playerCombination) {
+    private void returnChips(RoundSettings roundSettings, PlayerCombination playerCombination) {
         playerCombination.getPlayer().addChips(
-                sumBets(holdemRoundSettings.getFullHistory().get(playerCombination.getPlayer()))
+                sumBets(roundSettings.getFullHistory().get(playerCombination.getPlayer()))
         );
     }
 
-    private List<PlayerCombination> findWinners(HoldemRoundSettings holdemRoundSettings) {
-        final List<CardType> flop = holdemRoundSettings.getFlop();
-        final CardType tern = holdemRoundSettings.getTern();
-        final CardType river = holdemRoundSettings.getRiver();
+    private List<PlayerCombination> findWinners(RoundSettings roundSettings) {
+        final List<CardType> flop = roundSettings.getFlop();
+        final CardType tern = roundSettings.getTern();
+        final CardType river = roundSettings.getRiver();
         final List<PlayerCombination> combinations = new ArrayList<>();
 
 
-        PlayerUtil.getPlayersInGame(holdemRoundSettings.getPlayers()).forEach(player -> {
+        PlayerUtil.getPlayersInGame(roundSettings.getPlayers()).forEach(player -> {
             final List<CardType> playerCards = player.getCards();
             final List<CardType> cards = new ArrayList<>(playerCards);
             cards.addAll(flop);

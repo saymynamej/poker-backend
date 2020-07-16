@@ -1,7 +1,7 @@
 package ru.smn.poker.converter;
 
 import ru.smn.poker.dto.Game;
-import ru.smn.poker.dto.HoldemRoundSettings;
+import ru.smn.poker.dto.RoundSettings;
 import ru.smn.poker.entities.GameEntity;
 import ru.smn.poker.entities.PlayerEntity;
 
@@ -19,7 +19,7 @@ public class GameConverter {
                 game.getRoundSettings());
     }
 
-    public static GameEntity toEntity(Game game, HoldemRoundSettings holdemRoundSettings) {
+    public static GameEntity toEntity(Game game, RoundSettings roundSettings) {
         final GameEntity gameEntity = GameEntity.builder()
                 .gameType(game.getGameType())
                 .name(game.getGameName())

@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.smn.poker.converter.RoundSettingsConverter;
-import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.dto.RoundSettings;
 import ru.smn.poker.entities.GameEntity;
 import ru.smn.poker.repository.GameRepository;
 import ru.smn.poker.repository.PlayerRepository;
@@ -32,8 +32,8 @@ public class GameService {
     }
 
     @Transactional
-    public void update(HoldemRoundSettings holdemRoundSettings) {
-        final GameEntity gameEntity = RoundSettingsConverter.toEntity(holdemRoundSettings);
+    public void update(RoundSettings roundSettings) {
+        final GameEntity gameEntity = RoundSettingsConverter.toEntity(roundSettings);
         gameRepository.save(gameEntity);
     }
 
@@ -46,32 +46,32 @@ public class GameService {
         return ++id;
     }
 
-    public void doAction(Player player, HoldemRoundSettings holdemRoundSettings, long removeChips, long lastBet) {
+    public void doAction(Player player, RoundSettings roundSettings, long removeChips, long lastBet) {
         player.removeChips(removeChips);
-        addBank(holdemRoundSettings, removeChips);
-        setLastBet(holdemRoundSettings, lastBet);
-        addActionInHistory(holdemRoundSettings, player);
+        addBank(roundSettings, removeChips);
+        setLastBet(roundSettings, lastBet);
+        addActionInHistory(roundSettings, player);
     }
 
-    public void addBank(HoldemRoundSettings holdemRoundSettings, long count) {
-        holdemRoundSettings.setBank(holdemRoundSettings.getBank() + count);
+    public void addBank(RoundSettings roundSettings, long count) {
+        roundSettings.setBank(roundSettings.getBank() + count);
     }
 
-    public void setActivePlayer(HoldemRoundSettings holdemRoundSettings, Player player) {
+    public void setActivePlayer(RoundSettings roundSettings, Player player) {
         player.setActive(true);
-        holdemRoundSettings.setActivePlayer(player);
+        roundSettings.setActivePlayer(player);
     }
 
-    public void setInActivePlayer(HoldemRoundSettings holdemRoundSettings, Player player) {
+    public void setInActivePlayer(RoundSettings roundSettings, Player player) {
         player.setActive(false);
-        holdemRoundSettings.setActivePlayer(null);
+        roundSettings.setActivePlayer(null);
     }
 
-    public void setLastBet(HoldemRoundSettings holdemRoundSettings, long count) {
-        if (holdemRoundSettings.getLastBet() < count) {
+    public void setLastBet(RoundSettings roundSettings, long count) {
+        if (roundSettings.getLastBet() < count) {
             log.info("prev last bet less than new last bet");
         }
-        holdemRoundSettings.setLastBet(count);
+        roundSettings.setLastBet(count);
     }
 
 }

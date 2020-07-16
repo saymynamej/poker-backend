@@ -2,8 +2,8 @@ package ru.smn.poker.util;
 
 import ru.smn.poker.action.Action;
 import ru.smn.poker.action.CountAction;
-import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.dto.RoundSettings;
 import ru.smn.poker.enums.StageType;
 
 import java.util.*;
@@ -12,16 +12,16 @@ import java.util.stream.Collectors;
 public class HistoryUtil {
 
 
-    public static boolean canMoveNextAndStageRiver(HoldemRoundSettings holdemRoundSettings){
-        return canMoveNext(holdemRoundSettings) && holdemRoundSettings.getStageType() == StageType.RIVER;
+    public static boolean canMoveNextAndStageRiver(RoundSettings roundSettings){
+        return canMoveNext(roundSettings) && roundSettings.getStageType() == StageType.RIVER;
     }
 
-    public static boolean canMoveNext(HoldemRoundSettings holdemRoundSettings) {
-        return allPlayersInGameHaveSameCountOfBet(holdemRoundSettings) && holdemRoundSettings.lastBetIsNotZero() || holdemRoundSettings.allPlayersCheck();
+    public static boolean canMoveNext(RoundSettings roundSettings) {
+        return allPlayersInGameHaveSameCountOfBet(roundSettings) && roundSettings.lastBetIsNotZero() || roundSettings.allPlayersCheck();
     }
 
-    public static boolean allPlayersInGameHaveSameCountOfBet(HoldemRoundSettings holdemRoundSettings) {
-        final List<Player> playersInGame = PlayerUtil.getPlayersInGame(holdemRoundSettings.getPlayers());
+    public static boolean allPlayersInGameHaveSameCountOfBet(RoundSettings roundSettings) {
+        final List<Player> playersInGame = PlayerUtil.getPlayersInGame(roundSettings.getPlayers());
 
         final List<Player> players = playersInGame.stream()
                 .filter(StreamUtil.playerFolded().negate())
@@ -29,19 +29,19 @@ public class HistoryUtil {
                 .collect(Collectors.toList());
 
         return players.stream()
-                .noneMatch(player -> sumStageHistoryBets(holdemRoundSettings, player) != holdemRoundSettings.getLastBet());
+                .noneMatch(player -> sumStageHistoryBets(roundSettings, player) != roundSettings.getLastBet());
     }
 
 
-    public static long sumRoundHistoryBets(HoldemRoundSettings holdemRoundSettings, Player player) {
-        final Map<Player, List<Action>> fullHistory = holdemRoundSettings.getFullHistory();
+    public static long sumRoundHistoryBets(RoundSettings roundSettings, Player player) {
+        final Map<Player, List<Action>> fullHistory = roundSettings.getFullHistory();
         final List<Action> countActions = fullHistory.get(player);
         return sumBets(countActions);
     }
 
 
-    public static long sumStageHistoryBets(HoldemRoundSettings holdemRoundSettings, Player player) {
-        final Map<Player, List<Action>> history = holdemRoundSettings.getStageHistory();
+    public static long sumStageHistoryBets(RoundSettings roundSettings, Player player) {
+        final Map<Player, List<Action>> history = roundSettings.getStageHistory();
         final List<Action> countActions = history.get(player);
         return sumBets(countActions);
     }
@@ -63,15 +63,15 @@ public class HistoryUtil {
     }
 
 
-    public static long sumAllHistoryBetsWithNewAction(HoldemRoundSettings holdemRoundSettings, Player player, CountAction countAction) {
-        final Map<Player, List<Action>> history = holdemRoundSettings.getStageHistory();
+    public static long sumAllHistoryBetsWithNewAction(RoundSettings roundSettings, Player player, CountAction countAction) {
+        final Map<Player, List<Action>> history = roundSettings.getStageHistory();
         final List<Action> countActions = history.get(player);
         return sumBets(countActions) + countAction.getCount();
     }
 
 
-    public static void addActionInHistory(HoldemRoundSettings holdemRoundSettings, Player player, Action action) {
-        final Map<Player, List<Action>> history = holdemRoundSettings.getStageHistory();
+    public static void addActionInHistory(RoundSettings roundSettings, Player player, Action action) {
+        final Map<Player, List<Action>> history = roundSettings.getStageHistory();
         final List<Action> newActionsList = history.get(player);
         if (newActionsList != null) {
             newActionsList.add(action);
@@ -83,8 +83,8 @@ public class HistoryUtil {
         history.put(player, actionsList);
     }
 
-    public static void addActionInHistory(HoldemRoundSettings holdemRoundSettings, Player player) {
-        addActionInHistory(holdemRoundSettings, player, player.getAction());
+    public static void addActionInHistory(RoundSettings roundSettings, Player player) {
+        addActionInHistory(roundSettings, player, player.getAction());
     }
 
     public static Map<Player, List<Action>> unionHistory(Map<Player, List<Action>> firstHistory, Map<Player, List<Action>> secondHistory) {

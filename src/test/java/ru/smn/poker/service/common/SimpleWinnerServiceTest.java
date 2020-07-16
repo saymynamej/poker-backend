@@ -6,8 +6,8 @@ import ru.smn.poker.action.holdem.AllIn;
 import ru.smn.poker.action.holdem.Call;
 import ru.smn.poker.action.holdem.Fold;
 import ru.smn.poker.action.holdem.Raise;
-import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.dto.RoundSettings;
 import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.StateType;
 import ru.smn.poker.service.WinnerService;
@@ -38,7 +38,7 @@ class SimpleWinnerServiceTest {
         player1.setStateType(StateType.IN_GAME);
         player2.setStateType(StateType.IN_GAME);
 
-        winnerService.sendPrizes(HoldemRoundSettings.builder()
+        winnerService.sendPrizes(RoundSettings.builder()
                 .fullHistory(Map.of(
                         player1, List.of(call),
                         player2, List.of(call, raise)
@@ -69,7 +69,7 @@ class SimpleWinnerServiceTest {
         player1.setStateType(StateType.IN_GAME);
         player2.setStateType(StateType.IN_GAME);
 
-        HoldemRoundSettings holdemRoundSettings = HoldemRoundSettings.builder()
+        RoundSettings roundSettings = RoundSettings.builder()
                 .flop(Arrays.asList(
                         CardType.FOUR_C,
                         CardType.FIVE_D,
@@ -91,7 +91,7 @@ class SimpleWinnerServiceTest {
         player1.setChipsCount(0);
         player2.setChipsCount(0);
 
-        winnerService.sendPrizes(holdemRoundSettings);
+        winnerService.sendPrizes(roundSettings);
 
         Assertions.assertEquals(5000, player2.getChipsCount());
         Assertions.assertEquals(5000, player1.getChipsCount());
@@ -121,7 +121,7 @@ class SimpleWinnerServiceTest {
         player2.setStateType(StateType.IN_GAME);
         player3.setStateType(StateType.IN_GAME);
 
-        winnerService.sendPrizes(HoldemRoundSettings.builder()
+        winnerService.sendPrizes(RoundSettings.builder()
                 .flop(Arrays.asList(
                         CardType.Q_S,
                         CardType.TWO_D,

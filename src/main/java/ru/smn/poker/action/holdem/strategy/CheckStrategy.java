@@ -2,8 +2,8 @@ package ru.smn.poker.action.holdem.strategy;
 
 import ru.smn.poker.action.ActionStrategy;
 import ru.smn.poker.action.CountAction;
-import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.dto.RoundSettings;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.service.ActionService;
 import ru.smn.poker.service.common.GameService;
@@ -11,22 +11,22 @@ import ru.smn.poker.service.common.GameService;
 public class CheckStrategy implements ActionStrategy {
 
     @Override
-    public void execute(Player player, GameService gameService, ActionService actionService, CountAction countAction, HoldemRoundSettings holdemRoundSettings) {
-        if (isPreflopAndBigBlindCanCheck(holdemRoundSettings, player)) {
+    public void execute(Player player, GameService gameService, ActionService actionService, CountAction countAction, RoundSettings roundSettings) {
+        if (isPreflopAndBigBlindCanCheck(roundSettings, player)) {
             return;
         }
-        if (isPostFlopAndLastBetIsZero(holdemRoundSettings)) {
+        if (isPostFlopAndLastBetIsZero(roundSettings)) {
             return;
         }
-        actionService.waitUntilPlayerWillHasAction(player, holdemRoundSettings);
+        actionService.waitUntilPlayerWillHasAction(player, roundSettings);
     }
 
-    private boolean isPreflopAndBigBlindCanCheck(HoldemRoundSettings holdemRoundSettings, Player player){
-        return holdemRoundSettings.getStageType() == StageType.PREFLOP && player.isBigBlind() && holdemRoundSettings.getBigBlindBet() == holdemRoundSettings.getLastBet();
+    private boolean isPreflopAndBigBlindCanCheck(RoundSettings roundSettings, Player player){
+        return roundSettings.getStageType() == StageType.PREFLOP && player.isBigBlind() && roundSettings.getBigBlindBet() == roundSettings.getLastBet();
     }
 
-    private boolean isPostFlopAndLastBetIsZero(HoldemRoundSettings holdemRoundSettings){
-        return holdemRoundSettings.getStageType() != StageType.PREFLOP && holdemRoundSettings.getLastBet() == 0;
+    private boolean isPostFlopAndLastBetIsZero(RoundSettings roundSettings){
+        return roundSettings.getStageType() != StageType.PREFLOP && roundSettings.getLastBet() == 0;
     }
 
 }

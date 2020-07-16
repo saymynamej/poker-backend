@@ -3,8 +3,8 @@ package ru.smn.poker.service.common;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.dto.RoundSettings;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.service.ActionService;
 import ru.smn.poker.service.OrderService;
@@ -24,37 +24,37 @@ public class OrderActionService implements OrderService {
     private final SecurityNotificationService securityNotificationService;
 
     @Override
-    public boolean start(HoldemRoundSettings holdemRoundSettings) {
+    public boolean start(RoundSettings roundSettings) {
         final List<Player> sortedPlayers = PlayerUtil.getPlayersInGame(
-                SortUtil.sort(holdemRoundSettings.getPlayers(), holdemRoundSettings.getStageType())
+                SortUtil.sort(roundSettings.getPlayers(), roundSettings.getStageType())
         );
         while (true) {
-            if (holdemRoundSettings.playersInAllIn()) {
-                securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettings);
+            if (roundSettings.playersInAllIn()) {
+                securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(roundSettings);
                 return false;
             }
-            if (canMoveNextAndStageRiver(holdemRoundSettings)) {
-                securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(holdemRoundSettings);
+            if (canMoveNextAndStageRiver(roundSettings)) {
+                securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(roundSettings);
                 return false;
             }
-            if (canMoveNext(holdemRoundSettings)) {
+            if (canMoveNext(roundSettings)) {
                 return false;
             }
             for (Player player : PlayerUtil.getPlayersInGame(sortedPlayers)) {
-                if (player.isNotFirstMoveOnBigBlind() && canMoveNext(holdemRoundSettings)) {
+                if (player.isNotFirstMoveOnBigBlind() && canMoveNext(roundSettings)) {
                     return false;
                 }
                 //THIS IS FOR HU
-                if (holdemRoundSettings.getStageType() != StageType.PREFLOP && canMoveNext(holdemRoundSettings)){
+                if (roundSettings.getStageType() != StageType.PREFLOP && canMoveNext(roundSettings)){
                     return false;
                 }
-                if (holdemRoundSettings.isOnePlayerLeft()) {
+                if (roundSettings.isOnePlayerLeft()) {
                     return true;
                 }
                 if (player.isInAllIn()) {
                     continue;
                 }
-                actionServiceHoldem.waitUntilPlayerWillHasAction(player, holdemRoundSettings);
+                actionServiceHoldem.waitUntilPlayerWillHasAction(player, roundSettings);
             }
         }
     }

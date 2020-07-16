@@ -9,8 +9,8 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.smn.poker.action.holdem.Call;
-import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.dto.RoundSettings;
 import ru.smn.poker.service.ActionService;
 import ru.smn.poker.service.common.GameService;
 
@@ -40,7 +40,7 @@ class CallTest {
 
     @Test
     void testSuccessCall() throws InterruptedException {
-        final HoldemRoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
+        final RoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
         final Call call = new Call(DEFAULT_LAST_BET);
         final Player player = getPlayer();
         executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
@@ -51,7 +51,7 @@ class CallTest {
 
     @Test
     void testCallWhenChipsAreNotEnough() throws InterruptedException {
-        final HoldemRoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
+        final RoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
         final Player player = getPlayer();
         final Call call = new Call(player.getChipsCount() + 1);
         executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
@@ -62,7 +62,7 @@ class CallTest {
 
     @Test
     void testFailBet() throws InterruptedException {
-        final HoldemRoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
+        final RoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
         final Player player = getPlayer();
         final Call call = new Call(DEFAULT_BIG_BLIND_BET + 1);
         executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
@@ -73,7 +73,7 @@ class CallTest {
 
     @Test
     void testSuccessCallWithHistory() throws InterruptedException {
-        final HoldemRoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
+        final RoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
         final Player player = getPlayer();
         final long sumAllBets = setHistoryForPlayer(player, roundSettingsDTO);
         final Call call = new Call(roundSettingsDTO.getLastBet() - sumAllBets);
@@ -85,7 +85,7 @@ class CallTest {
 
     @Test
     void testFailCallWithHistory() throws InterruptedException {
-        final HoldemRoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
+        final RoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
         final Player player = getPlayer();
         final long sumAllBets = setHistoryForPlayer(player, roundSettingsDTO);
         final Call call = new Call(roundSettingsDTO.getLastBet() - sumAllBets + 1L);
@@ -95,12 +95,12 @@ class CallTest {
         Assertions.assertEquals(player.getChipsCount(), DEFAULT_CHIPS_COUNT - sumAllBets);
     }
 
-    private long setHistoryForPlayer(Player player, HoldemRoundSettings holdemRoundSettings) {
+    private long setHistoryForPlayer(Player player, RoundSettings roundSettings) {
         final long firstBet = 2L;
         final long secondBet = 8L;
         final long thirdBet = 100L;
 
-        final Map<Player, List<Action>> history = holdemRoundSettings.getStageHistory();
+        final Map<Player, List<Action>> history = roundSettings.getStageHistory();
         history.put(player, List.of(
                 new Call(firstBet),
                 new Call(secondBet),
@@ -108,7 +108,7 @@ class CallTest {
         );
 
         player.removeChips(firstBet + secondBet + thirdBet);
-        holdemRoundSettings.setLastBet(500L);
+        roundSettings.setLastBet(500L);
 
         return firstBet + secondBet + thirdBet;
     }

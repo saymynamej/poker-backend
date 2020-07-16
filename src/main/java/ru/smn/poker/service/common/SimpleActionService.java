@@ -8,13 +8,12 @@ import ru.smn.poker.action.CountAction;
 import ru.smn.poker.action.ExecutableAction;
 import ru.smn.poker.action.holdem.AllIn;
 import ru.smn.poker.auto.AutoBot;
-import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
 import ru.smn.poker.dto.ResultTime;
+import ru.smn.poker.dto.RoundSettings;
 import ru.smn.poker.enums.ActionType;
 import ru.smn.poker.enums.InformationType;
 import ru.smn.poker.enums.MessageType;
-import ru.smn.poker.enums.PlayerType;
 import ru.smn.poker.game.Game;
 import ru.smn.poker.service.GameDataService;
 import ru.smn.poker.service.SecurityService;
@@ -46,7 +45,7 @@ public class SimpleActionService implements ActionService {
                 log.info(String.format(MessageType.SETTINGS_NOT_FOUND.getMessage(), playerName));
                 return;
             }
-            final HoldemRoundSettings roundSettings = game.getRoundSettings();
+            final RoundSettings roundSettings = game.getRoundSettings();
             player.changeState();
             securityNotificationService.sendToAllWithSecurity(roundSettings);
             log.info(format(InformationType.CHANGED_STATE_TYPE_INFO.getMessage(), playerName, player.getStateType()));
@@ -80,16 +79,16 @@ public class SimpleActionService implements ActionService {
     }
 
     @Override
-    public void waitUntilPlayerWillHasAction(Player player, HoldemRoundSettings holdemRoundSettings) {
+    public void waitUntilPlayerWillHasAction(Player player, RoundSettings roundSettings) {
         log.info("waiting action from player:" + player.getName());
         player.setWait();
-        gameService.setActivePlayer(holdemRoundSettings, player);
-        securityNotificationService.sendToAllWithSecurity(holdemRoundSettings);
-        waitPlayerAction(player, holdemRoundSettings);
-        gameService.setInActivePlayer(holdemRoundSettings, player);
+        gameService.setActivePlayer(roundSettings, player);
+        securityNotificationService.sendToAllWithSecurity(roundSettings);
+        waitPlayerAction(player, roundSettings);
+        gameService.setInActivePlayer(roundSettings, player);
     }
 
-    private void waitPlayerAction(Player player, HoldemRoundSettings holdemRoundSettings) {
+    private void waitPlayerAction(Player player, RoundSettings roundSettings) {
 //        if (player.getPlayerType() == PlayerType.BOT){
 //            autoBot.auto(player, holdemRoundSettings);
 //            return;
@@ -100,24 +99,24 @@ public class SimpleActionService implements ActionService {
             if (player.isNotInGame()) {
                 break;
             }
-            if (holdemRoundSettings.isOnePlayerLeft()) {
+            if (roundSettings.isOnePlayerLeft()) {
                 break;
             }
             if (player.didAction()) {
                 simpleTimeBankService.cancel(timer, player);
-                doAction(player, holdemRoundSettings);
+                doAction(player, roundSettings);
                 break;
             }
         }
     }
 
 
-    public void doAction(Player player, HoldemRoundSettings holdemRoundSettings) {
+    public void doAction(Player player, RoundSettings roundSettings) {
         final Action action = player.getAction();
         if (action instanceof ExecutableAction) {
-            ((ExecutableAction) action).doAction(holdemRoundSettings, player, gameService, this);
+            ((ExecutableAction) action).doAction(roundSettings, player, gameService, this);
             log.info("player: " + player.getName() + " did action:" + action);
-            gameService.update(holdemRoundSettings);
+            gameService.update(roundSettings);
         }
         actionLogService.log(player, action);
     }

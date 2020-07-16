@@ -9,8 +9,8 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.smn.poker.action.holdem.Check;
-import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.dto.RoundSettings;
 import ru.smn.poker.enums.RoleType;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.service.ActionService;
@@ -35,7 +35,7 @@ public class CheckTest {
 
     @Test
     public void testSuccessCheckWhenLastBetZero() throws InterruptedException {
-        final HoldemRoundSettings roundSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.FLOP);
+        final RoundSettings roundSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.FLOP);
         roundSettingsDTO.setLastBet(0L);
         final Player player = DTOUtilTest.getPlayer();
         executorService.submit(() -> new Check().doAction(roundSettingsDTO, player, gameService, actionService));
@@ -44,7 +44,7 @@ public class CheckTest {
 
     @Test
     public void testFailCheckWhenLastBetZero() throws InterruptedException {
-        final HoldemRoundSettings roundSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.PREFLOP);
+        final RoundSettings roundSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.PREFLOP);
         roundSettingsDTO.setLastBet(0L);
         final Player player = DTOUtilTest.getPlayer();
         executorService.submit(() -> new Check().doAction(roundSettingsDTO, player, gameService, actionService));
@@ -54,7 +54,7 @@ public class CheckTest {
 
     @Test
     public void testSuccessCheckWhenPlayerOnBigBlind() throws InterruptedException {
-        final HoldemRoundSettings roundSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.PREFLOP);
+        final RoundSettings roundSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.PREFLOP);
         roundSettingsDTO.setLastBet(2L);
         final Player player = DTOUtilTest.getPlayer();
         player.setRole(RoleType.BIG_BLIND);
@@ -64,7 +64,7 @@ public class CheckTest {
 
     @Test
     public void testFailCheckWhenPlayerOnBigBlind() throws InterruptedException {
-        final HoldemRoundSettings roundSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.PREFLOP);
+        final RoundSettings roundSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.PREFLOP);
         roundSettingsDTO.setLastBet(roundSettingsDTO.getBigBlindBet() + roundSettingsDTO.getBigBlindBet());
         final Player player = DTOUtilTest.getPlayer();
         executorService.submit(() -> new Check().doAction(roundSettingsDTO, player, gameService, actionService));

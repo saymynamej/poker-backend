@@ -10,8 +10,8 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.smn.poker.action.holdem.Bet;
-import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.dto.RoundSettings;
 import ru.smn.poker.service.ActionService;
 import ru.smn.poker.service.common.GameService;
 
@@ -36,7 +36,7 @@ public class BetTest {
 
     @Test
     public void testFailBet() throws InterruptedException {
-        final HoldemRoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
+        final RoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
         final Bet bet = new Bet(DEFAULT_LAST_BET);
         final Player player = getPlayer();
         executorServiceForActions.submit(() -> bet.doAction(roundSettingsDTO, player, gameService, actionService));
@@ -47,7 +47,7 @@ public class BetTest {
 
     @Test
     public void testSuccessBet() throws InterruptedException {
-        final HoldemRoundSettings roundSettingsDTO = getRoundSettingsDTO(0);
+        final RoundSettings roundSettingsDTO = getRoundSettingsDTO(0);
         final Bet bet = new Bet(DEFAULT_LAST_BET);
         final Player player = getPlayer();
         executorServiceForActions.submit(() -> bet.doAction(roundSettingsDTO, player, gameService, actionService));

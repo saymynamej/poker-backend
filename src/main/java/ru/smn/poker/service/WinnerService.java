@@ -1,7 +1,7 @@
 package ru.smn.poker.service;
 
-import ru.smn.poker.dto.HoldemRoundSettings;
+import ru.smn.poker.dto.RoundSettings;
 
 public interface WinnerService {
-    void sendPrizes(HoldemRoundSettings holdemRoundSettings);
+    void sendPrizes(RoundSettings roundSettings);
 }

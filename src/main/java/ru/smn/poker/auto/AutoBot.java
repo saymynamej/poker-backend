@@ -5,8 +5,8 @@ import ru.smn.poker.action.Action;
 import ru.smn.poker.action.holdem.Call;
 import ru.smn.poker.action.holdem.Fold;
 import ru.smn.poker.action.holdem.Raise;
-import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.dto.RoundSettings;
 
 import java.util.Random;
 
@@ -15,17 +15,17 @@ public class AutoBot {
 
     private final Random random = new Random();
 
-    public void auto(Player bot, HoldemRoundSettings holdemRoundSettings) {
+    public void auto(Player bot, RoundSettings roundSettings) {
         System.out.println("AUTO by: " + bot.getName());
-        if (holdemRoundSettings.lastBetIsZero()) {
-            bot.setAction(getRandomRaise(holdemRoundSettings));
+        if (roundSettings.lastBetIsZero()) {
+            bot.setAction(getRandomRaise(roundSettings));
             return;
         }
 
         final int i = random.nextInt(100);
-        if (holdemRoundSettings.getLastBet() > holdemRoundSettings.getBigBlindBet()) {
+        if (roundSettings.getLastBet() > roundSettings.getBigBlindBet()) {
             if (i <= 70) {
-                bot.setAction(new Call(holdemRoundSettings.getLastBet()));
+                bot.setAction(new Call(roundSettings.getLastBet()));
             } else {
                 bot.setAction(new Fold());
             }
@@ -34,7 +34,7 @@ public class AutoBot {
 
     }
 
-    private Action getRandomRaise(HoldemRoundSettings holdemRoundSettings) {
-        return new Raise(holdemRoundSettings.getBigBlindBet() * 2);
+    private Action getRandomRaise(RoundSettings roundSettings) {
+        return new Raise(roundSettings.getBigBlindBet() * 2);
     }
 }

@@ -2,39 +2,40 @@ package ru.smn.poker.util;
 
 import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.dto.RoundSettings;
 
 import java.util.Collections;
 import java.util.List;
 
 public class RoundSettingsUtil {
 
-    public static HoldemRoundSettings copyWithSecureCard(HoldemRoundSettings holdemRoundSettings, List<String> filters) {
-        final List<Player> playersWithSecureCards = PlayerUtil.copies(holdemRoundSettings.getPlayers());
+    public static RoundSettings copyWithSecureCard(RoundSettings roundSettings, List<String> filters) {
+        final List<Player> playersWithSecureCards = PlayerUtil.copies(roundSettings.getPlayers());
         playersWithSecureCards.forEach(player -> {
             if (!filters.contains(player.getName())) {
                 player.addCards(Collections.emptyList());
             }
         });
 
-        return copy(holdemRoundSettings, playersWithSecureCards);
+        return copy(roundSettings, playersWithSecureCards);
     }
 
-    public static HoldemRoundSettings copy(HoldemRoundSettings holdemRoundSettings, List<Player> players) {
+    public static RoundSettings copy(RoundSettings roundSettings, List<Player> players) {
         return HoldemRoundSettings.builder()
-                .gameName(holdemRoundSettings.getGameName())
-                .bank(holdemRoundSettings.getBank())
-                .smallBlindBet(holdemRoundSettings.getSmallBlindBet())
-                .bigBlindBet(holdemRoundSettings.getBigBlindBet())
-                .bigBlind(holdemRoundSettings.getBigBlind())
-                .smallBlind(holdemRoundSettings.getSmallBlind())
-                .button(holdemRoundSettings.getButton())
+                .gameName(roundSettings.getGameName())
+                .bank(roundSettings.getBank())
+                .smallBlindBet(roundSettings.getSmallBlindBet())
+                .bigBlindBet(roundSettings.getBigBlindBet())
+                .bigBlind(roundSettings.getBigBlind())
+                .smallBlind(roundSettings.getSmallBlind())
+                .button(roundSettings.getButton())
                 .players(players)
-                .stageType(holdemRoundSettings.getStageType())
-                .lastBet(holdemRoundSettings.getLastBet())
-                .activePlayer(holdemRoundSettings.getActivePlayer())
-                .flop(holdemRoundSettings.getFlop())
-                .river(holdemRoundSettings.getRiver())
-                .tern(holdemRoundSettings.getTern())
+                .stageType(roundSettings.getStageType())
+                .lastBet(roundSettings.getLastBet())
+                .activePlayer(roundSettings.getActivePlayer())
+                .flop(roundSettings.getFlop())
+                .river(roundSettings.getRiver())
+                .tern(roundSettings.getTern())
                 .build();
     }
 

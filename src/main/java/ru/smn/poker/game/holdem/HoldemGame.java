@@ -1,8 +1,8 @@
 package ru.smn.poker.game.holdem;
 
 import ru.smn.poker.config.game.GameSettings;
-import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.dto.RoundSettings;
 import ru.smn.poker.enums.StateType;
 import ru.smn.poker.game.Game;
 import ru.smn.poker.game.Round;
@@ -43,7 +43,7 @@ public class HoldemGame extends Game {
     }
 
     @Override
-    public HoldemRoundSettings getRoundSettings() {
+    public RoundSettings getRoundSettings() {
         return getRound().getHoldemRoundSettings();
     }
 

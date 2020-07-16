@@ -7,6 +7,7 @@ import ru.smn.poker.action.holdem.Fold;
 import ru.smn.poker.action.holdem.Wait;
 import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.dto.RoundSettings;
 import ru.smn.poker.enums.*;
 import ru.smn.poker.game.RoundSettingsManager;
 import ru.smn.poker.util.PlayerUtil;
@@ -32,7 +33,7 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
     private final long gameId;
 
     @Override
-    public HoldemRoundSettings getSettings(HoldemRoundSettings prevSettings) {
+    public RoundSettings getSettings(RoundSettings prevSettings) {
         if (prevSettings == null || prevSettings.getStageType() == StageType.RIVER) {
             return getPreflopSettings();
         }
@@ -54,7 +55,7 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
         }
     }
 
-    private HoldemRoundSettings getPreflopSettings() {
+    private RoundSettings getPreflopSettings() {
         setAllPlayersGameName();
         dealCards();
         setButton();
@@ -80,7 +81,7 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
     }
 
 
-    private HoldemRoundSettings getPostFlopSettings(long bank, Map<Player, List<Action>> prevHistory) {
+    private RoundSettings getPostFlopSettings(long bank, Map<Player, List<Action>> prevHistory) {
         setAllActivePlayersTest();
         return HoldemRoundSettings.builder()
                 .flop(flop)
@@ -101,7 +102,7 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .build();
     }
 
-    private HoldemRoundSettings getPostFlopSettingsWithTern(long bank, Map<Player, List<Action>> fullHistory) {
+    private RoundSettings getPostFlopSettingsWithTern(long bank, Map<Player, List<Action>> fullHistory) {
         setAllActivePlayersTest();
         return HoldemRoundSettings.builder()
                 .flop(flop)
@@ -124,10 +125,9 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
     }
 
 
-    private HoldemRoundSettings getPostFlopSettingsWithRiver(long bank, Map<Player, List<Action>> fullHistory) {
+    private RoundSettings getPostFlopSettingsWithRiver(long bank, Map<Player, List<Action>> fullHistory) {
         setAllActivePlayersTest();
-        return HoldemRoundSettings
-                .builder()
+        return HoldemRoundSettings.builder()
                 .flop(flop)
                 .tern(tern)
                 .gameName(gameName)

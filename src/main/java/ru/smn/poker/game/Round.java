@@ -1,7 +1,7 @@
 package ru.smn.poker.game;
 
-import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.dto.RoundSettings;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ public interface Round {
 
     void reloadRound();
 
-    HoldemRoundSettings getHoldemRoundSettings();
+    RoundSettings getHoldemRoundSettings();
 
     List<Player> getPlayers();
 

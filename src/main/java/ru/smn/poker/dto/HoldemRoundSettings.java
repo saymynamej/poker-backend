@@ -19,7 +19,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
-public class HoldemRoundSettings {
+public class HoldemRoundSettings implements RoundSettings {
     private final Map<Player, List<ru.smn.poker.action.Action>> stageHistory;
     private final Map<Player, List<Action>> fullHistory;
     private final List<Player> players;
@@ -38,46 +38,4 @@ public class HoldemRoundSettings {
     private long bank;
     private Player activePlayer;
     private boolean isAfk;
-
-
-    public boolean lastBetIsNotZero() {
-        return this.lastBet != 0;
-    }
-
-    public boolean lastBetIsZero(){
-        return !lastBetIsNotZero();
-    }
-
-    public boolean playersInAllIn() {
-        return getPlayersInGame()
-                .stream()
-                .allMatch(StreamUtil.playerInAllIn());
-    }
-
-    public boolean allPlayersCheck() {
-        return getPlayersInGame()
-                .stream()
-                .filter(StreamUtil.playerInAllIn().negate())
-                .allMatch(StreamUtil.playersHasCheck());
-    }
-
-    public boolean isHU(){
-        return players.stream()
-                .filter(playerDTO -> playerDTO.getStateType() == StateType.IN_GAME)
-                .count() == 2;
-    }
-
-    public List<Player> getPlayersInGame(){
-        return PlayerUtil.getPlayersInGame(this.players);
-    }
-
-    public boolean isOnePlayerLeft() {
-        return getPlayersInGame().size() == 1;
-    }
-
-    public boolean isOnePlayerWhoHasChips() {
-        return this.players.stream()
-                .filter(player -> player.getAction().getActionType() != ActionType.ALLIN && player.getChipsCount() != 0)
-                .count() == 1;
-    }
 }

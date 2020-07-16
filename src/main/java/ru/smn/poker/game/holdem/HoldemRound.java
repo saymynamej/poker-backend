@@ -1,10 +1,9 @@
 package ru.smn.poker.game.holdem;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.dto.RoundSettings;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.enums.StateType;
 import ru.smn.poker.game.Round;
@@ -23,7 +22,7 @@ public class HoldemRound implements Round {
     private final long smallBlindBet;
     private final long bigBlindBet;
     private final long gameId;
-    private HoldemRoundSettings holdemRoundSettings;
+    private RoundSettings roundSettings;
 
 
     @Override
@@ -39,16 +38,16 @@ public class HoldemRound implements Round {
 
 
         while (true) {
-            holdemRoundSettings = roundSettingsManager.getSettings(
-                    holdemRoundSettings
+            roundSettings = roundSettingsManager.getSettings(
+                    roundSettings
             );
-            final boolean skipNext = orderService.start(holdemRoundSettings);
+            final boolean skipNext = orderService.start(roundSettings);
 
-            if (skipNext || holdemRoundSettings.getStageType() == StageType.RIVER) {
+            if (skipNext || roundSettings.getStageType() == StageType.RIVER) {
                 break;
             }
         }
-        winnerService.sendPrizes(holdemRoundSettings);
+        winnerService.sendPrizes(roundSettings);
     }
 
     @Override
@@ -68,11 +67,11 @@ public class HoldemRound implements Round {
 
     @Override
     public void reloadRound() {
-        this.holdemRoundSettings.getPlayers().forEach(player -> player.setStateType(StateType.AFK));
+        this.roundSettings.getPlayers().forEach(player -> player.setStateType(StateType.AFK));
     }
 
     @Override
-    public synchronized HoldemRoundSettings getHoldemRoundSettings() {
-        return this.holdemRoundSettings;
+    public synchronized RoundSettings getHoldemRoundSettings() {
+        return this.roundSettings;
     }
 }

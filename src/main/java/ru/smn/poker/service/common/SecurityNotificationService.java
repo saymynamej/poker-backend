@@ -2,7 +2,7 @@ package ru.smn.poker.service.common;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.smn.poker.dto.HoldemRoundSettings;
+import ru.smn.poker.dto.RoundSettings;
 import ru.smn.poker.service.SecurityService;
 import ru.smn.poker.util.PlayerUtil;
 
@@ -14,20 +14,20 @@ public class SecurityNotificationService {
     private final SimpleNotificationService simpleNotificationService;
     private final SecurityService securityService;
 
-    public void sendToAllWithSecurityWhoIsNotInTheGame(HoldemRoundSettings holdemRoundSettings) {
-        final List<String> filter = PlayerUtil.getNamesOfPlayersInGame(holdemRoundSettings.getPlayers());
+    public void sendToAllWithSecurityWhoIsNotInTheGame(RoundSettings roundSettings) {
+        final List<String> filter = PlayerUtil.getNamesOfPlayersInGame(roundSettings.getPlayers());
 
-        final HoldemRoundSettings secureSettings = securityService.secureCards(filter, holdemRoundSettings);
+        final RoundSettings secureSettings = securityService.secureCards(filter, roundSettings);
 
         secureSettings.getPlayers()
                 .forEach(player -> simpleNotificationService.sendGameInformationToUser(player.getName(), secureSettings));
     }
 
-    public void sendToAllWithSecurity(HoldemRoundSettings holdemRoundSettings) {
-        holdemRoundSettings.getPlayers().forEach(player -> sendToUserWithSecurity(holdemRoundSettings, player.getName()));
+    public void sendToAllWithSecurity(RoundSettings roundSettings) {
+        roundSettings.getPlayers().forEach(player -> sendToUserWithSecurity(roundSettings, player.getName()));
     }
 
-    public void sendToUserWithSecurity(HoldemRoundSettings holdemRoundSettings, String userName) {
-        simpleNotificationService.sendGameInformationToUser(userName, securityService.secureCards(List.of(userName), holdemRoundSettings));
+    public void sendToUserWithSecurity(RoundSettings roundSettings, String userName) {
+        simpleNotificationService.sendGameInformationToUser(userName, securityService.secureCards(List.of(userName), roundSettings));
     }
 }
