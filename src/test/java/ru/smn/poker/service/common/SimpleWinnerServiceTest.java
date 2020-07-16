@@ -2,14 +2,21 @@ package ru.smn.poker.service.common;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.smn.poker.action.holdem.AllIn;
 import ru.smn.poker.action.holdem.Call;
 import ru.smn.poker.action.holdem.Fold;
 import ru.smn.poker.action.holdem.Raise;
+import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
 import ru.smn.poker.dto.RoundSettings;
 import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.StateType;
+import ru.smn.poker.game.holdem.HoldemRound;
 import ru.smn.poker.service.WinnerService;
 import ru.smn.poker.service.holdem.HoldemCombinationService;
 import ru.smn.poker.util.PlayerUtil;
@@ -18,9 +25,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
+@ActiveProfiles("test")
 class SimpleWinnerServiceTest {
-    private final WinnerService winnerService = new SimpleWinnerService(new HoldemCombinationService());
+    @Autowired
+    private WinnerService winnerService;
 
     @Test
     void testWhenWinnerOnlyOne() {
@@ -38,7 +48,7 @@ class SimpleWinnerServiceTest {
         player1.setStateType(StateType.IN_GAME);
         player2.setStateType(StateType.IN_GAME);
 
-        winnerService.sendPrizes(RoundSettings.builder()
+        winnerService.sendPrizes(HoldemRoundSettings.builder()
                 .fullHistory(Map.of(
                         player1, List.of(call),
                         player2, List.of(call, raise)
@@ -69,7 +79,7 @@ class SimpleWinnerServiceTest {
         player1.setStateType(StateType.IN_GAME);
         player2.setStateType(StateType.IN_GAME);
 
-        RoundSettings roundSettings = RoundSettings.builder()
+        RoundSettings roundSettings = HoldemRoundSettings.builder()
                 .flop(Arrays.asList(
                         CardType.FOUR_C,
                         CardType.FIVE_D,
@@ -121,7 +131,7 @@ class SimpleWinnerServiceTest {
         player2.setStateType(StateType.IN_GAME);
         player3.setStateType(StateType.IN_GAME);
 
-        winnerService.sendPrizes(RoundSettings.builder()
+        winnerService.sendPrizes(HoldemRoundSettings.builder()
                 .flop(Arrays.asList(
                         CardType.Q_S,
                         CardType.TWO_D,

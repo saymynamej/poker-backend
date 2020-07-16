@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.smn.poker.config.game.GameSettings;
+import ru.smn.poker.converter.GameConverter;
 import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.GameEntity;
 import ru.smn.poker.enums.GameType;
@@ -39,6 +40,11 @@ public class CommonGameManagementService implements GameManagementService {
     private final GameService gameService;
     private final OrderService orderService;
     private final WinnerService winnerService;
+
+    @Override
+    public Game restoreGame(Game game) {
+        return restoreGame(GameConverter.toEntity(game));
+    }
 
     @Override
     public Game restoreGame(GameEntity gameEntity) {

@@ -18,6 +18,8 @@ public interface GameManagementService {
 
     Game restoreGame(GameEntity gameEntity);
 
+    Game restoreGame(Game game);
+
     GameEntity saveGame(Game game);
 
     void startGame(Game game);

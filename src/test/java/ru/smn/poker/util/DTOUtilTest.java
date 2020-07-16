@@ -2,6 +2,7 @@ package ru.smn.poker.util;
 
 import com.github.javafaker.Faker;
 import ru.smn.poker.action.holdem.Wait;
+import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
 import ru.smn.poker.dto.RoundSettings;
 import ru.smn.poker.enums.CardType;
@@ -42,7 +43,7 @@ public class DTOUtilTest {
     }
 
     public static RoundSettings getRoundSettingsDTO(long lastBet, StageType stageType, List<Player> players) {
-        return RoundSettings.builder()
+        return HoldemRoundSettings.builder()
                 .lastBet(lastBet)
                 .stageType(stageType)
                 .bigBlindBet(DEFAULT_BIG_BLIND_BET)
@@ -58,7 +59,7 @@ public class DTOUtilTest {
     }
 
     public static RoundSettings getRoundSettingsDTO(long lastBet, List<Player> players) {
-        return RoundSettings.builder()
+        return HoldemRoundSettings.builder()
                 .lastBet(lastBet)
                 .bigBlindBet(DEFAULT_BIG_BLIND_BET)
                 .smallBlindBet(DEFAULT_SMALL_BLIND_BET)

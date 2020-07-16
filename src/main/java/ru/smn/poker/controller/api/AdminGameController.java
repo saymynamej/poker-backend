@@ -26,7 +26,6 @@ public class AdminGameController {
                 new ArrayList<>(),
                 gameType,
                 orderService, 0);
-        gameManagementService.saveGame(game);
-        gameManagementService.startGame(game);
+        gameManagementService.restoreGame(game);
     }
 }

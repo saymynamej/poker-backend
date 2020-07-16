@@ -277,7 +277,8 @@ class HoldemRoundSettingsManagerTest {
                 players,
                 DEFAULT_GAME_NAME,
                 DEFAULT_SMALL_BLIND_BET,
-                DEFAULT_BIG_BLIND_BET
+                DEFAULT_BIG_BLIND_BET,
+                0
         );
     }
 

@@ -31,8 +31,7 @@ public class HoldemQueueListener implements GameListener {
                             GameType.HOLDEM_HU,
                             orderService,0
                     );
-                    gameManagementService.saveGame(game);
-                    gameManagementService.startGame(game);
+                    gameManagementService.restoreGame(game);
                 }
             }
         });
