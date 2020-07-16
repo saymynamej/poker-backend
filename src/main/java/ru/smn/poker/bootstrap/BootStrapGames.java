@@ -23,7 +23,7 @@ public class BootStrapGames {
 
     @PostConstruct
     public void init() {
-        save();
+//        save();
         final List<GameEntity> all = gameService.findAll();
         for (GameEntity gameEntity : all) {
             gameManagementService.restoreGame(gameEntity);
@@ -34,10 +34,9 @@ public class BootStrapGames {
         Game game = gameManagementService.createGame(Arrays.asList(
                 PlayerUtil.getDefaultPlayerForHoldem("3"),
                 PlayerUtil.getDefaultPlayerForHoldem("2"),
-                PlayerUtil.getDefaultBotForHoldem("1")),
+                PlayerUtil.getDefaultPlayerForHoldem("1")),
                 GameType.HOLDEM_FULL,
                 orderService, 0);
-
         gameManagementService.saveGame(game);
     }
 }

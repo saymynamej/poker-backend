@@ -2,10 +2,10 @@ package ru.smn.poker.service.common;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.smn.poker.config.game.GameSettings;
-import ru.smn.poker.converter.PlayerConverter;
 import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.GameEntity;
 import ru.smn.poker.enums.GameType;
@@ -15,6 +15,7 @@ import ru.smn.poker.game.holdem.HoldemGame;
 import ru.smn.poker.game.holdem.HoldemRound;
 import ru.smn.poker.service.GameManagementService;
 import ru.smn.poker.service.OrderService;
+import ru.smn.poker.service.WinnerService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import static ru.smn.poker.converter.GameConverter.*;
+import static ru.smn.poker.converter.PlayerConverter.*;
 import static ru.smn.poker.util.GameUtil.getRandomGOTCityName;
 
 @Service
@@ -36,16 +38,23 @@ public class CommonGameManagementService implements GameManagementService {
     private final Map<GameType, GameSettings> mapSettings;
     private final GameService gameService;
     private final OrderService orderService;
+    private final WinnerService winnerService;
 
     @Override
     public Game restoreGame(GameEntity gameEntity) {
+        final List<Player> players = toDTOs(gameEntity.getPlayers());
         final Game game = createGame(
-                PlayerConverter.toDTOs(gameEntity.getPlayers()),
+                players,
                 gameEntity.getGameType(),
                 orderService,
-                gameEntity.getId()
+                gameEntity.getId(),
+                gameEntity.getName()
         );
         startGame(game);
+
+        if (checkGameName(gameEntity.getName())) {
+            games.put(gameEntity.getName(), game);
+        }
         return game;
     }
 
@@ -59,6 +68,37 @@ public class CommonGameManagementService implements GameManagementService {
 
     }
 
+
+    public Game createGame(List<Player> players,
+                           GameType gameType,
+                           OrderService orderService,
+                           long gameId,
+                           String gameName
+    ) {
+        if (gameId == 0) {
+            gameId = gameService.getNextGameId();
+        }
+
+        final GameSettings gameSettings = mapSettings.get(gameType);
+
+        final Round round = new HoldemRound(
+                new ArrayList<>(players),
+                gameName,
+                orderService,
+                winnerService,
+                gameSettings.getStartSmallBlindBet(),
+                gameSettings.getStartBigBlindBet(),
+                gameId
+        );
+        final Game game = new HoldemGame(
+                gameSettings,
+                round
+        );
+
+        log.info("game: " + gameName + " restored");
+        return game;
+    }
+
     @Override
     public synchronized Game createGame(
             List<Player> players,
@@ -66,33 +106,15 @@ public class CommonGameManagementService implements GameManagementService {
             OrderService orderService,
             long gameId
     ) {
-        if (gameId == 0) {
-            gameId = gameService.getNextGameId();
-        }
 
         final String randomGameName = getRandomGOTCityName();
-
-        final GameSettings gameSettings = mapSettings.get(gameType);
-
-        final Round round = new HoldemRound(
-                new ArrayList<>(players),
-                randomGameName,
+        return createGame(
+                players,
+                gameType,
                 orderService,
-                gameSettings.getStartSmallBlindBet(),
-                gameSettings.getStartBigBlindBet(),
-                gameId
+                gameId,
+                randomGameName
         );
-
-        final Game game = new HoldemGame(
-                gameSettings,
-                round
-        );
-
-        if (checkGameName(randomGameName)) {
-            games.put(randomGameName, game);
-        }
-        log.info("game: " + randomGameName + " restored");
-        return game;
     }
 
     @Override

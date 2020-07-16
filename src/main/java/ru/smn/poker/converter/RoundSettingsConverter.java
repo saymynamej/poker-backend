@@ -8,6 +8,7 @@ import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.GameType;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RoundSettingsConverter {
 
@@ -21,11 +22,14 @@ public class RoundSettingsConverter {
 
         final List<Player> players = holdemRoundSettings.getPlayers();
 
-        final List<PlayerEntity> playerEntities = PlayerConverter.toEntities(players);
+        final List<PlayerEntity> playerEntities = PlayerConverter.toEntities(players, gameEntity);
 
         gameEntity.setPlayers(playerEntities);
 
-        final List<ChipsCountEntity> chipsCountEntities = ChipsCountConverter.toEntities(players, gameEntity);
+        final List<ChipsCountEntity> chipsCountEntities = playerEntities.stream()
+                .map(PlayerEntity::getChipsCount)
+                .collect(Collectors.toList());
+
         gameEntity.setCounts(chipsCountEntities);
 
         return gameEntity;

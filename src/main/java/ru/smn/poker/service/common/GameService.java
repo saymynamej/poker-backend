@@ -12,7 +12,6 @@ import ru.smn.poker.repository.GameRepository;
 import ru.smn.poker.repository.PlayerRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 import static ru.smn.poker.util.HistoryUtil.addActionInHistory;
 

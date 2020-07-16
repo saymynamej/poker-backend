@@ -1,12 +1,14 @@
 package ru.smn.poker.service.common;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.smn.poker.action.Action;
 import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.PlayerCombination;
 import ru.smn.poker.dto.Player;
 import ru.smn.poker.enums.CardType;
+import ru.smn.poker.game.holdem.HoldemRound;
 import ru.smn.poker.service.CombinationService;
 import ru.smn.poker.service.WinnerService;
 import ru.smn.poker.util.PlayerUtil;
@@ -21,6 +23,7 @@ import static ru.smn.poker.util.HistoryUtil.*;
 @RequiredArgsConstructor
 public class SimpleWinnerService implements WinnerService {
     private final CombinationService combinationService;
+    private final GameService gameService;
 
     @Override
     public void sendPrizes(HoldemRoundSettings holdemRoundSettings) {
@@ -31,7 +34,9 @@ public class SimpleWinnerService implements WinnerService {
         }
         final List<PlayerCombination> winners = findWinners(holdemRoundSettings);
         calculate(winners, holdemRoundSettings);
+        gameService.update(holdemRoundSettings);
     }
+
 
     private void calculate(List<PlayerCombination> winners, HoldemRoundSettings holdemRoundSettings) {
         if (!checkIfNeedReturnToAll(winners, holdemRoundSettings)) {

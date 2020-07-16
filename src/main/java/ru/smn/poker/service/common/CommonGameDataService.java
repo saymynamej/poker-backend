@@ -14,6 +14,7 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public class CommonGameDataService implements GameDataService {
+
     private final Map<String, Game> games;
 
     @Override

@@ -90,10 +90,10 @@ public class SimpleActionService implements ActionService {
     }
 
     private void waitPlayerAction(Player player, HoldemRoundSettings holdemRoundSettings) {
-        if (player.getPlayerType() == PlayerType.BOT){
-            autoBot.auto(player, holdemRoundSettings);
-            return;
-        }
+//        if (player.getPlayerType() == PlayerType.BOT){
+//            autoBot.auto(player, holdemRoundSettings);
+//            return;
+//        }
 
         final ResultTime timer = simpleTimeBankService.activateTime(player);
         while (true) {

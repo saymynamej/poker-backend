@@ -81,16 +81,19 @@ public class PlayerConverter {
                             .map(CardEntity::getCardType)
                             .collect(Collectors.toList()))
                     .id(playerEntity.getId())
+                    .chipsId(playerEntity.getChipsCount().getId())
+                    .gameName(playerEntity.getGame().getName())
                     .name(playerEntity.getName())
                     .build();
         }
-
         return Player.builder()
                 .chipsCount(playerEntity.getChipsCount().getCount())
                 .cards(playerEntity.getCards().stream()
                         .map(CardEntity::getCardType)
                         .collect(Collectors.toList()))
+                .chipsId(playerEntity.getChipsCount().getId())
                 .id(playerEntity.getId())
+                .gameName(playerEntity.getGame().getName())
                 .name(playerEntity.getName())
                 .build();
     }

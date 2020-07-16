@@ -56,6 +56,8 @@ public class HoldemGame extends Game {
     }
 
     private void setInGame() {
-        getPlayers().forEach(player -> player.setStateType(StateType.IN_GAME));
+        getPlayers().forEach(player -> {
+            player.setStateType(StateType.IN_GAME);
+        });
     }
 }

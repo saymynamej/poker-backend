@@ -11,9 +11,6 @@ import ru.smn.poker.game.Round;
 import ru.smn.poker.game.RoundSettingsManager;
 import ru.smn.poker.service.OrderService;
 import ru.smn.poker.service.WinnerService;
-import ru.smn.poker.service.common.SimpleWinnerService;
-import ru.smn.poker.service.holdem.HoldemCombinationService;
-
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -22,9 +19,9 @@ public class HoldemRound implements Round {
     private final List<Player> players;
     private final String gameName;
     private final OrderService orderService;
+    private final WinnerService winnerService;
     private final long smallBlindBet;
     private final long bigBlindBet;
-    private final WinnerService winnerService = new SimpleWinnerService(new HoldemCombinationService());
     private final long gameId;
     private HoldemRoundSettings holdemRoundSettings;
 
@@ -32,8 +29,6 @@ public class HoldemRound implements Round {
     @Override
     public void startRound() {
         log.info("game was started, because found enough persons");
-        System.out.println(gameId);
-        System.out.println(gameName);
         final RoundSettingsManager roundSettingsManager = HoldemRoundSettingsManagerFactory.getRoundSettingsManager(
                 players,
                 gameName,
@@ -41,6 +36,7 @@ public class HoldemRound implements Round {
                 smallBlindBet,
                 gameId
         );
+
 
         while (true) {
             holdemRoundSettings = roundSettingsManager.getSettings(
