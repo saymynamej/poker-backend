@@ -71,7 +71,7 @@ public class HoldemRound implements Round {
     }
 
     @Override
-    public synchronized RoundSettings getHoldemRoundSettings() {
+    public synchronized RoundSettings getRoundSettings() {
         return this.roundSettings;
     }
 }
