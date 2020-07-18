@@ -12,7 +12,7 @@ public interface Round {
 
     void reloadRound();
 
-    RoundSettings getHoldemRoundSettings();
+    RoundSettings getRoundSettings();
 
     List<Player> getPlayers();
 
