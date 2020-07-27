@@ -34,7 +34,7 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
 
     @Override
     public RoundSettings getSettings(RoundSettings prevSettings) {
-        if (prevSettings == null || prevSettings.getStageType() == StageType.RIVER) {
+        if (prevSettings == null || prevSettings.isFinished()) {
             return getPreflopSettings();
         }
         switch (prevSettings.getStageType()) {

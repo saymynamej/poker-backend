@@ -3,6 +3,7 @@ package ru.smn.poker.entities;
 
 import lombok.*;
 import ru.smn.poker.enums.CardType;
+import ru.smn.poker.enums.StageType;
 
 import javax.persistence.*;
 import java.util.List;
@@ -27,15 +28,20 @@ public class RoundEntity {
     @OneToMany(mappedBy = "round", cascade = CascadeType.ALL)
     private List<ActionEntity> actions;
 
+    private long lastBet;
 
     private long bank;
+
+    private long smallBlindBet;
+
+    private long bigBlindBet;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "big_bling_id")
     private PlayerEntity bigBlind;
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "small_blind_id")
+    @JoinColumn(name = "small_bling_id")
     private PlayerEntity smallBlind;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -61,6 +67,8 @@ public class RoundEntity {
     @Enumerated(value = EnumType.STRING)
     private CardType river;
 
+    @Enumerated(value = EnumType.STRING)
+    private StageType stageType;
 
     private boolean isFinished;
 }

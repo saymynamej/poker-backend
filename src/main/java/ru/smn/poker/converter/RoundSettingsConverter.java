@@ -42,6 +42,10 @@ public class RoundSettingsConverter {
                 .smallBlind(getPlayerEntityByRole(playerEntities, RoleType.SMALL_BLIND))
                 .bigBlind(getPlayerEntityByRole(playerEntities, RoleType.BIG_BLIND))
                 .isFinished(roundSettings.isFinished())
+                .stageType(roundSettings.getStageType())
+                .smallBlindBet(roundSettings.getSmallBlindBet())
+                .bigBlindBet(roundSettings.getBigBlindBet())
+                .lastBet(roundSettings.getLastBet())
                 .activePlayer(getActivePlayer(playerEntities))
                 .bank(roundSettings.getBank())
                 .game(gameEntity)
@@ -60,8 +64,11 @@ public class RoundSettingsConverter {
             roundEntity.setRiver(roundSettings.getRiver());
         }
 
-        roundEntity.setId(getRoundId(prevRounds));
 
+        long roundId = getRoundId(prevRounds);
+        if (roundId != 0) {
+            roundEntity.setId(roundId);
+        }
 
         gameEntity.setRounds(Collections.singletonList(roundEntity));
 
