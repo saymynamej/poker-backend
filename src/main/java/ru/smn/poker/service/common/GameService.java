@@ -6,12 +6,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.smn.poker.converter.RoundSettingsConverter;
 import ru.smn.poker.dto.Player;
-import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.entities.GameEntity;
+import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.repository.GameRepository;
-import ru.smn.poker.repository.PlayerRepository;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 import static ru.smn.poker.util.HistoryUtil.addActionInHistory;
 
@@ -20,7 +21,6 @@ import static ru.smn.poker.util.HistoryUtil.addActionInHistory;
 @Slf4j
 public class GameService {
     private final GameRepository gameRepository;
-    private final PlayerRepository playerRepository;
 
     public List<GameEntity> findAll() {
         return gameRepository.findAll();
@@ -33,7 +33,13 @@ public class GameService {
 
     @Transactional
     public void update(RoundSettings roundSettings) {
-        final GameEntity gameEntity = RoundSettingsConverter.toEntity(roundSettings);
+        final long gameId = roundSettings.getGameId();
+        final Optional<GameEntity> rounds = gameRepository.findById(gameId);
+
+        final GameEntity gameEntity = RoundSettingsConverter.toEntity(
+                roundSettings,
+                Objects.requireNonNull(rounds.map(GameEntity::getRounds).orElse(null)));
+
         gameRepository.save(gameEntity);
     }
 

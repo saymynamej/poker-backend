@@ -54,7 +54,7 @@ public class HoldemGame extends Game {
 
     @Override
     public RoundSettings getRoundSettings() {
-        return getRound().getHoldemRoundSettings();
+        return getRound().getRoundSettings();
     }
 
     @Override

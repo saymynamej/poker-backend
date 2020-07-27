@@ -2,12 +2,30 @@ package ru.smn.poker.util;
 
 import ru.smn.poker.dto.Bot;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.PlayerEntity;
+import ru.smn.poker.enums.RoleType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class PlayerUtil {
+
+
+
+    public static PlayerEntity getPlayerEntityByRole(List<PlayerEntity> playerEntities, RoleType roleType){
+        return playerEntities.stream()
+                .filter(playerEntity -> playerEntity.getRoleType() == roleType)
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static PlayerEntity getActivePlayer(List<PlayerEntity> playerEntities){
+        return playerEntities.stream()
+                .filter(PlayerEntity::isActive)
+                .findFirst()
+                .orElse(null);
+    }
 
     public static List<Player> copies(List<Player> players) {
         final List<Player> copyPlayers = new ArrayList<>();

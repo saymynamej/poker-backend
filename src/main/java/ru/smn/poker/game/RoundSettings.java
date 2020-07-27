@@ -50,6 +50,10 @@ public interface RoundSettings {
 
     void setBank(long bank);
 
+    boolean isFinished();
+
+    void setFinished(boolean r);
+
     void setActivePlayer(Player activePlayer);
 
     default boolean lastBetIsNotZero() {

@@ -36,7 +36,6 @@ public class HoldemRound implements Round {
                 gameId
         );
 
-
         while (true) {
             roundSettings = roundSettingsManager.getSettings(
                     roundSettings
@@ -47,6 +46,7 @@ public class HoldemRound implements Round {
                 break;
             }
         }
+        roundSettings.setFinished(true);
         winnerService.sendPrizes(roundSettings);
     }
 

@@ -77,6 +77,7 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .stageType(StageType.PREFLOP)
                 .stageHistory(setBlindsHistory())
                 .lastBet(bigBlindBet)
+                .isFinished(false)
                 .build();
     }
 
@@ -98,6 +99,7 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .players(players)
                 .stageHistory(new HashMap<>())
                 .lastBet(0L)
+                .isFinished(false)
                 .stageType(StageType.FLOP)
                 .build();
     }
@@ -120,6 +122,7 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .stageType(StageType.TERN)
                 .stageHistory(new HashMap<>())
                 .lastBet(0L)
+                .isFinished(false)
                 .players(players)
                 .build();
     }
@@ -141,6 +144,7 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .fullHistory(fullHistory)
                 .stageHistory(new HashMap<>())
                 .bigBlindBet(bigBlindBet)
+                .isFinished(false)
                 .button(getPlayerByRole(RoleType.BUTTON).orElseThrow())
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElse(null))
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElseThrow())

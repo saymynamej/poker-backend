@@ -35,4 +35,5 @@ public class HoldemRoundSettings implements RoundSettings {
     private long bank;
     private Player activePlayer;
     private boolean isAfk;
+    private boolean isFinished;
 }

@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "rounds")
+@EqualsAndHashCode(of = "id")
 public class RoundEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,6 +27,24 @@ public class RoundEntity {
     @OneToMany(mappedBy = "round", cascade = CascadeType.ALL)
     private List<ActionEntity> actions;
 
+
+    private long bank;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "big_bling_id")
+    private PlayerEntity bigBlind;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "small_blind_id")
+    private PlayerEntity smallBlind;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "button_id")
+    private PlayerEntity button;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "active_player_id")
+    private PlayerEntity activePlayer;
 
     @Enumerated(value = EnumType.STRING)
     private CardType f1;
@@ -42,4 +61,6 @@ public class RoundEntity {
     @Enumerated(value = EnumType.STRING)
     private CardType river;
 
+
+    private boolean isFinished;
 }

@@ -32,7 +32,7 @@ public class SimpleActionService implements ActionService {
     private final SimpleTimeBankService simpleTimeBankService = new SimpleTimeBankService();
     private final GameService gameService;
     private final ActionLogService actionLogService;
-    private final AutoBot autoBot;
+
 
     @Override
     public void changeStateType(String playerName) {
@@ -89,11 +89,7 @@ public class SimpleActionService implements ActionService {
     }
 
     private void waitPlayerAction(Player player, RoundSettings roundSettings) {
-//        if (player.getPlayerType() == PlayerType.BOT){
-//            autoBot.auto(player, holdemRoundSettings);
-//            return;
-//        }
-
+        gameService.update(roundSettings);
         final ResultTime timer = simpleTimeBankService.activateTime(player);
         while (true) {
             if (player.isNotInGame()) {
