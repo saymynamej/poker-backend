@@ -14,17 +14,18 @@ public interface GameManagementService {
                     OrderService orderService,
                     long gameId);
 
-    void startGame(String gameName);
+    void createNewGame(GameType gameType,
+                       OrderService orderService);
 
-    Game restoreGame(GameEntity gameEntity);
+    void createNewGame(List<Player> players,
+                       GameType gameType,
+                       OrderService orderService);
 
-    Game restoreGame(Game game);
+    void restoreGame(GameEntity gameEntity);
 
-    GameEntity saveGame(Game game);
 
     void startGame(Game game);
 
-    void stopGame(String gameName);
 
     void stopGame(Game game);
 

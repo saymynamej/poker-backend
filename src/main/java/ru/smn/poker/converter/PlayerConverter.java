@@ -62,6 +62,14 @@ public class PlayerConverter {
 
     private static PlayerEntity getPlayerEntity(Player player, GameEntity gameEntity) {
         final PlayerEntity playerEntity = getDefaultPlayerEntity(player);
+        if (player.getCards() != null) {
+            playerEntity.setCards(player.getCards().stream()
+                    .map(cardType -> CardEntity.builder()
+                            .cardType(cardType)
+                            .player(playerEntity)
+                            .game(gameEntity)
+                            .build()).collect(Collectors.toList()));
+        }
         final ChipsCountEntity chipsCountEntity = ChipsCountConverter.toEntity(player, gameEntity);
         playerEntity.setChipsCount(chipsCountEntity);
         return playerEntity;

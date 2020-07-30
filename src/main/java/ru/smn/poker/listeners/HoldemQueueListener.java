@@ -2,9 +2,8 @@ package ru.smn.poker.listeners;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.smn.poker.game.Game;
-import ru.smn.poker.service.GameManagementService;
 import ru.smn.poker.enums.GameType;
+import ru.smn.poker.service.GameManagementService;
 import ru.smn.poker.service.OrderService;
 import ru.smn.poker.service.QueueService;
 import ru.smn.poker.service.SeatManager;
@@ -26,12 +25,11 @@ public class HoldemQueueListener implements GameListener {
             while (isEnable) {
                 ThreadUtil.sleep(1);
                 if (seatManager.getQueue().size() >= 4) {
-                    final Game game = gameManagementService.createGame(
+                    gameManagementService.createNewGame(
                             queueService.extractQueue(),
                             GameType.HOLDEM_HU,
-                            orderService,0
+                            orderService
                     );
-                    gameManagementService.restoreGame(game);
                 }
             }
         });

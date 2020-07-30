@@ -1,4 +1,4 @@
-package ru.smn.poker.controller;
+package ru.smn.poker.controller.websocket;
 
 import com.github.javafaker.Faker;
 import lombok.RequiredArgsConstructor;
