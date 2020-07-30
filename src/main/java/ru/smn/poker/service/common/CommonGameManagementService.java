@@ -48,10 +48,11 @@ public class CommonGameManagementService implements GameManagementService {
                 0
         );
 
-        if (!checkGameName(game.getGameName())) {
+        if (checkGameName(game.getGameName())) {
             games.put(game.getGameName(), game);
             gameService.saveGame(GameConverter.toEntity(game));
             startGame(game);
+            log.info("created new game:" + game.getGameName());
         }
     }
 
@@ -64,10 +65,11 @@ public class CommonGameManagementService implements GameManagementService {
                 0
         );
 
-        if (!checkGameName(game.getGameName())) {
+        if (checkGameName(game.getGameName())) {
             games.put(game.getGameName(), game);
             gameService.saveGame(GameConverter.toEntity(game));
             startGame(game);
+            log.info("created new game:" + game.getGameName());
         }
 
     }
@@ -85,6 +87,7 @@ public class CommonGameManagementService implements GameManagementService {
         if (checkGameName(gameEntity.getName())) {
             startGame(game);
             games.put(gameEntity.getName(), game);
+            log.info("restore game:" + game.getGameName());
         }
 
     }
@@ -136,14 +139,12 @@ public class CommonGameManagementService implements GameManagementService {
                 gameSettings.getStartBigBlindBet(),
                 gameId
         );
-        final Game game = new HoldemGame(
+
+
+        return new HoldemGame(
                 gameSettings,
                 round
         );
-
-        log.info("game: " + gameName + " created");
-
-        return game;
     }
 
     @Override
