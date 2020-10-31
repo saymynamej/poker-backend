@@ -1,6 +1,8 @@
 package ru.smn.poker.service;
 
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.ChipsCountEntity;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.GameType;
 import ru.smn.poker.game.Game;
 import ru.smn.poker.entities.GameEntity;
@@ -23,8 +25,13 @@ public interface GameManagementService {
 
     void restoreGame(GameEntity gameEntity);
 
-
     void startGame(Game game);
+
+    void createNewGameTest(
+            List<PlayerEntity> players,
+            List<ChipsCountEntity> chipsCountEntities,
+            GameType gameType
+    );
 
 
     void stopGame(Game game);

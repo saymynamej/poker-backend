@@ -89,7 +89,6 @@ public class SimpleActionService implements ActionService {
     }
 
     private void waitPlayerAction(Player player, RoundSettings roundSettings) {
-        gameService.update(roundSettings);
         final ResultTime timer = simpleTimeBankService.activateTime(player);
         while (true) {
             if (player.isNotInGame()) {
@@ -115,5 +114,6 @@ public class SimpleActionService implements ActionService {
             gameService.update(roundSettings);
         }
         actionLogService.log(player, action);
+        gameService.update(roundSettings);
     }
 }

@@ -15,12 +15,12 @@ public class BootStrapGames {
     private final GameManagementService gameManagementService;
     private final GameService gameService;
 
-    @PostConstruct
-    public void init() {
-        final List<GameEntity> all = gameService.findAll();
-        for (GameEntity gameEntity : all) {
-            gameManagementService.restoreGame(gameEntity);
-        }
-    }
+//    @PostConstruct
+//    public void init() {
+//        final List<GameEntity> all = gameService.findAll();
+//        for (GameEntity gameEntity : all) {
+//            gameManagementService.restoreGame(gameEntity);
+//        }
+//    }
 
 }

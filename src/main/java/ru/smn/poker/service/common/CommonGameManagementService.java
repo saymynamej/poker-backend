@@ -5,8 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.converter.GameConverter;
+import ru.smn.poker.converter.PlayerConverter;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.ChipsCountEntity;
 import ru.smn.poker.entities.GameEntity;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.GameType;
 import ru.smn.poker.game.Game;
 import ru.smn.poker.game.Round;
@@ -27,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import static ru.smn.poker.converter.PlayerConverter.toDTOs;
 import static ru.smn.poker.util.GameUtil.getRandomGOTCityName;
 
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -40,6 +44,35 @@ public class CommonGameManagementService implements GameManagementService {
     private final WinnerService winnerService;
 
 
+    public void createNewGameTest(
+            List<PlayerEntity> players,
+            List<ChipsCountEntity> chipsCountEntities,
+            GameType gameType
+    ) {
+        final String randomGameName = getRandomGOTCityName();
+
+        final GameEntity gameEntity = GameEntity.builder()
+                .name(randomGameName)
+                .gameType(gameType)
+                .players(players)
+                .build();
+
+        chipsCountEntities.forEach(chipsCountEntity -> chipsCountEntity.setGame(gameEntity));
+
+        gameEntity.setCounts(chipsCountEntities);
+
+        players.forEach(playerEntity -> playerEntity.setGame(gameEntity));
+
+        final GameEntity gameEntityFromBase = gameService.saveGame(gameEntity);
+
+        final Game generatedGame = createGame(gameEntityFromBase);
+
+        games.put(generatedGame.getGameName(), generatedGame);
+
+        startGame(generatedGame);
+
+    }
+
     public void createNewGame(List<Player> players, GameType gameType, OrderService orderService) {
         final Game game = createGame(
                 players,
@@ -50,7 +83,7 @@ public class CommonGameManagementService implements GameManagementService {
 
         if (checkGameName(game.getGameName())) {
             games.put(game.getGameName(), game);
-            gameService.saveGame(GameConverter.toEntity(game));
+            final GameEntity gameEntityFromBase = gameService.saveGame(GameConverter.toEntity(game));
             startGame(game);
             log.info("created new game:" + game.getGameName());
         }
@@ -92,12 +125,17 @@ public class CommonGameManagementService implements GameManagementService {
 
     }
 
-
     @Override
     public void startGame(Game game) {
         runnableGames.computeIfAbsent(game, game2 -> {
             final ExecutorService executorService = Executors.newSingleThreadExecutor();
-            executorService.submit(game2::start);
+            executorService.submit(game::start);
+            try {
+                Thread.sleep(3 * 1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            gameService.update(game.getRoundSettings());
             return executorService;
         });
     }
@@ -117,6 +155,24 @@ public class CommonGameManagementService implements GameManagementService {
         });
     }
 
+    public Game createGame(GameEntity gameEntity) {
+        final GameSettings gameSettings = mapSettings.get(gameEntity.getGameType());
+
+        final Round round = new HoldemRound(
+                new ArrayList<>(PlayerConverter.toDTOs(gameEntity.getPlayers())),
+                gameEntity.getName(),
+                orderService,
+                winnerService,
+                gameSettings.getStartSmallBlindBet(),
+                gameSettings.getStartBigBlindBet(),
+                gameEntity.getId()
+        );
+
+        return new HoldemGame(
+                gameSettings,
+                round
+        );
+    }
 
     public Game createGame(List<Player> players,
                            GameType gameType,

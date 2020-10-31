@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.smn.poker.converter.RoundSettingsConverter;
 import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.GameEntity;
+import ru.smn.poker.entities.RoundEntity;
 import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.repository.GameRepository;
 
@@ -38,7 +39,8 @@ public class GameService {
 
         final GameEntity gameEntity = RoundSettingsConverter.toEntity(
                 roundSettings,
-                Objects.requireNonNull(rounds.map(GameEntity::getRounds).orElse(null)));
+                Objects.requireNonNull(rounds.map(GameEntity::getRounds).orElse(null))
+        );
 
         gameRepository.save(gameEntity);
     }

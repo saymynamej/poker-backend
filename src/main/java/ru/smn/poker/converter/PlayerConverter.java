@@ -68,7 +68,9 @@ public class PlayerConverter {
                             .cardType(cardType)
                             .player(playerEntity)
                             .game(gameEntity)
-                            .build()).collect(Collectors.toList()));
+                            .build())
+                    .collect(Collectors.toList())
+            );
         }
         final ChipsCountEntity chipsCountEntity = ChipsCountConverter.toEntity(player, gameEntity);
         playerEntity.setChipsCount(chipsCountEntity);
@@ -96,7 +98,7 @@ public class PlayerConverter {
         }
         return Player.builder()
                 .chipsCount(playerEntity.getChipsCount().getCount())
-                .cards(playerEntity.getCards().stream()
+                .cards(playerEntity.getCards() == null ? null : playerEntity.getCards().stream()
                         .map(CardEntity::getCardType)
                         .collect(Collectors.toList()))
                 .chipsId(playerEntity.getChipsCount().getId())
