@@ -13,7 +13,7 @@ spring:
     show-sql: false
     open-in-view: false
   datasource:
-    username: test
+    username: postgres
     password: test
     url: jdbc:postgresql://localhost:6789/postgres
   application:
