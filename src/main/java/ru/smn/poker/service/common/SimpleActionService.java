@@ -111,9 +111,7 @@ public class SimpleActionService implements ActionService {
         if (action instanceof ExecutableAction) {
             ((ExecutableAction) action).doAction(roundSettings, player, gameService, this);
             log.info("player: " + player.getName() + " did action:" + action);
-            gameService.update(roundSettings);
         }
         actionLogService.log(player, action);
-        gameService.update(roundSettings);
     }
 }

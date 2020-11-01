@@ -163,6 +163,7 @@ public class CommonGameManagementService implements GameManagementService {
                 gameEntity.getName(),
                 orderService,
                 winnerService,
+                gameService,
                 gameSettings.getStartSmallBlindBet(),
                 gameSettings.getStartBigBlindBet(),
                 gameEntity.getId()
@@ -191,6 +192,7 @@ public class CommonGameManagementService implements GameManagementService {
                 gameName,
                 orderService,
                 winnerService,
+                gameService,
                 gameSettings.getStartSmallBlindBet(),
                 gameSettings.getStartBigBlindBet(),
                 gameId

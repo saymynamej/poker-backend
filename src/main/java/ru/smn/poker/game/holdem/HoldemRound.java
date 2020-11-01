@@ -10,6 +10,8 @@ import ru.smn.poker.game.Round;
 import ru.smn.poker.game.RoundSettingsManager;
 import ru.smn.poker.service.OrderService;
 import ru.smn.poker.service.WinnerService;
+import ru.smn.poker.service.common.GameService;
+
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -19,6 +21,7 @@ public class HoldemRound implements Round {
     private final String gameName;
     private final OrderService orderService;
     private final WinnerService winnerService;
+    private final GameService gameService;
     private final long smallBlindBet;
     private final long bigBlindBet;
     private final long gameId;
@@ -40,6 +43,8 @@ public class HoldemRound implements Round {
             roundSettings = roundSettingsManager.getSettings(
                     roundSettings
             );
+            gameService.update(roundSettings);
+
             final boolean skipNext = orderService.start(roundSettings);
 
             if (skipNext || roundSettings.getStageType() == StageType.RIVER) {
@@ -48,6 +53,7 @@ public class HoldemRound implements Round {
         }
         roundSettings.setFinished(true);
         winnerService.sendPrizes(roundSettings);
+        gameService.update(roundSettings);
     }
 
     @Override

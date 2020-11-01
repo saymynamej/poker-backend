@@ -3,10 +3,10 @@ package ru.smn.poker.service.common;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.smn.poker.action.Action;
-import ru.smn.poker.dto.PlayerCombination;
 import ru.smn.poker.dto.Player;
-import ru.smn.poker.game.RoundSettings;
+import ru.smn.poker.dto.PlayerCombination;
 import ru.smn.poker.enums.CardType;
+import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.service.CombinationService;
 import ru.smn.poker.service.WinnerService;
 import ru.smn.poker.util.PlayerUtil;
@@ -15,13 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.smn.poker.util.HistoryUtil.*;
+import static ru.smn.poker.util.HistoryUtil.sumBets;
 
 @Service
 @RequiredArgsConstructor
 public class SimpleWinnerService implements WinnerService {
     private final CombinationService combinationService;
-    private final GameService gameService;
 
     @Override
     public void sendPrizes(RoundSettings roundSettings) {
@@ -32,7 +31,6 @@ public class SimpleWinnerService implements WinnerService {
             final List<PlayerCombination> winners = findWinners(roundSettings);
             calculate(winners, roundSettings);
         }
-        gameService.update(roundSettings);
     }
 
 
