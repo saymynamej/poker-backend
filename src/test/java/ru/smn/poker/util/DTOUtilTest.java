@@ -2,6 +2,7 @@ package ru.smn.poker.util;
 
 import com.github.javafaker.Faker;
 import ru.smn.poker.action.holdem.Wait;
+import ru.smn.poker.dto.Card;
 import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
 import ru.smn.poker.game.RoundSettings;
@@ -80,7 +81,10 @@ public class DTOUtilTest {
                 .chipsCount(DEFAULT_CHIPS_COUNT)
                 .name(faker.name().name())
                 .stateType(StateType.IN_GAME)
-                .cards(List.of(CardType.SIX_S, CardType.SIX_C))
+                .cards(List.of(
+                        Card.builder().cardType(CardType.SIX_S).build(),
+                        Card.builder().cardType(CardType.SIX_C).build())
+                )
                 .roleType(RoleType.ORDINARY)
                 .action(new Wait())
                 .timeBank(60L)
