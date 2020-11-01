@@ -12,11 +12,12 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(of = "player")
+@ToString
 public class CardEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Long id;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "game_id")

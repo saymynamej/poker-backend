@@ -43,6 +43,7 @@ public class HoldemRound implements Round {
             roundSettings = roundSettingsManager.getSettings(
                     roundSettings
             );
+
             gameService.update(roundSettings);
 
             final boolean skipNext = orderService.start(roundSettings);

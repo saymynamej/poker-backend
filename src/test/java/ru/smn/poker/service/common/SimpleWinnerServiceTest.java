@@ -11,6 +11,7 @@ import ru.smn.poker.action.holdem.AllIn;
 import ru.smn.poker.action.holdem.Call;
 import ru.smn.poker.action.holdem.Fold;
 import ru.smn.poker.action.holdem.Raise;
+import ru.smn.poker.dto.Card;
 import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
 import ru.smn.poker.game.RoundSettings;
@@ -65,12 +66,18 @@ class SimpleWinnerServiceTest {
     @Test
     void testWhenNeedChop() {
         final Player player1 = PlayerUtil.getDefaultPlayerForHoldem("1");
-        player1.addCards(Arrays.asList(CardType.TWO_C, CardType.THREE_H));
+        player1.addCards(Arrays.asList(
+                Card.builder().cardType(CardType.TWO_C).build(),
+                Card.builder().cardType(CardType.THREE_H).build())
+        );
         final AllIn allIn1 = new AllIn(player1.getChipsCount());
         player1.setAction(allIn1);
 
         final Player player2 = PlayerUtil.getDefaultPlayerForHoldem("2");
-        player2.addCards(Arrays.asList(CardType.TWO_D, CardType.THREE_S));
+        player2.addCards(Arrays.asList(
+                Card.builder().cardType(CardType.TWO_D).build(),
+                Card.builder().cardType(CardType.THREE_S).build())
+        );
         final AllIn allIn2 = new AllIn(player2.getChipsCount());
         player2.setAction(allIn2);
 
@@ -108,19 +115,34 @@ class SimpleWinnerServiceTest {
     @Test
     void testWhenNeedCalculate() {
         final Player player1 = PlayerUtil.getDefaultPlayerForHoldem("1");
-        player1.addCards(Arrays.asList(CardType.K_C, CardType.K_D));
+        player1.addCards(
+                Arrays.asList(
+                        Card.builder().cardType(CardType.K_C).build(),
+                        Card.builder().cardType(CardType.K_D).build()
+                )
+        );
         final AllIn allIn1 = new AllIn(5000);
         player1.setAction(allIn1);
         player1.setChipsCount(0);
 
         final Player player2 = PlayerUtil.getDefaultPlayerForHoldem("2");
-        player2.addCards(Arrays.asList(CardType.EIGHT_S, CardType.NINE_S));
+        player2.addCards(
+                Arrays.asList(
+                        Card.builder().cardType(CardType.EIGHT_S).build(),
+                        Card.builder().cardType(CardType.NINE_S).build()
+                )
+        );
         final AllIn allIn2 = new AllIn(2000);
         player2.setChipsCount(0);
         player2.setAction(allIn2);
 
         final Player player3 = PlayerUtil.getDefaultPlayerForHoldem("3");
-        player3.addCards(Arrays.asList(CardType.TWO_C, CardType.THREE_S));
+        player3.addCards(
+                Arrays.asList(
+                        Card.builder().cardType(CardType.TWO_C).build(),
+                        Card.builder().cardType(CardType.THREE_S).build()
+                )
+        );
         final AllIn allIn3 = new AllIn(100);
         player3.setChipsCount(0);
         player3.setAction(allIn3);

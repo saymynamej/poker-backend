@@ -5,6 +5,7 @@ import ru.smn.poker.action.Action;
 import ru.smn.poker.action.holdem.Call;
 import ru.smn.poker.action.holdem.Fold;
 import ru.smn.poker.action.holdem.Wait;
+import ru.smn.poker.dto.Card;
 import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
 import ru.smn.poker.game.RoundSettings;
@@ -158,7 +159,15 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
 
     private void dealCards() {
         PlayerUtil.getPlayerWhichMayPlay(players).forEach(
-                player -> player.addCards(Arrays.asList(getRandomCard(), getRandomCard()))
+                player -> player.addCards(
+                        Arrays.asList(
+                                Card.builder()
+                                        .cardType(getRandomCard())
+                                        .build(),
+                                Card.builder()
+                                        .cardType(getRandomCard())
+                                        .build()
+                        ))
         );
     }
 

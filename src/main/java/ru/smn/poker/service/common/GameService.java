@@ -4,16 +4,25 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.smn.poker.converter.GameConverter;
+import ru.smn.poker.converter.PlayerConverter;
 import ru.smn.poker.converter.RoundSettingsConverter;
+import ru.smn.poker.dto.Card;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.CardEntity;
 import ru.smn.poker.entities.GameEntity;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.entities.RoundEntity;
+import ru.smn.poker.enums.StageType;
 import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.repository.GameRepository;
+import ru.smn.poker.util.RoundSettingsUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static ru.smn.poker.util.HistoryUtil.addActionInHistory;
 
@@ -35,6 +44,7 @@ public class GameService {
     @Transactional
     public void update(RoundSettings roundSettings) {
         final long gameId = roundSettings.getGameId();
+
         final Optional<GameEntity> rounds = gameRepository.findById(gameId);
 
         final GameEntity gameEntity = RoundSettingsConverter.toEntity(
@@ -42,12 +52,14 @@ public class GameService {
                 Objects.requireNonNull(rounds.map(GameEntity::getRounds).orElse(null))
         );
 
-        gameRepository.save(gameEntity);
+        final GameEntity savedGameEntity = gameRepository.save(gameEntity);
+
+        RoundSettingsUtil.substituteCardsForPlayer(roundSettings, savedGameEntity);
     }
 
     public long getNextGameId() {
         final GameEntity gameEntityWithMaxId = gameRepository.findGameEntityWithMaxId();
-        if (gameEntityWithMaxId == null){
+        if (gameEntityWithMaxId == null) {
             return 1;
         }
         Long id = gameEntityWithMaxId.getId();

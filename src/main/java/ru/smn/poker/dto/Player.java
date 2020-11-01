@@ -19,7 +19,8 @@ public class Player {
 
     private String name;
 
-    private List<CardType> cards;
+    @Setter
+    private List<Card> cards;
 
     private Long id;
 
@@ -54,7 +55,7 @@ public class Player {
 
     public Player(
             String name,
-            List<CardType> cards,
+            List<Card> cards,
             RoleType roleType,
             long chipsCount,
             StateType stateType,
@@ -194,7 +195,7 @@ public class Player {
         return getStateType() == null || getStateType() == StateType.AFK || getStateType() == StateType.LEAVE;
     }
 
-    public void addCards(List<CardType> cards) {
+    public void addCards(List<Card> cards) {
         this.cards = new ArrayList<>(cards);
     }
 

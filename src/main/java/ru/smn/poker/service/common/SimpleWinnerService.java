@@ -3,6 +3,7 @@ package ru.smn.poker.service.common;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.smn.poker.action.Action;
+import ru.smn.poker.dto.Card;
 import ru.smn.poker.dto.Player;
 import ru.smn.poker.dto.PlayerCombination;
 import ru.smn.poker.enums.CardType;
@@ -27,7 +28,7 @@ public class SimpleWinnerService implements WinnerService {
         final List<Player> playersInGame = PlayerUtil.getPlayersInGame(roundSettings.getPlayers());
         if (roundSettings.isOnePlayerLeft()) {
             playersInGame.get(0).addChips(roundSettings.getBank());
-        }else {
+        } else {
             final List<PlayerCombination> winners = findWinners(roundSettings);
             calculate(winners, roundSettings);
         }
@@ -89,7 +90,10 @@ public class SimpleWinnerService implements WinnerService {
 
 
         PlayerUtil.getPlayersInGame(roundSettings.getPlayers()).forEach(player -> {
-            final List<CardType> playerCards = player.getCards();
+            final List<CardType> playerCards = player.getCards().stream()
+                    .map(Card::getCardType)
+                    .collect(Collectors.toList());
+
             final List<CardType> cards = new ArrayList<>(playerCards);
             cards.addAll(flop);
             cards.add(tern);

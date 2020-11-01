@@ -2,6 +2,7 @@ package ru.smn.poker.converter;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.smn.poker.dto.Bot;
+import ru.smn.poker.dto.Card;
 import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.CardEntity;
 import ru.smn.poker.entities.ChipsCountEntity;
@@ -64,8 +65,9 @@ public class PlayerConverter {
         final PlayerEntity playerEntity = getDefaultPlayerEntity(player);
         if (player.getCards() != null) {
             playerEntity.setCards(player.getCards().stream()
-                    .map(cardType -> CardEntity.builder()
-                            .cardType(cardType)
+                    .map(card -> CardEntity.builder()
+                            .cardType(card.getCardType())
+                            .id(card.getId())
                             .player(playerEntity)
                             .game(gameEntity)
                             .build())
@@ -88,7 +90,10 @@ public class PlayerConverter {
             return Bot.builder()
                     .chipsCount(playerEntity.getChipsCount().getCount())
                     .cards(playerEntity.getCards().stream()
-                            .map(CardEntity::getCardType)
+                            .map(cardEntity -> Card.builder()
+                                    .cardType(cardEntity.getCardType())
+                                    .id(cardEntity.getId())
+                                    .build())
                             .collect(Collectors.toList()))
                     .id(playerEntity.getId())
                     .chipsId(playerEntity.getChipsCount().getId())
@@ -99,7 +104,10 @@ public class PlayerConverter {
         return Player.builder()
                 .chipsCount(playerEntity.getChipsCount().getCount())
                 .cards(playerEntity.getCards() == null ? null : playerEntity.getCards().stream()
-                        .map(CardEntity::getCardType)
+                        .map(cardEntity -> Card.builder()
+                                .id(cardEntity.getId())
+                                .cardType(cardEntity.getCardType())
+                                .build())
                         .collect(Collectors.toList()))
                 .chipsId(playerEntity.getChipsCount().getId())
                 .id(playerEntity.getId())
