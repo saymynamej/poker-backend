@@ -1,7 +1,7 @@
 package ru.smn.poker.game.holdem;
 
 import ru.smn.poker.config.game.GameSettings;
-import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.StateType;
 import ru.smn.poker.game.Game;
@@ -33,9 +33,9 @@ public class HoldemGame extends Game {
     }
 
     private void addChipsToPlayers() {
-        final List<Player> players = getPlayers();
-        for (Player player : players) {
-            if (player.getChipsCount() == 0){
+        final List<PlayerEntity> players = getPlayers();
+        for (PlayerEntity player : players) {
+            if (player.getChipsCount().getCount() == 0){
                 player.addChips(5000);
             }
         }
@@ -43,7 +43,7 @@ public class HoldemGame extends Game {
 
     private void removeInActivePlayers() {
         getPlayers().removeAll(getPlayers().stream()
-                .filter(player -> player.getChipsCount() == 0 || player.getStateType() != StateType.IN_GAME)
+                .filter(player -> player.getChipsCount().getCount() == 0 || player.getStateType() != StateType.IN_GAME)
                 .collect(Collectors.toList()));
     }
 
@@ -59,7 +59,7 @@ public class HoldemGame extends Game {
 
     @Override
     protected boolean isReady() {
-        final List<Player> players = getPlayers();
+        final List<PlayerEntity> players = getPlayers();
         return players.size() >= getGameSettings().getMinPlayersForStart() && players.stream()
                 .filter(player -> player.getStateType() == StateType.IN_GAME)
                 .count() >= getGameSettings().getMinActivePlayers();

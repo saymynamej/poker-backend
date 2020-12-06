@@ -3,6 +3,7 @@ package ru.smn.poker.action.holdem;
 import lombok.RequiredArgsConstructor;
 import ru.smn.poker.action.ExecutableAction;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.ActionType;
 import ru.smn.poker.service.ActionService;
@@ -20,7 +21,7 @@ public class AllIn implements ExecutableAction {
     }
 
     @Override
-    public void doAction(RoundSettings roundSettings, Player player, GameService gameService, ActionService actionService) {
+    public void doAction(RoundSettings roundSettings, PlayerEntity player, GameService gameService, ActionService actionService) {
         StrategyData.ALLIN_STRATEGIES.get(player.getRoleType()).execute(
                 player,
                 gameService,

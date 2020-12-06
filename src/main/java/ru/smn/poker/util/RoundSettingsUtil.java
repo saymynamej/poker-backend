@@ -1,8 +1,6 @@
 package ru.smn.poker.util;
 
-import ru.smn.poker.dto.Card;
 import ru.smn.poker.dto.HoldemRoundSettings;
-import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.CardEntity;
 import ru.smn.poker.entities.GameEntity;
 import ru.smn.poker.entities.PlayerEntity;
@@ -16,7 +14,7 @@ import java.util.List;
 public class RoundSettingsUtil {
 
     public static RoundSettings copyWithSecureCard(RoundSettings roundSettings, List<String> filters) {
-        final List<Player> playersWithSecureCards = PlayerUtil.copies(roundSettings.getPlayers());
+        final List<PlayerEntity> playersWithSecureCards = PlayerUtil.copies(roundSettings.getPlayers());
         playersWithSecureCards.forEach(player -> {
             if (!filters.contains(player.getName())) {
                 player.addCards(Collections.emptyList());
@@ -28,15 +26,15 @@ public class RoundSettingsUtil {
 
     public static void substituteCardsForPlayer(RoundSettings roundSettings, GameEntity gameEntity){
         if (roundSettings.getStageType() == StageType.PREFLOP) {
-            for (final Player player : roundSettings.getPlayers()) {
+            for (final PlayerEntity player : roundSettings.getPlayers()) {
                 final PlayerEntity playerEntity = gameEntity.getPlayers().stream()
                         .filter(pe -> pe.getName().equals(player.getName()))
                         .findFirst()
                         .orElseThrow();
 
-                final List<Card> cards = new ArrayList<>();
-                for (Card card : player.getCards()) {
-                    final Card finalCard = card;
+                final List<CardEntity> cards = new ArrayList<>();
+                for (CardEntity card : player.getCards()) {
+                    final CardEntity finalCard = card;
                     final CardEntity cardEntity = playerEntity.getCards()
                             .stream()
                             .filter(ce -> ce.getCardType()
@@ -44,7 +42,7 @@ public class RoundSettingsUtil {
                             .findFirst()
                             .orElseThrow();
 
-                    cards.add(Card.builder()
+                    cards.add(CardEntity.builder()
                             .id(cardEntity.getId())
                             .cardType(cardEntity.getCardType())
                             .build());
@@ -54,7 +52,7 @@ public class RoundSettingsUtil {
         }
     }
 
-    public static RoundSettings copy(RoundSettings roundSettings, List<Player> players) {
+    public static RoundSettings copy(RoundSettings roundSettings, List<PlayerEntity> players) {
         return HoldemRoundSettings.builder()
                 .gameName(roundSettings.getGameName())
                 .bank(roundSettings.getBank())

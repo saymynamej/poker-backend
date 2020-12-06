@@ -3,6 +3,7 @@ package ru.smn.poker.service.common;
 import org.springframework.stereotype.Service;
 import ru.smn.poker.dto.Player;
 import ru.smn.poker.dto.ResultTime;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.service.TimeBankService;
 
 import java.util.Timer;
@@ -14,7 +15,7 @@ public class SimpleTimeBankService implements TimeBankService {
     private final static long DEFAULT_TIME_FOR_ACTION = 15L;
 
     @Override
-    public ResultTime activateTime(Player player) {
+    public ResultTime activateTime(PlayerEntity player) {
         final Timer timer = new Timer();
         final ResultTime result = new ResultTime();
         result.setTimer(timer);
@@ -35,7 +36,7 @@ public class SimpleTimeBankService implements TimeBankService {
     }
 
     @Override
-    public void cancel(ResultTime result, Player player) {
+    public void cancel(ResultTime result, PlayerEntity player) {
         result.getTimer().cancel();
         if (result.isDone()) {
             final long startTime = result.getStartTime();

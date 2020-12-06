@@ -29,11 +29,7 @@ public class GameConverter {
             gameEntity.setId(game.getId());
         }
 
-        final List<PlayerEntity> playerEntities = PlayerConverter.toEntities(
-                game.getPlayers(),
-                gameEntity
-        );
-        gameEntity.setPlayers(playerEntities);
+        gameEntity.setPlayers(game.getPlayers());
 
 
         return gameEntity;

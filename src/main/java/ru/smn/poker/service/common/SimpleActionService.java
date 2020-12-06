@@ -10,6 +10,7 @@ import ru.smn.poker.action.holdem.AllIn;
 import ru.smn.poker.auto.AutoBot;
 import ru.smn.poker.dto.Player;
 import ru.smn.poker.dto.ResultTime;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.ActionType;
 import ru.smn.poker.enums.InformationType;
@@ -36,7 +37,7 @@ public class SimpleActionService implements ActionService {
 
     @Override
     public void changeStateType(String playerName) {
-        final Player player = holdemGameDataService.getPlayerByName(playerName)
+        final PlayerEntity player = holdemGameDataService.getPlayerByName(playerName)
                 .orElseThrow(() -> new RuntimeException("cannot find player with name:" + playerName));
 
         if (player.hasGame()) {
@@ -55,7 +56,7 @@ public class SimpleActionService implements ActionService {
 
     @Override
     public void setAction(String playerName, Action action) {
-        final Player player = holdemGameDataService.getPlayerByName(playerName)
+        final PlayerEntity player = holdemGameDataService.getPlayerByName(playerName)
                 .orElseThrow(() -> new RuntimeException("cannot find player with name:" + playerName));
 
         action = changeCallOnAllInIfNeeded(action, player);
@@ -68,10 +69,10 @@ public class SimpleActionService implements ActionService {
         player.setAction(action);
     }
 
-    private Action changeCallOnAllInIfNeeded(Action action, Player player) {
+    private Action changeCallOnAllInIfNeeded(Action action, PlayerEntity player) {
         if (action.getActionType() == ActionType.CALL || action.getActionType() == ActionType.RAISE) {
             final CountAction countAction = (CountAction) action;
-            if (countAction.getCount() == player.getChipsCount()) {
+            if (countAction.getCount() == player.getChipsCount().getCount()) {
                 action = new AllIn(countAction.getCount());
             }
         }
@@ -79,7 +80,7 @@ public class SimpleActionService implements ActionService {
     }
 
     @Override
-    public void waitUntilPlayerWillHasAction(Player player, RoundSettings roundSettings) {
+    public void waitUntilPlayerWillHasAction(PlayerEntity player, RoundSettings roundSettings) {
         log.info("waiting action from player:" + player.getName());
         player.setWait();
         gameService.setActivePlayer(roundSettings, player);
@@ -88,7 +89,7 @@ public class SimpleActionService implements ActionService {
         gameService.setInActivePlayer(roundSettings, player);
     }
 
-    private void waitPlayerAction(Player player, RoundSettings roundSettings) {
+    private void waitPlayerAction(PlayerEntity player, RoundSettings roundSettings) {
         final ResultTime timer = simpleTimeBankService.activateTime(player);
         while (true) {
             if (player.isNotInGame()) {
@@ -106,7 +107,7 @@ public class SimpleActionService implements ActionService {
     }
 
 
-    public void doAction(Player player, RoundSettings roundSettings) {
+    public void doAction(PlayerEntity player, RoundSettings roundSettings) {
         final Action action = player.getAction();
         if (action instanceof ExecutableAction) {
             ((ExecutableAction) action).doAction(roundSettings, player, gameService, this);

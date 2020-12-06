@@ -1,6 +1,7 @@
 package ru.smn.poker.dto;
 
 import lombok.*;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.GameType;
 
 import java.util.List;
@@ -13,5 +14,5 @@ public class Game {
     private final Long id;
     private final String gameName;
     private final GameType gameType;
-    private final List<Player> players;
+    private final List<PlayerEntity> players;
 }

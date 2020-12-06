@@ -1,6 +1,7 @@
 package ru.smn.poker.game;
 
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.PlayerEntity;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface Round {
 
     RoundSettings getRoundSettings();
 
-    List<Player> getPlayers();
+    List<PlayerEntity> getPlayers();
 
     void setGameId(Long gameId);
 

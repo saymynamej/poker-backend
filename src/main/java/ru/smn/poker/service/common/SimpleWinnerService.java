@@ -6,6 +6,8 @@ import ru.smn.poker.action.Action;
 import ru.smn.poker.dto.Card;
 import ru.smn.poker.dto.Player;
 import ru.smn.poker.dto.PlayerCombination;
+import ru.smn.poker.entities.CardEntity;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.CardType;
 import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.service.CombinationService;
@@ -25,7 +27,7 @@ public class SimpleWinnerService implements WinnerService {
 
     @Override
     public void sendPrizes(RoundSettings roundSettings) {
-        final List<Player> playersInGame = PlayerUtil.getPlayersInGame(roundSettings.getPlayers());
+        final List<PlayerEntity> playersInGame = PlayerUtil.getPlayersInGame(roundSettings.getPlayers());
         if (roundSettings.isOnePlayerLeft()) {
             playersInGame.get(0).addChips(roundSettings.getBank());
         } else {
@@ -41,12 +43,12 @@ public class SimpleWinnerService implements WinnerService {
                 long winnerBets = sumBets(roundSettings.getFullHistory().get(winners.get(0).getPlayer()));
                 long generatedBank = winnerBets;
 
-                final List<Player> playersInGame = PlayerUtil.getPlayersInGame(roundSettings.getPlayers()).stream()
+                final List<PlayerEntity> playersInGame = PlayerUtil.getPlayersInGame(roundSettings.getPlayers()).stream()
                         .filter(playerDTO -> !playerDTO.equals(winnerFromLoop.getPlayer()))
                         .collect(Collectors.toList());
 
 
-                for (Player player : playersInGame) {
+                for (PlayerEntity player : playersInGame) {
                     final List<Action> otherPlayerActions = roundSettings.getFullHistory().get(player);
                     long otherPlayer = sumBets(otherPlayerActions);
                     if (winnerBets > otherPlayer) {
@@ -91,7 +93,7 @@ public class SimpleWinnerService implements WinnerService {
 
         PlayerUtil.getPlayersInGame(roundSettings.getPlayers()).forEach(player -> {
             final List<CardType> playerCards = player.getCards().stream()
-                    .map(Card::getCardType)
+                    .map(CardEntity::getCardType)
                     .collect(Collectors.toList());
 
             final List<CardType> cards = new ArrayList<>(playerCards);

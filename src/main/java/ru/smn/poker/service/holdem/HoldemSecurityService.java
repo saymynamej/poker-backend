@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.game.Game;
 import ru.smn.poker.service.GameDataService;
@@ -20,7 +21,7 @@ public class HoldemSecurityService implements SecurityService {
     private final GameDataService holdemGameDataService;
 
     @Override
-    public boolean isLegalPlayer(String gameName, Player player) {
+    public boolean isLegalPlayer(String gameName, PlayerEntity player) {
         final Game game = holdemGameDataService.getGameByName(gameName);
         if (player != null && game.getRoundSettings() != null && game.getRoundSettings().getActivePlayer() != null) {
             return game.getRoundSettings()
@@ -43,7 +44,7 @@ public class HoldemSecurityService implements SecurityService {
     }
 
     @Override
-    public boolean isLegalPlayer(Player player) {
+    public boolean isLegalPlayer(PlayerEntity player) {
         return isLegalPlayer(player.getGameName(), player);
     }
 }

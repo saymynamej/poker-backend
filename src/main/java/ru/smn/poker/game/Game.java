@@ -3,6 +3,7 @@ package ru.smn.poker.game;
 import lombok.extern.slf4j.Slf4j;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.StateType;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public abstract class Game {
         return this.round;
     }
 
-    public List<Player> getPlayers() {
+    public List<PlayerEntity> getPlayers() {
         return this.round.getPlayers();
     }
 
@@ -39,24 +40,24 @@ public abstract class Game {
         return gameSettings;
     }
 
-    public void addPlayer(Player player) {
+    public void addPlayer(PlayerEntity player) {
         if (!this.getPlayers().contains(player)) {
-            player.setActive();
+            player.setActive(true);
             this.getPlayers().add(player);
         }
     }
 
-    public boolean removePlayer(Player player) {
+    public boolean removePlayer(PlayerEntity player) {
         return this.getPlayers().remove(player);
     }
 
     public boolean removePlayer(String name) {
-        final Optional<Player> optionalPlayer = getPlayers().stream()
+        final Optional<PlayerEntity> optionalPlayer = getPlayers().stream()
                 .filter(player -> player.getName().equals(name))
                 .findAny();
 
         if (optionalPlayer.isPresent()) {
-            final Player player = optionalPlayer.get();
+            final PlayerEntity player = optionalPlayer.get();
             player.setStateType(StateType.LEAVE);
             return this.removePlayer(player);
         }

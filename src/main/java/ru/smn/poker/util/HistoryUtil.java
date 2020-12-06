@@ -3,6 +3,7 @@ package ru.smn.poker.util;
 import ru.smn.poker.action.Action;
 import ru.smn.poker.action.CountAction;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.StageType;
 
@@ -21,9 +22,9 @@ public class HistoryUtil {
     }
 
     public static boolean allPlayersInGameHaveSameCountOfBet(RoundSettings roundSettings) {
-        final List<Player> playersInGame = PlayerUtil.getPlayersInGame(roundSettings.getPlayers());
+        final List<PlayerEntity> playersInGame = PlayerUtil.getPlayersInGame(roundSettings.getPlayers());
 
-        final List<Player> players = playersInGame.stream()
+        final List<PlayerEntity> players = playersInGame.stream()
                 .filter(StreamUtil.playerFolded().negate())
                 .filter(StreamUtil.playerHasChips())
                 .collect(Collectors.toList());
@@ -33,15 +34,15 @@ public class HistoryUtil {
     }
 
 
-    public static long sumRoundHistoryBets(RoundSettings roundSettings, Player player) {
-        final Map<Player, List<Action>> fullHistory = roundSettings.getFullHistory();
+    public static long sumRoundHistoryBets(RoundSettings roundSettings, PlayerEntity player) {
+        final Map<PlayerEntity, List<Action>> fullHistory = roundSettings.getFullHistory();
         final List<Action> countActions = fullHistory.get(player);
         return sumBets(countActions);
     }
 
 
-    public static long sumStageHistoryBets(RoundSettings roundSettings, Player player) {
-        final Map<Player, List<Action>> history = roundSettings.getStageHistory();
+    public static long sumStageHistoryBets(RoundSettings roundSettings, PlayerEntity player) {
+        final Map<PlayerEntity, List<Action>> history = roundSettings.getStageHistory();
         final List<Action> countActions = history.get(player);
         return sumBets(countActions);
     }
@@ -63,15 +64,15 @@ public class HistoryUtil {
     }
 
 
-    public static long sumAllHistoryBetsWithNewAction(RoundSettings roundSettings, Player player, CountAction countAction) {
-        final Map<Player, List<Action>> history = roundSettings.getStageHistory();
+    public static long sumAllHistoryBetsWithNewAction(RoundSettings roundSettings, PlayerEntity player, CountAction countAction) {
+        final Map<PlayerEntity, List<Action>> history = roundSettings.getStageHistory();
         final List<Action> countActions = history.get(player);
         return sumBets(countActions) + countAction.getCount();
     }
 
 
-    public static void addActionInHistory(RoundSettings roundSettings, Player player, Action action) {
-        final Map<Player, List<Action>> history = roundSettings.getStageHistory();
+    public static void addActionInHistory(RoundSettings roundSettings, PlayerEntity player, Action action) {
+        final Map<PlayerEntity, List<Action>> history = roundSettings.getStageHistory();
         final List<Action> newActionsList = history.get(player);
         if (newActionsList != null) {
             newActionsList.add(action);
@@ -83,12 +84,12 @@ public class HistoryUtil {
         history.put(player, actionsList);
     }
 
-    public static void addActionInHistory(RoundSettings roundSettings, Player player) {
+    public static void addActionInHistory(RoundSettings roundSettings, PlayerEntity player) {
         addActionInHistory(roundSettings, player, player.getAction());
     }
 
-    public static Map<Player, List<Action>> unionHistory(Map<Player, List<Action>> firstHistory, Map<Player, List<Action>> secondHistory) {
-        final Map<Player, List<Action>> unionActions = new HashMap<>(firstHistory);
+    public static Map<PlayerEntity, List<Action>> unionHistory(Map<PlayerEntity, List<Action>> firstHistory, Map<PlayerEntity, List<Action>> secondHistory) {
+        final Map<PlayerEntity, List<Action>> unionActions = new HashMap<>(firstHistory);
 
         secondHistory.forEach((key, value) -> {
             final List<Action> countActions = unionActions.get(key);

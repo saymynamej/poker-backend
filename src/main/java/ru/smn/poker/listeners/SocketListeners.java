@@ -5,10 +5,13 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
+import ru.smn.poker.converter.RoundSettingsConverter;
+import ru.smn.poker.dto.HoldemRoundSettingsDTO;
 import ru.smn.poker.dto.Player;
-import ru.smn.poker.game.RoundSettings;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.MessageType;
 import ru.smn.poker.game.Game;
+import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.service.GameDataService;
 import ru.smn.poker.service.SecurityService;
 import ru.smn.poker.service.common.SimpleNotificationService;
@@ -32,16 +35,25 @@ public class SocketListeners {
     public void handleWebsocketConnectListener(SessionSubscribeEvent event) {
         final Principal user = event.getUser();
         if (user != null) {
-            final Optional<Player> optionalPlayer = gameDataService.getPlayerByName(user.getName());
+            final Optional<PlayerEntity> optionalPlayer = gameDataService.getPlayerByName(user.getName());
             if (optionalPlayer.isPresent()) {
-                final Player player = optionalPlayer.get();
+                final PlayerEntity player = optionalPlayer.get();
                 if (player.getGameName() != null) {
                     final Game game = games.get(player.getGameName());
+
                     final RoundSettings roundSettings = game.getRoundSettings();
+
+                    final RoundSettings securedRoundSettings = securityService.secureCards(
+                            List.of(user.getName()),
+                            roundSettings
+                    );
+
+                    final HoldemRoundSettingsDTO holdemRoundSettingsDTO = RoundSettingsConverter.toDTO(securedRoundSettings);
+
+
                     simpleNotificationService.sendGameInformationToUser(
                             player.getName(),
-                            securityService.secureCards(List.of(user.getName()),
-                                    roundSettings)
+                            holdemRoundSettingsDTO
                     );
                 }
             }

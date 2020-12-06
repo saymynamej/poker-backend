@@ -4,6 +4,7 @@ import ru.smn.poker.action.ActionStrategy;
 import ru.smn.poker.action.CountAction;
 import ru.smn.poker.action.holdem.Raise;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.service.ActionService;
 import ru.smn.poker.service.common.GameService;
@@ -13,7 +14,7 @@ import static ru.smn.poker.util.HistoryUtil.sumStageHistoryBets;
 public class RaiseStrategy implements ActionStrategy {
 
     @Override
-    public void execute(Player player, GameService gameService, ActionService actionService, CountAction countAction, RoundSettings roundSettings) {
+    public void execute(PlayerEntity player, GameService gameService, ActionService actionService, CountAction countAction, RoundSettings roundSettings) {
         if (player.hasNotChipsForAction(countAction)) {
             actionService.waitUntilPlayerWillHasAction(player, roundSettings);
             return;
@@ -30,7 +31,7 @@ public class RaiseStrategy implements ActionStrategy {
 
     }
 
-    private void changeActionForHistory(Player player, CountAction countAction, long prevBets) {
+    private void changeActionForHistory(PlayerEntity player, CountAction countAction, long prevBets) {
         player.setAction(new Raise(countAction.getCount() - prevBets));
     }
     private boolean raiseLessThanPrevBetByFormulas(RoundSettings roundSettings, CountAction countAction){

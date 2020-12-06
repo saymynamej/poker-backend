@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.MessageType;
 import ru.smn.poker.game.Game;
 import ru.smn.poker.service.NotificationService;
@@ -23,10 +24,10 @@ public class SimpleSeatManager implements SeatManager {
 
     private final CommonGameDataService commonGameManager;
     private final NotificationService notificationService;
-    private final Queue<Player> players = new LinkedBlockingQueue<>();
+    private final Queue<PlayerEntity> players = new LinkedBlockingQueue<>();
 
     @Override
-    public void joinInGame(String gameName, Player player) {
+    public void joinInGame(String gameName, PlayerEntity player) {
         synchronized (this) {
             if (commonGameManager.getPlayerByName(player.getName()).isPresent()) {
                 notificationService.sendSystemMessageToUser(player.getName(), MessageType.ONLY_ONE_TABLE_MESSAGE.getMessage());
@@ -43,7 +44,7 @@ public class SimpleSeatManager implements SeatManager {
     }
 
     @Override
-    public void joinInQueue(Player player) {
+    public void joinInQueue(PlayerEntity player) {
         synchronized (this) {
             final boolean isExist = players.contains(player);
             if (isExist) {
@@ -68,7 +69,7 @@ public class SimpleSeatManager implements SeatManager {
     }
 
     @Override
-    public Queue<Player> getQueue() {
+    public Queue<PlayerEntity> getQueue() {
         return players;
     }
 

@@ -2,6 +2,7 @@ package ru.smn.poker.game;
 
 import ru.smn.poker.action.Action;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.util.PlayerUtil;
@@ -12,11 +13,11 @@ import java.util.Map;
 
 public interface RoundSettings {
 
-    Map<Player, List<Action>> getStageHistory();
+    Map<PlayerEntity, List<Action>> getStageHistory();
 
-    Map<Player, List<Action>> getFullHistory();
+    Map<PlayerEntity, List<Action>> getFullHistory();
 
-    List<Player> getPlayers();
+    List<PlayerEntity> getPlayers();
 
     List<CardType> getFlop();
 
@@ -32,11 +33,11 @@ public interface RoundSettings {
 
     long getBigBlindBet();
 
-    Player getButton();
+    PlayerEntity getButton();
 
-    Player getSmallBlind();
+    PlayerEntity getSmallBlind();
 
-    Player getBigBlind();
+    PlayerEntity getBigBlind();
 
     StageType getStageType();
 
@@ -44,7 +45,9 @@ public interface RoundSettings {
 
     long getBank();
 
-    Player getActivePlayer();
+    Long getRoundId();
+
+    PlayerEntity getActivePlayer();
 
     void setLastBet(Long lastBet);
 
@@ -54,7 +57,7 @@ public interface RoundSettings {
 
     void setFinished(boolean r);
 
-    void setActivePlayer(Player activePlayer);
+    void setActivePlayer(PlayerEntity activePlayer);
 
     default boolean lastBetIsNotZero() {
         return getLastBet() != 0;
@@ -77,7 +80,7 @@ public interface RoundSettings {
                 .allMatch(StreamUtil.playersHasCheck());
     }
 
-    default List<Player> getPlayersInGame(){
+    default List<PlayerEntity> getPlayersInGame(){
         return PlayerUtil.getPlayersInGame(getPlayers());
     }
 

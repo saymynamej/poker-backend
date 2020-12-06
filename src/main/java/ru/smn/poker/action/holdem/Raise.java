@@ -7,6 +7,7 @@ import lombok.ToString;
 import ru.smn.poker.action.CountAction;
 import ru.smn.poker.action.ExecutableAction;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.ActionType;
 import ru.smn.poker.service.ActionService;
@@ -28,7 +29,7 @@ public class Raise implements ExecutableAction, CountAction {
     }
 
     @Override
-    public void doAction(RoundSettings roundSettings, Player player, GameService gameService, ActionService actionService) {
+    public void doAction(RoundSettings roundSettings, PlayerEntity player, GameService gameService, ActionService actionService) {
         RAISE_STRATEGIES.get(player.getRoleType()).execute
                 (
                         player,

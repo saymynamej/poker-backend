@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.service.ActionService;
@@ -25,7 +26,7 @@ public class OrderActionService implements OrderService {
 
     @Override
     public boolean start(RoundSettings roundSettings) {
-        final List<Player> sortedPlayers = PlayerUtil.getPlayersInGame(
+        final List<PlayerEntity> sortedPlayers = PlayerUtil.getPlayersInGame(
                 SortUtil.sort(roundSettings.getPlayers(), roundSettings.getStageType())
         );
         while (true) {
@@ -40,7 +41,7 @@ public class OrderActionService implements OrderService {
             if (canMoveNext(roundSettings)) {
                 return false;
             }
-            for (Player player : PlayerUtil.getPlayersInGame(sortedPlayers)) {
+            for (PlayerEntity player : PlayerUtil.getPlayersInGame(sortedPlayers)) {
                 if (player.isNotFirstMoveOnBigBlind() && canMoveNext(roundSettings)) {
                     return false;
                 }

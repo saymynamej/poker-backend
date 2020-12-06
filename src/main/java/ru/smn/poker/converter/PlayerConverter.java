@@ -86,21 +86,6 @@ public class PlayerConverter {
     }
 
     public static Player toDTO(PlayerEntity playerEntity) {
-        if (playerEntity.getPlayerType() == PlayerType.BOT) {
-            return Bot.builder()
-                    .chipsCount(playerEntity.getChipsCount().getCount())
-                    .cards(playerEntity.getCards().stream()
-                            .map(cardEntity -> Card.builder()
-                                    .cardType(cardEntity.getCardType())
-                                    .id(cardEntity.getId())
-                                    .build())
-                            .collect(Collectors.toList()))
-                    .id(playerEntity.getId())
-                    .chipsId(playerEntity.getChipsCount().getId())
-                    .gameName(playerEntity.getGame().getName())
-                    .name(playerEntity.getName())
-                    .build();
-        }
         return Player.builder()
                 .chipsCount(playerEntity.getChipsCount().getCount())
                 .cards(playerEntity.getCards() == null ? null : playerEntity.getCards().stream()
@@ -111,6 +96,9 @@ public class PlayerConverter {
                         .collect(Collectors.toList()))
                 .chipsId(playerEntity.getChipsCount().getId())
                 .id(playerEntity.getId())
+                .active(playerEntity.isActive())
+                .roleType(playerEntity.getRoleType())
+                .action(playerEntity.getAction())
                 .gameName(playerEntity.getGame().getName())
                 .name(playerEntity.getName())
                 .build();

@@ -3,6 +3,7 @@ package ru.smn.poker.service.common;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.service.QueueService;
 import ru.smn.poker.service.SeatManager;
 
@@ -15,9 +16,9 @@ import java.util.Queue;
 public class SimpleQueueService implements QueueService {
     private final SeatManager seatManager;
 
-    public List<Player> extractQueue() {
-        final List<Player> players = new ArrayList<>();
-        final Queue<Player> queue = seatManager.getQueue();
+    public List<PlayerEntity> extractQueue() {
+        final List<PlayerEntity> players = new ArrayList<>();
+        final Queue<PlayerEntity> queue = seatManager.getQueue();
         final int size = queue.size();
         for (int i = 0; i < size; i++) {
             players.add(queue.poll());

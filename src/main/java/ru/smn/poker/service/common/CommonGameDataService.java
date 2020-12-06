@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.Game;
 import ru.smn.poker.service.GameDataService;
 
@@ -18,7 +19,7 @@ public class CommonGameDataService implements GameDataService {
     private final Map<String, Game> games;
 
     @Override
-    public Optional<Player> getPlayerByName(String name) {
+    public Optional<PlayerEntity> getPlayerByName(String name) {
         return games.values().stream()
                 .flatMap(game -> game.getPlayers().stream())
                 .filter(player -> player.getName().equals(name))

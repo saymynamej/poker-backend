@@ -3,6 +3,7 @@ package ru.smn.poker.game.holdem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.enums.StateType;
@@ -17,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class HoldemRound implements Round {
-    private final List<Player> players;
+    private final List<PlayerEntity> players;
     private final String gameName;
     private final OrderService orderService;
     private final WinnerService winnerService;
@@ -39,6 +40,7 @@ public class HoldemRound implements Round {
                 gameId
         );
 
+
         while (true) {
             roundSettings = roundSettingsManager.getSettings(
                     roundSettings
@@ -58,7 +60,7 @@ public class HoldemRound implements Round {
     }
 
     @Override
-    public synchronized List<Player> getPlayers() {
+    public synchronized List<PlayerEntity> getPlayers() {
         return this.players;
     }
 

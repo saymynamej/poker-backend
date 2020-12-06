@@ -1,6 +1,7 @@
 package ru.smn.poker.game.holdem;
 
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.RoundSettingsManager;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.List;
 public class HoldemRoundSettingsManagerFactory {
 
     public static RoundSettingsManager getRoundSettingsManager(
-            List<Player> players,
+            List<PlayerEntity> players,
             String gameName,
             long bigBlindBet,
             long smallBlindBet,

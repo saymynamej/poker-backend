@@ -2,6 +2,7 @@ package ru.smn.poker.util;
 
 import ru.smn.poker.dto.Bot;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.ChipsCountEntity;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.RoleType;
 
@@ -27,8 +28,8 @@ public class PlayerUtil {
                 .orElse(null);
     }
 
-    public static List<Player> copies(List<Player> players) {
-        final List<Player> copyPlayers = new ArrayList<>();
+    public static List<PlayerEntity> copies(List<PlayerEntity> players) {
+        final List<PlayerEntity> copyPlayers = new ArrayList<>();
         players.forEach(player -> copyPlayers.add(player.copy()));
         return copyPlayers;
     }
@@ -40,40 +41,40 @@ public class PlayerUtil {
                 .build();
     }
 
-    public static Player getDefaultPlayerForHoldem(String playerName) {
+    public static PlayerEntity getDefaultPlayerForHoldem(String playerName) {
         return getDefaultPlayerForHoldem(playerName, 5000L);
     }
 
-    public static Player getDefaultPlayerForHoldem(String playerName, long chipsCount) {
-        return Player.builder()
+    public static PlayerEntity getDefaultPlayerForHoldem(String playerName, long chipsCount) {
+        return PlayerEntity.builder()
                 .name(playerName)
                 .timeBank(60L)
-                .chipsCount(chipsCount)
+                .chipsCount(ChipsCountEntity.builder().count(5000L).build())
                 .build();
     }
 
-    public static List<String> getNamesOfPlayersInGame(List<Player> players){
+    public static List<String> getNamesOfPlayersInGame(List<PlayerEntity> players){
         return getPlayersInGame(players)
                 .stream()
                 .filter(StreamUtil.playerFolded().negate())
-                .map(Player::getName)
+                .map(PlayerEntity::getName)
                 .collect(Collectors.toList());
     }
 
-    public static List<Player> getPlayerWhichMayPlay(List<Player> players) {
+    public static List<PlayerEntity> getPlayerWhichMayPlay(List<PlayerEntity> players) {
         return players.stream()
                 .filter(StreamUtil.playerInGame())
                 .filter(StreamUtil.playerHasChips())
                 .collect(Collectors.toList());
     }
 
-    public static List<Player> getNotFoldedPlayers(List<Player> players) {
+    public static List<PlayerEntity> getNotFoldedPlayers(List<PlayerEntity> players) {
         return players.stream()
-                .filter(Player::isNotFolded)
+                .filter(PlayerEntity::isNotFolded)
                 .collect(Collectors.toList());
     }
 
-    public static List<Player> getPlayersInGame(List<Player> players) {
+    public static List<PlayerEntity> getPlayersInGame(List<PlayerEntity> players) {
         return players.stream()
                 .filter(StreamUtil.playerInGame())
                 .filter(StreamUtil.playerFolded().negate())
