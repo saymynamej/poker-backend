@@ -55,8 +55,7 @@ public class GameService {
             final RoundEntity savedRound = roundRepository.save(roundEntity);
             roundSettings.setRoundId(savedRound.getId());
         } else {
-            final RoundEntity roundEntity = roundRepository.findById(roundSettings.getRoundId()).orElseThrow();
-            roundEntity.setActivePlayer(roundSettings.getActivePlayer());
+            final RoundEntity roundEntity = getRoundEntity(roundSettings, gameRepository.findById(roundSettings.getGameId()).orElse(null));
             roundRepository.save(roundEntity);
         }
     }
@@ -94,6 +93,7 @@ public class GameService {
         final RoundEntity roundEntity = RoundEntity.builder()
                 .bank(roundSettings.getBank())
                 .bigBlindBet(roundSettings.getBigBlindBet())
+                .id(roundSettings.getRoundId())
                 .smallBlindBet(roundSettings.getSmallBlindBet())
                 .game(gameEntity)
                 .stageType(roundSettings.getStageType())
