@@ -33,9 +33,9 @@ public class RoundSettingsUtil {
                         .orElseThrow();
 
                 final List<CardEntity> cards = new ArrayList<>();
-                for (CardEntity card : player.getCards()) {
+                for (CardEntity card : player.getSettings().getCards()) {
                     final CardEntity finalCard = card;
-                    final CardEntity cardEntity = playerEntity.getCards()
+                    final CardEntity cardEntity = playerEntity.getSettings().getCards()
                             .stream()
                             .filter(ce -> ce.getCardType()
                                     .equals(finalCard.getCardType()))
@@ -47,7 +47,7 @@ public class RoundSettingsUtil {
                             .cardType(cardEntity.getCardType())
                             .build());
                 }
-                player.setCards(cards);
+                player.getSettings().setCards(cards);
             }
         }
     }

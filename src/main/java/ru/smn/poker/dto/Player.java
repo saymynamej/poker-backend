@@ -132,6 +132,7 @@ public class Player {
         this.action = new Wait();
     }
 
+
     public void changeState() {
         if (getStateType() == StateType.IN_GAME) {
             setStateType(StateType.AFK);

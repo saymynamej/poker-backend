@@ -21,10 +21,10 @@ public class StreamUtil {
     }
 
     public static Predicate<? super PlayerEntity> playerHasChips(){
-        return (Predicate<PlayerEntity>) player -> player.getChipsCount().getCount() > 0;
+        return (Predicate<PlayerEntity>) player -> player.getSettings().getChipsCount().getCount() > 0;
     }
 
     public static Predicate<? super PlayerEntity> playerInGame() {
-        return (Predicate<PlayerEntity>) player -> player.getStateType() == StateType.IN_GAME;
+        return (Predicate<PlayerEntity>) player -> player.getSettings().getStateType() == StateType.IN_GAME;
     }
 }

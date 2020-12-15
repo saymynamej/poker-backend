@@ -165,9 +165,11 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
                         Arrays.asList(
                                 CardEntity.builder()
                                         .cardType(getRandomCard())
+                                        .player(player)
                                         .build(),
                                 CardEntity.builder()
                                         .cardType(getRandomCard())
+                                        .player(player)
                                         .build()
                         ))
         );

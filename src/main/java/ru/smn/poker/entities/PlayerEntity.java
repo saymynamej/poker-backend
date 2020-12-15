@@ -25,101 +25,78 @@ import java.util.List;
 @ToString
 public class PlayerEntity {
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<ActionEntity> actions;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-    @Transient
-    private Action action;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "settings_id")
+    private PlayerSettingsEntity settings;
 
     private String name;
 
     private String password;
 
-
-    private String gameName;
-
-
-    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<CardEntity> cards;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "game_id")
-    private GameEntity game;
-
     @Builder.Default
     @Enumerated(value = EnumType.STRING)
     private RoleType roleType = RoleType.ORDINARY;
 
-    @Enumerated(value = EnumType.STRING)
-    private PlayerType playerType;
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "chips_id")
-    private ChipsCountEntity chipsCount;
-
-    @Enumerated(value = EnumType.STRING)
-    private StateType stateType;
-
-    private long timeBank;
-
-    private boolean active;
-
     private boolean enable;
+
+    @Transient
+    private Action action;
 
 
     public void removeChips(long chips) {
-        if (chips > this.chipsCount.getCount()) {
-            this.chipsCount.setCount(0L);
+        if (chips > this.settings.getChipsCount().getCount()) {
+            this.settings.getChipsCount().setCount(0L);
             return;
         }
-        this.chipsCount.setCount(this.chipsCount.getCount() - chips);
+        this.settings.getChipsCount().setCount(this.settings.getChipsCount().getCount() - chips);
     }
 
     public boolean isPlayer() {
-        return roleType == RoleType.ORDINARY;
+        return this.getRoleType() == RoleType.ORDINARY;
     }
 
     public boolean isButton() {
-        return roleType == RoleType.BUTTON;
+        return this.getRoleType() == RoleType.BUTTON;
     }
 
     public boolean isBigBlind() {
-        return roleType == RoleType.BIG_BLIND;
+        return this.getRoleType() == RoleType.BIG_BLIND;
     }
 
     public boolean isSmallBlind() {
-        return roleType == RoleType.SMALL_BLIND;
+        return this.getRoleType() == RoleType.SMALL_BLIND;
     }
 
     public void setButton() {
-        this.roleType = RoleType.BUTTON;
+        this.settings.setRoleType(RoleType.BUTTON);
     }
 
     public void setRole(RoleType roleType) {
-        this.roleType = roleType;
+        this.settings.setRoleType(roleType);
     }
 
     public void removeRole() {
-        this.roleType = RoleType.ORDINARY;
+        this.settings.setRoleType(RoleType.ORDINARY);
     }
 
     public void addChips(long chips) {
-        if (chipsCount == null){
-            chipsCount = new ChipsCountEntity();
+        if (this.settings.getChipsCount() == null){
+            this.settings.setChipsCount(new ChipsCountEntity());
         }
-        this.chipsCount.setCount(this.chipsCount.getCount() + chips);
+
+        this.settings.getChipsCount().setCount(this.settings.getChipsCount().getCount() + chips);
     }
 
     public void setChipsCount(ChipsCountEntity chipsCount) {
-        this.chipsCount = chipsCount;
+        this.settings.setChipsCount(chipsCount);
     }
 
     public boolean hasGame() {
-        return this.game != null;
+        return this.settings.getGame() != null;
     }
 
     public void setWait() {
@@ -127,12 +104,12 @@ public class PlayerEntity {
     }
 
     public void changeState() {
-        if (getStateType() == StateType.IN_GAME) {
-            setStateType(StateType.AFK);
+        if (this.settings.getStateType() == StateType.IN_GAME) {
+            this.settings.setStateType(StateType.AFK);
             setAction(new Fold());
             return;
         }
-        setStateType(StateType.IN_GAME);
+        this.settings.setStateType(StateType.IN_GAME);
         setAction(new Wait());
     }
 
@@ -140,12 +117,8 @@ public class PlayerEntity {
         return isBigBlind() && action.getActionType() != ActionType.WAIT;
     }
 
-    public boolean hasZeroChips() {
-        return getChipsCount().getCount() == 0;
-    }
-
     public boolean hasChipsForAction(CountAction countAction) {
-        return getChipsCount().getCount() >= countAction.getCount();
+        return this.settings.getChipsCount().getCount() >= countAction.getCount();
     }
 
     public boolean hasNotChipsForAction(CountAction countAction) {
@@ -167,15 +140,15 @@ public class PlayerEntity {
 
     public void setInActive() {
         setAction(new Fold());
-        setStateType(StateType.AFK);
-        setTimeBank(0L);
+        this.settings.setStateType(StateType.AFK);
+        this.settings.setTimeBank(0L);
 
     }
 
     public void setActive() {
         setAction(new Wait());
-        setStateType(StateType.IN_GAME);
-        setTimeBank(60L);
+        this.settings.setStateType(StateType.IN_GAME);
+        this.settings.setTimeBank(60L);
     }
 
     public boolean isInAllIn() {
@@ -187,11 +160,17 @@ public class PlayerEntity {
     }
 
     public boolean isNotInGame() {
-        return getStateType() == null || getStateType() == StateType.AFK || getStateType() == StateType.LEAVE;
+        final StateType stateType = this.settings.getStateType();
+        return stateType == null || stateType == StateType.AFK || stateType == StateType.LEAVE;
+    }
+
+
+    public StateType getStateType(){
+        return this.settings.getStateType();
     }
 
     public void addCards(List<CardEntity> cards) {
-        this.cards = new ArrayList<>(cards);
+        this.settings.setCards(new ArrayList<>(cards));
     }
 
     public boolean isBot() {
@@ -206,18 +185,62 @@ public class PlayerEntity {
         return PlayerType.ORDINARY;
     }
 
+    public ChipsCountEntity getChipsCount(){
+        return this.settings.getChipsCount();
+    }
+
+    public List<CardEntity> getCards(){
+        return this.settings.getCards();
+    }
+
+    public String getGameName(){
+        return this.settings.getGameName();
+    }
+
+    public void setStateType(StateType stateType){
+        this.settings.setStateType(stateType);
+    }
+
+    public Long getTimeBank(){
+        return this.settings.getTimeBank();
+    }
+
+    public void setTimeBank(Long timeBank){
+        this.settings.setTimeBank(timeBank);
+    }
+
+    public void setActive(boolean isActive){
+        this.settings.setActive(isActive);
+    }
+
+    public void setGame(GameEntity game){
+        this.settings.setGame(game);
+    }
+
+    public void setGameName(String gameName){
+        this.settings.setGameName(gameName);
+    }
+
+    public RoleType getRoleType(){
+        return this.settings.getRoleType();
+    }
+
     public PlayerEntity copy() {
         return PlayerEntity
                 .builder()
                 .name(name)
                 .action(action)
-                .active(active)
-                .cards(cards)
-                .chipsCount(chipsCount)
-                .game(game)
-                .timeBank(timeBank)
-                .roleType(roleType)
-                .stateType(stateType)
+                .settings(PlayerSettingsEntity.builder()
+                        .active(settings.isActive())
+                        .cards(settings.getCards())
+                        .chipsCount(settings.getChipsCount())
+                        .game(settings.getGame())
+                        .actions(settings.getActions())
+                        .gameName(settings.getGameName())
+                        .timeBank(settings.getTimeBank())
+                        .roleType(settings.getRoleType())
+                        .stateType(settings.getStateType())
+                        .build())
                 .build();
     }
 

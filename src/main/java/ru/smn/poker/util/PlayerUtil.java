@@ -4,6 +4,7 @@ import ru.smn.poker.dto.Bot;
 import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.ChipsCountEntity;
 import ru.smn.poker.entities.PlayerEntity;
+import ru.smn.poker.entities.PlayerSettingsEntity;
 import ru.smn.poker.enums.RoleType;
 
 import java.util.ArrayList;
@@ -16,14 +17,14 @@ public class PlayerUtil {
 
     public static PlayerEntity getPlayerEntityByRole(List<PlayerEntity> playerEntities, RoleType roleType){
         return playerEntities.stream()
-                .filter(playerEntity -> playerEntity.getRoleType() == roleType)
+                .filter(playerEntity -> playerEntity.getSettings().getRoleType() == roleType)
                 .findFirst()
                 .orElse(null);
     }
 
     public static PlayerEntity getActivePlayer(List<PlayerEntity> playerEntities){
         return playerEntities.stream()
-                .filter(PlayerEntity::isActive)
+                .filter(playerEntity -> playerEntity.getSettings().isActive())
                 .findFirst()
                 .orElse(null);
     }
@@ -48,8 +49,12 @@ public class PlayerUtil {
     public static PlayerEntity getDefaultPlayerForHoldem(String playerName, long chipsCount) {
         return PlayerEntity.builder()
                 .name(playerName)
-                .timeBank(60L)
-                .chipsCount(ChipsCountEntity.builder().count(5000L).build())
+                .settings(PlayerSettingsEntity.builder()
+                        .timeBank(60L)
+                        .chipsCount(ChipsCountEntity.builder()
+                                .count(5000L)
+                                .build())
+                        .build())
                 .build();
     }
 

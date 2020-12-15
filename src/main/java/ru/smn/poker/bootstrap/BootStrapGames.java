@@ -5,7 +5,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.smn.poker.entities.ChipsCountEntity;
 import ru.smn.poker.entities.PlayerEntity;
+import ru.smn.poker.entities.PlayerSettingsEntity;
 import ru.smn.poker.enums.GameType;
+import ru.smn.poker.enums.PlayerType;
 import ru.smn.poker.repository.GameRepository;
 import ru.smn.poker.service.GameManagementService;
 import ru.smn.poker.service.OrderService;
@@ -36,12 +38,20 @@ public class BootStrapGames {
         PlayerEntity player1 = PlayerEntity.builder()
                 .name("3")
                 .enable(true)
+                .settings(PlayerSettingsEntity.builder()
+                        .timeBank(60L)
+                        .playerType(PlayerType.ORDINARY)
+                        .build())
                 .password(passwordEncoder.encode("3"))
                 .build();
 
         PlayerEntity player2 = PlayerEntity.builder()
                 .name("2")
                 .enable(true)
+                .settings(PlayerSettingsEntity.builder()
+                        .timeBank(60L)
+                        .playerType(PlayerType.ORDINARY)
+                        .build())
                 .password(passwordEncoder.encode("2"))
                 .build();
 
@@ -53,6 +63,7 @@ public class BootStrapGames {
         ChipsCountEntity chipsCountEntity2 = ChipsCountEntity.builder()
                 .count(5000L)
                 .build();
+
 
         player1.setChipsCount(chipsCountEntity1);
         player2.setChipsCount(chipsCountEntity2);

@@ -24,7 +24,6 @@ public class HoldemRoundSettings implements RoundSettings {
     private final List<CardType> flop;
     private final CardType tern;
     private final CardType river;
-    private final Long roundId;
     private final String gameName;
     private final long smallBlindBet;
     private final long gameId;
@@ -35,7 +34,9 @@ public class HoldemRoundSettings implements RoundSettings {
     private final StageType stageType;
     private Long lastBet;
     private long bank;
+    private Long roundId;
     private PlayerEntity activePlayer;
     private boolean isAfk;
     private boolean isFinished;
+
 }

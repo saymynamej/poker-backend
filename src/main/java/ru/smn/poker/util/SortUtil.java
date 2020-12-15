@@ -70,7 +70,7 @@ public class SortUtil {
 
     private static Optional<PlayerEntity> getPlayerByRole(List<PlayerEntity> players, RoleType roleType) {
         return players.stream()
-                .filter(player -> player.getRoleType() == roleType)
+                .filter(player -> player.getSettings().getRoleType() == roleType)
                 .findFirst();
     }
 

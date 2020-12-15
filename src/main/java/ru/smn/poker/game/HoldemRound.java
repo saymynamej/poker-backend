@@ -41,6 +41,8 @@ public class HoldemRound implements Round {
                     roundSettings
             );
 
+            gameService.update(roundSettings);
+
             final boolean skipNext = orderService.start(roundSettings);
 
 

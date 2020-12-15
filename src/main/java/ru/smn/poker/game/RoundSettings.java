@@ -47,6 +47,8 @@ public interface RoundSettings {
 
     Long getRoundId();
 
+    void setRoundId(Long id);
+
     PlayerEntity getActivePlayer();
 
     void setLastBet(Long lastBet);

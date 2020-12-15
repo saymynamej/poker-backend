@@ -4,10 +4,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.smn.poker.dto.Bot;
 import ru.smn.poker.dto.Card;
 import ru.smn.poker.dto.Player;
-import ru.smn.poker.entities.CardEntity;
-import ru.smn.poker.entities.ChipsCountEntity;
-import ru.smn.poker.entities.GameEntity;
-import ru.smn.poker.entities.PlayerEntity;
+import ru.smn.poker.entities.*;
 import ru.smn.poker.enums.PlayerType;
 
 import java.util.List;
@@ -46,13 +43,15 @@ public class PlayerConverter {
         final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         final PlayerEntity playerEntity = PlayerEntity.builder()
                 .name(player.getName())
-                .roleType(player.getRoleType())
-                .playerType(player.getPlayerType())
+                .settings(PlayerSettingsEntity.builder()
+                        .roleType(player.getRoleType())
+                        .playerType(player.getPlayerType())
+                        .active(player.isActive())
+                        .stateType(player.getStateType())
+                        .timeBank(player.getTimeBank())
+                        .build())
                 .password(bCryptPasswordEncoder.encode(player.getName()))
-                .active(player.isActive())
-                .stateType(player.getStateType())
                 .enable(true)
-                .timeBank(player.getTimeBank())
                 .build();
 
         if (player.getId() != null) {
@@ -64,7 +63,7 @@ public class PlayerConverter {
     private static PlayerEntity getPlayerEntity(Player player, GameEntity gameEntity) {
         final PlayerEntity playerEntity = getDefaultPlayerEntity(player);
         if (player.getCards() != null) {
-            playerEntity.setCards(player.getCards().stream()
+            playerEntity.addCards(player.getCards().stream()
                     .map(card -> CardEntity.builder()
                             .cardType(card.getCardType())
                             .id(card.getId())
@@ -90,19 +89,19 @@ public class PlayerConverter {
             return null;
         }
         return Player.builder()
-                .chipsCount(playerEntity.getChipsCount().getCount())
-                .cards(playerEntity.getCards() == null ? null : playerEntity.getCards().stream()
+                .chipsCount(playerEntity.getSettings().getChipsCount().getCount())
+                .cards(playerEntity.getSettings().getCards() == null ? null : playerEntity.getSettings().getCards().stream()
                         .map(cardEntity -> Card.builder()
                                 .id(cardEntity.getId())
                                 .cardType(cardEntity.getCardType())
                                 .build())
                         .collect(Collectors.toList()))
-                .chipsId(playerEntity.getChipsCount().getId())
+                .chipsId(playerEntity.getSettings().getChipsCount().getId())
                 .id(playerEntity.getId())
-                .active(playerEntity.isActive())
-                .roleType(playerEntity.getRoleType())
+                .active(playerEntity.getSettings().isActive())
+                .roleType(playerEntity.getSettings().getRoleType())
                 .action(playerEntity.getAction())
-                .gameName(playerEntity.getGame().getName())
+                .gameName(playerEntity.getSettings().getGame().getName())
                 .name(playerEntity.getName())
                 .build();
     }

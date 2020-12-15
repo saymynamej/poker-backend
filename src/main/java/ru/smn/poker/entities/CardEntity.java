@@ -13,6 +13,7 @@ import javax.persistence.*;
 @Getter
 @EqualsAndHashCode(of = "player")
 @ToString
+@Setter
 public class CardEntity {
 
     @Id
