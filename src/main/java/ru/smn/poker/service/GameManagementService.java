@@ -23,6 +23,8 @@ public interface GameManagementService {
 
     void startGame(Game game);
 
+    void createGame(int countOfPlayers, long defaultChipsCount);
+
     void startGame(GameEntity gameEntity);
 
     void createGame(

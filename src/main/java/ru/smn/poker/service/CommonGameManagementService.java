@@ -2,13 +2,16 @@ package ru.smn.poker.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.converter.GameConverter;
 import ru.smn.poker.entities.ChipsCountEntity;
 import ru.smn.poker.entities.GameEntity;
 import ru.smn.poker.entities.PlayerEntity;
+import ru.smn.poker.entities.PlayerSettingsEntity;
 import ru.smn.poker.enums.GameType;
+import ru.smn.poker.enums.PlayerType;
 import ru.smn.poker.game.Game;
 import ru.smn.poker.game.HoldemGame;
 import ru.smn.poker.game.HoldemRound;
@@ -36,7 +39,33 @@ public class CommonGameManagementService implements GameManagementService {
     private final GameService gameService;
     private final OrderService orderService;
     private final WinnerService winnerService;
+    private final PasswordEncoder passwordEncoder;
 
+    @Override
+    public void createGame(int countOfPlayers, long defaultChipsCount) {
+        final List<PlayerEntity> players = new ArrayList<>();
+        for (int i = 0; i < countOfPlayers; i++) {
+            final PlayerEntity player = PlayerEntity.builder()
+                    .name(String.valueOf(i))
+                    .enable(true)
+                    .settings(PlayerSettingsEntity.builder()
+                            .timeBank(60L)
+                            .playerType(PlayerType.ORDINARY)
+                            .build())
+                    .password(passwordEncoder.encode(String.valueOf(i)))
+                    .build();
+
+            final ChipsCountEntity chipsCountEntity = ChipsCountEntity.builder()
+                    .count(defaultChipsCount)
+                    .build();
+
+            player.setChipsCount(chipsCountEntity);
+
+            players.add(player);
+        }
+
+        createGame(players, GameType.HOLDEM_HU);
+    }
 
     public void createGame(
             List<PlayerEntity> players,
