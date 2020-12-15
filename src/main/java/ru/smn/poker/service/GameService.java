@@ -5,15 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.smn.poker.entities.*;
-import ru.smn.poker.enums.GameType;
 import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.repository.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static ru.smn.poker.util.HistoryUtil.addActionInHistory;
 
@@ -47,17 +44,16 @@ public class GameService {
     }
 
     private void saveRound(RoundSettings roundSettings) {
+        final RoundEntity roundEntity = getRoundEntity(
+                roundSettings,
+                gameRepository.findById(roundSettings.getGameId()).orElse(null)
+        );
         if (roundSettings.getRoundId() == null) {
-            final RoundEntity roundEntity = getRoundEntity(
-                    roundSettings,
-                    gameRepository.findById(roundSettings.getGameId()).orElse(null)
-            );
-            final RoundEntity savedRound = roundRepository.save(roundEntity);
-            roundSettings.setRoundId(savedRound.getId());
-        } else {
-            final RoundEntity roundEntity = getRoundEntity(roundSettings, gameRepository.findById(roundSettings.getGameId()).orElse(null));
-            roundRepository.save(roundEntity);
+            final Long idSavedRound = roundRepository.save(roundEntity).getId();
+            roundSettings.setRoundId(idSavedRound);
         }
+
+        roundRepository.save(roundEntity);
     }
 
     private void savePlayerSettings(RoundSettings roundSettings) {
