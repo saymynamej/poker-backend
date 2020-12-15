@@ -2,10 +2,7 @@ package ru.smn.poker.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.service.QueueService;
-import ru.smn.poker.service.SeatManager;
 
 import java.util.ArrayList;
 import java.util.List;

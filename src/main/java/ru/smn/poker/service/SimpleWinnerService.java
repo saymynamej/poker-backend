@@ -3,15 +3,11 @@ package ru.smn.poker.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.smn.poker.action.Action;
-import ru.smn.poker.dto.Card;
-import ru.smn.poker.dto.Player;
 import ru.smn.poker.dto.PlayerCombination;
 import ru.smn.poker.entities.CardEntity;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.CardType;
 import ru.smn.poker.game.RoundSettings;
-import ru.smn.poker.service.CombinationService;
-import ru.smn.poker.service.WinnerService;
 import ru.smn.poker.util.PlayerUtil;
 
 import java.util.ArrayList;

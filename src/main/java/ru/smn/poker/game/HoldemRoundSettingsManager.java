@@ -5,14 +5,10 @@ import ru.smn.poker.action.Action;
 import ru.smn.poker.action.holdem.Call;
 import ru.smn.poker.action.holdem.Fold;
 import ru.smn.poker.action.holdem.Wait;
-import ru.smn.poker.dto.Card;
 import ru.smn.poker.dto.HoldemRoundSettings;
-import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.CardEntity;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.*;
-import ru.smn.poker.game.RoundSettingsManager;
 import ru.smn.poker.util.PlayerUtil;
 
 import java.security.SecureRandom;

@@ -1,6 +1,5 @@
 package ru.smn.poker.service;
 
-import ru.smn.poker.dto.Player;
 import ru.smn.poker.dto.ResultTime;
 import ru.smn.poker.entities.PlayerEntity;
 

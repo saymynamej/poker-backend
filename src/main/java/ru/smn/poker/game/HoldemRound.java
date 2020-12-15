@@ -5,10 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.enums.StateType;
+import ru.smn.poker.service.GameService;
 import ru.smn.poker.service.OrderService;
 import ru.smn.poker.service.WinnerService;
-import ru.smn.poker.service.GameService;
-import ru.smn.poker.util.ThreadUtil;
 
 import java.util.List;
 

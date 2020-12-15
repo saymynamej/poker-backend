@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.smn.poker.action.holdem.*;
 import ru.smn.poker.dto.Action;
-import ru.smn.poker.service.GameDataService;
 import ru.smn.poker.service.ActionService;
+import ru.smn.poker.service.GameDataService;
 import ru.smn.poker.service.SeatManager;
 
 import java.security.Principal;

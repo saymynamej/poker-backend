@@ -1,10 +1,8 @@
 package ru.smn.poker.service;
 
 import org.springframework.stereotype.Service;
-import ru.smn.poker.dto.Player;
 import ru.smn.poker.dto.ResultTime;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.service.TimeBankService;
 
 import java.util.Timer;
 import java.util.TimerTask;

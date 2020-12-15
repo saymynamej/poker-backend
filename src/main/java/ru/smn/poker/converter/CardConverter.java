@@ -1,9 +1,9 @@
 package ru.smn.poker.converter;
 
-import ru.smn.poker.enums.CardType;
 import ru.smn.poker.entities.CardEntity;
 import ru.smn.poker.entities.GameEntity;
 import ru.smn.poker.entities.PlayerEntity;
+import ru.smn.poker.enums.CardType;
 
 import java.util.Collections;
 import java.util.List;

@@ -1,11 +1,9 @@
 package ru.smn.poker.converter;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import ru.smn.poker.dto.Bot;
 import ru.smn.poker.dto.Card;
 import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.*;
-import ru.smn.poker.enums.PlayerType;
 
 import java.util.List;
 import java.util.stream.Collectors;

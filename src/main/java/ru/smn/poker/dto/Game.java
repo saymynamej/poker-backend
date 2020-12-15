@@ -1,6 +1,9 @@
 package ru.smn.poker.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.GameType;
 

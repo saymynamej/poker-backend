@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.StageType;
+import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.util.PlayerUtil;
 import ru.smn.poker.util.SortUtil;
 

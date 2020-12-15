@@ -6,7 +6,6 @@ import ru.smn.poker.dto.PlayerCombination;
 import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.CombinationType;
 import ru.smn.poker.enums.PowerType;
-import ru.smn.poker.service.CombinationService;
 
 import java.util.*;
 import java.util.stream.Collectors;

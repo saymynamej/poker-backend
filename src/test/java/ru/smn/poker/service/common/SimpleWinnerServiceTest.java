@@ -14,9 +14,9 @@ import ru.smn.poker.action.holdem.Raise;
 import ru.smn.poker.dto.Card;
 import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
-import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.StateType;
+import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.service.WinnerService;
 import ru.smn.poker.util.PlayerUtil;
 

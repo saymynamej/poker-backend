@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import ru.smn.poker.config.SocketMappingConfig;
-import ru.smn.poker.service.NotificationService;
 
 
 @Service

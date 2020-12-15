@@ -1,7 +1,6 @@
 package ru.smn.poker.util;
 
 import ru.smn.poker.dto.Bot;
-import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.ChipsCountEntity;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.entities.PlayerSettingsEntity;

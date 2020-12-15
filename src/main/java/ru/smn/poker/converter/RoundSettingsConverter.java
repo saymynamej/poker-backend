@@ -2,7 +2,6 @@ package ru.smn.poker.converter;
 
 import ru.smn.poker.dto.HoldemRoundSettingsDTO;
 import ru.smn.poker.entities.GameEntity;
-import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.entities.RoundEntity;
 import ru.smn.poker.enums.GameType;
 import ru.smn.poker.game.RoundSettings;

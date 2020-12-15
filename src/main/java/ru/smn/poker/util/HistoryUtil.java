@@ -2,10 +2,9 @@ package ru.smn.poker.util;
 
 import ru.smn.poker.action.Action;
 import ru.smn.poker.action.CountAction;
-import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.StageType;
+import ru.smn.poker.game.RoundSettings;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -10,8 +10,8 @@ import ru.smn.poker.enums.GameType;
 import ru.smn.poker.enums.PlayerType;
 import ru.smn.poker.repository.GameRepository;
 import ru.smn.poker.service.GameManagementService;
-import ru.smn.poker.service.OrderService;
 import ru.smn.poker.service.GameService;
+import ru.smn.poker.service.OrderService;
 
 import javax.annotation.PostConstruct;
 import java.util.List;

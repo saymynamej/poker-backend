@@ -3,12 +3,9 @@ package ru.smn.poker.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.game.Game;
-import ru.smn.poker.service.GameDataService;
-import ru.smn.poker.service.SecurityService;
+import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.util.RoundSettingsUtil;
 
 import java.util.List;

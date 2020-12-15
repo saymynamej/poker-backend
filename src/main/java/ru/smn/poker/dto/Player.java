@@ -6,7 +6,10 @@ import ru.smn.poker.action.Action;
 import ru.smn.poker.action.CountAction;
 import ru.smn.poker.action.holdem.Fold;
 import ru.smn.poker.action.holdem.Wait;
-import ru.smn.poker.enums.*;
+import ru.smn.poker.enums.ActionType;
+import ru.smn.poker.enums.PlayerType;
+import ru.smn.poker.enums.RoleType;
+import ru.smn.poker.enums.StateType;
 
 import java.util.ArrayList;
 import java.util.List;
