@@ -36,19 +36,19 @@ public class RoundEntity {
 
     private long bigBlindBet;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "big_bling_id")
     private PlayerEntity bigBlind;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "small_bling_id")
     private PlayerEntity smallBlind;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "button_id")
     private PlayerEntity button;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "active_player_id")
     private PlayerEntity activePlayer;
 

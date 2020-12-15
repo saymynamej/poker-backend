@@ -18,7 +18,7 @@ public class ChipsCountEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "game_id")
     private GameEntity game;
 

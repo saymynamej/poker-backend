@@ -8,6 +8,7 @@ import ru.smn.poker.enums.StateType;
 import ru.smn.poker.service.OrderService;
 import ru.smn.poker.service.WinnerService;
 import ru.smn.poker.service.GameService;
+import ru.smn.poker.util.ThreadUtil;
 
 import java.util.List;
 
@@ -37,14 +38,13 @@ public class HoldemRound implements Round {
         );
 
         while (true) {
-            roundSettings = roundSettingsManager.getSettings(
-                    roundSettings
+            this.roundSettings = roundSettingsManager.getSettings(
+                    this.roundSettings
             );
 
             gameService.update(roundSettings);
 
             final boolean skipNext = orderService.start(roundSettings);
-
 
             if (skipNext || roundSettings.getStageType() == StageType.RIVER) {
                 break;
@@ -52,6 +52,7 @@ public class HoldemRound implements Round {
         }
         roundSettings.setFinished(true);
         winnerService.sendPrizes(roundSettings);
+        gameService.update(roundSettings);
     }
 
     @Override

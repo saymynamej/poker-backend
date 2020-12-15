@@ -12,7 +12,6 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @EqualsAndHashCode(of = "player")
-@ToString
 @Setter
 public class CardEntity {
 
@@ -20,14 +19,14 @@ public class CardEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "game_id")
     private GameEntity game;
 
     @Enumerated(value = EnumType.STRING)
     private CardType cardType;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "player_id")
     private PlayerEntity player;
 }

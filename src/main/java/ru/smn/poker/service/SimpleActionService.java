@@ -79,8 +79,8 @@ public class SimpleActionService implements ActionService {
         log.info("waiting action from player:" + player.getName());
         player.setWait();
         gameService.setActivePlayer(roundSettings, player);
-        gameService.update(roundSettings);
         securityNotificationService.sendToAllWithSecurity(roundSettings);
+        gameService.update(roundSettings);
         waitPlayerAction(player, roundSettings);
         gameService.setInActivePlayer(roundSettings, player);
     }
@@ -109,6 +109,6 @@ public class SimpleActionService implements ActionService {
             ((ExecutableAction) action).doAction(roundSettings, player, gameService, this);
             log.info("player: " + player.getName() + " did action:" + action);
         }
-        actionLogService.log(player, action);
+        actionLogService.log(player, action, roundSettings);
     }
 }

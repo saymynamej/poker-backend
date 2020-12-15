@@ -4,17 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.smn.poker.entities.GameEntity;
-import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.entities.RoundEntity;
+import ru.smn.poker.entities.*;
+import ru.smn.poker.enums.GameType;
 import ru.smn.poker.game.RoundSettings;
-import ru.smn.poker.repository.GameRepository;
-import ru.smn.poker.repository.PlayerRepository;
-import ru.smn.poker.repository.RoundRepository;
+import ru.smn.poker.repository.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static ru.smn.poker.util.HistoryUtil.addActionInHistory;
 
@@ -25,6 +24,9 @@ public class GameService {
     private final GameRepository gameRepository;
     private final PlayerRepository playerRepository;
     private final RoundRepository roundRepository;
+    private final ChipsCountRepository chipsCountRepository;
+    private final CardRepository cardRepository;
+    private final PlayerSettingsRepository playerSettingsRepository;
 
     public List<GameEntity> findAll() {
         return gameRepository.findAll();
@@ -37,17 +39,54 @@ public class GameService {
 
     @Transactional
     public void update(RoundSettings roundSettings) {
-        final long gameId = roundSettings.getGameId();
+        final Optional<GameEntity> optionalGameEntity = gameRepository.findById(roundSettings.getGameId());
+        saveChipsCount(roundSettings);
+        saveCards(roundSettings, optionalGameEntity.orElseThrow());
+        savePlayerSettings(roundSettings);
+        saveRound(roundSettings);
+    }
 
-        final GameEntity gameEntity = gameRepository.findById(gameId)
-                .orElseThrow();
-        playerRepository.saveAll(roundSettings.getPlayers());
+    private void saveRound(RoundSettings roundSettings) {
+        if (roundSettings.getRoundId() == null) {
+            final RoundEntity roundEntity = getRoundEntity(
+                    roundSettings,
+                    gameRepository.findById(roundSettings.getGameId()).orElse(null)
+            );
+            final RoundEntity savedRound = roundRepository.save(roundEntity);
+            roundSettings.setRoundId(savedRound.getId());
+        } else {
+            final RoundEntity roundEntity = roundRepository.findById(roundSettings.getRoundId()).orElseThrow();
+            roundEntity.setActivePlayer(roundSettings.getActivePlayer());
+            roundRepository.save(roundEntity);
+        }
+    }
 
-        final RoundEntity roundEntity = getRoundEntity(roundSettings, gameEntity);
+    private void savePlayerSettings(RoundSettings roundSettings) {
+        final List<PlayerSettingsEntity> playerSettingsEntities = roundSettings.getPlayers().stream()
+                .map(PlayerEntity::getSettings)
+                .collect(Collectors.toList());
 
-        final RoundEntity savedRound = roundRepository.save(roundEntity);
-        roundSettings.setRoundId(savedRound.getId());
+        playerSettingsRepository.saveAll(playerSettingsEntities);
+    }
 
+    private void saveCards(RoundSettings roundSettings, GameEntity gameEntity) {
+
+        final List<CardEntity> cardEntities = roundSettings.getPlayers().stream()
+                .flatMap(players -> players.getCards().stream())
+                .collect(Collectors.toList());
+
+        cardEntities.forEach(cardEntity -> cardEntity.setGame(gameEntity));
+
+        cardRepository.saveAll(cardEntities);
+
+    }
+
+    private void saveChipsCount(RoundSettings roundSettings) {
+        final List<ChipsCountEntity> chipsCountEntities = roundSettings.getPlayers().stream()
+                .map(PlayerEntity::getChipsCount)
+                .collect(Collectors.toList());
+
+        chipsCountRepository.saveAll(chipsCountEntities);
     }
 
 
@@ -62,19 +101,18 @@ public class GameService {
                 .lastBet(roundSettings.getLastBet())
                 .build();
 
-
-//        if (roundSettings.getActivePlayer() != null) {
-//            roundEntity.setActivePlayer(roundSettings.getActivePlayer());
-//        }
-//        if (roundSettings.getButton() != null) {
-//            roundEntity.setButton(roundSettings.getButton());
-//        }
-//        if (roundSettings.getSmallBlind() != null) {
-//            roundEntity.setSmallBlind(roundSettings.getSmallBlind());
-//        }
-//        if (roundSettings.getBigBlind() != null) {
-//            roundEntity.setBigBlind(roundSettings.getBigBlind());
-//        }
+        if (roundSettings.getActivePlayer() != null) {
+            roundEntity.setActivePlayer(roundSettings.getActivePlayer());
+        }
+        if (roundSettings.getButton() != null) {
+            roundEntity.setButton(roundSettings.getButton());
+        }
+        if (roundSettings.getSmallBlind() != null) {
+            roundEntity.setSmallBlind(roundSettings.getSmallBlind());
+        }
+        if (roundSettings.getBigBlind() != null) {
+            roundEntity.setBigBlind(roundSettings.getBigBlind());
+        }
 
         if (roundSettings.getFlop() != null && !roundSettings.getFlop().isEmpty()) {
             roundEntity.setF1(roundSettings.getFlop().get(0));
@@ -121,9 +159,6 @@ public class GameService {
     }
 
     public void setLastBet(RoundSettings roundSettings, long count) {
-        if (roundSettings.getLastBet() < count) {
-            log.info("prev last bet less than new last bet");
-        }
         roundSettings.setLastBet(count);
     }
 

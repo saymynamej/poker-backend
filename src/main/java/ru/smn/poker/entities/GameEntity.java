@@ -24,7 +24,7 @@ public class GameEntity {
 
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "player_id")
     private List<PlayerEntity> players;
 
