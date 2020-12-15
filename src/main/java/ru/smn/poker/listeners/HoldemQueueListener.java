@@ -25,7 +25,7 @@ public class HoldemQueueListener implements GameListener {
             while (isEnable) {
                 ThreadUtil.sleep(1);
                 if (seatManager.getQueue().size() >= 4) {
-                    gameManagementService.createNewGame(
+                    gameManagementService.createGame(
                             queueService.extractQueue(),
                             GameType.HOLDEM_HU,
                             orderService

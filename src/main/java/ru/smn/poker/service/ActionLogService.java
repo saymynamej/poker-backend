@@ -1,4 +1,4 @@
-package ru.smn.poker.service.common;
+package ru.smn.poker.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,8 @@ public class ActionLogService {
     public void log(PlayerEntity player, Action action) {
         final long count = action instanceof ExecutableAction ? ((ExecutableAction) action).getCount() : 0;
 
-        Optional<PlayerEntity> byId = playerRepository.findById(player.getId());
+        final Optional<PlayerEntity> byId = playerRepository.findById(player.getId());
+
         save(ActionEntity.builder()
                 .count(count)
                 .actionType(action.getActionType())

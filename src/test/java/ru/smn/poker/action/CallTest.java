@@ -12,7 +12,7 @@ import ru.smn.poker.action.holdem.Call;
 import ru.smn.poker.dto.Player;
 import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.service.ActionService;
-import ru.smn.poker.service.common.GameService;
+import ru.smn.poker.service.GameService;
 
 import java.util.List;
 import java.util.Map;

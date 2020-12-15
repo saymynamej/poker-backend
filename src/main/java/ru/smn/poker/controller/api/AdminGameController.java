@@ -19,7 +19,7 @@ public class AdminGameController {
 
     @PostMapping("/create")
     public void createGame(GameType gameType) {
-        gameManagementService.createNewGame(
+        gameManagementService.createGame(
                 gameType,
                 orderService
         );

@@ -1,4 +1,4 @@
-package ru.smn.poker.game.holdem;
+package ru.smn.poker.game;
 
 import lombok.RequiredArgsConstructor;
 import ru.smn.poker.action.Action;

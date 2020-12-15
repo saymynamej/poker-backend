@@ -2,12 +2,11 @@ package ru.smn.poker.action.holdem;
 
 import lombok.RequiredArgsConstructor;
 import ru.smn.poker.action.ExecutableAction;
-import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.ActionType;
 import ru.smn.poker.service.ActionService;
-import ru.smn.poker.service.common.GameService;
+import ru.smn.poker.service.GameService;
 import ru.smn.poker.data.StrategyData;
 
 @RequiredArgsConstructor

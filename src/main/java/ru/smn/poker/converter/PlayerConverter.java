@@ -86,6 +86,9 @@ public class PlayerConverter {
     }
 
     public static Player toDTO(PlayerEntity playerEntity) {
+        if (playerEntity == null) {
+            return null;
+        }
         return Player.builder()
                 .chipsCount(playerEntity.getChipsCount().getCount())
                 .cards(playerEntity.getCards() == null ? null : playerEntity.getCards().stream()

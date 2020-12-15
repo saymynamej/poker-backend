@@ -14,7 +14,7 @@ import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.RoleType;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.service.ActionService;
-import ru.smn.poker.service.common.GameService;
+import ru.smn.poker.service.GameService;
 import ru.smn.poker.util.DTOUtilTest;
 
 import java.util.concurrent.ExecutorService;

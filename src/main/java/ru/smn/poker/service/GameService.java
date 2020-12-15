@@ -1,4 +1,4 @@
-package ru.smn.poker.service.common;
+package ru.smn.poker.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,8 +36,8 @@ public class GameService {
 
     @Transactional
     public void update(RoundSettings roundSettings) {
-//        final GameEntity gameEntity = RoundSettingsConverter.toEntity(roundSettings);
-//        gameRepository.save(gameEntity);
+        final GameEntity gameEntity = RoundSettingsConverter.toEntity(roundSettings);
+        gameRepository.save(gameEntity);
     }
 
     public long getNextGameId() {

@@ -1,8 +1,7 @@
-package ru.smn.poker.game.holdem;
+package ru.smn.poker.game;
 
 import ru.smn.poker.action.Action;
 import ru.smn.poker.action.holdem.Call;
-import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.RoleType;
 

@@ -6,7 +6,7 @@ import ru.smn.poker.dto.Player;
 import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.game.RoundSettingsManager;
-import ru.smn.poker.game.holdem.HoldemRoundSettingsManager;
+import ru.smn.poker.game.HoldemRoundSettingsManager;
 
 import java.util.ArrayList;
 import java.util.List;

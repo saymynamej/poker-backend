@@ -1,11 +1,8 @@
-package ru.smn.poker.game.holdem;
+package ru.smn.poker.game;
 
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.StateType;
-import ru.smn.poker.game.Game;
-import ru.smn.poker.game.Round;
 import ru.smn.poker.util.ThreadUtil;
 
 import java.util.List;
@@ -24,7 +21,7 @@ public class HoldemGame extends Game {
         setInGame();
         while (isEnable()) {
             addChipsToPlayers();
-            removeInActivePlayers();
+            removePlayersWhoHasZeroChips();
             ThreadUtil.sleep(DELAY_IN_SECONDS);
             if (isReady()) {
                 getRound().startRound();
@@ -41,9 +38,9 @@ public class HoldemGame extends Game {
         }
     }
 
-    private void removeInActivePlayers() {
+    private void removePlayersWhoHasZeroChips() {
         getPlayers().removeAll(getPlayers().stream()
-                .filter(player -> player.getChipsCount().getCount() == 0 || player.getStateType() != StateType.IN_GAME)
+                .filter(player -> player.getChipsCount().getCount() == 0)
                 .collect(Collectors.toList()));
     }
 

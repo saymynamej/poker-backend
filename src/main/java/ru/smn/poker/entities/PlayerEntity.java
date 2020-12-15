@@ -22,6 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "players")
 @EqualsAndHashCode(of = "name")
+@ToString
 public class PlayerEntity {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

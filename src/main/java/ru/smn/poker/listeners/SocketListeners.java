@@ -7,14 +7,13 @@ import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import ru.smn.poker.converter.RoundSettingsConverter;
 import ru.smn.poker.dto.HoldemRoundSettingsDTO;
-import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.MessageType;
 import ru.smn.poker.game.Game;
 import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.service.GameDataService;
 import ru.smn.poker.service.SecurityService;
-import ru.smn.poker.service.common.SimpleNotificationService;
+import ru.smn.poker.service.SimpleNotificationService;
 
 import java.security.Principal;
 import java.util.List;
@@ -48,12 +47,11 @@ public class SocketListeners {
                             roundSettings
                     );
 
-                    final HoldemRoundSettingsDTO holdemRoundSettingsDTO = RoundSettingsConverter.toDTO(securedRoundSettings);
-
+                    final HoldemRoundSettingsDTO holdemRoundSettings = RoundSettingsConverter.toDTO(securedRoundSettings);
 
                     simpleNotificationService.sendGameInformationToUser(
                             player.getName(),
-                            holdemRoundSettingsDTO
+                            holdemRoundSettings
                     );
                 }
             }

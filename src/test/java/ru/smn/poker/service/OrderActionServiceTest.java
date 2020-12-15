@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import ru.smn.poker.service.common.OrderActionService;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

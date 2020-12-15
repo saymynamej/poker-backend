@@ -1,17 +1,13 @@
-package ru.smn.poker.game.holdem;
+package ru.smn.poker.game;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.enums.StateType;
-import ru.smn.poker.game.Round;
-import ru.smn.poker.game.RoundSettingsManager;
 import ru.smn.poker.service.OrderService;
 import ru.smn.poker.service.WinnerService;
-import ru.smn.poker.service.common.GameService;
+import ru.smn.poker.service.GameService;
 
 import java.util.List;
 
@@ -40,15 +36,13 @@ public class HoldemRound implements Round {
                 gameId
         );
 
-
         while (true) {
             roundSettings = roundSettingsManager.getSettings(
                     roundSettings
             );
 
-            gameService.update(roundSettings);
-
             final boolean skipNext = orderService.start(roundSettings);
+
 
             if (skipNext || roundSettings.getStageType() == StageType.RIVER) {
                 break;
@@ -56,7 +50,6 @@ public class HoldemRound implements Round {
         }
         roundSettings.setFinished(true);
         winnerService.sendPrizes(roundSettings);
-        gameService.update(roundSettings);
     }
 
     @Override

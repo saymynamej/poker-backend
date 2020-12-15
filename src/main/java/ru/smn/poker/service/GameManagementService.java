@@ -1,5 +1,6 @@
 package ru.smn.poker.service;
 
+import ru.smn.poker.entities.GameEntity;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.GameType;
 import ru.smn.poker.game.Game;
@@ -13,16 +14,18 @@ public interface GameManagementService {
                     OrderService orderService,
                     long gameId);
 
-    void createNewGame(GameType gameType,
-                       OrderService orderService);
+    void createGame(GameType gameType,
+                    OrderService orderService);
 
-    void createNewGame(List<PlayerEntity> players,
-                       GameType gameType,
-                       OrderService orderService);
+    void createGame(List<PlayerEntity> players,
+                    GameType gameType,
+                    OrderService orderService);
 
     void startGame(Game game);
 
-    void createNewGameTest(
+    void startGame(GameEntity gameEntity);
+
+    void createGame(
             List<PlayerEntity> players,
             GameType gameType
     );

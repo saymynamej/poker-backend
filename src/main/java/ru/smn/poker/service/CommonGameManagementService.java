@@ -1,4 +1,4 @@
-package ru.smn.poker.service.common;
+package ru.smn.poker.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,11 +11,8 @@ import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.GameType;
 import ru.smn.poker.game.Game;
 import ru.smn.poker.game.Round;
-import ru.smn.poker.game.holdem.HoldemGame;
-import ru.smn.poker.game.holdem.HoldemRound;
-import ru.smn.poker.service.GameManagementService;
-import ru.smn.poker.service.OrderService;
-import ru.smn.poker.service.WinnerService;
+import ru.smn.poker.game.HoldemGame;
+import ru.smn.poker.game.HoldemRound;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +38,7 @@ public class CommonGameManagementService implements GameManagementService {
     private final WinnerService winnerService;
 
 
-    public void createNewGameTest(
+    public void createGame(
             List<PlayerEntity> players,
             GameType gameType
     ) {
@@ -59,12 +56,15 @@ public class CommonGameManagementService implements GameManagementService {
 
         final GameEntity gameEntityFromBase = gameService.saveGame(gameEntity);
 
-        final Game generatedGame = createGame(gameEntityFromBase);
+        startGame(gameEntityFromBase);
 
+    }
+
+
+    public void startGame(GameEntity gameEntity) {
+        final Game generatedGame = createGame(gameEntity);
         games.put(generatedGame.getGameName(), generatedGame);
-
         startGame(generatedGame);
-
     }
 
     private void setChipsInGame(List<PlayerEntity> players, GameEntity gameEntity) {
@@ -76,7 +76,7 @@ public class CommonGameManagementService implements GameManagementService {
         chipsCountEntities.forEach(chipsCountEntity -> chipsCountEntity.setGame(gameEntity));
     }
 
-    public void createNewGame(List<PlayerEntity> players, GameType gameType, OrderService orderService) {
+    public void createGame(List<PlayerEntity> players, GameType gameType, OrderService orderService) {
         final Game game = createGame(
                 players,
                 gameType,
@@ -93,7 +93,7 @@ public class CommonGameManagementService implements GameManagementService {
     }
 
 
-    public void createNewGame(GameType gameType, OrderService orderService) {
+    public void createGame(GameType gameType, OrderService orderService) {
         final Game game = createGame(
                 Collections.emptyList(),
                 gameType,

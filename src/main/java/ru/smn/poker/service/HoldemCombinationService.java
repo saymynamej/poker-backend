@@ -1,4 +1,4 @@
-package ru.smn.poker.service.holdem;
+package ru.smn.poker.service;
 
 import org.springframework.stereotype.Service;
 import ru.smn.poker.dto.Combination;
