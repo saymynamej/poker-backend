@@ -5,7 +5,7 @@ import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.util.PlayerUtil;
-import ru.smn.poker.util.StreamUtil;
+import ru.smn.poker.stream.PlayerPredicates;
 
 import java.util.List;
 import java.util.Map;
@@ -71,14 +71,14 @@ public interface RoundSettings {
     default boolean playersInAllIn() {
         return getPlayersInGame()
                 .stream()
-                .allMatch(StreamUtil.playerInAllIn());
+                .allMatch(PlayerPredicates.playerInAllIn());
     }
 
     default boolean allPlayersCheck() {
         return getPlayersInGame()
                 .stream()
-                .filter(StreamUtil.playerInAllIn().negate())
-                .allMatch(StreamUtil.playersHasCheck());
+                .filter(PlayerPredicates.playerInAllIn().negate())
+                .allMatch(PlayerPredicates.playersHasCheck());
     }
 
     default List<PlayerEntity> getPlayersInGame(){

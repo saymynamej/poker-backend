@@ -25,8 +25,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import static ru.smn.poker.util.GameUtil.getRandomGOTCityName;
-
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +38,7 @@ public class CommonGameManagementService implements GameManagementService {
     private final OrderService orderService;
     private final WinnerService winnerService;
     private final PasswordEncoder passwordEncoder;
+    private final RandomNameService randomNameService;
 
     @Override
     public void createGame(int countOfPlayers, long defaultChipsCount) {
@@ -71,7 +70,7 @@ public class CommonGameManagementService implements GameManagementService {
             List<PlayerEntity> players,
             GameType gameType
     ) {
-        final String randomGameName = getRandomGOTCityName();
+        final String randomGameName = randomNameService.getRandomName();
 
         final GameEntity gameEntity = GameEntity.builder()
                 .name(randomGameName)
@@ -211,7 +210,8 @@ public class CommonGameManagementService implements GameManagementService {
             long gameId
     ) {
 
-        final String randomGameName = getRandomGOTCityName();
+        final String randomGameName = randomNameService.getRandomName();
+
         return createGame(
                 players,
                 gameType,

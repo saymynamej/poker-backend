@@ -5,6 +5,7 @@ import ru.smn.poker.action.CountAction;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.game.RoundSettings;
+import ru.smn.poker.stream.PlayerPredicates;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,8 +25,8 @@ public class HistoryUtil {
         final List<PlayerEntity> playersInGame = PlayerUtil.getPlayersInGame(roundSettings.getPlayers());
 
         final List<PlayerEntity> players = playersInGame.stream()
-                .filter(StreamUtil.playerFolded().negate())
-                .filter(StreamUtil.playerHasChips())
+                .filter(PlayerPredicates.playerFolded().negate())
+                .filter(PlayerPredicates.playerHasChips())
                 .collect(Collectors.toList());
 
         return players.stream()

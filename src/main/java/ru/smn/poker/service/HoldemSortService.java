@@ -1,5 +1,6 @@
-package ru.smn.poker.util;
+package ru.smn.poker.service;
 
+import org.springframework.stereotype.Service;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.RoleType;
 import ru.smn.poker.enums.StageType;
@@ -9,15 +10,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public class SortUtil {
+@Service
+public class HoldemSortService implements SortService {
 
-    public static List<PlayerEntity> sort(List<PlayerEntity> players, StageType stageType) {
+    public List<PlayerEntity> sort(List<PlayerEntity> players, StageType stageType) {
         return stageType == StageType.PREFLOP ? sortPreflop(players) : sortPostflop(players);
     }
 
-    public static List<PlayerEntity> sortPreflop(List<PlayerEntity> players) {
-        if (players.size() == 2){
-            final List<PlayerEntity> sortedPlayers  = new ArrayList<>();
+    public List<PlayerEntity> sortPreflop(List<PlayerEntity> players) {
+        if (players.size() == 2) {
+            final List<PlayerEntity> sortedPlayers = new ArrayList<>();
             final Optional<PlayerEntity> button = getPlayerByRole(players, RoleType.BUTTON);
             final Optional<PlayerEntity> bigBlind = getPlayerByRole(players, RoleType.BIG_BLIND);
             if (bigBlind.isEmpty() || button.isEmpty()) {
@@ -44,7 +46,7 @@ public class SortUtil {
     }
 
 
-    public static List<PlayerEntity> sortPostflop(List<PlayerEntity> players) {
+    public List<PlayerEntity> sortPostflop(List<PlayerEntity> players) {
         final List<PlayerEntity> sortedList = new LinkedList<>(players);
 
         final Optional<PlayerEntity> smallBlind = getPlayerByRole(players, RoleType.SMALL_BLIND);
@@ -68,10 +70,9 @@ public class SortUtil {
     }
 
 
-    private static Optional<PlayerEntity> getPlayerByRole(List<PlayerEntity> players, RoleType roleType) {
+    private Optional<PlayerEntity> getPlayerByRole(List<PlayerEntity> players, RoleType roleType) {
         return players.stream()
                 .filter(player -> player.getSettings().getRoleType() == roleType)
                 .findFirst();
     }
-
 }

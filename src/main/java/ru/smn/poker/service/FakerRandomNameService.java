@@ -1,17 +1,18 @@
-package ru.smn.poker.util;
+package ru.smn.poker.service;
 
 import com.github.javafaker.Faker;
+import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class GameUtil {
-
+@Service
+public class FakerRandomNameService implements RandomNameService {
     private static final Set<String> ALREADY_USER = new HashSet<>();
-
     private final static Faker faker = new Faker();
 
-    public static String getRandomGOTCityName() {
+    @Override
+    public String getRandomName() {
         String city = faker.gameOfThrones().city();
         if (ALREADY_USER.contains(city)) {
             while (ALREADY_USER.contains(city)) {

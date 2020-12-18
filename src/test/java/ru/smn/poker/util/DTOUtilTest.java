@@ -75,7 +75,7 @@ public class DTOUtilTest {
         return IntStream.range(0, count).mapToObj(i -> getPlayer()).collect(Collectors.toList());
     }
 
-    public static Player getPlayer() {
+    public static PlayerEn getPlayer() {
         return Player.builder()
                 .gameName(DEFAULT_GAME_NAME)
                 .chipsCount(DEFAULT_CHIPS_COUNT)

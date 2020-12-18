@@ -7,7 +7,6 @@ import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.util.PlayerUtil;
-import ru.smn.poker.util.SortUtil;
 
 import java.util.List;
 
@@ -20,11 +19,12 @@ import static ru.smn.poker.util.HistoryUtil.canMoveNextAndStageRiver;
 public class OrderActionService implements OrderService {
     private final ActionService actionServiceHoldem;
     private final SecurityNotificationService securityNotificationService;
+    private final SortService sortService;
 
     @Override
     public boolean start(RoundSettings roundSettings) {
         final List<PlayerEntity> sortedPlayers = PlayerUtil.getPlayersInGame(
-                SortUtil.sort(roundSettings.getPlayers(), roundSettings.getStageType())
+                sortService.sort(roundSettings.getPlayers(), roundSettings.getStageType())
         );
         while (true) {
             if (roundSettings.playersInAllIn()) {
@@ -52,6 +52,7 @@ public class OrderActionService implements OrderService {
                 if (player.isInAllIn()) {
                     continue;
                 }
+
                 actionServiceHoldem.waitUntilPlayerWillHasAction(player, roundSettings);
             }
         }

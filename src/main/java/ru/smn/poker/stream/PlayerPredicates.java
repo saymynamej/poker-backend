@@ -1,4 +1,4 @@
-package ru.smn.poker.util;
+package ru.smn.poker.stream;
 
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.ActionType;
@@ -6,7 +6,7 @@ import ru.smn.poker.enums.StateType;
 
 import java.util.function.Predicate;
 
-public class StreamUtil {
+public class PlayerPredicates {
 
     public static Predicate<? super PlayerEntity> playerInAllIn() {
         return (Predicate<PlayerEntity>) player -> player.getAction().getActionType() == ActionType.ALLIN;
