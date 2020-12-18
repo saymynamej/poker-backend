@@ -32,6 +32,17 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
             Random random,
             RoundSettings roundSettings
     ) {
+        this.allCards = CardType.getAllCardsAsListWithFilter(
+                getAllCards(
+                        roundSettings.getFlop(),
+                        roundSettings.getTern(),
+                        roundSettings.getRiver(),
+                        roundSettings.getPlayers().stream()
+                                .flatMap(player -> player.getCards().stream())
+                                .map(CardEntity::getCardType)
+                                .collect(Collectors.toList())
+                )
+        );
         this.random = random;
         this.players = roundSettings.getPlayers();
         flop = roundSettings.getFlop() == null ? setFlop() : roundSettings.getFlop();
@@ -41,17 +52,6 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
         bigBlindBet = roundSettings.getBigBlindBet();
         smallBlindBet = roundSettings.getSmallBlindBet();
         gameId = roundSettings.getGameId();
-        this.allCards = CardType.getAllCardsAsListWithFilter(
-                getAllCards(
-                        flop,
-                        tern,
-                        river,
-                        this.players.stream()
-                                .flatMap(player -> player.getCards().stream())
-                                .map(CardEntity::getCardType)
-                                .collect(Collectors.toList())
-                )
-        );
 
     }
 
