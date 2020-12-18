@@ -5,15 +5,19 @@ import ru.smn.poker.action.holdem.Call;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.RoleType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class HoldemRoundSettingsManagerHU extends HoldemRoundSettingsManager {
 
-    public HoldemRoundSettingsManagerHU(List<PlayerEntity> players, String gameName, long bigBlindBet, long smallBlindBet, long gameId) {
-        super(players, gameName, bigBlindBet, smallBlindBet, gameId);
+    public HoldemRoundSettingsManagerHU(
+            Random random,
+            List<PlayerEntity> players,
+            String gameName,
+            long bigBlindBet,
+            long smallBlindBet,
+            long gameId
+    ) {
+        super(random, players, gameName, bigBlindBet, smallBlindBet, gameId);
     }
 
     @Override
@@ -49,5 +53,6 @@ public class HoldemRoundSettingsManagerHU extends HoldemRoundSettingsManager {
     }
 
     @Override
-    protected void setSmallBlind() {}
+    protected void setSmallBlind() {
+    }
 }

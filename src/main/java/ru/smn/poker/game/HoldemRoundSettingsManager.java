@@ -1,6 +1,5 @@
 package ru.smn.poker.game;
 
-import lombok.RequiredArgsConstructor;
 import ru.smn.poker.action.Action;
 import ru.smn.poker.action.holdem.Call;
 import ru.smn.poker.action.holdem.Fold;
@@ -11,25 +10,76 @@ import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.*;
 import ru.smn.poker.util.PlayerUtil;
 
-import java.security.SecureRandom;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static ru.smn.poker.util.HistoryUtil.unionHistory;
 
-@RequiredArgsConstructor
 public class HoldemRoundSettingsManager implements RoundSettingsManager {
-    private final SecureRandom random = new SecureRandom();
-    private final List<CardType> allCards = CardType.getAllCardsAsList();
+    private final Random random;
+    private final List<CardType> allCards;
     private final List<PlayerEntity> players;
-    private final List<CardType> flop = setFlop();
-    private final CardType tern = getRandomCard();
-    private final CardType river = getRandomCard();
+    private final List<CardType> flop;
+    private final CardType tern;
+    private final CardType river;
     private final String gameName;
     private final long bigBlindBet;
     private final long smallBlindBet;
-    private final long gameId;
+    private final long gameId;;
+
+    public HoldemRoundSettingsManager(
+            Random random,
+            RoundSettings roundSettings
+    ) {
+        this.random = random;
+        this.players = roundSettings.getPlayers();
+        flop = roundSettings.getFlop() == null ? setFlop() : roundSettings.getFlop();
+        tern = roundSettings.getTern() == null ? getRandomCard() : roundSettings.getTern();
+        river = roundSettings.getRiver() == null ? getRandomCard() : roundSettings.getRiver();
+        gameName = roundSettings.getGameName();
+        bigBlindBet = roundSettings.getBigBlindBet();
+        smallBlindBet = roundSettings.getSmallBlindBet();
+        gameId = roundSettings.getGameId();
+        this.allCards = CardType.getAllCardsAsListWithFilter(
+                getAllCards(
+                        flop,
+                        tern,
+                        river,
+                        this.players.stream()
+                                .flatMap(player -> player.getCards().stream())
+                                .map(CardEntity::getCardType)
+                                .collect(Collectors.toList())
+                )
+        );
+
+    }
+
+    public HoldemRoundSettingsManager(
+            Random random,
+            List<PlayerEntity> players,
+            String gameName,
+            Long bigBlindBet,
+            Long smallBlindBet,
+            Long gameId
+    ) {
+        this.random = random;
+        this.allCards = CardType.getAllCardsAsList();
+        this.players = players;
+        this.flop = setFlop();
+        this.tern = getRandomCard();
+        this.river = getRandomCard();
+        this.gameName = gameName;
+        this.bigBlindBet = bigBlindBet;
+        this.smallBlindBet = smallBlindBet;
+        this.gameId = gameId;
+        setAllPlayersGameName();
+        dealCards();
+        setButton();
+        setSmallBlind();
+        setBigBlind();
+        setAllActivePlayers();
+    }
 
     @Override
     public RoundSettings getSettings(RoundSettings prevSettings) {
@@ -55,14 +105,7 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
                 throw new RuntimeException();
         }
     }
-
     private RoundSettings getPreflopSettings() {
-        setAllPlayersGameName();
-        dealCards();
-        setButton();
-        setSmallBlind();
-        setBigBlind();
-        setAllActivePlayers();
         return HoldemRoundSettings.builder()
                 .gameName(gameName)
                 .bank(bigBlindBet + smallBlindBet)
@@ -80,6 +123,24 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .lastBet(bigBlindBet)
                 .isFinished(false)
                 .build();
+    }
+
+    private List<CardType> getAllCards(List<CardType> flop, CardType tern, CardType river, List<CardType> playerCards) {
+        final List<CardType> cards = new ArrayList<>();
+        if (flop != null && flop.isEmpty()) {
+            cards.addAll(flop);
+        }
+        if (tern != null) {
+            cards.add(tern);
+        }
+        if (river != null) {
+            cards.add(river);
+        }
+        if (playerCards != null && playerCards.isEmpty()) {
+            cards.addAll(playerCards);
+        }
+        return cards;
+
     }
 
 
@@ -187,6 +248,7 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
                         ))
         );
     }
+
 
     private CardType getRandomCard() {
         final int randomIntCard = getRandomIntCard();
