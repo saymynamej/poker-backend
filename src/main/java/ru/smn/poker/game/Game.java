@@ -3,6 +3,7 @@ package ru.smn.poker.game;
 import lombok.extern.slf4j.Slf4j;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.entities.PlayerEntity;
+import ru.smn.poker.entities.RoundEntity;
 import ru.smn.poker.enums.StateType;
 
 import java.util.List;
@@ -17,6 +18,10 @@ public abstract class Game {
     public Game(GameSettings gameSettings, Round round) {
         this.gameSettings = gameSettings;
         this.round = round;
+    }
+
+    public void restore(RoundSettings roundSettings){
+        round.restore(roundSettings);
     }
 
     public Round getRound() {

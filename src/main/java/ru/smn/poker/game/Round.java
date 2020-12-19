@@ -1,6 +1,7 @@
 package ru.smn.poker.game;
 
 import ru.smn.poker.entities.PlayerEntity;
+import ru.smn.poker.entities.RoundEntity;
 
 import java.util.List;
 
@@ -10,7 +11,7 @@ public interface Round {
 
     String getGameName();
 
-    void reloadRound();
+    void restore(RoundSettings roundSettings);
 
     RoundSettings getRoundSettings();
 

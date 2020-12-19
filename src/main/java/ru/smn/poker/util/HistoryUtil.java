@@ -88,7 +88,10 @@ public class HistoryUtil {
         addActionInHistory(roundSettings, player, player.getAction());
     }
 
-    public static Map<PlayerEntity, List<Action>> unionHistory(Map<PlayerEntity, List<Action>> firstHistory, Map<PlayerEntity, List<Action>> secondHistory) {
+    public static Map<PlayerEntity, List<Action>> unionHistory(
+            Map<PlayerEntity, List<Action>> firstHistory,
+            Map<PlayerEntity, List<Action>> secondHistory
+    ) {
         final Map<PlayerEntity, List<Action>> unionActions = new HashMap<>(firstHistory);
 
         secondHistory.forEach((key, value) -> {

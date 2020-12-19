@@ -20,6 +20,10 @@ public class HoldemRoundSettingsManagerHU extends HoldemRoundSettingsManager {
         super(random, players, gameName, bigBlindBet, smallBlindBet, gameId);
     }
 
+    public HoldemRoundSettingsManagerHU(Random random, RoundSettings roundSettings) {
+        super(random, roundSettings);
+    }
+
     @Override
     protected void setButton() {
         super.setButton();

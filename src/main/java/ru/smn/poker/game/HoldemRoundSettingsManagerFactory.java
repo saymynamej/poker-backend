@@ -21,4 +21,12 @@ public class HoldemRoundSettingsManagerFactory {
                 ? new HoldemRoundSettingsManager(random, new ArrayList<>(players), gameName, bigBlindBet, smallBlindBet, gameId)
                 : new HoldemRoundSettingsManagerHU(random, new ArrayList<>(players), gameName, bigBlindBet, smallBlindBet, gameId);
     }
+
+    public static RoundSettingsManager getRoundSettingsManager(
+            RoundSettings roundSettings
+    ) {
+        return roundSettings.getPlayers().size() > 2
+                ? new HoldemRoundSettingsManager(random, roundSettings)
+                : new HoldemRoundSettingsManagerHU(random, roundSettings);
+    }
 }

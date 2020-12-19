@@ -6,21 +6,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.converter.GameConverter;
-import ru.smn.poker.entities.ChipsCountEntity;
-import ru.smn.poker.entities.GameEntity;
-import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.entities.PlayerSettingsEntity;
+import ru.smn.poker.dto.HoldemRoundSettings;
+import ru.smn.poker.entities.*;
 import ru.smn.poker.enums.GameType;
 import ru.smn.poker.enums.PlayerType;
-import ru.smn.poker.game.Game;
-import ru.smn.poker.game.HoldemGame;
-import ru.smn.poker.game.HoldemRound;
-import ru.smn.poker.game.Round;
+import ru.smn.poker.game.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -41,7 +33,7 @@ public class CommonGameManagementService implements GameManagementService {
     private final RandomNameService randomNameService;
 
     @Override
-    public void createGame(int countOfPlayers, long defaultChipsCount) {
+    public void create(int countOfPlayers, long defaultChipsCount) {
         final List<PlayerEntity> players = new ArrayList<>();
         for (int i = 0; i < countOfPlayers; i++) {
             final PlayerEntity player = PlayerEntity.builder()
@@ -63,10 +55,10 @@ public class CommonGameManagementService implements GameManagementService {
             players.add(player);
         }
 
-        createGame(players, GameType.HOLDEM_HU);
+        create(players, GameType.HOLDEM_HU);
     }
 
-    public void createGame(
+    public void create(
             List<PlayerEntity> players,
             GameType gameType
     ) {
@@ -89,8 +81,62 @@ public class CommonGameManagementService implements GameManagementService {
     }
 
 
+    public void restore(GameEntity gameEntity) {
+        final Game game = create(gameEntity);
+
+        final Optional<RoundEntity> isNotFinishedRound = gameEntity.getRounds()
+                .stream()
+                .filter(roundEntity -> !roundEntity.isFinished())
+                .findFirst();
+
+        if (isNotFinishedRound.isEmpty()) {
+            startGame(game);
+            return;
+        }
+
+        final RoundEntity roundEntity = isNotFinishedRound.get();
+
+        final RoundSettings roundSettings = HoldemRoundSettings.builder()
+                .roundId(roundEntity.getId())
+                .players(gameEntity.getPlayers())
+                .activePlayer(roundEntity.getActivePlayer())
+                .bigBlind(roundEntity.getBigBlind())
+                .smallBlind(roundEntity.getSmallBlind())
+                .bigBlindBet(roundEntity.getBigBlindBet())
+                .button(roundEntity.getButton())
+                .flop(roundEntity.getF1() == null ? null : List.of(
+                        roundEntity.getF1(),
+                        roundEntity.getF2(),
+                        roundEntity.getF3()))
+                .gameId(gameEntity.getId())
+                .gameName(gameEntity.getName())
+                .isFinished(roundEntity.isFinished())
+                .lastBet(roundEntity.getLastBet())
+                .river(roundEntity.getRiver())
+                .smallBlindBet(roundEntity.getSmallBlindBet())
+                .stageType(roundEntity.getStageType())
+                .tern(roundEntity.getTern())
+                .fullHistory(null)
+                .stageHistory(null)
+                .isAfk(false)
+                .bank(roundEntity.getBank())
+                .build();
+
+        runnableGames.computeIfAbsent(game, game2 -> {
+            final ExecutorService executorService = Executors.newSingleThreadExecutor();
+            executorService.submit(() -> game.restore(roundSettings));
+            try {
+                Thread.sleep(3 * 1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return executorService;
+        });
+    }
+
+
     public void startGame(GameEntity gameEntity) {
-        final Game generatedGame = createGame(gameEntity);
+        final Game generatedGame = create(gameEntity);
         games.put(generatedGame.getGameName(), generatedGame);
         startGame(generatedGame);
     }
@@ -104,8 +150,8 @@ public class CommonGameManagementService implements GameManagementService {
         chipsCountEntities.forEach(chipsCountEntity -> chipsCountEntity.setGame(gameEntity));
     }
 
-    public void createGame(List<PlayerEntity> players, GameType gameType, OrderService orderService) {
-        final Game game = createGame(
+    public void create(List<PlayerEntity> players, GameType gameType, OrderService orderService) {
+        final Game game = create(
                 players,
                 gameType,
                 orderService,
@@ -121,8 +167,8 @@ public class CommonGameManagementService implements GameManagementService {
     }
 
 
-    public void createGame(GameType gameType, OrderService orderService) {
-        final Game game = createGame(
+    public void create(GameType gameType, OrderService orderService) {
+        final Game game = create(
                 Collections.emptyList(),
                 gameType,
                 orderService,
@@ -138,6 +184,7 @@ public class CommonGameManagementService implements GameManagementService {
 
     }
 
+
     @Override
     public void startGame(Game game) {
         runnableGames.computeIfAbsent(game, game2 -> {
@@ -152,7 +199,7 @@ public class CommonGameManagementService implements GameManagementService {
         });
     }
 
-    public Game createGame(GameEntity gameEntity) {
+    public Game create(GameEntity gameEntity) {
         final GameSettings gameSettings = mapSettings.get(gameEntity.getGameType());
 
         final Round round = new HoldemRound(
@@ -166,17 +213,18 @@ public class CommonGameManagementService implements GameManagementService {
                 gameEntity.getId()
         );
 
+
         return new HoldemGame(
                 gameSettings,
                 round
         );
     }
 
-    public Game createGame(List<PlayerEntity> players,
-                           GameType gameType,
-                           OrderService orderService,
-                           long gameId,
-                           String gameName
+    public Game create(List<PlayerEntity> players,
+                       GameType gameType,
+                       OrderService orderService,
+                       long gameId,
+                       String gameName
     ) {
         if (gameId == 0) {
             gameId = gameService.getNextGameId();
@@ -203,7 +251,7 @@ public class CommonGameManagementService implements GameManagementService {
     }
 
     @Override
-    public synchronized Game createGame(
+    public synchronized Game create(
             List<PlayerEntity> players,
             GameType gameType,
             OrderService orderService,
@@ -212,7 +260,7 @@ public class CommonGameManagementService implements GameManagementService {
 
         final String randomGameName = randomNameService.getRandomName();
 
-        return createGame(
+        return create(
                 players,
                 gameType,
                 orderService,
