@@ -12,14 +12,17 @@ public interface GameManagementService {
     Game create(List<PlayerEntity> players,
                 GameType gameType,
                 OrderService orderService,
-                long gameId);
+                long gameId
+    );
 
     void create(GameType gameType,
-                OrderService orderService);
+                OrderService orderService
+    );
 
     void create(List<PlayerEntity> players,
                 GameType gameType,
-                OrderService orderService);
+                OrderService orderService
+    );
 
     void startGame(Game game);
 
@@ -34,5 +37,5 @@ public interface GameManagementService {
 
     void addListener(Runnable runnable);
 
-    void restore(GameEntity gameEntity);
+    void restoreAll();
 }

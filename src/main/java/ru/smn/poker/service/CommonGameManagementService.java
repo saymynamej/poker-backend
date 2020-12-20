@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.smn.poker.action.Action;
+import ru.smn.poker.action.holdem.Bet;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.converter.GameConverter;
 import ru.smn.poker.dto.HoldemRoundSettings;
@@ -81,57 +84,70 @@ public class CommonGameManagementService implements GameManagementService {
     }
 
 
-    public void restore(GameEntity gameEntity) {
-        final Game game = create(gameEntity);
+    @Transactional
+    public void restoreAll() {
+        final List<GameEntity> games = gameService.findAll();
 
-        final Optional<RoundEntity> isNotFinishedRound = gameEntity.getRounds()
-                .stream()
-                .filter(roundEntity -> !roundEntity.isFinished())
-                .findFirst();
+        for (GameEntity gameEntity : games) {
 
-        if (isNotFinishedRound.isEmpty()) {
-            startGame(game);
-            return;
-        }
+            final Game game = create(gameEntity);
 
-        final RoundEntity roundEntity = isNotFinishedRound.get();
+            final Optional<RoundEntity> isNotFinishedRound = gameEntity.getRounds()
+                    .stream()
+                    .filter(roundEntity -> !roundEntity.isFinished())
+                    .findFirst();
 
-        final RoundSettings roundSettings = HoldemRoundSettings.builder()
-                .roundId(roundEntity.getId())
-                .players(gameEntity.getPlayers())
-                .activePlayer(roundEntity.getActivePlayer())
-                .bigBlind(roundEntity.getBigBlind())
-                .smallBlind(roundEntity.getSmallBlind())
-                .bigBlindBet(roundEntity.getBigBlindBet())
-                .button(roundEntity.getButton())
-                .flop(roundEntity.getF1() == null ? null : List.of(
-                        roundEntity.getF1(),
-                        roundEntity.getF2(),
-                        roundEntity.getF3()))
-                .gameId(gameEntity.getId())
-                .gameName(gameEntity.getName())
-                .isFinished(roundEntity.isFinished())
-                .lastBet(roundEntity.getLastBet())
-                .river(roundEntity.getRiver())
-                .smallBlindBet(roundEntity.getSmallBlindBet())
-                .stageType(roundEntity.getStageType())
-                .tern(roundEntity.getTern())
-                .fullHistory(null)
-                .stageHistory(null)
-                .isAfk(false)
-                .bank(roundEntity.getBank())
-                .build();
-
-        runnableGames.computeIfAbsent(game, game2 -> {
-            final ExecutorService executorService = Executors.newSingleThreadExecutor();
-            executorService.submit(() -> game.restore(roundSettings));
-            try {
-                Thread.sleep(3 * 1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if (isNotFinishedRound.isEmpty()) {
+                startGame(game);
+                return;
             }
-            return executorService;
-        });
+
+            final RoundEntity roundEntity = isNotFinishedRound.get();
+
+            final Map<PlayerEntity, List<Action>> actions = roundEntity.getActions().stream()
+                    .collect(Collectors.groupingBy(ActionEntity::getPlayer)).entrySet()
+                    .stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
+                            .map(actionEntity -> new Bet(actionEntity.getCount()))
+                            .collect(Collectors.toList())));
+
+            final RoundSettings roundSettings = HoldemRoundSettings.builder()
+                    .roundId(roundEntity.getId())
+                    .players(gameEntity.getPlayers())
+                    .activePlayer(roundEntity.getActivePlayer())
+                    .bigBlind(roundEntity.getBigBlind())
+                    .smallBlind(roundEntity.getSmallBlind())
+                    .bigBlindBet(roundEntity.getBigBlindBet())
+                    .button(roundEntity.getButton())
+                    .flop(roundEntity.getF1() == null ? null : List.of(
+                            roundEntity.getF1(),
+                            roundEntity.getF2(),
+                            roundEntity.getF3()))
+                    .gameId(gameEntity.getId())
+                    .gameName(gameEntity.getName())
+                    .isFinished(roundEntity.isFinished())
+                    .lastBet(roundEntity.getLastBet())
+                    .river(roundEntity.getRiver())
+                    .smallBlindBet(roundEntity.getSmallBlindBet())
+                    .stageType(roundEntity.getStageType())
+                    .tern(roundEntity.getTern())
+                    .fullHistory(actions)
+                    .stageHistory(new HashMap<>())
+                    .isAfk(false)
+                    .bank(roundEntity.getBank())
+                    .build();
+
+            runnableGames.computeIfAbsent(game, game2 -> {
+                final ExecutorService executorService = Executors.newSingleThreadExecutor();
+                executorService.submit(() -> game.restore(roundSettings));
+                try {
+                    Thread.sleep(3 * 1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return executorService;
+            });
+        }
     }
 
 
