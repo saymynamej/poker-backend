@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.smn.poker.action.holdem.Raise;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.service.ActionService;
 import ru.smn.poker.service.GameService;
@@ -39,11 +40,11 @@ public class RaiseTest {
         final long raiseCount = 4;
         final long lastBet = 2;
         final RoundSettings roundSettings = getRoundSettingsDTO(lastBet);
-        final Player player = getPlayer();
+        final PlayerEntity player = getPlayer();
         final Raise raise = new Raise(raiseCount);
         executorService.submit(() -> raise.doAction(roundSettings, player, gameService, actionService));
         executorService.awaitTermination(2L, TimeUnit.SECONDS);
-        Assertions.assertEquals(DEFAULT_CHIPS_COUNT - raise.getCount(), player.getChipsCount());
+        Assertions.assertEquals(DEFAULT_CHIPS_COUNT - raise.getCount(), player.getChipsCount().getCount());
     }
 
     @Test
@@ -51,7 +52,7 @@ public class RaiseTest {
         final long raiseCount = 2;
         final long lastBet = 2;
         final RoundSettings roundSettings = getRoundSettingsDTO(lastBet);
-        final Player player = getPlayer();
+        final PlayerEntity player = getPlayer();
         final Raise raise = new Raise(raiseCount);
         executorService.submit(() -> raise.doAction(roundSettings, player, gameService, actionService));
         executorService.awaitTermination(2L, TimeUnit.SECONDS);

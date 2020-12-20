@@ -5,6 +5,10 @@ import ru.smn.poker.action.holdem.Wait;
 import ru.smn.poker.dto.Card;
 import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.CardEntity;
+import ru.smn.poker.entities.ChipsCountEntity;
+import ru.smn.poker.entities.PlayerEntity;
+import ru.smn.poker.entities.PlayerSettingsEntity;
 import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.RoleType;
 import ru.smn.poker.enums.StageType;
@@ -43,7 +47,7 @@ public class DTOUtilTest {
         return getRoundSettingsDTO(DEFAULT_LAST_BET, stageType, getPlayers(countPlayers));
     }
 
-    public static RoundSettings getRoundSettingsDTO(long lastBet, StageType stageType, List<Player> players) {
+    public static RoundSettings getRoundSettingsDTO(long lastBet, StageType stageType, List<PlayerEntity> players) {
         return HoldemRoundSettings.builder()
                 .lastBet(lastBet)
                 .stageType(stageType)
@@ -59,7 +63,7 @@ public class DTOUtilTest {
         return getRoundSettingsDTO(lastBet, Collections.emptyList());
     }
 
-    public static RoundSettings getRoundSettingsDTO(long lastBet, List<Player> players) {
+    public static RoundSettings getRoundSettingsDTO(long lastBet, List<PlayerEntity> players) {
         return HoldemRoundSettings.builder()
                 .lastBet(lastBet)
                 .bigBlindBet(DEFAULT_BIG_BLIND_BET)
@@ -71,23 +75,24 @@ public class DTOUtilTest {
                 .build();
     }
 
-    public static List<Player> getPlayers(int count) {
+    public static List<PlayerEntity> getPlayers(int count) {
         return IntStream.range(0, count).mapToObj(i -> getPlayer()).collect(Collectors.toList());
     }
 
-    public static PlayerEn getPlayer() {
-        return Player.builder()
-                .gameName(DEFAULT_GAME_NAME)
-                .chipsCount(DEFAULT_CHIPS_COUNT)
+    public static PlayerEntity getPlayer() {
+        return PlayerEntity.builder()
                 .name(faker.name().name())
-                .stateType(StateType.IN_GAME)
-                .cards(List.of(
-                        Card.builder().cardType(CardType.SIX_S).build(),
-                        Card.builder().cardType(CardType.SIX_C).build())
-                )
-                .roleType(RoleType.ORDINARY)
-                .action(new Wait())
-                .timeBank(60L)
+                .settings(PlayerSettingsEntity.builder()
+                        .gameName(DEFAULT_GAME_NAME)
+                        .chipsCount(new ChipsCountEntity(DEFAULT_CHIPS_COUNT))
+                        .stateType(StateType.IN_GAME)
+                        .cards(List.of(
+                                CardEntity.builder().cardType(CardType.SIX_S).build(),
+                                CardEntity.builder().cardType(CardType.SIX_C).build())
+                        )
+                        .roleType(RoleType.ORDINARY)
+                        .timeBank(60L)
+                        .build())
                 .build();
     }
 

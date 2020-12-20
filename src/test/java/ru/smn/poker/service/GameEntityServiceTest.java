@@ -10,6 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.smn.poker.action.holdem.Call;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.RoundSettings;
 
 import static ru.smn.poker.util.DTOUtilTest.*;
@@ -26,10 +27,10 @@ public class GameEntityServiceTest {
     public void testDoAction(){
         final long countCall = 4;
         final RoundSettings roundSettingsDTO = getRoundSettingsDTO();
-        final Player player = getPlayer();
+        final PlayerEntity player = getPlayer();
         final Call call = new Call(countCall);
         gameService.doAction(player, roundSettingsDTO, call.getCount(), call.getCount());
-        Assertions.assertEquals(DEFAULT_CHIPS_COUNT - call.getCount(), player.getChipsCount());
+        Assertions.assertEquals(DEFAULT_CHIPS_COUNT - call.getCount(), player.getChipsCount().getCount());
         Assertions.assertEquals(call.getCount(), roundSettingsDTO.getLastBet());
         Assertions.assertEquals(
                 call.getCount() + roundSettingsDTO.getBigBlindBet() + roundSettingsDTO.getSmallBlindBet(),

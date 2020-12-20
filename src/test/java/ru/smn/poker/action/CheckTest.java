@@ -10,6 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.smn.poker.action.holdem.Check;
 import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.RoleType;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.game.RoundSettings;
@@ -37,7 +38,7 @@ public class CheckTest {
     public void testSuccessCheckWhenLastBetZero() throws InterruptedException {
         final RoundSettings roundSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.FLOP);
         roundSettingsDTO.setLastBet(0L);
-        final Player player = DTOUtilTest.getPlayer();
+        final PlayerEntity player = DTOUtilTest.getPlayer();
         executorService.submit(() -> new Check().doAction(roundSettingsDTO, player, gameService, actionService));
         executorService.awaitTermination(2L, TimeUnit.SECONDS);
     }
@@ -46,7 +47,7 @@ public class CheckTest {
     public void testFailCheckWhenLastBetZero() throws InterruptedException {
         final RoundSettings roundSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.PREFLOP);
         roundSettingsDTO.setLastBet(0L);
-        final Player player = DTOUtilTest.getPlayer();
+        final PlayerEntity player = DTOUtilTest.getPlayer();
         executorService.submit(() -> new Check().doAction(roundSettingsDTO, player, gameService, actionService));
         executorService.awaitTermination(2L, TimeUnit.SECONDS);
         Mockito.verify(actionService, Mockito.times(1)).waitUntilPlayerWillHasAction(player, roundSettingsDTO);
@@ -56,7 +57,7 @@ public class CheckTest {
     public void testSuccessCheckWhenPlayerOnBigBlind() throws InterruptedException {
         final RoundSettings roundSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.PREFLOP);
         roundSettingsDTO.setLastBet(2L);
-        final Player player = DTOUtilTest.getPlayer();
+        final PlayerEntity player = DTOUtilTest.getPlayer();
         player.setRole(RoleType.BIG_BLIND);
         executorService.submit(() -> new Check().doAction(roundSettingsDTO, player, gameService, actionService));
         executorService.awaitTermination(2L, TimeUnit.SECONDS);
@@ -66,7 +67,7 @@ public class CheckTest {
     public void testFailCheckWhenPlayerOnBigBlind() throws InterruptedException {
         final RoundSettings roundSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.PREFLOP);
         roundSettingsDTO.setLastBet(roundSettingsDTO.getBigBlindBet() + roundSettingsDTO.getBigBlindBet());
-        final Player player = DTOUtilTest.getPlayer();
+        final PlayerEntity player = DTOUtilTest.getPlayer();
         executorService.submit(() -> new Check().doAction(roundSettingsDTO, player, gameService, actionService));
         executorService.awaitTermination(2L, TimeUnit.SECONDS);
         Mockito.verify(actionService, Mockito.times(1)).waitUntilPlayerWillHasAction(player, roundSettingsDTO);

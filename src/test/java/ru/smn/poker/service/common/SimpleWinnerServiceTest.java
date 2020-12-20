@@ -11,9 +11,10 @@ import ru.smn.poker.action.holdem.AllIn;
 import ru.smn.poker.action.holdem.Call;
 import ru.smn.poker.action.holdem.Fold;
 import ru.smn.poker.action.holdem.Raise;
-import ru.smn.poker.dto.Card;
 import ru.smn.poker.dto.HoldemRoundSettings;
-import ru.smn.poker.dto.Player;
+import ru.smn.poker.entities.CardEntity;
+import ru.smn.poker.entities.ChipsCountEntity;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.StateType;
 import ru.smn.poker.game.RoundSettings;
@@ -35,8 +36,8 @@ class SimpleWinnerServiceTest {
     void testWhenWinnerOnlyOne() {
         final long callCount = 100;
         final long raiseCount = 300;
-        final Player player1 = PlayerUtil.getDefaultPlayerForHoldem("1");
-        final Player player2 = PlayerUtil.getDefaultPlayerForHoldem("2");
+        final PlayerEntity player1 = PlayerUtil.getDefaultPlayerForHoldem("1");
+        final PlayerEntity player2 = PlayerUtil.getDefaultPlayerForHoldem("2");
         final Call call = new Call(callCount);
         final Raise raise = new Raise(raiseCount);
         final Fold fold = new Fold();
@@ -59,26 +60,26 @@ class SimpleWinnerServiceTest {
                 .bank(callCount)
                 .build());
 
-        Assertions.assertEquals(5100, player2.getChipsCount());
-        Assertions.assertEquals(5000, player1.getChipsCount());
+        Assertions.assertEquals(5100, player2.getChipsCount().getCount());
+        Assertions.assertEquals(5000, player1.getChipsCount().getCount());
     }
 
     @Test
     void testWhenNeedChop() {
-        final Player player1 = PlayerUtil.getDefaultPlayerForHoldem("1");
+        final PlayerEntity player1 = PlayerUtil.getDefaultPlayerForHoldem("1");
         player1.addCards(Arrays.asList(
-                Card.builder().cardType(CardType.TWO_C).build(),
-                Card.builder().cardType(CardType.THREE_H).build())
+                CardEntity.builder().cardType(CardType.TWO_C).build(),
+                CardEntity.builder().cardType(CardType.THREE_H).build())
         );
-        final AllIn allIn1 = new AllIn(player1.getChipsCount());
+        final AllIn allIn1 = new AllIn(player1.getChipsCount().getCount());
         player1.setAction(allIn1);
 
-        final Player player2 = PlayerUtil.getDefaultPlayerForHoldem("2");
+        final PlayerEntity player2 = PlayerUtil.getDefaultPlayerForHoldem("2");
         player2.addCards(Arrays.asList(
-                Card.builder().cardType(CardType.TWO_D).build(),
-                Card.builder().cardType(CardType.THREE_S).build())
+                CardEntity.builder().cardType(CardType.TWO_D).build(),
+                CardEntity.builder().cardType(CardType.THREE_S).build())
         );
-        final AllIn allIn2 = new AllIn(player2.getChipsCount());
+        final AllIn allIn2 = new AllIn(player2.getChipsCount().getCount());
         player2.setAction(allIn2);
 
         player1.setStateType(StateType.IN_GAME);
@@ -100,51 +101,51 @@ class SimpleWinnerServiceTest {
                         player1,
                         player2
                 ))
-                .bank(player1.getChipsCount() + player2.getChipsCount())
+                .bank(player1.getChipsCount().getCount() + player2.getChipsCount().getCount())
                 .build();
 
-        player1.setChipsCount(0);
-        player2.setChipsCount(0);
+        player1.setChipsCount(new ChipsCountEntity(0L));
+        player2.setChipsCount(new ChipsCountEntity(0L));
 
         winnerService.sendPrizes(roundSettings);
 
-        Assertions.assertEquals(5000, player2.getChipsCount());
-        Assertions.assertEquals(5000, player1.getChipsCount());
+        Assertions.assertEquals(5000, player2.getChipsCount().getCount());
+        Assertions.assertEquals(5000, player1.getChipsCount().getCount());
     }
 
     @Test
     void testWhenNeedCalculate() {
-        final Player player1 = PlayerUtil.getDefaultPlayerForHoldem("1");
+        final PlayerEntity player1 = PlayerUtil.getDefaultPlayerForHoldem("1");
         player1.addCards(
                 Arrays.asList(
-                        Card.builder().cardType(CardType.K_C).build(),
-                        Card.builder().cardType(CardType.K_D).build()
+                        CardEntity.builder().cardType(CardType.K_C).build(),
+                        CardEntity.builder().cardType(CardType.K_D).build()
                 )
         );
         final AllIn allIn1 = new AllIn(5000);
         player1.setAction(allIn1);
-        player1.setChipsCount(0);
+        player1.setChipsCount(new ChipsCountEntity(0L));
 
-        final Player player2 = PlayerUtil.getDefaultPlayerForHoldem("2");
+        final PlayerEntity player2 = PlayerUtil.getDefaultPlayerForHoldem("2");
         player2.addCards(
                 Arrays.asList(
-                        Card.builder().cardType(CardType.EIGHT_S).build(),
-                        Card.builder().cardType(CardType.NINE_S).build()
+                        CardEntity.builder().cardType(CardType.EIGHT_S).build(),
+                        CardEntity.builder().cardType(CardType.NINE_S).build()
                 )
         );
         final AllIn allIn2 = new AllIn(2000);
-        player2.setChipsCount(0);
+        player2.setChipsCount(new ChipsCountEntity(0L));
         player2.setAction(allIn2);
 
-        final Player player3 = PlayerUtil.getDefaultPlayerForHoldem("3");
+        final PlayerEntity player3 = PlayerUtil.getDefaultPlayerForHoldem("3");
         player3.addCards(
                 Arrays.asList(
-                        Card.builder().cardType(CardType.TWO_C).build(),
-                        Card.builder().cardType(CardType.THREE_S).build()
+                        CardEntity.builder().cardType(CardType.TWO_C).build(),
+                        CardEntity.builder().cardType(CardType.THREE_S).build()
                 )
         );
         final AllIn allIn3 = new AllIn(100);
-        player3.setChipsCount(0);
+        player3.setChipsCount(new ChipsCountEntity(0L));
         player3.setAction(allIn3);
 
         player1.setStateType(StateType.IN_GAME);
@@ -172,9 +173,9 @@ class SimpleWinnerServiceTest {
                 .bank(7100)
                 .build());
 
-        Assertions.assertEquals(4100, player2.getChipsCount());
-        Assertions.assertEquals(3000, player1.getChipsCount());
-        Assertions.assertEquals(0, player3.getChipsCount());
+        Assertions.assertEquals(4100, player2.getChipsCount().getCount());
+        Assertions.assertEquals(3000, player1.getChipsCount().getCount());
+        Assertions.assertEquals(0, player3.getChipsCount().getCount());
     }
 
 }
