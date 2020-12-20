@@ -7,5 +7,8 @@ public enum ActionType {
     CALL,
     WAIT,
     CHECK,
-    ALLIN
+    ALLIN,
+    SB_BET,
+    BB_BET,
+    BUTTON_BET
 }

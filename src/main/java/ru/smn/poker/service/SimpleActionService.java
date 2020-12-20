@@ -29,7 +29,6 @@ public class SimpleActionService implements ActionService {
     private final GameService gameService;
     private final ActionLogService actionLogService;
 
-
     @Override
     public void changeStateType(String playerName) {
         final PlayerEntity player = holdemGameDataService.getPlayerByName(playerName)
@@ -109,6 +108,5 @@ public class SimpleActionService implements ActionService {
             ((ExecutableAction) action).doAction(roundSettings, player, gameService, this);
             log.info("player: " + player.getName() + " did action:" + action);
         }
-        actionLogService.log(player, action, roundSettings);
     }
 }

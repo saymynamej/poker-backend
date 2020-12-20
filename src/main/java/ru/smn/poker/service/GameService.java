@@ -9,7 +9,6 @@ import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.repository.*;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static ru.smn.poker.util.HistoryUtil.addActionInHistory;
@@ -19,7 +18,7 @@ import static ru.smn.poker.util.HistoryUtil.addActionInHistory;
 @Slf4j
 public class GameService {
     private final GameRepository gameRepository;
-    private final PlayerRepository playerRepository;
+    private final ActionLogService actionLogService;
     private final RoundRepository roundRepository;
     private final ChipsCountRepository chipsCountRepository;
     private final CardRepository cardRepository;
@@ -36,9 +35,8 @@ public class GameService {
 
     @Transactional
     public void update(RoundSettings roundSettings) {
-        final Optional<GameEntity> optionalGameEntity = gameRepository.findById(roundSettings.getGameId());
         saveChipsCount(roundSettings);
-        saveCards(roundSettings, optionalGameEntity.orElseThrow());
+        saveCards(roundSettings, gameRepository.findById(roundSettings.getGameId()).orElseThrow());
         savePlayerSettings(roundSettings);
         saveRound(roundSettings);
     }
@@ -65,7 +63,6 @@ public class GameService {
     }
 
     private void saveCards(RoundSettings roundSettings, GameEntity gameEntity) {
-
         final List<CardEntity> cardEntities = roundSettings.getPlayers().stream()
                 .flatMap(players -> players.getCards().stream())
                 .collect(Collectors.toList());
@@ -133,11 +130,17 @@ public class GameService {
         return ++id;
     }
 
-    public void doAction(PlayerEntity player, RoundSettings roundSettings, long removeChips, long lastBet) {
+    public void doAction(
+            PlayerEntity player,
+            RoundSettings roundSettings,
+            long removeChips,
+            long lastBet
+    ) {
         player.removeChips(removeChips);
         addBank(roundSettings, removeChips);
         setLastBet(roundSettings, lastBet);
         addActionInHistory(roundSettings, player);
+        actionLogService.log(player, player.getAction(), roundSettings);
     }
 
     public void addBank(RoundSettings roundSettings, long count) {

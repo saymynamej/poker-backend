@@ -21,18 +21,18 @@ public class BootStrapGames {
     private final PasswordEncoder passwordEncoder;
     private final GameRepository gameRepository;
 
-    @PostConstruct
-    public void init() {
-        final List<GameEntity> all = gameService.findAll();
-        for (GameEntity gameEntity : all) {
-            gameManagementService.restore(gameEntity);
-        }
-    }
-//
 //    @PostConstruct
-//    public void init2() {
-//        gameManagementService.createGame(2, 5000L);
+//    public void init() {
+//        final List<GameEntity> all = gameService.findAll();
+//        for (GameEntity gameEntity : all) {
+//            gameManagementService.restore(gameEntity);
+//        }
 //    }
+//
+    @PostConstruct
+    public void init2() {
+        gameManagementService.create(2, 5000L);
+    }
 
 
 }

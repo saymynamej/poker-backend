@@ -26,6 +26,7 @@ public class HoldemRound implements Round {
 
     public void restore(RoundSettings roundSettings) {
         this.roundSettings = roundSettings;
+
         while (true) {
             gameService.update(roundSettings);
 
