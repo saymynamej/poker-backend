@@ -20,12 +20,18 @@ public class OrderActionService implements OrderService {
     private final ActionService actionServiceHoldem;
     private final SecurityNotificationService securityNotificationService;
     private final SortService sortService;
+    private final ActionLogService actionLogService;
 
     @Override
     public boolean start(RoundSettings roundSettings) {
-        final List<PlayerEntity> sortedPlayers = PlayerUtil.getPlayersInGame(
-                sortService.sort(roundSettings.getPlayers(), roundSettings.getStageType())
+        final List<PlayerEntity> sort = sortService.sort(
+                roundSettings.getPlayers(),
+                roundSettings.getStageType()
         );
+        final List<PlayerEntity> sortedPlayers = PlayerUtil.getPlayersInGame(
+                sort
+        );
+
         while (true) {
             if (roundSettings.playersInAllIn()) {
                 securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(roundSettings);

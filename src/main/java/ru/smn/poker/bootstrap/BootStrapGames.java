@@ -25,7 +25,7 @@ public class BootStrapGames {
     public void init() {
         gameManagementService.restoreAll();
     }
-//
+
 //    @PostConstruct
 //    public void init2() {
 //        gameManagementService.create(2, 5000L);

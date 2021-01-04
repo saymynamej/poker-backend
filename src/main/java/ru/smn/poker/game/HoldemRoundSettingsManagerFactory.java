@@ -8,9 +8,10 @@ import java.util.List;
 import java.util.Random;
 
 public class HoldemRoundSettingsManagerFactory {
+
     private final static Random random = new SecureRandom();
 
-    public static RoundSettingsManager getRoundSettingsManager(
+    public static RoundSettingsManager getManager(
             List<PlayerEntity> players,
             String gameName,
             long bigBlindBet,
@@ -22,7 +23,7 @@ public class HoldemRoundSettingsManagerFactory {
                 : new HoldemRoundSettingsManagerHU(random, new ArrayList<>(players), gameName, bigBlindBet, smallBlindBet, gameId);
     }
 
-    public static RoundSettingsManager getRoundSettingsManager(
+    public static RoundSettingsManager getManager(
             RoundSettings roundSettings
     ) {
         return roundSettings.getPlayers().size() > 2

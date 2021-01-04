@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.smn.poker.action.Action;
 import ru.smn.poker.action.holdem.Bet;
+import ru.smn.poker.action.holdem.Wait;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.converter.GameConverter;
 import ru.smn.poker.dto.HoldemRoundSettings;
@@ -104,13 +105,27 @@ public class CommonGameManagementService implements GameManagementService {
 
             final RoundEntity roundEntity = isNotFinishedRound.get();
 
-            final Map<PlayerEntity, List<Action>> actions = roundEntity.getActions().stream()
+            final Map<PlayerEntity, List<Action>> allActions = roundEntity.getActions().stream()
                     .collect(Collectors.groupingBy(ActionEntity::getPlayer)).entrySet()
                     .stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
                             .map(actionEntity -> new Bet(actionEntity.getCount()))
                             .collect(Collectors.toList())));
 
+
+            final Map<PlayerEntity, List<Action>> stageActions = roundEntity.getActions().stream()
+                    .filter(actionEntity -> actionEntity.getStageType() == roundEntity.getStageType())
+                    .collect(Collectors.groupingBy(ActionEntity::getPlayer)).entrySet()
+                    .stream()
+                    .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
+                            .map(actionEntity -> new Bet(actionEntity.getCount()))
+                            .collect(Collectors.toList())));
+
+
+
+            stageActions.forEach((playerEntity, actions) -> {
+                System.out.println(playerEntity.getName() + " : " + actions);
+            });
             final RoundSettings roundSettings = HoldemRoundSettings.builder()
                     .roundId(roundEntity.getId())
                     .players(gameEntity.getPlayers())
@@ -131,11 +146,13 @@ public class CommonGameManagementService implements GameManagementService {
                     .smallBlindBet(roundEntity.getSmallBlindBet())
                     .stageType(roundEntity.getStageType())
                     .tern(roundEntity.getTern())
-                    .fullHistory(actions)
-                    .stageHistory(new HashMap<>())
+                    .fullHistory(allActions)
+                    .stageHistory(stageActions)
                     .isAfk(false)
                     .bank(roundEntity.getBank())
                     .build();
+
+            saveInCache(game);
 
             runnableGames.computeIfAbsent(game, game2 -> {
                 final ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -150,10 +167,14 @@ public class CommonGameManagementService implements GameManagementService {
         }
     }
 
+    private void saveInCache(Game game) {
+        this.games.put(game.getGameName(), game);
+    }
+
 
     public void startGame(GameEntity gameEntity) {
         final Game generatedGame = create(gameEntity);
-        games.put(generatedGame.getGameName(), generatedGame);
+        saveInCache(generatedGame);
         startGame(generatedGame);
     }
 
@@ -175,7 +196,7 @@ public class CommonGameManagementService implements GameManagementService {
         );
 
         if (checkGameName(game.getGameName())) {
-            games.put(game.getGameName(), game);
+            saveInCache(game);
             final GameEntity gameEntityFromBase = gameService.saveGame(GameConverter.toEntity(game));
             startGame(game);
             log.info("created new game:" + game.getGameName());
@@ -192,7 +213,7 @@ public class CommonGameManagementService implements GameManagementService {
         );
 
         if (checkGameName(game.getGameName())) {
-            games.put(game.getGameName(), game);
+            saveInCache(game);
             gameService.saveGame(GameConverter.toEntity(game));
             startGame(game);
             log.info("created new game:" + game.getGameName());

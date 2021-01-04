@@ -29,4 +29,9 @@ public class CardEntity {
     @ManyToOne
     @JoinColumn(name = "player_id")
     private PlayerEntity player;
+
+    @ManyToOne
+    @JoinColumn(name = "settings_id")
+    private PlayerSettingsEntity settings;
+
 }

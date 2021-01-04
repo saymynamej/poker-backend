@@ -28,7 +28,6 @@ public class HoldemRound implements Round {
         this.roundSettings = roundSettings;
 
         while (true) {
-            gameService.update(roundSettings);
 
             final boolean skipNext = orderService.start(roundSettings);
 
@@ -52,6 +51,7 @@ public class HoldemRound implements Round {
             this.roundSettings = roundSettingsManager.getSettings(this.roundSettings);
 
             gameService.update(roundSettings);
+            gameService.updateBlinds(roundSettings);
 
             final boolean skipNext = orderService.start(roundSettings);
 
@@ -67,7 +67,7 @@ public class HoldemRound implements Round {
 
     private RoundSettingsManager getRoundSettingsManager() {
         log.info("game was started, because found enough persons");
-        return HoldemRoundSettingsManagerFactory.getRoundSettingsManager(
+        return HoldemRoundSettingsManagerFactory.getManager(
                 players,
                 gameName,
                 bigBlindBet,

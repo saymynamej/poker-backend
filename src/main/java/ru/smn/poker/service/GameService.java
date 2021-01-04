@@ -36,10 +36,19 @@ public class GameService {
     @Transactional
     public void update(RoundSettings roundSettings) {
         saveChipsCount(roundSettings);
-        saveCards(roundSettings, gameRepository.findById(roundSettings.getGameId()).orElseThrow());
+        saveCards(
+                roundSettings,
+                gameRepository.findById(roundSettings.getGameId()).orElseThrow()
+        );
         savePlayerSettings(roundSettings);
         saveRound(roundSettings);
     }
+
+    @Transactional
+    public void updateBlinds(RoundSettings roundSettings) {
+        actionLogService.logBlinds(roundSettings);
+    }
+
 
     private void saveRound(RoundSettings roundSettings) {
         final RoundEntity roundEntity = getRoundEntity(
@@ -67,7 +76,10 @@ public class GameService {
                 .flatMap(players -> players.getCards().stream())
                 .collect(Collectors.toList());
 
-        cardEntities.forEach(cardEntity -> cardEntity.setGame(gameEntity));
+        cardEntities.forEach(cardEntity -> {
+            cardEntity.setGame(gameEntity);
+            cardEntity.setSettings(cardEntity.getPlayer().getSettings());
+        });
 
         cardRepository.saveAll(cardEntities);
 

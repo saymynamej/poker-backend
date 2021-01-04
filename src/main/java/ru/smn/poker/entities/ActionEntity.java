@@ -2,6 +2,7 @@ package ru.smn.poker.entities;
 
 import lombok.*;
 import ru.smn.poker.enums.ActionType;
+import ru.smn.poker.enums.StageType;
 
 import javax.persistence.*;
 
@@ -25,6 +26,9 @@ public class ActionEntity {
     private ActionType actionType;
 
     private Long count;
+
+    @Enumerated(value = EnumType.STRING)
+    private StageType stageType;
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "round_id")

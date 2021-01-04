@@ -32,7 +32,7 @@ public class PlayerSettingsEntity {
 
     private String gameName;
 
-    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "settings", fetch = FetchType.EAGER)
     private List<CardEntity> cards;
 
     @ManyToOne(cascade = CascadeType.ALL)

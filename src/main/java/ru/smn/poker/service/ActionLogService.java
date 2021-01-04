@@ -28,11 +28,12 @@ public class ActionLogService {
         final RoundEntity roundEntity = roundRepository.findById(roundSettings.getRoundId()).orElseThrow();
 
         final boolean isLoggedBlind = roundEntity.getActions().stream()
-                .anyMatch(actionEntity -> actionEntity.getActionType() == ActionType.SB_BET);
+                .anyMatch(actionEntity -> actionEntity.getActionType() == ActionType.BB_BET);
 
         if (!isLoggedBlind) {
             final ActionEntity sbAction = ActionEntity.builder()
                     .count(roundSettings.getSmallBlindBet())
+                    .stageType(roundEntity.getStageType())
                     .player(roundEntity.getSmallBlind() == null ? roundEntity.getButton() : roundEntity.getSmallBlind())
                     .actionType(roundEntity.getSmallBlind() == null ? ActionType.BUTTON_BET : ActionType.SB_BET)
                     .round(roundEntity)
@@ -41,6 +42,7 @@ public class ActionLogService {
             final ActionEntity bbAction = ActionEntity.builder()
                     .count(roundSettings.getBigBlindBet())
                     .player(roundEntity.getBigBlind())
+                    .stageType(roundEntity.getStageType())
                     .actionType(ActionType.BB_BET)
                     .round(roundEntity)
                     .build();
@@ -61,11 +63,9 @@ public class ActionLogService {
                 .count(count)
                 .round(optionalRoundEntity.orElseThrow())
                 .actionType(action.getActionType())
+                .stageType(roundSettings.getStageType())
                 .player(optionalPlayerEntity.orElseThrow())
                 .build());
-
-        //TODO remove it later, its not right decision
-        logBlinds(roundSettings);
     }
 
     @Transactional

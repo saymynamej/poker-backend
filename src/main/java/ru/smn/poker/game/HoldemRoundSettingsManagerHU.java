@@ -57,6 +57,5 @@ public class HoldemRoundSettingsManagerHU extends HoldemRoundSettingsManager {
     }
 
     @Override
-    protected void setSmallBlind() {
-    }
+    protected void setSmallBlind() {}
 }

@@ -17,7 +17,6 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
-
 public class HoldemRoundSettings implements RoundSettings {
     private final Map<PlayerEntity, List<Action>> stageHistory;
     private final Map<PlayerEntity, List<Action>> fullHistory;

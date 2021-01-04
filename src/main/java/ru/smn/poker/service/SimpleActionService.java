@@ -79,7 +79,7 @@ public class SimpleActionService implements ActionService {
         player.setWait();
         gameService.setActivePlayer(roundSettings, player);
         securityNotificationService.sendToAllWithSecurity(roundSettings);
-        gameService.update(roundSettings);
+//        gameService.update(roundSettings);
         waitPlayerAction(player, roundSettings);
         gameService.setInActivePlayer(roundSettings, player);
     }
