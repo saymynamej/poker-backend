@@ -23,7 +23,7 @@ public class OrderActionService implements OrderService {
 
 
     /*
-    * @return true if need skip next stages, false or not
+    * @return true if need skip next stages, false if not
     * */
     @Override
     public boolean start(RoundSettings roundSettings) {
