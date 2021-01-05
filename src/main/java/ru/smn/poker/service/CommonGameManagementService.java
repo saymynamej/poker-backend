@@ -20,6 +20,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 
 @Service
@@ -39,21 +40,16 @@ public class CommonGameManagementService implements GameManagementService {
     @Override
     public void create(int countOfPlayers, long defaultChipsCount, GameType gameType) {
         final String randomName = randomNameService.getRandomName();
-        final List<PlayerEntity> players = new ArrayList<>();
-        for (int i = 0; i < countOfPlayers; i++) {
-            final PlayerEntity player = PlayerEntity.builder()
-                    .name(String.valueOf(i))
-                    .enable(true)
-                    .settings(PlayerSettingsEntity.builder()
-                            .timeBank(60L)
-                            .gameName(randomName)
-                            .playerType(PlayerType.ORDINARY)
-                            .build())
-                    .password(passwordEncoder.encode(String.valueOf(i)))
-                    .build();
-
-            players.add(player);
-        }
+        final List<PlayerEntity> players = IntStream.range(0, countOfPlayers).mapToObj(i -> PlayerEntity.builder()
+                .name(String.valueOf(i))
+                .enable(true)
+                .settings(PlayerSettingsEntity.builder()
+                        .timeBank(60L)
+                        .gameName(randomName)
+                        .playerType(PlayerType.ORDINARY)
+                        .build())
+                .password(passwordEncoder.encode(String.valueOf(i)))
+                .build()).collect(Collectors.toList());
 
         final Game game = create(defaultChipsCount, gameType, randomName, players);
 
