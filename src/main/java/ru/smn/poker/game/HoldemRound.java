@@ -27,14 +27,14 @@ public class HoldemRound implements Round {
 
     @Override
     public void restore() {
+        final RoundSettingsManager roundSettingsManager = getRoundSettingsManager();
         while (true) {
             final boolean skipNext = orderService.start(roundSettings);
+
             if (skipNext || roundSettings.getStageType() == StageType.RIVER) {
                 break;
             }
-            else {
-                this.roundSettings = getRoundSettingsManager().getSettings(this.roundSettings);
-            }
+            this.roundSettings = roundSettingsManager.getSettings(this.roundSettings);
         }
         roundSettings.setFinished(true);
         winnerService.sendPrizes(roundSettings);
@@ -42,10 +42,11 @@ public class HoldemRound implements Round {
     }
 
     @Override
-    public void startRound() {
+    public void start() {
         final RoundSettingsManager roundSettingsManager = getRoundSettingsManager();
 
         while (true) {
+
             this.roundSettings = roundSettingsManager.getSettings(this.roundSettings);
 
             gameService.update(roundSettings);
@@ -64,7 +65,6 @@ public class HoldemRound implements Round {
 
 
     private RoundSettingsManager getRoundSettingsManager() {
-        log.info("game was started, because found enough persons");
         return HoldemRoundSettingsManagerFactory.getManager(
                 players,
                 gameName,
