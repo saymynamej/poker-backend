@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.smn.poker.action.Action;
 import ru.smn.poker.action.holdem.Wait;
 import ru.smn.poker.config.game.GameSettings;
-import ru.smn.poker.converter.GameConverter;
 import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.entities.*;
 import ru.smn.poker.enums.ActionType;
@@ -38,7 +37,8 @@ public class CommonGameManagementService implements GameManagementService {
     private final RandomNameService randomNameService;
 
     @Override
-    public void create(int countOfPlayers, long defaultChipsCount) {
+    public void create(int countOfPlayers, long defaultChipsCount, GameType gameType) {
+        final String randomName = randomNameService.getRandomName();
         final List<PlayerEntity> players = new ArrayList<>();
         for (int i = 0; i < countOfPlayers; i++) {
             final PlayerEntity player = PlayerEntity.builder()
@@ -46,46 +46,23 @@ public class CommonGameManagementService implements GameManagementService {
                     .enable(true)
                     .settings(PlayerSettingsEntity.builder()
                             .timeBank(60L)
+                            .gameName(randomName)
                             .playerType(PlayerType.ORDINARY)
                             .build())
                     .password(passwordEncoder.encode(String.valueOf(i)))
                     .build();
 
-            final ChipsCountEntity chipsCountEntity = ChipsCountEntity.builder()
-                    .count(defaultChipsCount)
-                    .build();
-
-            player.setChipsCount(chipsCountEntity);
-
             players.add(player);
         }
 
-        create(players, GameType.HOLDEM_HU);
-    }
+        final Game game = create(defaultChipsCount, gameType, randomName, players);
 
-    public void create(
-            List<PlayerEntity> players,
-            GameType gameType
-    ) {
-        final String randomGameName = randomNameService.getRandomName();
-
-        final GameEntity gameEntity = GameEntity.builder()
-                .name(randomGameName)
-                .gameType(gameType)
-                .players(players)
-                .build();
-
-        setChipsInGame(players, gameEntity);
-
-        players.forEach(playerEntity -> playerEntity.setGame(gameEntity));
-
-        final GameEntity gameEntityFromBase = gameService.saveGame(gameEntity);
-
-        run(gameEntityFromBase);
+        run(game);
     }
 
 
     @Transactional
+    @Override
     public void restoreAll() {
         final List<GameEntity> games = gameService.findAll();
 
@@ -121,8 +98,7 @@ public class CommonGameManagementService implements GameManagementService {
                 final boolean playerHasOnlyBlindBet = action.size() == 1 && roundEntity.getStageType() == StageType.PREFLOP;
                 if (action.isEmpty() || playerHasOnlyBlindBet) {
                     player.setAction(new Wait());
-                }
-                else {
+                } else {
                     player.setAction(action.get(action.size() - 1));
                 }
             });
@@ -153,88 +129,78 @@ public class CommonGameManagementService implements GameManagementService {
                     .bank(roundEntity.getBank())
                     .build();
 
-            final Game game = restore(gameEntity, roundSettings);
+            final Game game = convert(gameEntity, roundSettings);
 
             run(game);
         }
     }
 
 
-    private void saveInCache(Game game) {
-        this.games.put(game.getGameName(), game);
-    }
-
-
+    @Override
     public void run(GameEntity gameEntity) {
-        final Game generatedGame = create(gameEntity);
+        final Game generatedGame = convert(gameEntity);
         run(generatedGame);
     }
 
     @Override
     public void run(Game game) {
+        saveInCache(game);
         runnableGames.computeIfAbsent(game, game2 -> {
             final ExecutorService executorService = Executors.newSingleThreadExecutor();
             final boolean isRestore = game.getRoundSettings() != null;
             if (isRestore) {
                 executorService.submit(game::restore);
+                log.info("game was restored: " + game.getGameName());
             } else {
                 executorService.submit(game::start);
+                log.info("game was started: " + game.getGameName());
             }
             try {
                 Thread.sleep(3 * 1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            saveInCache(game);
             return executorService;
         });
     }
 
-    private void setChipsInGame(List<PlayerEntity> players, GameEntity gameEntity) {
-        final List<ChipsCountEntity> chipsCountEntities = players.stream()
-                .map(PlayerEntity::getChipsCount)
-                .collect(Collectors.toList());
-        gameEntity.setCounts(chipsCountEntities);
-
-        chipsCountEntities.forEach(chipsCountEntity -> chipsCountEntity.setGame(gameEntity));
-    }
-
-    public void create(List<PlayerEntity> players, GameType gameType, OrderService orderService) {
+    @Override
+    public void create(List<PlayerEntity> players, GameType gameType, long defaultChipsCount) {
         final Game game = create(
-                players,
+                defaultChipsCount,
                 gameType,
-                orderService,
-                0
+                randomNameService.getRandomName(),
+                players
         );
 
-        if (checkGameName(game.getGameName())) {
-            saveInCache(game);
-            final GameEntity gameEntityFromBase = gameService.saveGame(GameConverter.toEntity(game));
-            run(game);
-            log.info("created new game:" + game.getGameName());
-        }
+        run(game);
     }
 
+    @Override
+    public void createEmptyGame(GameType gameType) {
+        final GameEntity emptyGame = GameEntity.builder()
+                .gameType(gameType)
+                .rounds(Collections.emptyList())
+                .counts(Collections.emptyList())
+                .players(Collections.emptyList())
+                .name(randomNameService.getRandomName())
+                .build();
 
-    public void create(GameType gameType, OrderService orderService) {
-        final Game game = create(
-                Collections.emptyList(),
-                gameType,
-                orderService,
-                0
-        );
+        final GameEntity gameEntityFromBase = gameService.saveGame(emptyGame);
 
-        if (checkGameName(game.getGameName())) {
-            saveInCache(game);
-            gameService.saveGame(GameConverter.toEntity(game));
-            run(game);
-            log.info("created new game:" + game.getGameName());
-        }
-
+        run(gameEntityFromBase);
     }
 
+    @Override
+    public void addListener(Runnable runnable) {
+        executorForListeners.submit(runnable);
+    }
 
-    public Game restore(GameEntity gameEntity, RoundSettings roundSettings) {
+    private boolean checkGameName(String gameName) {
+        return !games.containsKey(gameName);
+    }
+
+    private Game convert(GameEntity gameEntity, RoundSettings roundSettings) {
         final GameSettings gameSettings = mapSettings.get(gameEntity.getGameType());
 
         final Round round = new HoldemRound(
@@ -256,7 +222,7 @@ public class CommonGameManagementService implements GameManagementService {
 
     }
 
-    public Game create(GameEntity gameEntity) {
+    private Game convert(GameEntity gameEntity) {
         final GameSettings gameSettings = mapSettings.get(gameEntity.getGameType());
 
         final Round round = new HoldemRound(
@@ -270,69 +236,40 @@ public class CommonGameManagementService implements GameManagementService {
                 gameEntity.getId()
         );
 
-
         return new HoldemGame(
                 gameSettings,
                 round
         );
     }
 
-    public Game create(List<PlayerEntity> players,
-                       GameType gameType,
-                       OrderService orderService,
-                       long gameId,
-                       String gameName
-    ) {
-        if (gameId == 0) {
-            gameId = gameService.getNextGameId();
+    private Game create(long defaultChipsCount, GameType gameType, String randomName, List<PlayerEntity> players) {
+        final GameEntity gameEntity = GameEntity.builder()
+                .gameType(gameType)
+                .name(randomName)
+                .players(players)
+                .counts(Collections.emptyList())
+                .rounds(Collections.emptyList())
+                .build();
+
+        players.forEach(playerEntity -> {
+            playerEntity.setGame(gameEntity);
+            playerEntity.setChipsCount(ChipsCountEntity.builder()
+                    .game(gameEntity)
+                    .count(defaultChipsCount)
+                    .build());
+        });
+
+        final GameEntity gameEntityFromBase = gameService.saveGame(gameEntity);
+
+        return convert(gameEntityFromBase);
+    }
+
+
+    private void saveInCache(Game game) {
+        if (checkGameName(game.getGameName())) {
+            this.games.put(game.getGameName(), game);
+            return;
         }
-
-        final GameSettings gameSettings = mapSettings.get(gameType);
-
-        final Round round = new HoldemRound(
-                new ArrayList<>(players),
-                gameName,
-                orderService,
-                winnerService,
-                gameService,
-                gameSettings.getStartSmallBlindBet(),
-                gameSettings.getStartBigBlindBet(),
-                gameId
-        );
-
-
-        return new HoldemGame(
-                gameSettings,
-                round
-        );
+        throw new RuntimeException("duplicate game with name: " + game.getGameName());
     }
-
-    @Override
-    public synchronized Game create(
-            List<PlayerEntity> players,
-            GameType gameType,
-            OrderService orderService,
-            long gameId
-    ) {
-
-        final String randomGameName = randomNameService.getRandomName();
-
-        return create(
-                players,
-                gameType,
-                orderService,
-                gameId,
-                randomGameName
-        );
-    }
-
-    @Override
-    public void addListener(Runnable runnable) {
-        executorForListeners.submit(runnable);
-    }
-
-    private boolean checkGameName(String gameName) {
-        return !games.containsKey(gameName);
-    }
-
 }

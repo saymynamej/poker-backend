@@ -9,31 +9,19 @@ import java.util.List;
 
 public interface GameManagementService {
 
-    Game create(List<PlayerEntity> players,
-                GameType gameType,
-                OrderService orderService,
-                long gameId
-    );
 
-    void create(GameType gameType,
-                OrderService orderService
-    );
+    void createEmptyGame(GameType gameType);
 
     void create(List<PlayerEntity> players,
                 GameType gameType,
-                OrderService orderService
+                long defaultChipsCount
     );
 
     void run(Game game);
 
-    void create(int countOfPlayers, long defaultChipsCount);
+    void create(int countOfPlayers, long defaultChipsCount, GameType gameType);
 
     void run(GameEntity gameEntity);
-
-    void create(
-            List<PlayerEntity> players,
-            GameType gameType
-    );
 
     void addListener(Runnable runnable);
 
