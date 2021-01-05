@@ -20,7 +20,7 @@ public class CheckStrategy implements ActionStrategy {
             gameService.log(player, roundSettings, countAction);
             return;
         }
-        actionService.waitUntilPlayerWillHasAction(player, roundSettings);
+        actionService.waitPlayerAction(player, roundSettings);
     }
 
     private boolean isPreflopAndBigBlindCanCheck(RoundSettings roundSettings, PlayerEntity player){

@@ -13,14 +13,14 @@ public class CallStrategy implements ActionStrategy {
     @Override
     public void execute(PlayerEntity player, GameService gameService, ActionService actionService, CountAction countAction, RoundSettings roundSettings) {
         if (player.hasNotChipsForAction(countAction)) {
-            actionService.waitUntilPlayerWillHasAction(player, roundSettings);
+            actionService.waitPlayerAction(player, roundSettings);
             return;
         }
 
         final long bets = HistoryUtil.sumAllHistoryBetsWithNewAction(roundSettings, player, countAction);
 
         if (allBetsNotEqualsLastBet(bets, roundSettings.getLastBet())) {
-            actionService.waitUntilPlayerWillHasAction(player, roundSettings);
+            actionService.waitPlayerAction(player, roundSettings);
             return;
         }
 

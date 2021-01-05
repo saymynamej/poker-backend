@@ -12,7 +12,7 @@ public class BetStrategy implements ActionStrategy {
     @Override
     public void execute(PlayerEntity player, GameService gameService, ActionService actionService, CountAction countAction, RoundSettings roundSettings) {
         if (canNotDoBet(roundSettings, countAction)) {
-            actionService.waitUntilPlayerWillHasAction(player, roundSettings);
+            actionService.waitPlayerAction(player, roundSettings);
         }
         gameService.doAction(player, roundSettings, countAction.getCount(), countAction.getCount());
         gameService.log(player, roundSettings, countAction);

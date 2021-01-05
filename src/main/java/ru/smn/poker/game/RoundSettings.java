@@ -69,8 +69,7 @@ public interface RoundSettings {
     }
 
     default boolean playersInAllIn() {
-        return getPlayersInGame()
-                .stream()
+        return getPlayersInGame().stream()
                 .allMatch(PlayerPredicates.playerInAllIn());
     }
 

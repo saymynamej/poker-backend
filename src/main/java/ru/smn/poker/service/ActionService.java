@@ -8,7 +8,7 @@ public interface ActionService {
 
     void setAction(String playerName, Action action);
 
-    void waitUntilPlayerWillHasAction(PlayerEntity player, RoundSettings roundSettings);
+    void waitPlayerAction(PlayerEntity player, RoundSettings roundSettings);
 
     void changeStateType(String playerName);
 

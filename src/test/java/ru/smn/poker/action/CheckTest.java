@@ -9,7 +9,6 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.smn.poker.action.holdem.Check;
-import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.RoleType;
 import ru.smn.poker.enums.StageType;
@@ -50,7 +49,7 @@ public class CheckTest {
         final PlayerEntity player = DTOUtilTest.getPlayer();
         executorService.submit(() -> new Check().doAction(roundSettingsDTO, player, gameService, actionService));
         executorService.awaitTermination(2L, TimeUnit.SECONDS);
-        Mockito.verify(actionService, Mockito.times(1)).waitUntilPlayerWillHasAction(player, roundSettingsDTO);
+        Mockito.verify(actionService, Mockito.times(1)).waitPlayerAction(player, roundSettingsDTO);
     }
 
     @Test
@@ -70,6 +69,6 @@ public class CheckTest {
         final PlayerEntity player = DTOUtilTest.getPlayer();
         executorService.submit(() -> new Check().doAction(roundSettingsDTO, player, gameService, actionService));
         executorService.awaitTermination(2L, TimeUnit.SECONDS);
-        Mockito.verify(actionService, Mockito.times(1)).waitUntilPlayerWillHasAction(player, roundSettingsDTO);
+        Mockito.verify(actionService, Mockito.times(1)).waitPlayerAction(player, roundSettingsDTO);
     }
 }

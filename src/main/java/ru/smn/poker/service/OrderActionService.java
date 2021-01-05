@@ -20,8 +20,11 @@ public class OrderActionService implements OrderService {
     private final ActionService actionServiceHoldem;
     private final SecurityNotificationService securityNotificationService;
     private final SortService sortService;
-    private final ActionLogService actionLogService;
 
+
+    /*
+    * @return true if need skip next stages, false or not
+    * */
     @Override
     public boolean start(RoundSettings roundSettings) {
         final List<PlayerEntity> sort = sortService.sort(
@@ -33,6 +36,9 @@ public class OrderActionService implements OrderService {
         );
 
         while (true) {
+            if (roundSettings.isOnePlayerLeft()){
+                return true;
+            }
             if (roundSettings.playersInAllIn()) {
                 securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(roundSettings);
                 return false;
@@ -59,7 +65,7 @@ public class OrderActionService implements OrderService {
                     continue;
                 }
 
-                actionServiceHoldem.waitUntilPlayerWillHasAction(player, roundSettings);
+                actionServiceHoldem.waitPlayerAction(player, roundSettings);
             }
         }
     }

@@ -10,7 +10,6 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.smn.poker.action.holdem.Raise;
-import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.service.ActionService;
@@ -57,7 +56,7 @@ public class RaiseTest {
         executorService.submit(() -> raise.doAction(roundSettings, player, gameService, actionService));
         executorService.awaitTermination(2L, TimeUnit.SECONDS);
         Mockito.verify(actionService, Mockito.times(1))
-                .waitUntilPlayerWillHasAction(player, roundSettings);
+                .waitPlayerAction(player, roundSettings);
     }
 
 }

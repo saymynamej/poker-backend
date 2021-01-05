@@ -20,16 +20,15 @@ public class BootStrapGames {
     private final PasswordEncoder passwordEncoder;
     private final GameRepository gameRepository;
 
+//    @PostConstruct
+//    public void init() {
+//        gameManagementService.restoreAll();
+//    }
+
     @PostConstruct
-    public void init() {
-        gameManagementService.restoreAll();
+    public void init2() {
+        gameManagementService.create(2, 5000L, GameType.HOLDEM_HU);
     }
 
-//
-//    @PostConstruct
-//    public void init2() {
-//        gameManagementService.create(2, 5000L, GameType.HOLDEM_HU);
-//    }
-//
 
 }

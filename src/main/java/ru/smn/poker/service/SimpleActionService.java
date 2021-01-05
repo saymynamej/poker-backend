@@ -62,28 +62,12 @@ public class SimpleActionService implements ActionService {
         player.setAction(action);
     }
 
-    private Action changeCallOnAllInIfNeeded(Action action, PlayerEntity player) {
-        if (action.getActionType() == ActionType.CALL || action.getActionType() == ActionType.RAISE) {
-            final CountAction countAction = (CountAction) action;
-            if (countAction.getCount() == player.getChipsCount().getCount()) {
-                action = new AllIn(countAction.getCount());
-            }
-        }
-        return action;
-    }
-
     @Override
-    public void waitUntilPlayerWillHasAction(PlayerEntity player, RoundSettings roundSettings) {
+    public void waitPlayerAction(PlayerEntity player, RoundSettings roundSettings) {
         log.info("waiting action from player:" + player.getName());
         player.setWait();
         gameService.setActivePlayer(roundSettings, player);
         securityNotificationService.sendToAllWithSecurity(roundSettings);
-//        gameService.update(roundSettings);
-        waitPlayerAction(player, roundSettings);
-        gameService.setInActivePlayer(roundSettings, player);
-    }
-
-    private void waitPlayerAction(PlayerEntity player, RoundSettings roundSettings) {
         final ResultTime timer = simpleTimeBankService.activateTime(player);
         while (true) {
             if (player.isNotInGame()) {
@@ -95,8 +79,8 @@ public class SimpleActionService implements ActionService {
                 break;
             }
         }
+        gameService.setInActivePlayer(roundSettings, player);
     }
-
 
     public void doAction(PlayerEntity player, RoundSettings roundSettings) {
         final Action action = player.getAction();
@@ -104,5 +88,15 @@ public class SimpleActionService implements ActionService {
             ((ExecutableAction) action).doAction(roundSettings, player, gameService, this);
             log.info("player: " + player.getName() + " did action:" + action);
         }
+    }
+
+    private Action changeCallOnAllInIfNeeded(Action action, PlayerEntity player) {
+        if (action.getActionType() == ActionType.CALL || action.getActionType() == ActionType.RAISE) {
+            final CountAction countAction = (CountAction) action;
+            if (countAction.getCount() == player.getChipsCount().getCount()) {
+                action = new AllIn(countAction.getCount());
+            }
+        }
+        return action;
     }
 }

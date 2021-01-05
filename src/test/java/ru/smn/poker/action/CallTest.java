@@ -9,7 +9,6 @@ import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.smn.poker.action.holdem.Call;
-import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.service.ActionService;
@@ -57,7 +56,7 @@ class CallTest {
         final Call call = new Call(player.getChipsCount().getCount() + 1);
         executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
         executorServiceForActions.awaitTermination(2L, TimeUnit.SECONDS);
-        verify(actionService, times(1)).waitUntilPlayerWillHasAction(player, roundSettingsDTO);
+        verify(actionService, times(1)).waitPlayerAction(player, roundSettingsDTO);
         Assertions.assertEquals(roundSettingsDTO.getBigBlindBet(), roundSettingsDTO.getLastBet());
     }
 
@@ -68,7 +67,7 @@ class CallTest {
         final Call call = new Call(DEFAULT_BIG_BLIND_BET + 1);
         executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
         executorServiceForActions.awaitTermination(2L, TimeUnit.SECONDS);
-        verify(actionService, times(1)).waitUntilPlayerWillHasAction(player, roundSettingsDTO);
+        verify(actionService, times(1)).waitPlayerAction(player, roundSettingsDTO);
         Assertions.assertEquals(roundSettingsDTO.getBigBlindBet(), roundSettingsDTO.getLastBet());
     }
 
@@ -92,7 +91,7 @@ class CallTest {
         final Call call = new Call(roundSettingsDTO.getLastBet() - sumAllBets + 1L);
         executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
         executorServiceForActions.awaitTermination(2L, TimeUnit.SECONDS);
-        verify(actionService, times(1)).waitUntilPlayerWillHasAction(player, roundSettingsDTO);
+        verify(actionService, times(1)).waitPlayerAction(player, roundSettingsDTO);
         Assertions.assertEquals(player.getChipsCount().getCount(), DEFAULT_CHIPS_COUNT - sumAllBets);
     }
 

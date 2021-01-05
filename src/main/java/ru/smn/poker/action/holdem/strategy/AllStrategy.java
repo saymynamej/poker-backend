@@ -14,7 +14,7 @@ public class AllStrategy implements ActionStrategy {
     @Override
     public void execute(PlayerEntity player, GameService gameService, ActionService actionService, CountAction countAction, RoundSettings roundSettings) {
         if (countActionNotEqualsChipsCount(countAction, player)) {
-            actionService.waitUntilPlayerWillHasAction(player, roundSettings);
+            actionService.waitPlayerAction(player, roundSettings);
             return;
         }
 
