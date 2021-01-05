@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.smn.poker.action.holdem.*;
-import ru.smn.poker.dto.Action;
+import ru.smn.poker.action.Action;
+import ru.smn.poker.dto.ActionInfo;
+import ru.smn.poker.enums.ActionType;
 import ru.smn.poker.service.ActionService;
-import ru.smn.poker.service.GameDataService;
 import ru.smn.poker.service.SeatManager;
 
 import java.security.Principal;
@@ -21,7 +21,6 @@ import static ru.smn.poker.util.PlayerUtil.getDefaultPlayerForHoldem;
 @RequiredArgsConstructor
 @Slf4j
 public class CommonActionController {
-    private final GameDataService gameDataService;
     private final ActionService actionService;
     private final SeatManager seatManager;
 
@@ -54,37 +53,10 @@ public class CommonActionController {
         actionService.changeStateType(principal.getName());
     }
 
-    @MessageMapping("/addChips")
-    public void addChips(Principal principal) {
+    @MessageMapping("/doAction")
+    public void doAction(Principal principal, ActionInfo actionInfo) {
+        final Action action = ActionType.getActionByType(actionInfo.getActionType(), Long.parseLong(actionInfo.getCount()));
+        actionService.setAction(principal.getName(), action);
     }
 
-    @MessageMapping("/doRaise")
-    public void doRaise(Principal principal, Action action) {
-        actionService.setAction(principal.getName(), new Raise(Long.parseLong(action.getCount())));
-    }
-
-    @MessageMapping("/doCall")
-    public void doCall(Principal principal, Action action) {
-        actionService.setAction(principal.getName(), new Call(Long.parseLong(action.getCount())));
-    }
-
-    @MessageMapping("/doFold")
-    public void doFold(Principal principal) {
-        actionService.setAction(principal.getName(), new Fold());
-    }
-
-    @MessageMapping("/doBet")
-    public void doBet(Principal principal, Action action) {
-        actionService.setAction(principal.getName(), new Bet(Long.parseLong(action.getCount())));
-    }
-
-    @MessageMapping("/doCheck")
-    public void doCheck(Principal principal) {
-        actionService.setAction(principal.getName(), new Check());
-    }
-
-    @MessageMapping("/doAllIn")
-    public void doAllIn(Principal principal, Action action) {
-        actionService.setAction(principal.getName(), new AllIn(Long.parseLong(action.getCount())));
-    }
 }

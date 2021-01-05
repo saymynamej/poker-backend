@@ -5,9 +5,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.smn.poker.action.Action;
 import ru.smn.poker.action.holdem.*;
+import ru.smn.poker.dto.ActionInfo;
 import ru.smn.poker.dto.AdminAction;
+import ru.smn.poker.dto.AdminActionInfo;
 import ru.smn.poker.entities.PlayerEntity;
+import ru.smn.poker.enums.ActionType;
 import ru.smn.poker.service.ActionService;
 import ru.smn.poker.service.GameDataService;
 import ru.smn.poker.service.SeatManager;
@@ -47,45 +51,17 @@ public class AdminActionController {
         actionService.changeStateType(name);
     }
 
-    @MessageMapping("/admin/doRaise")
-    public void doRaise(AdminAction actionDTO) {
-        try {
-            actionService.setAction(actionDTO.getName(), new Raise(parseLong(actionDTO.getCount())));
-        } catch (RuntimeException e) {
-            log.info("cannot parse raise: " + e.getMessage() + actionDTO);
+    @MessageMapping("/admin/doAction")
+    public void doAction(AdminActionInfo actionInfo) {
+        //TODO
+        if (actionInfo.getActionType() == ActionType.ALLIN){
+            final long count = gameDataService.getPlayerByName(actionInfo.getName()).orElseThrow()
+                    .getChipsCount()
+                    .getCount();
+            actionInfo.setCount(String.valueOf(count));
         }
-    }
-
-    @MessageMapping("/admin/doCall")
-    public void doCall(AdminAction actionDTO) {
-        try {
-            actionService.setAction(actionDTO.getName(), new Call(parseLong(actionDTO.getCount())));
-        } catch (RuntimeException e) {
-            log.info("cannot parse call: " + actionDTO);
-        }
-    }
-
-    @MessageMapping("/admin/doFold")
-    public void doFold(AdminAction actionDTO) {
-        actionService.setAction(actionDTO.getName(), new Fold());
-    }
-
-    @MessageMapping("/admin/doBet")
-    public void doBet(AdminAction actionDTO) {
-        actionService.setAction(actionDTO.getName(), new Bet(Long.parseLong(actionDTO.getCount())));
-    }
-
-    @MessageMapping("/admin/doCheck")
-    public void doCheck(AdminAction actionDTO) {
-        actionService.setAction(actionDTO.getName(), new Check());
-    }
-
-    @MessageMapping("/admin/doAllIn")
-    public void doAllIn(AdminAction actionDTO) {
-        final Optional<PlayerEntity> playerByName = gameDataService.getPlayerByName(actionDTO.getName());
-        playerByName.ifPresent(
-                player -> actionService.setAction(actionDTO.getName(), new AllIn(player.getChipsCount().getCount()))
-        );
+        final Action action = ActionType.getActionByType(actionInfo.getActionType(), Long.parseLong(actionInfo.getCount()));
+        actionService.setAction(actionInfo.getName(), action);
     }
 
     @MessageMapping("/admin/reload")
