@@ -134,15 +134,6 @@ public class GameService {
         return roundEntity;
     }
 
-    public long getNextGameId() {
-        final GameEntity gameEntityWithMaxId = gameRepository.findGameEntityWithMaxId();
-        if (gameEntityWithMaxId == null) {
-            return 1;
-        }
-        Long id = gameEntityWithMaxId.getId();
-        return ++id;
-    }
-
     public void doAction(
             PlayerEntity player,
             RoundSettings roundSettings,
