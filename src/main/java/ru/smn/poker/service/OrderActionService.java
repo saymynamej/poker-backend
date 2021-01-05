@@ -64,7 +64,6 @@ public class OrderActionService implements OrderService {
                 if (player.isInAllIn()) {
                     continue;
                 }
-
                 actionServiceHoldem.waitPlayerAction(player, roundSettings);
             }
         }

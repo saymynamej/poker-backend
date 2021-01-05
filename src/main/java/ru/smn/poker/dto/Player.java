@@ -17,7 +17,8 @@ import java.util.List;
 @Getter
 @ToString
 @EqualsAndHashCode(of = "name")
-@SuperBuilder
+@Builder
+@AllArgsConstructor
 public class Player {
 
     private String name;
@@ -29,8 +30,7 @@ public class Player {
 
     private Game game;
 
-    @Builder.Default
-    private RoleType roleType = RoleType.ORDINARY;
+    private RoleType roleType;
 
     private long chipsCount;
 
@@ -38,11 +38,9 @@ public class Player {
     private long chipsId;
 
     @Setter
-    @Builder.Default
-    private StateType stateType = StateType.IN_GAME;
+    private StateType stateType;
     @Setter
-    @Builder.Default
-    private long timeBank = 60L;
+    private long timeBank;
     @Setter
     @Builder.Default
     private Action action = new Wait();
@@ -184,7 +182,6 @@ public class Player {
     public void setActive() {
         setAction(new Wait());
         setStateType(StateType.IN_GAME);
-        setTimeBank(60L);
     }
 
     public boolean isInAllIn() {

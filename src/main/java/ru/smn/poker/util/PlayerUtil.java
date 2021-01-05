@@ -25,7 +25,7 @@ public class PlayerUtil {
         return PlayerEntity.builder()
                 .name(playerName)
                 .settings(PlayerSettingsEntity.builder()
-                        .timeBank(60L)
+                        .timeBank(600000L)
                         .chipsCount(ChipsCountEntity.builder()
                                 .count(5000L)
                                 .build())

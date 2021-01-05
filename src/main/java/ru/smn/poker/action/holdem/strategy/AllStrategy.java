@@ -21,9 +21,9 @@ public class AllStrategy implements ActionStrategy {
         final long allBets = sumAllHistoryBetsWithNewAction(roundSettings, player, countAction);
         if (allBetsMoreThanLastBet(allBets, roundSettings.getLastBet())) {
             gameService.doAction(player, roundSettings, countAction.getCount(), allBets);
+            gameService.log(player, roundSettings, countAction);
             return;
         }
-
         gameService.doAction(player, roundSettings, countAction.getCount(), roundSettings.getLastBet());
         gameService.log(player, roundSettings, countAction);
     }

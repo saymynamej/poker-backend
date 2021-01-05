@@ -44,7 +44,7 @@ public class CommonGameManagementService implements GameManagementService {
                 .name(String.valueOf(i))
                 .enable(true)
                 .settings(PlayerSettingsEntity.builder()
-                        .timeBank(60L)
+                        .timeBank(50000L)
                         .gameName(randomName)
                         .playerType(PlayerType.ORDINARY)
                         .build())

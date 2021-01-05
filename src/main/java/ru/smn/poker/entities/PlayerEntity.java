@@ -146,7 +146,6 @@ public class PlayerEntity {
     public void setActive() {
         setAction(new Wait());
         this.settings.setStateType(StateType.IN_GAME);
-        this.settings.setTimeBank(60L);
     }
 
     public boolean isInAllIn() {

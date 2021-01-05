@@ -96,6 +96,7 @@ public class PlayerConverter {
                         .collect(Collectors.toList()))
                 .chipsId(playerEntity.getSettings().getChipsCount().getId())
                 .id(playerEntity.getId())
+                .timeBank(playerEntity.getTimeBank())
                 .active(playerEntity.getSettings().isActive())
                 .roleType(playerEntity.getSettings().getRoleType())
                 .action(playerEntity.getAction())

@@ -18,7 +18,7 @@ public class HistoryUtil {
     }
 
     public static boolean canMoveNext(RoundSettings roundSettings) {
-        return allPlayersInGameHaveSameCountOfBet(roundSettings) && roundSettings.lastBetIsNotZero() || roundSettings.allPlayersCheck();
+        return allPlayersInGameHaveSameCountOfBet(roundSettings) && (roundSettings.lastBetIsNotZero() || roundSettings.allPlayersCheck());
     }
 
     public static boolean allPlayersInGameHaveSameCountOfBet(RoundSettings roundSettings) {
