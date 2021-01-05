@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.smn.poker.action.Action;
 import ru.smn.poker.entities.*;
 import ru.smn.poker.game.RoundSettings;
 import ru.smn.poker.repository.*;
@@ -152,7 +153,10 @@ public class GameService {
         addBank(roundSettings, removeChips);
         setLastBet(roundSettings, lastBet);
         addActionInHistory(roundSettings, player);
-        actionLogService.log(player, player.getAction(), roundSettings);
+    }
+
+    public void log(PlayerEntity player, RoundSettings roundSettings, Action action) {
+        actionLogService.log(player, action, roundSettings);
     }
 
     public void addBank(RoundSettings roundSettings, long count) {

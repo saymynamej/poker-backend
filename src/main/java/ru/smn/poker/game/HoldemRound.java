@@ -1,5 +1,6 @@
 package ru.smn.poker.game;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.smn.poker.entities.PlayerEntity;
@@ -11,6 +12,7 @@ import ru.smn.poker.service.WinnerService;
 import java.util.List;
 
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Slf4j
 public class HoldemRound implements Round {
     private final List<PlayerEntity> players;
@@ -23,14 +25,10 @@ public class HoldemRound implements Round {
     private final long gameId;
     private RoundSettings roundSettings;
 
-
-    public void restore(RoundSettings roundSettings) {
-        this.roundSettings = roundSettings;
-
+    @Override
+    public void restore() {
         while (true) {
-
             final boolean skipNext = orderService.start(roundSettings);
-
             if (skipNext || roundSettings.getStageType() == StageType.RIVER) {
                 break;
             }
@@ -84,11 +82,6 @@ public class HoldemRound implements Round {
     @Override
     public String getGameName() {
         return this.gameName;
-    }
-
-    @Override
-    public void setGameId(Long gameId) {
-
     }
 
     @Override

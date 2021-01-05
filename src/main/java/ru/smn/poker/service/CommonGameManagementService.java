@@ -6,14 +6,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.smn.poker.action.Action;
-import ru.smn.poker.action.holdem.Bet;
 import ru.smn.poker.action.holdem.Wait;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.converter.GameConverter;
 import ru.smn.poker.dto.HoldemRoundSettings;
 import ru.smn.poker.entities.*;
+import ru.smn.poker.enums.ActionType;
 import ru.smn.poker.enums.GameType;
 import ru.smn.poker.enums.PlayerType;
+import ru.smn.poker.enums.StageType;
 import ru.smn.poker.game.*;
 
 import java.util.*;
@@ -80,8 +81,7 @@ public class CommonGameManagementService implements GameManagementService {
 
         final GameEntity gameEntityFromBase = gameService.saveGame(gameEntity);
 
-        startGame(gameEntityFromBase);
-
+        run(gameEntityFromBase);
     }
 
 
@@ -90,16 +90,13 @@ public class CommonGameManagementService implements GameManagementService {
         final List<GameEntity> games = gameService.findAll();
 
         for (GameEntity gameEntity : games) {
-
-            final Game game = create(gameEntity);
-
             final Optional<RoundEntity> isNotFinishedRound = gameEntity.getRounds()
                     .stream()
                     .filter(roundEntity -> !roundEntity.isFinished())
                     .findFirst();
 
             if (isNotFinishedRound.isEmpty()) {
-                startGame(game);
+                run(gameEntity);
                 return;
             }
 
@@ -109,23 +106,27 @@ public class CommonGameManagementService implements GameManagementService {
                     .collect(Collectors.groupingBy(ActionEntity::getPlayer)).entrySet()
                     .stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
-                            .map(actionEntity -> new Bet(actionEntity.getCount()))
+                            .map(actionEntity -> ActionType.getActionByType(actionEntity.getActionType(), actionEntity.getCount()))
                             .collect(Collectors.toList())));
-
 
             final Map<PlayerEntity, List<Action>> stageActions = roundEntity.getActions().stream()
                     .filter(actionEntity -> actionEntity.getStageType() == roundEntity.getStageType())
                     .collect(Collectors.groupingBy(ActionEntity::getPlayer)).entrySet()
                     .stream()
                     .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
-                            .map(actionEntity -> new Bet(actionEntity.getCount()))
+                            .map(actionEntity -> ActionType.getActionByType(actionEntity.getActionType(), actionEntity.getCount()))
                             .collect(Collectors.toList())));
 
-
-
-            stageActions.forEach((playerEntity, actions) -> {
-                System.out.println(playerEntity.getName() + " : " + actions);
+            stageActions.forEach((player, action) -> {
+                final boolean playerHasOnlyBlindBet = action.size() == 1 && roundEntity.getStageType() == StageType.PREFLOP;
+                if (action.isEmpty() || playerHasOnlyBlindBet) {
+                    player.setAction(new Wait());
+                }
+                else {
+                    player.setAction(action.get(action.size() - 1));
+                }
             });
+
             final RoundSettings roundSettings = HoldemRoundSettings.builder()
                     .roundId(roundEntity.getId())
                     .players(gameEntity.getPlayers())
@@ -152,30 +153,41 @@ public class CommonGameManagementService implements GameManagementService {
                     .bank(roundEntity.getBank())
                     .build();
 
-            saveInCache(game);
+            final Game game = restore(gameEntity, roundSettings);
 
-            runnableGames.computeIfAbsent(game, game2 -> {
-                final ExecutorService executorService = Executors.newSingleThreadExecutor();
-                executorService.submit(() -> game.restore(roundSettings));
-                try {
-                    Thread.sleep(3 * 1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                return executorService;
-            });
+            run(game);
         }
     }
+
 
     private void saveInCache(Game game) {
         this.games.put(game.getGameName(), game);
     }
 
 
-    public void startGame(GameEntity gameEntity) {
+    public void run(GameEntity gameEntity) {
         final Game generatedGame = create(gameEntity);
-        saveInCache(generatedGame);
-        startGame(generatedGame);
+        run(generatedGame);
+    }
+
+    @Override
+    public void run(Game game) {
+        runnableGames.computeIfAbsent(game, game2 -> {
+            final ExecutorService executorService = Executors.newSingleThreadExecutor();
+            final boolean isRestore = game.getRoundSettings() != null;
+            if (isRestore) {
+                executorService.submit(game::restore);
+            } else {
+                executorService.submit(game::start);
+            }
+            try {
+                Thread.sleep(3 * 1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            saveInCache(game);
+            return executorService;
+        });
     }
 
     private void setChipsInGame(List<PlayerEntity> players, GameEntity gameEntity) {
@@ -198,7 +210,7 @@ public class CommonGameManagementService implements GameManagementService {
         if (checkGameName(game.getGameName())) {
             saveInCache(game);
             final GameEntity gameEntityFromBase = gameService.saveGame(GameConverter.toEntity(game));
-            startGame(game);
+            run(game);
             log.info("created new game:" + game.getGameName());
         }
     }
@@ -215,25 +227,33 @@ public class CommonGameManagementService implements GameManagementService {
         if (checkGameName(game.getGameName())) {
             saveInCache(game);
             gameService.saveGame(GameConverter.toEntity(game));
-            startGame(game);
+            run(game);
             log.info("created new game:" + game.getGameName());
         }
 
     }
 
 
-    @Override
-    public void startGame(Game game) {
-        runnableGames.computeIfAbsent(game, game2 -> {
-            final ExecutorService executorService = Executors.newSingleThreadExecutor();
-            executorService.submit(game::start);
-            try {
-                Thread.sleep(3 * 1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return executorService;
-        });
+    public Game restore(GameEntity gameEntity, RoundSettings roundSettings) {
+        final GameSettings gameSettings = mapSettings.get(gameEntity.getGameType());
+
+        final Round round = new HoldemRound(
+                gameEntity.getPlayers(),
+                gameEntity.getName(),
+                orderService,
+                winnerService,
+                gameService,
+                gameSettings.getStartSmallBlindBet(),
+                gameSettings.getStartBigBlindBet(),
+                gameEntity.getId(),
+                roundSettings
+        );
+
+        return new HoldemGame(
+                gameSettings,
+                round
+        );
+
     }
 
     public Game create(GameEntity gameEntity) {

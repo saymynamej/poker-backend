@@ -27,7 +27,6 @@ public class SimpleActionService implements ActionService {
     private final SimpleNotificationService simpleNotificationService;
     private final SimpleTimeBankService simpleTimeBankService = new SimpleTimeBankService();
     private final GameService gameService;
-    private final ActionLogService actionLogService;
 
     @Override
     public void changeStateType(String playerName) {
@@ -88,9 +87,6 @@ public class SimpleActionService implements ActionService {
         final ResultTime timer = simpleTimeBankService.activateTime(player);
         while (true) {
             if (player.isNotInGame()) {
-                break;
-            }
-            if (roundSettings.isOnePlayerLeft()) {
                 break;
             }
             if (player.didAction()) {

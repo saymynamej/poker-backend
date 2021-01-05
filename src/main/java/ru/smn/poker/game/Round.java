@@ -11,12 +11,10 @@ public interface Round {
 
     String getGameName();
 
-    void restore(RoundSettings roundSettings);
+    void restore();
 
     RoundSettings getRoundSettings();
 
     List<PlayerEntity> getPlayers();
-
-    void setGameId(Long gameId);
 
 }

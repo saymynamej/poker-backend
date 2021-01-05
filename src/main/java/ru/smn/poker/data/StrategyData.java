@@ -14,6 +14,8 @@ public class StrategyData {
     public final static Map<RoleType, ActionStrategy> RAISE_STRATEGIES = new HashMap<>();
     public final static Map<RoleType, ActionStrategy> CHECK_STRATEGIES = new HashMap<>();
     public final static Map<RoleType, ActionStrategy> ALLIN_STRATEGIES = new HashMap<>();
+    public final static Map<RoleType, ActionStrategy> FOLD_STRATEGIES = new HashMap<>();
+    public final static Map<RoleType, ActionStrategy> WAIT_STRATEGIES = new HashMap<>();
 
     static {
         CALL_STRATEGIES.put(RoleType.BIG_BLIND, new CallStrategy());
@@ -48,5 +50,19 @@ public class StrategyData {
         ALLIN_STRATEGIES.put(RoleType.SMALL_BLIND, new AllStrategy());
         ALLIN_STRATEGIES.put(RoleType.ORDINARY, new AllStrategy());
         ALLIN_STRATEGIES.put(RoleType.BUTTON, new AllStrategy());
+    }
+
+    static {
+        FOLD_STRATEGIES.put(RoleType.BIG_BLIND, new FoldStrategy());
+        FOLD_STRATEGIES.put(RoleType.SMALL_BLIND, new FoldStrategy());
+        FOLD_STRATEGIES.put(RoleType.ORDINARY, new FoldStrategy());
+        FOLD_STRATEGIES.put(RoleType.BUTTON, new FoldStrategy());
+    }
+
+    static {
+        WAIT_STRATEGIES.put(RoleType.BIG_BLIND, new WaitStrategy());
+        WAIT_STRATEGIES.put(RoleType.SMALL_BLIND, new WaitStrategy());
+        WAIT_STRATEGIES.put(RoleType.ORDINARY, new WaitStrategy());
+        WAIT_STRATEGIES.put(RoleType.BUTTON, new WaitStrategy());
     }
 }

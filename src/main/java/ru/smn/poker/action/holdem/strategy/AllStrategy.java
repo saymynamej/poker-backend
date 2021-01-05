@@ -25,13 +25,14 @@ public class AllStrategy implements ActionStrategy {
         }
 
         gameService.doAction(player, roundSettings, countAction.getCount(), roundSettings.getLastBet());
+        gameService.log(player, roundSettings, countAction);
     }
 
-    private boolean allBetsMoreThanLastBet(long allBets, long lastBet){
+    private boolean allBetsMoreThanLastBet(long allBets, long lastBet) {
         return allBets >= lastBet;
     }
 
-    private boolean countActionNotEqualsChipsCount(CountAction countAction, PlayerEntity player){
+    private boolean countActionNotEqualsChipsCount(CountAction countAction, PlayerEntity player) {
         return countAction.getCount() != player.getChipsCount().getCount();
     }
 }

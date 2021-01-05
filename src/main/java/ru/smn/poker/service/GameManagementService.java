@@ -24,11 +24,11 @@ public interface GameManagementService {
                 OrderService orderService
     );
 
-    void startGame(Game game);
+    void run(Game game);
 
     void create(int countOfPlayers, long defaultChipsCount);
 
-    void startGame(GameEntity gameEntity);
+    void run(GameEntity gameEntity);
 
     void create(
             List<PlayerEntity> players,

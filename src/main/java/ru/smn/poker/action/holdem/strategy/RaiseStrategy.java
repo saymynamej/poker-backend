@@ -27,13 +27,14 @@ public class RaiseStrategy implements ActionStrategy {
         final long prevBets = sumStageHistoryBets(roundSettings, player);
         changeActionForHistory(player, countAction, prevBets);
         gameService.doAction(player, roundSettings, countAction.getCount() - prevBets, countAction.getCount());
-
+        gameService.log(player, roundSettings, countAction);
     }
 
     private void changeActionForHistory(PlayerEntity player, CountAction countAction, long prevBets) {
         player.setAction(new Raise(countAction.getCount() - prevBets));
     }
-    private boolean raiseLessThanPrevBetByFormulas(RoundSettings roundSettings, CountAction countAction){
+
+    private boolean raiseLessThanPrevBetByFormulas(RoundSettings roundSettings, CountAction countAction) {
         return countAction.getCount() < roundSettings.getLastBet() * 2;
     }
 
