@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.smn.poker.enums.GameType;
 import ru.smn.poker.service.GameManagementService;
-import ru.smn.poker.service.OrderService;
 import ru.smn.poker.service.QueueService;
 import ru.smn.poker.service.SeatManager;
 import ru.smn.poker.util.ThreadUtil;
@@ -14,7 +13,6 @@ import ru.smn.poker.util.ThreadUtil;
 public class HoldemQueueListener implements GameListener {
     private final GameManagementService gameManagementService;
     private final SeatManager seatManager;
-    private final OrderService orderService;
     private final QueueService queueService;
     private boolean isEnable = false;
 
@@ -28,7 +26,7 @@ public class HoldemQueueListener implements GameListener {
                     gameManagementService.create(
                             queueService.extractQueue(),
                             GameType.HOLDEM_HU,
-                            orderService
+                            5000L
                     );
                 }
             }
