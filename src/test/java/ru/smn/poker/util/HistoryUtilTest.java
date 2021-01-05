@@ -73,7 +73,9 @@ public class HistoryUtilTest {
         final RoundSettings roundSettingsDTO = getRoundSettingsDTO(DTOUtilTest.DEFAULT_PLAYERS_SIZE, StageType.PREFLOP);
         final List<PlayerEntity> players = roundSettingsDTO.getPlayers();
         for (PlayerEntity player : players) {
-            addActionInHistory(roundSettingsDTO, player, new Call(DTOUtilTest.DEFAULT_BIG_BLIND_BET));
+            final Call action = new Call(DTOUtilTest.DEFAULT_BIG_BLIND_BET);
+            player.setAction(action);
+            addActionInHistory(roundSettingsDTO, player, action);
         }
         final boolean inGameHaveSameCountOfBet = allPlayersInGameHaveSameCountOfBet(roundSettingsDTO);
         Assertions.assertTrue(inGameHaveSameCountOfBet);
@@ -84,7 +86,9 @@ public class HistoryUtilTest {
         final RoundSettings roundSettingsDTO = getRoundSettingsDTO(DTOUtilTest.DEFAULT_PLAYERS_SIZE, StageType.PREFLOP);
         final List<PlayerEntity> players = roundSettingsDTO.getPlayers();
         for (PlayerEntity player : players) {
-            addActionInHistory(roundSettingsDTO, player, new Call(DTOUtilTest.DEFAULT_BIG_BLIND_BET));
+            final Call action = new Call(DTOUtilTest.DEFAULT_BIG_BLIND_BET);
+            player.setAction(action);
+            addActionInHistory(roundSettingsDTO, player, action);
         }
         addActionInHistory(roundSettingsDTO, players.get(0), new Call(DTOUtilTest.DEFAULT_BIG_BLIND_BET));
         final boolean inGameHaveSameCountOfBet = allPlayersInGameHaveSameCountOfBet(roundSettingsDTO);

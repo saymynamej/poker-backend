@@ -84,7 +84,7 @@ public class DTOUtilTest {
                 .name(faker.name().name())
                 .settings(PlayerSettingsEntity.builder()
                         .gameName(DEFAULT_GAME_NAME)
-                        .chipsCount(new ChipsCountEntity(DEFAULT_CHIPS_COUNT))
+                        .chipsCount(new ChipsCountEntity(5000L))
                         .stateType(StateType.IN_GAME)
                         .cards(List.of(
                                 CardEntity.builder().cardType(CardType.SIX_S).build(),

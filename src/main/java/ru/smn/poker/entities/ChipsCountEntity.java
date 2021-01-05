@@ -22,5 +22,10 @@ public class ChipsCountEntity {
     @JoinColumn(name = "game_id")
     private GameEntity game;
 
-    private Long count;
+    private long count;
+
+
+    public ChipsCountEntity(long count) {
+        this.count = count;
+    }
 }

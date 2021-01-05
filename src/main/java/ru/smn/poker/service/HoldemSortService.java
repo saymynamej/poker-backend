@@ -17,7 +17,7 @@ public class HoldemSortService implements SortService {
         return stageType == StageType.PREFLOP ? sortPreflop(players) : sortPostflop(players);
     }
 
-    public List<PlayerEntity> sortPreflop(List<PlayerEntity> players) {
+    private List<PlayerEntity> sortPreflop(List<PlayerEntity> players) {
         if (players.size() == 2) {
             final List<PlayerEntity> sortedPlayers = new ArrayList<>();
             final Optional<PlayerEntity> button = getPlayerByRole(players, RoleType.BUTTON);
@@ -46,7 +46,7 @@ public class HoldemSortService implements SortService {
     }
 
 
-    public List<PlayerEntity> sortPostflop(List<PlayerEntity> players) {
+    private List<PlayerEntity> sortPostflop(List<PlayerEntity> players) {
         final List<PlayerEntity> sortedList = new LinkedList<>(players);
 
         final Optional<PlayerEntity> smallBlind = getPlayerByRole(players, RoleType.SMALL_BLIND);

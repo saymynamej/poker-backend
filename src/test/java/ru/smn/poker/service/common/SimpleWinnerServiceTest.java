@@ -104,8 +104,8 @@ class SimpleWinnerServiceTest {
                 .bank(player1.getChipsCount().getCount() + player2.getChipsCount().getCount())
                 .build();
 
-        player1.setChipsCount(new ChipsCountEntity(0L));
-        player2.setChipsCount(new ChipsCountEntity(0L));
+        player1.setChipsCount(new ChipsCountEntity());
+        player2.setChipsCount(new ChipsCountEntity());
 
         winnerService.sendPrizes(roundSettings);
 
@@ -124,7 +124,7 @@ class SimpleWinnerServiceTest {
         );
         final AllIn allIn1 = new AllIn(5000);
         player1.setAction(allIn1);
-        player1.setChipsCount(new ChipsCountEntity(0L));
+        player1.setChipsCount(new ChipsCountEntity());
 
         final PlayerEntity player2 = PlayerUtil.getDefaultPlayerForHoldem("2");
         player2.addCards(
@@ -134,7 +134,7 @@ class SimpleWinnerServiceTest {
                 )
         );
         final AllIn allIn2 = new AllIn(2000);
-        player2.setChipsCount(new ChipsCountEntity(0L));
+        player2.setChipsCount(new ChipsCountEntity());
         player2.setAction(allIn2);
 
         final PlayerEntity player3 = PlayerUtil.getDefaultPlayerForHoldem("3");
@@ -145,7 +145,7 @@ class SimpleWinnerServiceTest {
                 )
         );
         final AllIn allIn3 = new AllIn(100);
-        player3.setChipsCount(new ChipsCountEntity(0L));
+        player3.setChipsCount(new ChipsCountEntity());
         player3.setAction(allIn3);
 
         player1.setStateType(StateType.IN_GAME);

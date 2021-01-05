@@ -45,6 +45,11 @@ public class PlayerEntity {
     @Transient
     private Action action;
 
+    public PlayerEntity(String name) {
+        this.name = name;
+        this.settings = new PlayerSettingsEntity();
+    }
+
     public void removeChips(long chips) {
         if (chips > this.settings.getChipsCount().getCount()) {
             this.settings.getChipsCount().setCount(0L);

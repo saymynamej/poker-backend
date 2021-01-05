@@ -7,9 +7,4 @@ import java.util.List;
 
 public interface SortService {
     List<PlayerEntity> sort(List<PlayerEntity> players, StageType stageType);
-
-    List<PlayerEntity> sortPreflop(List<PlayerEntity> players);
-
-    List<PlayerEntity> sortPostflop(List<PlayerEntity> players);
-
 }

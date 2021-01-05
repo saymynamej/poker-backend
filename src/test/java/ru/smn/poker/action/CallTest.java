@@ -79,7 +79,7 @@ class CallTest {
         final Call call = new Call(roundSettingsDTO.getLastBet() - sumAllBets);
         executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
         executorServiceForActions.awaitTermination(2L, TimeUnit.SECONDS);
-        Assertions.assertEquals(player.getChipsCount(), DEFAULT_CHIPS_COUNT - roundSettingsDTO.getLastBet());
+        Assertions.assertEquals(player.getChipsCount().getCount(), DEFAULT_CHIPS_COUNT - roundSettingsDTO.getLastBet());
     }
 
 
