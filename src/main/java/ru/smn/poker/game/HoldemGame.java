@@ -24,7 +24,7 @@ public class HoldemGame extends Game {
             removePlayersWhoHasZeroChips();
             ThreadUtil.sleep(DELAY_IN_SECONDS);
             if (isReady()) {
-                getRound().startRound();
+                getRound().start();
             }
         }
     }

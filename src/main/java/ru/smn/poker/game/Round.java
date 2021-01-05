@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface Round {
 
-    void startRound();
+    void start();
 
     String getGameName();
 
