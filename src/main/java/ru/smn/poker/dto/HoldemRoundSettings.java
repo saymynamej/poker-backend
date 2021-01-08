@@ -39,4 +39,9 @@ public class HoldemRoundSettings implements RoundSettings {
     private boolean isAfk;
     private boolean isFinished;
 
+
+    public boolean isNotFirstMoveOnBigBlind(){
+        return bigBlind.isNotFirstMoveOnBigBlind();
+    }
+
 }

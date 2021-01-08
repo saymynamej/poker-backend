@@ -3,12 +3,11 @@ package ru.smn.poker.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.smn.poker.action.NextPlayerSelector;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.RoundSettings;
-import ru.smn.poker.stream.PlayerPredicates;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import static ru.smn.poker.util.HistoryUtil.canMoveNext;
 import static ru.smn.poker.util.HistoryUtil.canMoveNextAndStageRiver;
@@ -20,7 +19,7 @@ public class OrderActionService implements OrderService {
     private final ActionService actionServiceHoldem;
     private final SecurityNotificationService securityNotificationService;
     private final SortService sortService;
-    private final GameService gameService;
+    private final NextPlayerSelector nextPlayerSelector;
 
     /*
      * @return true if need skip next stages, false if not
@@ -31,8 +30,6 @@ public class OrderActionService implements OrderService {
                 roundSettings.getPlayers(),
                 roundSettings.getStageType()
         );
-
-        sortedPlayers.forEach(playerEntity -> playerEntity.setActive(false));
 
         PlayerEntity activePlayer = null;
 
@@ -48,29 +45,13 @@ public class OrderActionService implements OrderService {
                 securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(roundSettings);
                 return false;
             }
-            if (canMoveNext(roundSettings)) {
+            if (canMoveNext(roundSettings) && roundSettings.isNotFirstMoveOnBigBlind()) {
                 return false;
             }
 
-            activePlayer = getPlayerForAction(sortedPlayers, activePlayer);
+            activePlayer = nextPlayerSelector.getPlayerForAction(sortedPlayers, activePlayer);
             actionServiceHoldem.waitPlayerAction(activePlayer, roundSettings);
         }
     }
 
-    public PlayerEntity getPlayerForAction(List<PlayerEntity> sortedPlayers, PlayerEntity previousActivePlayer) {
-        if (previousActivePlayer == null) {
-            return sortedPlayers.get(0);
-        }
-
-        final int indexOfPreviousActivePlayer = sortedPlayers.indexOf(previousActivePlayer);
-
-        final Stream<PlayerEntity> firstHalf = sortedPlayers.subList(indexOfPreviousActivePlayer + 1, sortedPlayers.size()).stream();
-
-        final Stream<PlayerEntity> secondHalf = sortedPlayers.subList(0, indexOfPreviousActivePlayer + 1).stream();
-
-       return Stream.concat(firstHalf, secondHalf)
-                .filter(PlayerPredicates.playerCanMakeMove())
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("cannot find active player, global error"));
-    }
 }

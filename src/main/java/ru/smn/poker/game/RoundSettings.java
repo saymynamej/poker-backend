@@ -12,6 +12,8 @@ import java.util.Map;
 
 public interface RoundSettings {
 
+    boolean isNotFirstMoveOnBigBlind();
+
     Map<PlayerEntity, List<Action>> getStageHistory();
 
     Map<PlayerEntity, List<Action>> getFullHistory();
