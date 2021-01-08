@@ -41,14 +41,9 @@ public class OrderActionService implements OrderService {
                 securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(roundSettings);
                 return false;
             }
-            if (canMoveNextAndStageRiver(roundSettings)) {
-                securityNotificationService.sendToAllWithSecurityWhoIsNotInTheGame(roundSettings);
-                return false;
-            }
             if (canMoveNext(roundSettings) && roundSettings.isNotFirstMoveOnBigBlind()) {
                 return false;
             }
-
             activePlayer = nextPlayerSelector.getPlayerForAction(sortedPlayers, activePlayer);
             actionServiceHoldem.waitPlayerAction(activePlayer, roundSettings);
         }
