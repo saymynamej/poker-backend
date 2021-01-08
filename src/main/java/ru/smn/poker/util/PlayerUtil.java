@@ -3,6 +3,8 @@ package ru.smn.poker.util;
 import ru.smn.poker.entities.ChipsCountEntity;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.entities.PlayerSettingsEntity;
+import ru.smn.poker.enums.ActionType;
+import ru.smn.poker.enums.StateType;
 import ru.smn.poker.stream.PlayerPredicates;
 
 import java.util.ArrayList;
@@ -56,8 +58,7 @@ public class PlayerUtil {
 
     public static List<PlayerEntity> getPlayersInGame(List<PlayerEntity> players) {
         return players.stream()
-                .filter(PlayerPredicates.playerInGame())
-                .filter(PlayerPredicates.playerFolded().negate())
+                .filter(playerEntity -> playerEntity.getStateType() == StateType.IN_GAME && playerEntity.getAction().getActionType() != ActionType.FOLD)
                 .collect(Collectors.toList());
     }
 

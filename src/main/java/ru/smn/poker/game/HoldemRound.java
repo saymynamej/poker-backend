@@ -25,35 +25,18 @@ public class HoldemRound implements Round {
     private final long gameId;
     private RoundSettings roundSettings;
 
-    @Override
-    public void restore() {
-        final RoundSettingsManager roundSettingsManager = getRoundSettingsManager();
-        while (true) {
-            final boolean skipNext = orderService.start(roundSettings);
-
-            if (skipNext || roundSettings.getStageType() == StageType.RIVER) {
-                break;
-            }
-            this.roundSettings = roundSettingsManager.getSettings(this.roundSettings);
-        }
-        roundSettings.setFinished(true);
-        winnerService.sendPrizes(roundSettings);
-        gameService.update(roundSettings);
-    }
 
     @Override
     public void start() {
         final RoundSettingsManager roundSettingsManager = getRoundSettingsManager();
 
         while (true) {
-
             this.roundSettings = roundSettingsManager.getSettings(this.roundSettings);
 
             gameService.update(roundSettings);
             gameService.updateBlinds(roundSettings);
 
             final boolean skipNext = orderService.start(roundSettings);
-
             if (skipNext || roundSettings.getStageType() == StageType.RIVER) {
                 break;
             }

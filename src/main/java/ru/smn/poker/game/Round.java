@@ -11,8 +11,6 @@ public interface Round {
 
     String getGameName();
 
-    void restore();
-
     RoundSettings getRoundSettings();
 
     List<PlayerEntity> getPlayers();

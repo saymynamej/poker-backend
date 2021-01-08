@@ -57,7 +57,7 @@ public class CommonGameManagementService implements GameManagementService {
     }
 
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public void restoreAll() {
         final List<GameEntity> games = gameService.findAll();
@@ -144,11 +144,10 @@ public class CommonGameManagementService implements GameManagementService {
         runnableGames.computeIfAbsent(game, game2 -> {
             final ExecutorService executorService = Executors.newSingleThreadExecutor();
             final boolean isRestore = game.getRoundSettings() != null;
+            executorService.submit(game::start);
             if (isRestore) {
-                executorService.submit(game::restore);
                 log.info("game was restored: " + game.getGameName());
             } else {
-                executorService.submit(game::start);
                 log.info("game was started: " + game.getGameName());
             }
             try {
@@ -176,9 +175,9 @@ public class CommonGameManagementService implements GameManagementService {
     public void createEmptyGame(GameType gameType) {
         final GameEntity emptyGame = GameEntity.builder()
                 .gameType(gameType)
-                .rounds(Collections.emptyList())
-                .counts(Collections.emptyList())
-                .players(Collections.emptyList())
+                .rounds(new ArrayList<>())
+                .counts(new ArrayList<>())
+                .players(new ArrayList<>())
                 .name(randomNameService.getRandomName())
                 .build();
 

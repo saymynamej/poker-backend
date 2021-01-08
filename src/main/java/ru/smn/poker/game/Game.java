@@ -20,10 +20,6 @@ public abstract class Game {
         this.round = round;
     }
 
-    public void restore(){
-        round.restore();
-    }
-
     public Round getRound() {
         return this.round;
     }

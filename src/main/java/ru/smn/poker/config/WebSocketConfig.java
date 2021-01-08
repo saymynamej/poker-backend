@@ -19,7 +19,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/connect")
-                .setAllowedOrigins("http://127.0.0.1:8080")
+                .setAllowedOrigins("http://127.0.0.1:8080", "http://poker.smn-router.keenetic.pro")
                 .withSockJS();
     }
 }
