@@ -45,9 +45,9 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
         );
         this.random = random;
         this.players = roundSettings.getPlayers();
-        flop = roundSettings.getFlop() == null ? setFlop() : roundSettings.getFlop();
-        tern = roundSettings.getTern() == null ? getRandomCard() : roundSettings.getTern();
-        river = roundSettings.getRiver() == null ? getRandomCard() : roundSettings.getRiver();
+        flop = roundSettings.getFlop();
+        tern = roundSettings.getTern();
+        river = roundSettings.getRiver();
         gameName = roundSettings.getGameName();
         bigBlindBet = roundSettings.getBigBlindBet();
         smallBlindBet = roundSettings.getSmallBlindBet();
