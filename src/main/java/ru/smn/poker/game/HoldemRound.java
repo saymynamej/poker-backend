@@ -32,10 +32,6 @@ public class HoldemRound implements Round {
 
         while (true) {
             this.roundSettings = roundSettingsManager.getSettings(this.roundSettings);
-
-            gameService.update(roundSettings);
-            gameService.updateBlinds(roundSettings);
-
             final boolean skipNext = orderService.start(roundSettings);
             if (skipNext || roundSettings.getStageType() == StageType.RIVER) {
                 break;

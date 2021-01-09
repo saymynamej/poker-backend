@@ -67,6 +67,7 @@ public class SimpleActionService implements ActionService {
         log.info("waiting action from player:" + player.getName());
         player.setWait();
         gameService.setActivePlayer(roundSettings, player);
+        gameService.update(roundSettings);
         securityNotificationService.sendToAllWithSecurity(roundSettings);
         final ResultTime timer = simpleTimeBankService.activateTime(player);
         while (true) {
@@ -80,6 +81,7 @@ public class SimpleActionService implements ActionService {
             }
         }
         gameService.setInActivePlayer(roundSettings, player);
+        gameService.update(roundSettings);
     }
 
     public void doAction(PlayerEntity player, RoundSettings roundSettings) {
