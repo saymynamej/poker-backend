@@ -13,16 +13,16 @@ import java.util.stream.Collectors;
 public class HistoryUtil {
 
 
-    public static boolean canMoveNextAndStageRiver(RoundSettings roundSettings){
+    public static boolean canMoveNextAndStageRiver(RoundSettings roundSettings) {
         return canMoveNext(roundSettings) && roundSettings.getStageType() == StageType.RIVER;
     }
 
     public static boolean canMoveNext(RoundSettings roundSettings) {
-        return allPlayersInGameHaveSameCountOfBet(roundSettings) && (roundSettings.lastBetIsNotZero() || roundSettings.allPlayersCheck());
+        return allPlayersInGameHaveSameCountOfBet(roundSettings) && roundSettings.isNotFirstMoveOnBigBlind() && (roundSettings.lastBetIsNotZero() || roundSettings.allPlayersCheck());
     }
 
     public static boolean allPlayersInGameHaveSameCountOfBet(RoundSettings roundSettings) {
-        final List<PlayerEntity> playersInGame = PlayerUtil.getPlayersInGame(roundSettings.getPlayers());
+        final List<PlayerEntity> playersInGame = PlayerUtil.getPlayersInAction(roundSettings.getPlayers());
 
         final List<PlayerEntity> players = playersInGame.stream()
                 .filter(PlayerPredicates.playerFolded().negate())

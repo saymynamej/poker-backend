@@ -83,7 +83,7 @@ public interface RoundSettings {
     }
 
     default List<PlayerEntity> getPlayersInGame(){
-        return PlayerUtil.getPlayersInGame(getPlayers());
+        return PlayerUtil.getPlayersInAction(getPlayers());
     }
 
     default boolean isOnePlayerLeft() {

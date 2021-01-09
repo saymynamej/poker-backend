@@ -36,7 +36,7 @@ public class PlayerUtil {
     }
 
     public static List<String> getNamesOfPlayersInGame(List<PlayerEntity> players){
-        return getPlayersInGame(players)
+        return getPlayersInAction(players)
                 .stream()
                 .filter(PlayerPredicates.playerFolded().negate())
                 .map(PlayerEntity::getName)
@@ -56,7 +56,7 @@ public class PlayerUtil {
                 .collect(Collectors.toList());
     }
 
-    public static List<PlayerEntity> getPlayersInGame(List<PlayerEntity> players) {
+    public static List<PlayerEntity> getPlayersInAction(List<PlayerEntity> players) {
         return players.stream()
                 .filter(playerEntity -> playerEntity.getStateType() == StateType.IN_GAME && playerEntity.getAction().getActionType() != ActionType.FOLD)
                 .collect(Collectors.toList());

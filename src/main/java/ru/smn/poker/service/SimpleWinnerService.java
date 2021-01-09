@@ -23,7 +23,7 @@ public class SimpleWinnerService implements WinnerService {
 
     @Override
     public void sendPrizes(RoundSettings roundSettings) {
-        final List<PlayerEntity> playersInGame = PlayerUtil.getPlayersInGame(roundSettings.getPlayers());
+        final List<PlayerEntity> playersInGame = PlayerUtil.getPlayersInAction(roundSettings.getPlayers());
         if (roundSettings.isOnePlayerLeft()) {
             playersInGame.get(0).addChips(roundSettings.getBank());
         } else {
@@ -39,7 +39,7 @@ public class SimpleWinnerService implements WinnerService {
                 long winnerBets = sumBets(roundSettings.getFullHistory().get(winners.get(0).getPlayer()));
                 long generatedBank = winnerBets;
 
-                final List<PlayerEntity> playersInGame = PlayerUtil.getPlayersInGame(roundSettings.getPlayers()).stream()
+                final List<PlayerEntity> playersInGame = PlayerUtil.getPlayersInAction(roundSettings.getPlayers()).stream()
                         .filter(playerDTO -> !playerDTO.equals(winnerFromLoop.getPlayer()))
                         .collect(Collectors.toList());
 
@@ -87,7 +87,7 @@ public class SimpleWinnerService implements WinnerService {
         final List<PlayerCombination> combinations = new ArrayList<>();
 
 
-        PlayerUtil.getPlayersInGame(roundSettings.getPlayers()).forEach(player -> {
+        PlayerUtil.getPlayersInAction(roundSettings.getPlayers()).forEach(player -> {
             final List<CardType> playerCards = player.getCards().stream()
                     .map(CardEntity::getCardType)
                     .collect(Collectors.toList());
