@@ -2,7 +2,6 @@ package ru.smn.poker.service;
 
 import org.springframework.stereotype.Service;
 import ru.smn.poker.dto.Combination;
-import ru.smn.poker.dto.PlayerCombination;
 import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.CombinationType;
 import ru.smn.poker.enums.PowerType;
@@ -19,91 +18,62 @@ public class HoldemCombinationService implements CombinationService {
     private final static int THREE_SIZE = 3;
 
     @Override
-    public List<PlayerCombination> findWinners(List<PlayerCombination> playersAndCombinations) {
-        final Integer maxPowerOfCombination = playersAndCombinations.stream()
-                .map(player -> player.getCombination().getCombinationType().getPower())
-                .max(Comparator.comparingInt(value -> value)).orElseThrow();
-
-        final List<PlayerCombination> winners = playersAndCombinations.stream()
-                .filter(playerCombination -> playerCombination.getCombination().getCombinationType().getPower() == maxPowerOfCombination)
-                .collect(Collectors.toList());
-
-        if (winners.size() == 1) {
-            return winners;
-        }
-
-        final int max = findMaxSumCards(playersAndCombinations);
-        return winners.stream()
-                .filter(playerCombination -> sumCards(playerCombination.getCombination().getCards()) == max)
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public Combination findCombination(List<CardType> cards) {
         if (cards.size() != FULL_COMBINATION_SIZE) {
             throw new RuntimeException("cards size must be 7");
         }
 
-        final List<CardType> flushRoyal = findFlushRoyal(new ArrayList<>(cards));
-        if (!flushRoyal.isEmpty() && checkSize(flushRoyal) && isDuplicateExist(flushRoyal)) {
-            return Combination.of(CombinationType.FLUSH_ROYAL, flushRoyal);
+        final Combination flushRoyal = findFlushRoyal(new ArrayList<>(cards));
+        if (!flushRoyal.isEmpty()) {
+            return flushRoyal;
         }
 
-        final List<CardType> straitFlush = findStraitFlush(new ArrayList<>(cards));
-        if (!straitFlush.isEmpty() && checkSize(straitFlush) && isDuplicateExist(straitFlush)) {
-            return Combination.of(CombinationType.STRAIT_FLUSH, straitFlush);
+        final Combination straitFlush = findStraitFlush(new ArrayList<>(cards));
+        if (!straitFlush.isEmpty()) {
+            return straitFlush;
         }
 
-        final List<CardType> kare = findKare(new ArrayList<>(cards));
-        if (!kare.isEmpty() && checkSize(kare) && isDuplicateExist(kare)) {
-            return Combination.of(CombinationType.KARE, kare);
+        final Combination kare = findKare(new ArrayList<>(cards));
+        if (!kare.isEmpty()) {
+            return kare;
         }
 
-        final List<CardType> fullHouse = findFullHouse(new ArrayList<>(cards));
-        if (!fullHouse.isEmpty() && checkSize(fullHouse) && isDuplicateExist(fullHouse)) {
-            return Combination.of(CombinationType.FULL_HOUSE, fullHouse);
+        final Combination fullHouse = findFullHouse(new ArrayList<>(cards));
+        if (!fullHouse.isEmpty()) {
+            return fullHouse;
         }
 
-        final List<CardType> flush = findFlush(new ArrayList<>(cards));
-        if (!flush.isEmpty() && checkSize(flush) && isDuplicateExist(flush)) {
-            return Combination.of(CombinationType.FLUSH, flush);
+        final Combination flush = findFlush(new ArrayList<>(cards));
+        if (!flush.isEmpty()) {
+            return flush;
         }
 
-        final List<CardType> strait = findStrait(new ArrayList<>(cards));
-        if (!strait.isEmpty() && checkSize(strait) && isDuplicateExist(strait)) {
-            return Combination.of(CombinationType.STRAIT, strait);
+        final Combination strait = findStrait(new ArrayList<>(cards));
+        if (!strait.isEmpty()) {
+            return strait;
         }
 
-        final List<CardType> three = findThree(new ArrayList<>(cards));
-        if (!three.isEmpty() && checkSize(three) && isDuplicateExist(three)) {
-            return Combination.of(CombinationType.THREE, three);
+        final Combination three = findThree(new ArrayList<>(cards));
+        if (!three.isEmpty()) {
+            return three;
         }
 
-        final List<CardType> twoPair = findTwoPair(new ArrayList<>(cards));
-        if (!twoPair.isEmpty() && checkSize(twoPair) && isDuplicateExist(twoPair)) {
-            return Combination.of(CombinationType.TWO_PAIR, twoPair);
+        final Combination twoPair = findTwoPair(new ArrayList<>(cards));
+        if (!twoPair.isEmpty()) {
+            return twoPair;
         }
 
-        final List<CardType> pair = findPair(new ArrayList<>(cards));
-
-        if (!pair.isEmpty() && checkSize(pair) && isDuplicateExist(pair)) {
-            return Combination.of(CombinationType.PAIR, pair);
+        final Combination pair = findPair(new ArrayList<>(cards));
+        if (!pair.isEmpty()) {
+            return pair;
         }
 
-        final List<CardType> highCards = findHighCard(new ArrayList<>(cards));
-
-        if (!highCards.isEmpty() && checkSize(highCards) && isDuplicateExist(highCards)) {
-            return Combination.of(CombinationType.HIGH_CARD, highCards);
+        final Combination highCards = findHighCard(new ArrayList<>(cards));
+        if (!highCards.isEmpty()) {
+            return highCards;
         }
 
         throw new RuntimeException("global error, could not found poker combination!");
-    }
-
-    private int findMaxSumCards(List<PlayerCombination> playersAndCombinations) {
-        return playersAndCombinations.stream()
-                .map(playerCombination -> sumCards(playerCombination.getCombination().getCards()))
-                .max(Comparator.comparingInt(num -> num))
-                .orElseThrow(() -> new RuntimeException("cannot find max cards"));
     }
 
     private int sumCards(List<CardType> cards) {
@@ -112,8 +82,11 @@ public class HoldemCombinationService implements CombinationService {
                 .orElseThrow(() -> new RuntimeException("cannot calculate sum"));
     }
 
+    //AKJ98
+    //4-4
+    //5-5
 
-    private List<CardType> findPair(List<CardType> cards) {
+    private Combination findPair(List<CardType> cards) {
         final int size = cards.size();
         final List<CardType> foundPair = new ArrayList<>();
         final List<CardType> copyList = new ArrayList<>(cards);
@@ -137,13 +110,16 @@ public class HoldemCombinationService implements CombinationService {
                 foundPair.add(biggerCard);
                 copyList.remove(biggerCard);
             }
+            return Combination.of(
+                    CombinationType.PAIR,
+                    foundPair,
+                    sumCards(foundPair)
+            );
         }
-
-        return foundPair;
-
+        return Combination.empty();
     }
 
-    private List<CardType> findFullHouse(List<CardType> cards) {
+    private Combination findFullHouse(List<CardType> cards) {
         final List<CardType> foundThree = new ArrayList<>();
         final List<CardType> foundTwo = new ArrayList<>();
         final List<CardType> copySorted = new ArrayList<>(cards).stream()
@@ -178,16 +154,18 @@ public class HoldemCombinationService implements CombinationService {
             final List<CardType> fullHouse = new ArrayList<>();
             fullHouse.addAll(foundTwo);
             fullHouse.addAll(foundThree);
-            return fullHouse.stream()
-                    .distinct()
-                    .collect(Collectors.toList());
+            return Combination.of(
+                    CombinationType.FULL_HOUSE,
+                    fullHouse,
+                    foundThree.get(0).getPowerAsInt() + foundTwo.get(0).getPowerAsInt()
+            );
         }
 
-        return Collections.emptyList();
+        return Combination.empty();
     }
 
 
-    private List<CardType> findTwoPair(List<CardType> cards) {
+    private Combination findTwoPair(List<CardType> cards) {
         final int size = cards.size();
         final List<CardType> copyList = new ArrayList<>(cards);
         final List<CardType> firstPair = new ArrayList<>();
@@ -201,7 +179,7 @@ public class HoldemCombinationService implements CombinationService {
             if (pair.size() == PAIR_SIZE && firstPair.isEmpty()) {
                 firstPair.addAll(pair);
                 copyList.removeAll(pair);
-            } else if (pair.size() == PAIR_SIZE && secondPair.isEmpty()) {
+            } else if (pair.size() == PAIR_SIZE) {
                 secondPair.addAll(pair);
                 copyList.removeAll(pair);
             }
@@ -214,15 +192,18 @@ public class HoldemCombinationService implements CombinationService {
         combination.addAll(firstPair);
         combination.add(findBiggerCard(copyList));
 
-        if (combination.size() != COMBINATION_SIZE) {
-            return Collections.emptyList();
+        if (combination.size() == COMBINATION_SIZE) {
+            return Combination.of(
+                    CombinationType.TWO_PAIR,
+                    combination,
+                    sumCards(combination)
+            );
         }
-
-        return combination;
+        return Combination.empty();
     }
 
 
-    private List<CardType> findThree(List<CardType> cards) {
+    private Combination findThree(List<CardType> cards) {
         final List<CardType> foundThree = new ArrayList<>();
 
         for (CardType card : cards) {
@@ -238,46 +219,61 @@ public class HoldemCombinationService implements CombinationService {
                 foundThree.add(biggerCard);
                 cards.remove(biggerCard);
             }
-            return foundThree
-                    .stream()
-                    .distinct()
-                    .collect(Collectors.toList());
+            return Combination.of(
+                    CombinationType.THREE,
+                    foundThree.stream()
+                            .distinct()
+                            .collect(Collectors.toList()),
+                    sumCards(foundThree)
+            );
         }
-        return Collections.emptyList();
+        return Combination.empty();
+
     }
 
 
-    private List<CardType> findHighCard(List<CardType> cards) {
+    private Combination findHighCard(List<CardType> cards) {
         final List<CardType> highCards = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             final CardType biggerCard = findBiggerCard(cards);
             highCards.add(biggerCard);
             cards.remove(biggerCard);
         }
-        return highCards;
+        return Combination.of(
+                CombinationType.HIGH_CARD,
+                highCards,
+                sumCards(highCards)
+        );
     }
 
-    private List<CardType> findStraitFlush(List<CardType> cardTypes) {
-        final List<CardType> flush = findFlush(cardTypes);
+    private Combination findStraitFlush(List<CardType> cardTypes) {
+        final Combination flush = findFlush(cardTypes);
 
-        if (!flush.isEmpty() && isStrait(flush)) {
-            return sortByPowerDesc(flush);
+        if (!flush.isEmpty() && isStrait(flush.getCards())) {
+            return Combination.of(
+                    CombinationType.STRAIT_FLUSH,
+                    sortByPowerDesc(flush.getCards()),
+                    findBiggerCard(flush.getCards()).getPowerAsInt()
+            );
         }
-
         final List<CardType> straitWithAce = checkStraitWithAce(cardTypes);
         if (!straitWithAce.isEmpty()) {
-            final List<CardType> straitFlushWithAce = findFlush(straitWithAce);
+            final Combination straitFlushWithAce = findFlush(straitWithAce);
             if (!straitFlushWithAce.isEmpty()) {
-                return straitFlushWithAce;
+                return Combination.of(
+                        CombinationType.STRAIT_FLUSH,
+                        sortByPowerDesc(straitFlushWithAce.getCards()),
+                        5 // because 5 is bigger card for this combination type
+                );
             }
         }
-        return Collections.emptyList();
+        return Combination.empty();
     }
 
-    private List<CardType> findKare(List<CardType> cards) {
+    private Combination findKare(List<CardType> cards) {
         final List<CardType> foundKare = new ArrayList<>();
 
-        for (CardType card : cards) {
+        for (final CardType card : cards) {
             final List<CardType> kare = filterByPower(cards, card.getPower());
             if (kare.size() == KARE_SIZE) {
                 foundKare.addAll(kare);
@@ -286,7 +282,7 @@ public class HoldemCombinationService implements CombinationService {
         }
 
         if (foundKare.isEmpty()) {
-            return Collections.emptyList();
+            return Combination.empty();
         }
 
         final List<CardType> distinctKare = foundKare
@@ -294,30 +290,40 @@ public class HoldemCombinationService implements CombinationService {
                 .distinct()
                 .collect(Collectors.toList());
 
-        distinctKare.add(findBiggerCardWithFilter(cards, foundKare.get(0).getPower()));
+        final PowerType powerOfKare = foundKare.get(0).getPower();
+        final CardType biggerCardWithFilter = findBiggerCardWithFilter(cards, powerOfKare);
 
-        return distinctKare;
+        distinctKare.add(biggerCardWithFilter);
+
+        return Combination.of(
+                CombinationType.KARE,
+                distinctKare,
+                powerOfKare.getPowerAsInt() + biggerCardWithFilter.getPowerAsInt()
+
+        );
 
     }
 
-
     private List<CardType> filterByPower(List<CardType> cards, PowerType powerFilter) {
-        return cards
-                .stream()
+        return cards.stream()
                 .filter(cardTypeN -> cardTypeN.getPower() == powerFilter)
                 .collect(Collectors.toList());
     }
 
-    private List<CardType> findFlushRoyal(List<CardType> cardTypes) {
-        final List<CardType> flush = findFlush(cardTypes);
-        if (checkFlushRoyal(flush)) {
-            return sortByPowerDesc(flush);
+    private Combination findFlushRoyal(List<CardType> cardTypes) {
+        final Combination flush = findFlush(cardTypes);
+        if (!flush.isEmpty() && isFlushRoyal(flush.getCards())) {
+            return Combination.of(
+                    CombinationType.FLUSH_ROYAL,
+                    sortByPowerDesc(flush.getCards()),
+                    findBiggerCard(flush.getCards()).getPowerAsInt()
+            );
         }
-        return Collections.emptyList();
+        return Combination.empty();
     }
 
 
-    private boolean checkFlushRoyal(List<CardType> cardTypes) {
+    private boolean isFlushRoyal(List<CardType> cardTypes) {
         final List<CardType> flushRoyal = cardTypes.stream().filter(cardType -> cardType.getPower() == PowerType.A_POWER
                 || cardType.getPower() == PowerType.K_POWER
                 || cardType.getPower() == PowerType.Q_POWER
@@ -328,12 +334,16 @@ public class HoldemCombinationService implements CombinationService {
     }
 
 
-    private List<CardType> findStrait(List<CardType> cards) {
+    private Combination findStrait(List<CardType> cards) {
         if (isStrait(cards)) {
             final List<CardType> sortedCards = sortByPowerDesc(removeCardsWithSamePower(cards));
 
             if (sortedCards.size() == 5) {
-                return sortedCards;
+                return Combination.of(
+                        CombinationType.STRAIT,
+                        sortedCards,
+                        findBiggerCard(sortedCards).getPowerAsInt()
+                );
             }
 
             while (true) {
@@ -342,7 +352,11 @@ public class HoldemCombinationService implements CombinationService {
                         .collect(Collectors.toList());
 
                 if (isStrait(firstFiveCards)) {
-                    return firstFiveCards;
+                    return Combination.of(
+                            CombinationType.STRAIT,
+                            firstFiveCards,
+                            findBiggerCard(firstFiveCards).getPowerAsInt()
+                    );
                 }
                 sortedCards.remove(0);
             }
@@ -350,9 +364,13 @@ public class HoldemCombinationService implements CombinationService {
         final List<CardType> straitWithAce = checkStraitWithAce(cards);
 
         if (!straitWithAce.isEmpty()) {
-            return straitWithAce;
+            return Combination.of(
+                    CombinationType.STRAIT,
+                    straitWithAce,
+                    5 // because 5 is bigger card for this combination type
+            );
         }
-        return Collections.emptyList();
+        return Combination.empty();
     }
 
     private List<CardType> checkStraitWithAce(List<CardType> cards) {
@@ -427,32 +445,48 @@ public class HoldemCombinationService implements CombinationService {
     }
 
 
-    private List<CardType> findFlush(List<CardType> cardTypes) {
+    private Combination findFlush(List<CardType> cardTypes) {
         final List<CardType> spadeFlush = findFlushBySuit(cardTypes, CardType.SuitType.SPADE);
 
         if (!spadeFlush.isEmpty()) {
-            return sortByPowerDesc(spadeFlush);
+            return Combination.of(
+                    CombinationType.FLUSH,
+                    sortByPowerDesc(spadeFlush),
+                    findBiggerCard(spadeFlush).getPowerAsInt()
+            );
         }
 
         final List<CardType> heartFlush = findFlushBySuit(cardTypes, CardType.SuitType.HEART);
 
         if (!heartFlush.isEmpty()) {
-            return sortByPowerDesc(heartFlush);
+            return Combination.of(
+                    CombinationType.FLUSH,
+                    sortByPowerDesc(heartFlush),
+                    findBiggerCard(heartFlush).getPowerAsInt()
+            );
         }
 
         final List<CardType> clubFlush = findFlushBySuit(cardTypes, CardType.SuitType.CLUB);
 
         if (!clubFlush.isEmpty()) {
-            return sortByPowerDesc(clubFlush);
+            return Combination.of(
+                    CombinationType.FLUSH,
+                    sortByPowerDesc(clubFlush),
+                    findBiggerCard(clubFlush).getPowerAsInt()
+            );
         }
 
         final List<CardType> diamondFlush = findFlushBySuit(cardTypes, CardType.SuitType.DIAMOND);
 
         if (!diamondFlush.isEmpty()) {
-            return sortByPowerDesc(diamondFlush);
+            return Combination.of(
+                    CombinationType.FLUSH,
+                    sortByPowerDesc(diamondFlush),
+                    findBiggerCard(diamondFlush).getPowerAsInt()
+            );
         }
 
-        return Collections.emptyList();
+        return Combination.empty();
     }
 
     private List<CardType> findFlushBySuit(List<CardType> cardTypes, CardType.SuitType suitType) {
@@ -500,13 +534,6 @@ public class HoldemCombinationService implements CombinationService {
                 .orElseThrow(() -> new RuntimeException("cannot find max card"));
     }
 
-    private boolean checkSize(List<CardType> cards) {
-        if (cards.size() == COMBINATION_SIZE) {
-            return true;
-        }
-        throw new RuntimeException(String.format("Global warning, in process checking size must be: %s, but : %s", COMBINATION_SIZE, cards.size()));
-    }
-
     private List<CardType> removeCardsWithSamePower(List<CardType> cards) {
         final List<CardType> distinctList = new ArrayList<>();
 
@@ -520,15 +547,6 @@ public class HoldemCombinationService implements CombinationService {
             }
         }
         return distinctList;
-    }
-
-    private boolean isDuplicateExist(List<CardType> cards) {
-        if (cards.stream()
-                .distinct()
-                .count() == COMBINATION_SIZE) {
-            return true;
-        }
-        throw new RuntimeException("Global warning, in process checking duplicates cards");
     }
 
 }

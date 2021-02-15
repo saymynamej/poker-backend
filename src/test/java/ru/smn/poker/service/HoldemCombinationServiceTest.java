@@ -28,7 +28,6 @@ public class HoldemCombinationServiceTest {
     private static final List<CardType> FLUSH_ROYAL_CLUB_FULL = new ArrayList<>(Arrays.asList(A_H, K_H, TEN_C, J_C, Q_C, K_C, A_C));
     private static final List<CardType> FLUSH_ROYAL_CLUB_COMBINATION = new ArrayList<>(Arrays.asList(A_C, K_C, Q_C, J_C, TEN_C));
 
-
     private static final List<CardType> STRAIT_FLUSH_CLUB_FULL = new ArrayList<>(Arrays.asList(EIGHT_C, SEVEN_C, TEN_C, J_C, NINE_C, FOUR_H, K_S));
     private static final List<CardType> STRAIT_FLUSH_CLUB_COMBINATION = new ArrayList<>(Arrays.asList(J_C, TEN_C, NINE_C, EIGHT_C, SEVEN_C));
 
@@ -62,7 +61,6 @@ public class HoldemCombinationServiceTest {
     private static final List<CardType> KARE_FULL4 = new ArrayList<>(Arrays.asList(SEVEN_S, FOUR_H, SEVEN_C, SIX_C, SEVEN_D, SEVEN_H, A_D));
     private static final List<CardType> KARE_COMBINATION4 = new ArrayList<>(Arrays.asList(SEVEN_S, SEVEN_C, SEVEN_D, SEVEN_H, A_D));
 
-
     private static final List<CardType> FLUSH_HEART_FULL = new ArrayList<>(Arrays.asList(NINE_H, A_H, K_H, TWO_H, FIVE_H, FOUR_H, K_S));
     private static final List<CardType> FLUSH_HEART_COMBINATION = new ArrayList<>(Arrays.asList(A_H, K_H, NINE_H, FIVE_H, FOUR_H));
 
@@ -90,10 +88,8 @@ public class HoldemCombinationServiceTest {
     private static final List<CardType> STRAIT_FULL = new ArrayList<>(Arrays.asList(EIGHT_C, SEVEN_S, SIX_H, FIVE_D, THREE_D, FOUR_H, TWO_D));
     private static final List<CardType> STRAIT_COMBINATION = new ArrayList<>(Arrays.asList(EIGHT_C, SEVEN_S, SIX_H, FIVE_D, FOUR_H));
 
-
     private static final List<CardType> STRAIT_FULL_2 = new ArrayList<>(Arrays.asList(THREE_H, FIVE_C, SEVEN_C, EIGHT_C, NINE_D, TEN_H, J_H));
     private static final List<CardType> STRAIT_COMBINATION_2 = new ArrayList<>(Arrays.asList(J_H, TEN_H, NINE_D, EIGHT_C, SEVEN_C));
-
 
     private static final List<CardType> STRAIT_FULL_3 = new ArrayList<>(Arrays.asList(A_D, J_C, TEN_C, Q_C, K_C, J_H, J_D));
     private static final List<CardType> STRAIT_COMBINATION_3 = new ArrayList<>(Arrays.asList(A_D, K_C, Q_C, J_C, TEN_C));
@@ -116,28 +112,23 @@ public class HoldemCombinationServiceTest {
     private static final List<CardType> TWO_PAIR_FULL = new ArrayList<>(Arrays.asList(A_H, A_D, FOUR_H, FOUR_C, SEVEN_S, SEVEN_C, K_D));
     private static final List<CardType> TWO_PAIR_COMBINATION = new ArrayList<>(Arrays.asList(SEVEN_S, SEVEN_C, A_H, A_D, K_D));
 
-
     private static final List<CardType> THREE_FULL = new ArrayList<>(Arrays.asList(THREE_H, THREE_C, THREE_S, K_D, SEVEN_S, FOUR_H, NINE_C));
     private static final List<CardType> THREE_COMBINATION = new ArrayList<>(Arrays.asList(THREE_H, THREE_C, THREE_S, K_D, NINE_C));
 
     private static final List<CardType> THREE_FULL_2 = new ArrayList<>(Arrays.asList(SEVEN_S, FOUR_H, NINE_C, A_D, A_C, A_H, K_D));
     private static final List<CardType> THREE_COMBINATION_2 = new ArrayList<>(Arrays.asList(A_D, A_C, A_H, K_D, NINE_C));
 
-
     private static final List<CardType> THREE_FULL_3 = new ArrayList<>(Arrays.asList(SEVEN_S, FOUR_H, A_D, NINE_C, A_C, A_H, K_D));
     private static final List<CardType> THREE_COMBINATION_3 = new ArrayList<>(Arrays.asList(A_D, A_C, A_H, K_D, NINE_C));
 
-
     private static final List<CardType> PAIR_FULL = new ArrayList<>(Arrays.asList(THREE_H, THREE_C, A_C, K_S, TWO_D, FOUR_D, SEVEN_S));
     private static final List<CardType> PAIR_FULL_COMBINATION = new ArrayList<>(Arrays.asList(THREE_H, THREE_C, A_C, K_S, SEVEN_S));
-
 
     private static final List<CardType> HIGH_CARD_FULL = new ArrayList<>(Arrays.asList(TWO_H, TEN_C, A_H, K_D, SEVEN_S, FOUR_H, NINE_C));
     private static final List<CardType> HIGH_COMBINATION = new ArrayList<>(Arrays.asList(A_H, K_D, TEN_C, NINE_C, SEVEN_S));
 
     private static final List<CardType> HIGH_CARD_FULL_2 = new ArrayList<>(Arrays.asList(A_C, TEN_C, FIVE_H, K_D, EIGHT_H, FOUR_H, NINE_C));
     private static final List<CardType> HIGH_COMBINATION_2 = new ArrayList<>(Arrays.asList(A_C, K_D, TEN_C, NINE_C, EIGHT_H));
-
 
     @Test
     public void testHeardFlushRoyal() {
@@ -180,6 +171,7 @@ public class HoldemCombinationServiceTest {
         Assert.assertEquals(CombinationType.STRAIT_FLUSH, straitFlush.getCombinationType());
         Assert.assertEquals(STRAIT_FLUSH_COMBINATION_2, straitFlush.getCards());
     }
+
     @Test
     public void testClubStraitFlush() {
         final Combination straitFlush = checkHoldemCombinationService.findCombination(STRAIT_FLUSH_CLUB_FULL);
@@ -214,7 +206,6 @@ public class HoldemCombinationServiceTest {
         Assert.assertEquals(CombinationType.STRAIT_FLUSH, straitFlushWithAce.getCombinationType());
         Assert.assertEquals(STRAIT_FLUSH_WITH_ACE_COMBINATION, straitFlushWithAce.getCards());
     }
-
 
     @Test
     public void testKare() {

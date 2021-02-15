@@ -32,7 +32,6 @@ public class SimpleWinnerService implements WinnerService {
         }
     }
 
-
     private void calculate(List<PlayerCombination> winners, RoundSettings roundSettings) {
         if (!checkIfNeedReturnToAll(winners, roundSettings)) {
             for (PlayerCombination winnerFromLoop : winners) {
@@ -42,7 +41,6 @@ public class SimpleWinnerService implements WinnerService {
                 final List<PlayerEntity> playersInGame = PlayerUtil.getPlayersInAction(roundSettings.getPlayers()).stream()
                         .filter(playerDTO -> !playerDTO.equals(winnerFromLoop.getPlayer()))
                         .collect(Collectors.toList());
-
 
                 for (PlayerEntity player : playersInGame) {
                     final List<Action> otherPlayerActions = roundSettings.getFullHistory().get(player);
@@ -86,7 +84,6 @@ public class SimpleWinnerService implements WinnerService {
         final CardType river = roundSettings.getRiver();
         final List<PlayerCombination> combinations = new ArrayList<>();
 
-
         PlayerUtil.getPlayersInAction(roundSettings.getPlayers()).forEach(player -> {
             final List<CardType> playerCards = player.getCards().stream()
                     .map(CardEntity::getCardType)
@@ -101,8 +98,16 @@ public class SimpleWinnerService implements WinnerService {
                     .player(player)
                     .build());
         });
+        final Integer maxPowerOfCombination = combinations.stream()
+                .map(combo -> combo.getCombination().getPower())
+                .max(Integer::compareTo)
+                .orElseThrow(() -> new RuntimeException("cannot calculate max cards"));
 
-        return combinationService.findWinners(combinations);
+        return combinations.stream()
+                .filter(combo -> combo.getCombination()
+                        .getPower()
+                        .equals(maxPowerOfCombination))
+                .collect(Collectors.toList());
 
     }
 
