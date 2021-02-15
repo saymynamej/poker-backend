@@ -29,10 +29,10 @@ public class SimpleWinnerService implements WinnerService {
         final List<PlayerEntity> playersInGame = PlayerUtil.getPlayersInAction(roundSettings.getPlayers());
         if (roundSettings.isOnePlayerLeft()) {
             playersInGame.get(0).addChips(roundSettings.getBank());
-        } else {
-            final List<PlayerCombination> winners = findWinners(roundSettings);
-            calculate(winners, roundSettings);
+            return;
         }
+        final List<PlayerCombination> winners = findWinners(roundSettings);
+        calculate(winners, roundSettings);
     }
 
     @Override
