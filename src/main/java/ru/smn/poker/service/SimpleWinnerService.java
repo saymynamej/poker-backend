@@ -12,8 +12,11 @@ import ru.smn.poker.util.PlayerUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static java.util.List.*;
 import static ru.smn.poker.util.HistoryUtil.sumBets;
 
 @Service
@@ -30,6 +33,50 @@ public class SimpleWinnerService implements WinnerService {
             final List<PlayerCombination> winners = findWinners(roundSettings);
             calculate(winners, roundSettings);
         }
+    }
+
+    @Override
+    public List<PlayerCombination> findWinners(RoundSettings roundSettings) {
+        final List<CardType> deck = Stream.concat(
+                roundSettings.getFlop().stream(),
+                of(roundSettings.getTern(), roundSettings.getRiver()).stream()
+        ).collect(Collectors.toList());
+
+        List<PlayerCombination> playerCombinations = roundSettings.getPlayersInGame().stream()
+                .map(player -> {
+                    final List<CardType> concatCards = Stream.concat(
+                            deck.stream(),
+                            player.getCards()
+                                    .stream()
+                                    .map(CardEntity::getCardType)
+                    ).collect(Collectors.toList());
+
+                    return PlayerCombination.builder()
+                            .combination(combinationService.findCombination(concatCards))
+                            .player(player)
+                            .build();
+                })
+                .collect(Collectors.toList());
+
+        final Integer maxPowerOfCombinationType = playerCombinations.stream()
+                .map(combo -> combo.getCombination().getCombinationType().getPower())
+                .max(Integer::compareTo)
+                .orElseThrow(() -> new RuntimeException("cannot find maxPowerOfCombinations"));
+
+        playerCombinations = playerCombinations.stream()
+                .filter(playerCombination -> playerCombination.getCombination().getCombinationType().getPower() == maxPowerOfCombinationType)
+                .collect(Collectors.toList());
+
+        final Integer maxPowerOfCombination = playerCombinations.stream()
+                .map(combo -> combo.getCombination().getPower())
+                .max(Integer::compareTo)
+                .orElseThrow(() -> new RuntimeException("cannot find maxPowerOfCombinations"));
+
+        playerCombinations = playerCombinations.stream()
+                .filter(playerCombination -> playerCombination.getCombination().getPower().equals(maxPowerOfCombination))
+                .collect(Collectors.toList());
+
+        return playerCombinations;
     }
 
     private void calculate(List<PlayerCombination> winners, RoundSettings roundSettings) {
@@ -78,37 +125,5 @@ public class SimpleWinnerService implements WinnerService {
         );
     }
 
-    private List<PlayerCombination> findWinners(RoundSettings roundSettings) {
-        final List<CardType> flop = roundSettings.getFlop();
-        final CardType tern = roundSettings.getTern();
-        final CardType river = roundSettings.getRiver();
-        final List<PlayerCombination> combinations = new ArrayList<>();
-
-        PlayerUtil.getPlayersInAction(roundSettings.getPlayers()).forEach(player -> {
-            final List<CardType> playerCards = player.getCards().stream()
-                    .map(CardEntity::getCardType)
-                    .collect(Collectors.toList());
-
-            final List<CardType> cards = new ArrayList<>(playerCards);
-            cards.addAll(flop);
-            cards.add(tern);
-            cards.add(river);
-            combinations.add(PlayerCombination.builder()
-                    .combination(combinationService.findCombination(cards))
-                    .player(player)
-                    .build());
-        });
-        final Integer maxPowerOfCombination = combinations.stream()
-                .map(combo -> combo.getCombination().getPower())
-                .max(Integer::compareTo)
-                .orElseThrow(() -> new RuntimeException("cannot calculate max cards"));
-
-        return combinations.stream()
-                .filter(combo -> combo.getCombination()
-                        .getPower()
-                        .equals(maxPowerOfCombination))
-                .collect(Collectors.toList());
-
-    }
 
 }
