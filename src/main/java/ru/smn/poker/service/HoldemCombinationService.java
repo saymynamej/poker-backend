@@ -82,10 +82,6 @@ public class HoldemCombinationService implements CombinationService {
                 .orElseThrow(() -> new RuntimeException("cannot calculate sum"));
     }
 
-    //AKJ98
-    //4-4
-    //5-5
-
     private Combination findPair(List<CardType> cards) {
         final int size = cards.size();
         final List<CardType> foundPair = new ArrayList<>();
@@ -126,7 +122,6 @@ public class HoldemCombinationService implements CombinationService {
                 .sorted(Comparator.comparingInt(CardType::getPowerAsInt).reversed())
                 .collect(Collectors.toList());
 
-
         for (CardType card : copySorted) {
             final List<CardType> three = filterByPower(cards, card.getPower());
             if (three.size() == THREE_SIZE) {
@@ -163,7 +158,6 @@ public class HoldemCombinationService implements CombinationService {
 
         return Combination.empty();
     }
-
 
     private Combination findTwoPair(List<CardType> cards) {
         final int size = cards.size();
@@ -202,7 +196,6 @@ public class HoldemCombinationService implements CombinationService {
         return Combination.empty();
     }
 
-
     private Combination findThree(List<CardType> cards) {
         final List<CardType> foundThree = new ArrayList<>();
 
@@ -230,7 +223,6 @@ public class HoldemCombinationService implements CombinationService {
         return Combination.empty();
 
     }
-
 
     private Combination findHighCard(List<CardType> cards) {
         final List<CardType> highCards = new ArrayList<>();

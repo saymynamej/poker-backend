@@ -7,6 +7,7 @@ import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.service.GameService;
 import ru.smn.poker.service.OrderService;
+import ru.smn.poker.service.PrizeService;
 import ru.smn.poker.service.WinnerService;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class HoldemRound implements Round {
     private final List<PlayerEntity> players;
     private final String gameName;
     private final OrderService orderService;
-    private final WinnerService winnerService;
+    private final PrizeService prizeService;
     private final GameService gameService;
     private final long smallBlindBet;
     private final long bigBlindBet;
@@ -38,7 +39,7 @@ public class HoldemRound implements Round {
             }
         }
         roundSettings.setFinished(true);
-        winnerService.sendPrizes(roundSettings);
+        prizeService.sendPrizes(roundSettings);
         gameService.update(roundSettings);
     }
 

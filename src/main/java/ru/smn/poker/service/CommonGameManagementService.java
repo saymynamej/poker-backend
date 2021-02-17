@@ -33,7 +33,7 @@ public class CommonGameManagementService implements GameManagementService {
     private final Map<GameType, GameSettings> mapSettings;
     private final GameService gameService;
     private final OrderService orderService;
-    private final WinnerService winnerService;
+    private final PrizeService prizeService;
     private final PasswordEncoder passwordEncoder;
     private final RandomNameService randomNameService;
 
@@ -202,7 +202,7 @@ public class CommonGameManagementService implements GameManagementService {
                 gameEntity.getPlayers(),
                 gameEntity.getName(),
                 orderService,
-                winnerService,
+                prizeService,
                 gameService,
                 gameSettings.getStartSmallBlindBet(),
                 gameSettings.getStartBigBlindBet(),
@@ -224,7 +224,7 @@ public class CommonGameManagementService implements GameManagementService {
                 gameEntity.getPlayers(),
                 gameEntity.getName(),
                 orderService,
-                winnerService,
+                prizeService,
                 gameService,
                 gameSettings.getStartSmallBlindBet(),
                 gameSettings.getStartBigBlindBet(),

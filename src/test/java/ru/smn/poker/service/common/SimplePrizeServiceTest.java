@@ -18,7 +18,7 @@ import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.StateType;
 import ru.smn.poker.game.RoundSettings;
-import ru.smn.poker.service.WinnerService;
+import ru.smn.poker.service.PrizeService;
 import ru.smn.poker.util.PlayerUtil;
 
 import java.util.Arrays;
@@ -28,9 +28,9 @@ import java.util.Map;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")
-class SimpleWinnerServiceTest {
+class SimplePrizeServiceTest {
     @Autowired
-    private WinnerService winnerService;
+    private PrizeService prizeService;
 
     @Test
     void testWhenWinnerOnlyOne() {
@@ -48,7 +48,7 @@ class SimpleWinnerServiceTest {
         player1.setStateType(StateType.IN_GAME);
         player2.setStateType(StateType.IN_GAME);
 
-        winnerService.sendPrizes(HoldemRoundSettings.builder()
+        prizeService.sendPrizes(HoldemRoundSettings.builder()
                 .fullHistory(Map.of(
                         player1, List.of(call),
                         player2, List.of(call, raise)
@@ -107,7 +107,7 @@ class SimpleWinnerServiceTest {
         player1.setChipsCount(new ChipsCountEntity());
         player2.setChipsCount(new ChipsCountEntity());
 
-        winnerService.sendPrizes(roundSettings);
+        prizeService.sendPrizes(roundSettings);
 
         Assertions.assertEquals(5000, player2.getChipsCount().getCount());
         Assertions.assertEquals(5000, player1.getChipsCount().getCount());
@@ -152,7 +152,7 @@ class SimpleWinnerServiceTest {
         player2.setStateType(StateType.IN_GAME);
         player3.setStateType(StateType.IN_GAME);
 
-        winnerService.sendPrizes(HoldemRoundSettings.builder()
+        prizeService.sendPrizes(HoldemRoundSettings.builder()
                 .flop(Arrays.asList(
                         CardType.Q_S,
                         CardType.TWO_D,
