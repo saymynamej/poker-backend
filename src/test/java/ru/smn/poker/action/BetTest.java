@@ -11,7 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.smn.poker.action.holdem.Bet;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.game.RoundSettings;
+import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.service.ActionService;
 import ru.smn.poker.service.GameService;
 
@@ -36,23 +36,23 @@ public class BetTest {
 
     @Test
     public void testFailBet() throws InterruptedException {
-        final RoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
+        final TableSettings tableSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
         final Bet bet = new Bet(DEFAULT_LAST_BET);
         final PlayerEntity player = getPlayer();
-        executorServiceForActions.submit(() -> bet.doAction(roundSettingsDTO, player, gameService, actionService));
+        executorServiceForActions.submit(() -> bet.doAction(tableSettingsDTO, player, gameService, actionService));
         executorServiceForActions.awaitTermination(2L, TimeUnit.SECONDS);
-        Mockito.verify(actionService, Mockito.times(1)).waitPlayerAction(player, roundSettingsDTO);
+        Mockito.verify(actionService, Mockito.times(1)).waitPlayerAction(player, tableSettingsDTO);
         Assertions.assertEquals(DEFAULT_CHIPS_COUNT, player.getChipsCount().getCount());
     }
 
     @Test
     public void testSuccessBet() throws InterruptedException {
-        final RoundSettings roundSettingsDTO = getRoundSettingsDTO(0);
+        final TableSettings tableSettingsDTO = getRoundSettingsDTO(0);
         final Bet bet = new Bet(DEFAULT_LAST_BET);
         final PlayerEntity player = getPlayer();
-        executorServiceForActions.submit(() -> bet.doAction(roundSettingsDTO, player, gameService, actionService));
+        executorServiceForActions.submit(() -> bet.doAction(tableSettingsDTO, player, gameService, actionService));
         executorServiceForActions.awaitTermination(2L, TimeUnit.SECONDS);
-        Mockito.verify(actionService, Mockito.times(0)).waitPlayerAction(player, roundSettingsDTO);
+        Mockito.verify(actionService, Mockito.times(0)).waitPlayerAction(player, tableSettingsDTO);
         Assertions.assertEquals(DEFAULT_CHIPS_COUNT - bet.getCount(), player.getChipsCount().getCount());
     }
 }

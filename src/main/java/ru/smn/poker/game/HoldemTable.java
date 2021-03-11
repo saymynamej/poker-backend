@@ -5,17 +5,17 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.StageType;
+import ru.smn.poker.enums.StateType;
 import ru.smn.poker.service.GameService;
 import ru.smn.poker.service.OrderService;
 import ru.smn.poker.service.PrizeService;
-import ru.smn.poker.service.WinnerService;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Slf4j
-public class HoldemRound implements Round {
+public class HoldemTable implements Table {
     private final List<PlayerEntity> players;
     private final String gameName;
     private final OrderService orderService;
@@ -24,27 +24,30 @@ public class HoldemRound implements Round {
     private final long smallBlindBet;
     private final long bigBlindBet;
     private final long gameId;
-    private RoundSettings roundSettings;
-
+    private TableSettings settings;
 
     @Override
     public void start() {
-        final RoundSettingsManager roundSettingsManager = getRoundSettingsManager();
-
-        while (true) {
-            this.roundSettings = roundSettingsManager.getSettings(this.roundSettings);
-            final boolean skipNext = orderService.start(roundSettings);
-            if (skipNext || roundSettings.getStageType() == StageType.RIVER) {
-                break;
+        setInGame();
+        while (isEnable()) {
+            final TableSettingsManager tableSettingsManager = getTableSettingsManager();
+            while (true) {
+                this.settings = tableSettingsManager.getSettings();
+                if (orderService.start(settings)) {
+                    break;
+                }
+                tableSettingsManager.commit(settings);
             }
+            prizeService.sendPrizes(settings);
+//            gameService.update(settings);
         }
-        roundSettings.setFinished(true);
-        prizeService.sendPrizes(roundSettings);
-        gameService.update(roundSettings);
     }
 
+    private void setInGame() {
+        players.forEach(playerEntity -> playerEntity.setStateType(StateType.IN_GAME));
+    }
 
-    private RoundSettingsManager getRoundSettingsManager() {
+    private TableSettingsManager getTableSettingsManager() {
         return HoldemRoundSettingsManagerFactory.getManager(
                 players,
                 gameName,
@@ -52,6 +55,10 @@ public class HoldemRound implements Round {
                 smallBlindBet,
                 gameId
         );
+    }
+
+    public boolean isEnable(){
+        return true;
     }
 
     @Override
@@ -65,7 +72,7 @@ public class HoldemRound implements Round {
     }
 
     @Override
-    public synchronized RoundSettings getRoundSettings() {
-        return this.roundSettings;
+    public synchronized TableSettings getTableSettings() {
+        return this.settings;
     }
 }

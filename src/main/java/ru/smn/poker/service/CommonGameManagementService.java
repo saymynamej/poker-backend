@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.smn.poker.action.Action;
 import ru.smn.poker.action.holdem.Wait;
 import ru.smn.poker.config.game.GameSettings;
-import ru.smn.poker.dto.HoldemRoundSettings;
+import ru.smn.poker.dto.HoldemTableSettings;
 import ru.smn.poker.entities.*;
 import ru.smn.poker.enums.ActionType;
 import ru.smn.poker.enums.GameType;
@@ -99,7 +99,7 @@ public class CommonGameManagementService implements GameManagementService {
                 }
             });
 
-            final RoundSettings roundSettings = HoldemRoundSettings.builder()
+            final TableSettings tableSettings = HoldemTableSettings.builder()
                     .roundId(roundEntity.getId())
                     .players(gameEntity.getPlayers())
                     .activePlayer(roundEntity.getActivePlayer())
@@ -125,7 +125,7 @@ public class CommonGameManagementService implements GameManagementService {
                     .bank(roundEntity.getBank())
                     .build();
 
-            final Game game = convert(gameEntity, roundSettings);
+            final Game game = convert(gameEntity, tableSettings);
 
             run(game);
         }
@@ -195,10 +195,10 @@ public class CommonGameManagementService implements GameManagementService {
         return !games.containsKey(gameName);
     }
 
-    private Game convert(GameEntity gameEntity, RoundSettings roundSettings) {
+    private Game convert(GameEntity gameEntity, TableSettings tableSettings) {
         final GameSettings gameSettings = mapSettings.get(gameEntity.getGameType());
 
-        final Round round = new HoldemRound(
+        final Table table = new HoldemTable(
                 gameEntity.getPlayers(),
                 gameEntity.getName(),
                 orderService,
@@ -207,12 +207,12 @@ public class CommonGameManagementService implements GameManagementService {
                 gameSettings.getStartSmallBlindBet(),
                 gameSettings.getStartBigBlindBet(),
                 gameEntity.getId(),
-                roundSettings
+                tableSettings
         );
 
         return new HoldemGame(
                 gameSettings,
-                round
+                table
         );
 
     }
@@ -220,7 +220,7 @@ public class CommonGameManagementService implements GameManagementService {
     private Game convert(GameEntity gameEntity) {
         final GameSettings gameSettings = mapSettings.get(gameEntity.getGameType());
 
-        final Round round = new HoldemRound(
+        final Table table = new HoldemTable(
                 gameEntity.getPlayers(),
                 gameEntity.getName(),
                 orderService,
@@ -233,7 +233,7 @@ public class CommonGameManagementService implements GameManagementService {
 
         return new HoldemGame(
                 gameSettings,
-                round
+                table
         );
     }
 

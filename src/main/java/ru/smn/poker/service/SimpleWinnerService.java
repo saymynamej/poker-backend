@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.smn.poker.dto.PlayerCombination;
 import ru.smn.poker.entities.CardEntity;
 import ru.smn.poker.enums.CardType;
-import ru.smn.poker.game.RoundSettings;
+import ru.smn.poker.game.TableSettings;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,13 +19,13 @@ public class SimpleWinnerService implements WinnerService {
     private final CombinationService combinationService;
 
     @Override
-    public List<PlayerCombination> findWinners(RoundSettings roundSettings) {
+    public List<PlayerCombination> findWinners(TableSettings tableSettings) {
         final List<CardType> deck = Stream.concat(
-                roundSettings.getFlop().stream(),
-                of(roundSettings.getTern(), roundSettings.getRiver()).stream()
+                tableSettings.getFlop().stream(),
+                of(tableSettings.getTern(), tableSettings.getRiver()).stream()
         ).collect(Collectors.toList());
 
-        List<PlayerCombination> playerCombinations = roundSettings.getPlayersInGame().stream()
+        List<PlayerCombination> playerCombinations = tableSettings.getPlayersInGame().stream()
                 .map(player -> {
                     final List<CardType> concatCards = Stream.concat(
                             deck.stream(),

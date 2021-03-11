@@ -1,7 +1,7 @@
 package ru.smn.poker.enums;
 
-import ru.smn.poker.game.RoundSettings;
-import ru.smn.poker.game.RoundSettingsManager;
+import ru.smn.poker.game.TableSettings;
+import ru.smn.poker.game.TableSettingsManager;
 
 public enum StageType implements Pipeline {
     PREFLOP {
@@ -11,8 +11,8 @@ public enum StageType implements Pipeline {
         }
 
         @Override
-        public RoundSettings getCurrentSettings(RoundSettingsManager settingsManager) {
-            return null;
+        public TableSettings getCurrentSettings(TableSettingsManager settingsManager) {
+            return settingsManager.getPreflopSettings();
         }
     },
     FLOP {
@@ -22,8 +22,8 @@ public enum StageType implements Pipeline {
         }
 
         @Override
-        public RoundSettings getCurrentSettings(RoundSettingsManager settingsManager) {
-            return null;
+        public TableSettings getCurrentSettings(TableSettingsManager settingsManager) {
+            return settingsManager.getFlopSettings();
         }
     },
     TERN {
@@ -33,8 +33,8 @@ public enum StageType implements Pipeline {
         }
 
         @Override
-        public RoundSettings getCurrentSettings(RoundSettingsManager settingsManager) {
-            return null;
+        public TableSettings getCurrentSettings(TableSettingsManager settingsManager) {
+            return settingsManager.getTernSettings();
         }
     },
     RIVER {
@@ -44,8 +44,8 @@ public enum StageType implements Pipeline {
         }
 
         @Override
-        public RoundSettings getCurrentSettings(RoundSettingsManager settingsManager) {
-            return null;
+        public TableSettings getCurrentSettings(TableSettingsManager settingsManager) {
+            return settingsManager.getRiverSettings();
         }
     },
 
@@ -56,7 +56,7 @@ public enum StageType implements Pipeline {
         }
 
         @Override
-        public RoundSettings getCurrentSettings(RoundSettingsManager settingsManager) {
+        public TableSettings getCurrentSettings(TableSettingsManager settingsManager) {
             throw new RuntimeException("FINISH ACTION NOT HAS THE CURRENT SETTINGS");
         }
     }

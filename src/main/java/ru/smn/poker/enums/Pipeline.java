@@ -1,10 +1,10 @@
 package ru.smn.poker.enums;
 
-import ru.smn.poker.game.RoundSettings;
-import ru.smn.poker.game.RoundSettingsManager;
+import ru.smn.poker.game.TableSettings;
+import ru.smn.poker.game.TableSettingsManager;
 
 public interface Pipeline {
     StageType getNextStage();
 
-    RoundSettings getCurrentSettings(RoundSettingsManager settingsManager);
+    TableSettings getCurrentSettings(TableSettingsManager settingsManager);
 }

@@ -1,7 +1,7 @@
 package ru.smn.poker.service;
 
-import ru.smn.poker.game.RoundSettings;
+import ru.smn.poker.game.TableSettings;
 
 public interface PrizeService {
-    void sendPrizes(RoundSettings roundSettings);
+    void sendPrizes(TableSettings tableSettings);
 }

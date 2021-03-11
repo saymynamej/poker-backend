@@ -4,9 +4,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.StageType;
-import ru.smn.poker.game.HoldemRoundSettingsManager;
-import ru.smn.poker.game.RoundSettings;
-import ru.smn.poker.game.RoundSettingsManager;
+import ru.smn.poker.game.HoldemTableSettingsManager;
+import ru.smn.poker.game.TableSettings;
+import ru.smn.poker.game.TableSettingsManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,15 +14,15 @@ import java.util.Random;
 
 import static ru.smn.poker.util.DTOUtilTest.*;
 
-class HoldemRoundSettingsManagerTest {
+class HoldemTableSettingsManagerTest {
 
     @Test
     void testCommonSettingsPreflop() {
         final List<PlayerEntity> players = getPlayers();
 
-        final RoundSettingsManager roundSettingsManager = getRoundSettingsManager(players);
+        final TableSettingsManager tableSettingsManager = getRoundSettingsManager(players);
 
-        final RoundSettings preflopSettings = roundSettingsManager.getSettings(null);
+        final TableSettings preflopSettings = tableSettingsManager.getSettings();
 
         Assertions.assertEquals(
                 preflopSettings.getBigBlindBet() + preflopSettings.getSmallBlindBet(),
@@ -62,13 +62,13 @@ class HoldemRoundSettingsManagerTest {
         final List<PlayerEntity> players = getPlayers();
 
         for (int i = 0; i < 10_000; i++) {
-            final RoundSettingsManager firstRound = getRoundSettingsManager(players);
+            final TableSettingsManager firstRound = getRoundSettingsManager(players);
 
-            final RoundSettings preflopSettings = firstRound.getSettings(null);
+            final TableSettings preflopSettings = firstRound.getSettings();
 
-            final RoundSettingsManager secondRound = getRoundSettingsManager(players);
+            final TableSettingsManager secondRound = getRoundSettingsManager(players);
 
-            final RoundSettings preflopSettings2 = secondRound.getSettings(null);
+            final TableSettings preflopSettings2 = secondRound.getSettings();
 
             final int firstButtonIndex = preflopSettings.getPlayers().indexOf(preflopSettings.getButton());
             final int secondButtonIndex = preflopSettings2.getPlayers().indexOf(preflopSettings2.getButton());
@@ -95,11 +95,11 @@ class HoldemRoundSettingsManagerTest {
     void testPostFlopSettings() {
         final List<PlayerEntity> players = getPlayers();
 
-        final RoundSettingsManager firstRound = getRoundSettingsManager(players);
+        final TableSettingsManager firstRound = getRoundSettingsManager(players);
 
-        final RoundSettings preflopSettings = firstRound.getSettings(null);
+        final TableSettings preflopSettings = firstRound.getSettings();
 
-        final RoundSettings postFlopSettings = firstRound.getSettings(preflopSettings);
+        final TableSettings postFlopSettings = firstRound.getSettings();
 
         Assertions.assertEquals(
                 preflopSettings.getBank(),
@@ -146,13 +146,13 @@ class HoldemRoundSettingsManagerTest {
     void testPostFlopSettingsWithTern() {
         final List<PlayerEntity> players = getPlayers();
 
-        final RoundSettingsManager firstRound = getRoundSettingsManager(players);
+        final TableSettingsManager firstRound = getRoundSettingsManager(players);
 
-        final RoundSettings preflopSettings = firstRound.getSettings(null);
+        final TableSettings preflopSettings = firstRound.getSettings();
 
-        final RoundSettings postFlopSettings = firstRound.getSettings(preflopSettings);
+        final TableSettings postFlopSettings = firstRound.getSettings();
 
-        final RoundSettings postFlopSettingsWithTern = firstRound.getSettings(postFlopSettings);
+        final TableSettings postFlopSettingsWithTern = firstRound.getSettings();
 
         Assertions.assertEquals(
                 postFlopSettings.getBank(),
@@ -209,15 +209,15 @@ class HoldemRoundSettingsManagerTest {
     void testPostFlopSettingsWithRiver() {
         final List<PlayerEntity> players = getPlayers();
 
-        final RoundSettingsManager firstRound = getRoundSettingsManager(players);
+        final TableSettingsManager firstRound = getRoundSettingsManager(players);
 
-        final RoundSettings preflopSettings = firstRound.getSettings(null);
+        final TableSettings preflopSettings = firstRound.getSettings();
 
-        final RoundSettings postFlopSettings = firstRound.getSettings(preflopSettings);
+        final TableSettings postFlopSettings = firstRound.getSettings();
 
-        final RoundSettings postFlopSettingsWithTern = firstRound.getSettings(postFlopSettings);
+        final TableSettings postFlopSettingsWithTern = firstRound.getSettings();
 
-        final RoundSettings postFlopSettingsWithRiver = firstRound.getSettings(postFlopSettingsWithTern);
+        final TableSettings postFlopSettingsWithRiver = firstRound.getSettings();
 
 
         Assertions.assertEquals(
@@ -273,8 +273,8 @@ class HoldemRoundSettingsManagerTest {
 
     }
 
-    private RoundSettingsManager getRoundSettingsManager(List<PlayerEntity> players) {
-        return new HoldemRoundSettingsManager(
+    private TableSettingsManager getRoundSettingsManager(List<PlayerEntity> players) {
+        return new HoldemTableSettingsManager(
                 new Random(),
                 players,
                 DEFAULT_GAME_NAME,

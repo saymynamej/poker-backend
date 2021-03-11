@@ -11,7 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.smn.poker.action.holdem.Raise;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.game.RoundSettings;
+import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.service.ActionService;
 import ru.smn.poker.service.GameService;
 
@@ -38,10 +38,10 @@ public class RaiseTest {
     public void testSuccessRaise() throws InterruptedException {
         final long raiseCount = 4;
         final long lastBet = 2;
-        final RoundSettings roundSettings = getRoundSettingsDTO(lastBet);
+        final TableSettings tableSettings = getRoundSettingsDTO(lastBet);
         final PlayerEntity player = getPlayer();
         final Raise raise = new Raise(raiseCount);
-        executorService.submit(() -> raise.doAction(roundSettings, player, gameService, actionService));
+        executorService.submit(() -> raise.doAction(tableSettings, player, gameService, actionService));
         executorService.awaitTermination(2L, TimeUnit.SECONDS);
         Assertions.assertEquals(DEFAULT_CHIPS_COUNT - raise.getCount(), player.getChipsCount().getCount());
     }
@@ -50,13 +50,13 @@ public class RaiseTest {
     public void testFailRaise() throws InterruptedException {
         final long raiseCount = 2;
         final long lastBet = 2;
-        final RoundSettings roundSettings = getRoundSettingsDTO(lastBet);
+        final TableSettings tableSettings = getRoundSettingsDTO(lastBet);
         final PlayerEntity player = getPlayer();
         final Raise raise = new Raise(raiseCount);
-        executorService.submit(() -> raise.doAction(roundSettings, player, gameService, actionService));
+        executorService.submit(() -> raise.doAction(tableSettings, player, gameService, actionService));
         executorService.awaitTermination(2L, TimeUnit.SECONDS);
         Mockito.verify(actionService, Mockito.times(1))
-                .waitPlayerAction(player, roundSettings);
+                .waitPlayerAction(player, tableSettings);
     }
 
 }

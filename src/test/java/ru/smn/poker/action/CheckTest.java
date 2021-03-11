@@ -12,7 +12,7 @@ import ru.smn.poker.action.holdem.Check;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.RoleType;
 import ru.smn.poker.enums.StageType;
-import ru.smn.poker.game.RoundSettings;
+import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.service.ActionService;
 import ru.smn.poker.service.GameService;
 import ru.smn.poker.util.DTOUtilTest;
@@ -35,40 +35,40 @@ public class CheckTest {
 
     @Test
     public void testSuccessCheckWhenLastBetZero() throws InterruptedException {
-        final RoundSettings roundSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.FLOP);
-        roundSettingsDTO.setLastBet(0L);
+        final TableSettings tableSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.FLOP);
+        tableSettingsDTO.setLastBet(0L);
         final PlayerEntity player = DTOUtilTest.getPlayer();
-        executorService.submit(() -> new Check().doAction(roundSettingsDTO, player, gameService, actionService));
+        executorService.submit(() -> new Check().doAction(tableSettingsDTO, player, gameService, actionService));
         executorService.awaitTermination(2L, TimeUnit.SECONDS);
     }
 
     @Test
     public void testFailCheckWhenLastBetZero() throws InterruptedException {
-        final RoundSettings roundSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.PREFLOP);
-        roundSettingsDTO.setLastBet(0L);
+        final TableSettings tableSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.PREFLOP);
+        tableSettingsDTO.setLastBet(0L);
         final PlayerEntity player = DTOUtilTest.getPlayer();
-        executorService.submit(() -> new Check().doAction(roundSettingsDTO, player, gameService, actionService));
+        executorService.submit(() -> new Check().doAction(tableSettingsDTO, player, gameService, actionService));
         executorService.awaitTermination(2L, TimeUnit.SECONDS);
-        Mockito.verify(actionService, Mockito.times(1)).waitPlayerAction(player, roundSettingsDTO);
+        Mockito.verify(actionService, Mockito.times(1)).waitPlayerAction(player, tableSettingsDTO);
     }
 
     @Test
     public void testSuccessCheckWhenPlayerOnBigBlind() throws InterruptedException {
-        final RoundSettings roundSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.PREFLOP);
-        roundSettingsDTO.setLastBet(2L);
+        final TableSettings tableSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.PREFLOP);
+        tableSettingsDTO.setLastBet(2L);
         final PlayerEntity player = DTOUtilTest.getPlayer();
         player.setRole(RoleType.BIG_BLIND);
-        executorService.submit(() -> new Check().doAction(roundSettingsDTO, player, gameService, actionService));
+        executorService.submit(() -> new Check().doAction(tableSettingsDTO, player, gameService, actionService));
         executorService.awaitTermination(2L, TimeUnit.SECONDS);
     }
 
     @Test
     public void testFailCheckWhenPlayerOnBigBlind() throws InterruptedException {
-        final RoundSettings roundSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.PREFLOP);
-        roundSettingsDTO.setLastBet(roundSettingsDTO.getBigBlindBet() + roundSettingsDTO.getBigBlindBet());
+        final TableSettings tableSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.PREFLOP);
+        tableSettingsDTO.setLastBet(tableSettingsDTO.getBigBlindBet() + tableSettingsDTO.getBigBlindBet());
         final PlayerEntity player = DTOUtilTest.getPlayer();
-        executorService.submit(() -> new Check().doAction(roundSettingsDTO, player, gameService, actionService));
+        executorService.submit(() -> new Check().doAction(tableSettingsDTO, player, gameService, actionService));
         executorService.awaitTermination(2L, TimeUnit.SECONDS);
-        Mockito.verify(actionService, Mockito.times(1)).waitPlayerAction(player, roundSettingsDTO);
+        Mockito.verify(actionService, Mockito.times(1)).waitPlayerAction(player, tableSettingsDTO);
     }
 }

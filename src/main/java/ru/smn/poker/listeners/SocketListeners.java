@@ -10,7 +10,7 @@ import ru.smn.poker.dto.HoldemRoundSettingsDTO;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.MessageType;
 import ru.smn.poker.game.Game;
-import ru.smn.poker.game.RoundSettings;
+import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.service.GameDataService;
 import ru.smn.poker.service.SecurityService;
 import ru.smn.poker.service.SimpleNotificationService;
@@ -40,14 +40,14 @@ public class SocketListeners {
                 if (player.getGameName() != null) {
                     final Game game = games.get(player.getGameName());
 
-                    final RoundSettings roundSettings = game.getRoundSettings();
+                    final TableSettings tableSettings = game.getRoundSettings();
 
-                    final RoundSettings securedRoundSettings = securityService.secureCards(
+                    final TableSettings securedTableSettings = securityService.secureCards(
                             List.of(user.getName()),
-                            roundSettings
+                            tableSettings
                     );
 
-                    final HoldemRoundSettingsDTO holdemRoundSettings = RoundSettingsConverter.toDTO(securedRoundSettings);
+                    final HoldemRoundSettingsDTO holdemRoundSettings = RoundSettingsConverter.toDTO(securedTableSettings);
 
                     simpleNotificationService.sendGameInformationToUser(
                             player.getName(),

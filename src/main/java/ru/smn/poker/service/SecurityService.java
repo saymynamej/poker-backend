@@ -1,7 +1,7 @@
 package ru.smn.poker.service;
 
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.game.RoundSettings;
+import ru.smn.poker.game.TableSettings;
 
 import java.util.List;
 
@@ -11,5 +11,5 @@ public interface SecurityService {
 
     boolean isLegalPlayer(PlayerEntity player);
 
-    RoundSettings secureCards(List<String> filter, RoundSettings roundSettings);
+    TableSettings secureCards(List<String> filter, TableSettings tableSettings);
 }

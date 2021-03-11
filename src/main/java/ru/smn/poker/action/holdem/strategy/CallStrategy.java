@@ -3,7 +3,7 @@ package ru.smn.poker.action.holdem.strategy;
 import ru.smn.poker.action.ActionStrategy;
 import ru.smn.poker.action.CountAction;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.game.RoundSettings;
+import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.service.ActionService;
 import ru.smn.poker.service.GameService;
 import ru.smn.poker.util.HistoryUtil;
@@ -11,21 +11,21 @@ import ru.smn.poker.util.HistoryUtil;
 public class CallStrategy implements ActionStrategy {
 
     @Override
-    public void execute(PlayerEntity player, GameService gameService, ActionService actionService, CountAction countAction, RoundSettings roundSettings) {
+    public void execute(PlayerEntity player, GameService gameService, ActionService actionService, CountAction countAction, TableSettings tableSettings) {
         if (player.hasNotChipsForAction(countAction)) {
-            actionService.waitPlayerAction(player, roundSettings);
+            actionService.waitPlayerAction(player, tableSettings);
             return;
         }
 
-        final long bets = HistoryUtil.sumAllHistoryBetsWithNewAction(roundSettings, player, countAction);
+        final long bets = HistoryUtil.sumAllHistoryBetsWithNewAction(tableSettings, player, countAction);
 
-        if (allBetsNotEqualsLastBet(bets, roundSettings.getLastBet())) {
-            actionService.waitPlayerAction(player, roundSettings);
+        if (allBetsNotEqualsLastBet(bets, tableSettings.getLastBet())) {
+            actionService.waitPlayerAction(player, tableSettings);
             return;
         }
 
-        gameService.doAction(player, roundSettings, countAction.getCount(), bets);
-        gameService.log(player, roundSettings, countAction);
+        gameService.doAction(player, tableSettings, countAction.getCount(), bets);
+        gameService.log(player, tableSettings, countAction);
     }
 
     private boolean allBetsNotEqualsLastBet(long allBets, long lastBet){

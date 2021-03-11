@@ -3,7 +3,6 @@ package ru.smn.poker.game;
 import lombok.extern.slf4j.Slf4j;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.entities.RoundEntity;
 import ru.smn.poker.enums.StateType;
 
 import java.util.List;
@@ -12,20 +11,20 @@ import java.util.Optional;
 @Slf4j
 public abstract class Game {
     private final GameSettings gameSettings;
-    private final Round round;
+    private final Table table;
     protected boolean isEnable;
 
-    public Game(GameSettings gameSettings, Round round) {
+    public Game(GameSettings gameSettings, Table table) {
         this.gameSettings = gameSettings;
-        this.round = round;
+        this.table = table;
     }
 
-    public Round getRound() {
-        return this.round;
+    public Table getRound() {
+        return this.table;
     }
 
     public List<PlayerEntity> getPlayers() {
-        return this.round.getPlayers();
+        return this.table.getPlayers();
     }
 
     public boolean isEnable() {
@@ -33,7 +32,7 @@ public abstract class Game {
     }
 
     public String getGameName() {
-        return this.round.getGameName();
+        return this.table.getGameName();
     }
 
     public GameSettings getGameSettings() {
@@ -64,12 +63,9 @@ public abstract class Game {
         return false;
     }
 
-    protected abstract boolean isReady();
 
     public abstract void start();
 
-    public abstract void stop();
-
-    public abstract RoundSettings getRoundSettings();
+    public abstract TableSettings getRoundSettings();
 
 }

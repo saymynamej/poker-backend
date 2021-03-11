@@ -11,23 +11,22 @@ public class HoldemRoundSettingsManagerFactory {
 
     private final static Random random = new SecureRandom();
 
-    public static RoundSettingsManager getManager(
+    public static TableSettingsManager getManager(
             List<PlayerEntity> players,
             String gameName,
             long bigBlindBet,
             long smallBlindBet,
             long gameId
     ) {
-        return players.size() > 2
-                ? new HoldemRoundSettingsManager(random, new ArrayList<>(players), gameName, bigBlindBet, smallBlindBet, gameId)
-                : new HoldemRoundSettingsManagerHU(random, new ArrayList<>(players), gameName, bigBlindBet, smallBlindBet, gameId);
+        return new HoldemTableSettingsManagerHU(random, new ArrayList<>(players), gameName, bigBlindBet, smallBlindBet, gameId);
+
     }
 
-    public static RoundSettingsManager getManager(
-            RoundSettings roundSettings
+    public static TableSettingsManager getManager(
+            TableSettings tableSettings
     ) {
-        return roundSettings.getPlayers().size() > 2
-                ? new HoldemRoundSettingsManager(random, roundSettings)
-                : new HoldemRoundSettingsManagerHU(random, roundSettings);
+        return tableSettings.getPlayers().size() > 2
+                ? new HoldemTableSettingsManager(random, tableSettings)
+                : new HoldemTableSettingsManagerHU(random, tableSettings);
     }
 }

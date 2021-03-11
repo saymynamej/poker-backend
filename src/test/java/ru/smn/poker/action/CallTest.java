@@ -10,7 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.smn.poker.action.holdem.Call;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.game.RoundSettings;
+import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.service.ActionService;
 import ru.smn.poker.service.GameService;
 
@@ -40,67 +40,67 @@ class CallTest {
 
     @Test
     void testSuccessCall() throws InterruptedException {
-        final RoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
+        final TableSettings tableSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
         final Call call = new Call(DEFAULT_LAST_BET);
         final PlayerEntity player = getPlayer();
-        executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
+        executorServiceForActions.submit(() -> call.doAction(tableSettingsDTO, player, gameService, actionService));
         executorServiceForActions.awaitTermination(2L, TimeUnit.SECONDS);
         Assertions.assertEquals(DEFAULT_CHIPS_COUNT - DEFAULT_LAST_BET, player.getChipsCount().getCount());
-        Assertions.assertEquals(call.getCount(), roundSettingsDTO.getLastBet());
+        Assertions.assertEquals(call.getCount(), tableSettingsDTO.getLastBet());
     }
 
     @Test
     void testCallWhenChipsAreNotEnough() throws InterruptedException {
-        final RoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
+        final TableSettings tableSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
         final PlayerEntity player = getPlayer();
         final Call call = new Call(player.getChipsCount().getCount() + 1);
-        executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
+        executorServiceForActions.submit(() -> call.doAction(tableSettingsDTO, player, gameService, actionService));
         executorServiceForActions.awaitTermination(2L, TimeUnit.SECONDS);
-        verify(actionService, times(1)).waitPlayerAction(player, roundSettingsDTO);
-        Assertions.assertEquals(roundSettingsDTO.getBigBlindBet(), roundSettingsDTO.getLastBet());
+        verify(actionService, times(1)).waitPlayerAction(player, tableSettingsDTO);
+        Assertions.assertEquals(tableSettingsDTO.getBigBlindBet(), tableSettingsDTO.getLastBet());
     }
 
     @Test
     void testFailBet() throws InterruptedException {
-        final RoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
+        final TableSettings tableSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
         final PlayerEntity player = getPlayer();
         final Call call = new Call(DEFAULT_BIG_BLIND_BET + 1);
-        executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
+        executorServiceForActions.submit(() -> call.doAction(tableSettingsDTO, player, gameService, actionService));
         executorServiceForActions.awaitTermination(2L, TimeUnit.SECONDS);
-        verify(actionService, times(1)).waitPlayerAction(player, roundSettingsDTO);
-        Assertions.assertEquals(roundSettingsDTO.getBigBlindBet(), roundSettingsDTO.getLastBet());
+        verify(actionService, times(1)).waitPlayerAction(player, tableSettingsDTO);
+        Assertions.assertEquals(tableSettingsDTO.getBigBlindBet(), tableSettingsDTO.getLastBet());
     }
 
     @Test
     void testSuccessCallWithHistory() throws InterruptedException {
-        final RoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
+        final TableSettings tableSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
         final PlayerEntity player = getPlayer();
-        final long sumAllBets = setHistoryForPlayer(player, roundSettingsDTO);
-        final Call call = new Call(roundSettingsDTO.getLastBet() - sumAllBets);
-        executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
+        final long sumAllBets = setHistoryForPlayer(player, tableSettingsDTO);
+        final Call call = new Call(tableSettingsDTO.getLastBet() - sumAllBets);
+        executorServiceForActions.submit(() -> call.doAction(tableSettingsDTO, player, gameService, actionService));
         executorServiceForActions.awaitTermination(2L, TimeUnit.SECONDS);
-        Assertions.assertEquals(player.getChipsCount().getCount(), DEFAULT_CHIPS_COUNT - roundSettingsDTO.getLastBet());
+        Assertions.assertEquals(player.getChipsCount().getCount(), DEFAULT_CHIPS_COUNT - tableSettingsDTO.getLastBet());
     }
 
 
     @Test
     void testFailCallWithHistory() throws InterruptedException {
-        final RoundSettings roundSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
+        final TableSettings tableSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
         final PlayerEntity player = getPlayer();
-        final long sumAllBets = setHistoryForPlayer(player, roundSettingsDTO);
-        final Call call = new Call(roundSettingsDTO.getLastBet() - sumAllBets + 1L);
-        executorServiceForActions.submit(() -> call.doAction(roundSettingsDTO, player, gameService, actionService));
+        final long sumAllBets = setHistoryForPlayer(player, tableSettingsDTO);
+        final Call call = new Call(tableSettingsDTO.getLastBet() - sumAllBets + 1L);
+        executorServiceForActions.submit(() -> call.doAction(tableSettingsDTO, player, gameService, actionService));
         executorServiceForActions.awaitTermination(2L, TimeUnit.SECONDS);
-        verify(actionService, times(1)).waitPlayerAction(player, roundSettingsDTO);
+        verify(actionService, times(1)).waitPlayerAction(player, tableSettingsDTO);
         Assertions.assertEquals(player.getChipsCount().getCount(), DEFAULT_CHIPS_COUNT - sumAllBets);
     }
 
-    private long setHistoryForPlayer(PlayerEntity player, RoundSettings roundSettings) {
+    private long setHistoryForPlayer(PlayerEntity player, TableSettings tableSettings) {
         final long firstBet = 2L;
         final long secondBet = 8L;
         final long thirdBet = 100L;
 
-        final Map<PlayerEntity, List<Action>> history = roundSettings.getStageHistory();
+        final Map<PlayerEntity, List<Action>> history = tableSettings.getStageHistory();
         history.put(player, List.of(
                 new Call(firstBet),
                 new Call(secondBet),
@@ -108,7 +108,7 @@ class CallTest {
         );
 
         player.removeChips(firstBet + secondBet + thirdBet);
-        roundSettings.setLastBet(500L);
+        tableSettings.setLastBet(500L);
 
         return firstBet + secondBet + thirdBet;
     }

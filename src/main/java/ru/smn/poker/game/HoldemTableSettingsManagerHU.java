@@ -7,9 +7,9 @@ import ru.smn.poker.enums.RoleType;
 
 import java.util.*;
 
-public class HoldemRoundSettingsManagerHU extends HoldemRoundSettingsManager {
+public class HoldemTableSettingsManagerHU extends HoldemTableSettingsManager {
 
-    public HoldemRoundSettingsManagerHU(
+    public HoldemTableSettingsManagerHU(
             Random random,
             List<PlayerEntity> players,
             String gameName,
@@ -20,8 +20,8 @@ public class HoldemRoundSettingsManagerHU extends HoldemRoundSettingsManager {
         super(random, players, gameName, bigBlindBet, smallBlindBet, gameId);
     }
 
-    public HoldemRoundSettingsManagerHU(Random random, RoundSettings roundSettings) {
-        super(random, roundSettings);
+    public HoldemTableSettingsManagerHU(Random random, TableSettings tableSettings) {
+        super(random, tableSettings);
     }
 
     @Override
@@ -43,7 +43,7 @@ public class HoldemRoundSettingsManagerHU extends HoldemRoundSettingsManager {
     }
 
     @Override
-    protected Map<PlayerEntity, List<Action>> setBlindsHistory() {
+    protected Map<PlayerEntity, List<Action>> getBlindsHistory() {
         final Map<PlayerEntity, List<Action>> history = new HashMap<>();
         final PlayerEntity button = getPlayerByRole(RoleType.BUTTON).orElseThrow();
         final List<Action> forButton = new ArrayList<>();

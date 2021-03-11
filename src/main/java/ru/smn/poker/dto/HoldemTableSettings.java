@@ -8,7 +8,7 @@ import ru.smn.poker.action.Action;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.StageType;
-import ru.smn.poker.game.RoundSettings;
+import ru.smn.poker.game.TableSettings;
 
 import java.util.List;
 import java.util.Map;
@@ -17,7 +17,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
-public class HoldemRoundSettings implements RoundSettings {
+public class HoldemTableSettings implements TableSettings {
     private final Map<PlayerEntity, List<Action>> stageHistory;
     private final Map<PlayerEntity, List<Action>> fullHistory;
     private final List<PlayerEntity> players;

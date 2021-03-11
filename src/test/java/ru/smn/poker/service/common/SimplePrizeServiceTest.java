@@ -11,13 +11,13 @@ import ru.smn.poker.action.holdem.AllIn;
 import ru.smn.poker.action.holdem.Call;
 import ru.smn.poker.action.holdem.Fold;
 import ru.smn.poker.action.holdem.Raise;
-import ru.smn.poker.dto.HoldemRoundSettings;
+import ru.smn.poker.dto.HoldemTableSettings;
 import ru.smn.poker.entities.CardEntity;
 import ru.smn.poker.entities.ChipsCountEntity;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.StateType;
-import ru.smn.poker.game.RoundSettings;
+import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.service.PrizeService;
 import ru.smn.poker.util.PlayerUtil;
 
@@ -48,7 +48,7 @@ class SimplePrizeServiceTest {
         player1.setStateType(StateType.IN_GAME);
         player2.setStateType(StateType.IN_GAME);
 
-        prizeService.sendPrizes(HoldemRoundSettings.builder()
+        prizeService.sendPrizes(HoldemTableSettings.builder()
                 .fullHistory(Map.of(
                         player1, List.of(call),
                         player2, List.of(call, raise)
@@ -85,7 +85,7 @@ class SimplePrizeServiceTest {
         player1.setStateType(StateType.IN_GAME);
         player2.setStateType(StateType.IN_GAME);
 
-        RoundSettings roundSettings = HoldemRoundSettings.builder()
+        TableSettings tableSettings = HoldemTableSettings.builder()
                 .flop(Arrays.asList(
                         CardType.FOUR_C,
                         CardType.FIVE_D,
@@ -107,7 +107,7 @@ class SimplePrizeServiceTest {
         player1.setChipsCount(new ChipsCountEntity());
         player2.setChipsCount(new ChipsCountEntity());
 
-        prizeService.sendPrizes(roundSettings);
+        prizeService.sendPrizes(tableSettings);
 
         Assertions.assertEquals(5000, player2.getChipsCount().getCount());
         Assertions.assertEquals(5000, player1.getChipsCount().getCount());
@@ -152,7 +152,7 @@ class SimplePrizeServiceTest {
         player2.setStateType(StateType.IN_GAME);
         player3.setStateType(StateType.IN_GAME);
 
-        prizeService.sendPrizes(HoldemRoundSettings.builder()
+        prizeService.sendPrizes(HoldemTableSettings.builder()
                 .flop(Arrays.asList(
                         CardType.Q_S,
                         CardType.TWO_D,

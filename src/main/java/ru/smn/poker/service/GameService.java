@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.smn.poker.action.Action;
 import ru.smn.poker.entities.*;
-import ru.smn.poker.game.RoundSettings;
+import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.repository.*;
 
 import java.util.List;
@@ -35,45 +35,45 @@ public class GameService {
     }
 
     @Transactional
-    public void update(RoundSettings roundSettings) {
-        saveChipsCount(roundSettings);
+    public void update(TableSettings tableSettings) {
+        saveChipsCount(tableSettings);
         saveCards(
-                roundSettings,
-                gameRepository.findById(roundSettings.getGameId()).orElseThrow()
+                tableSettings,
+                gameRepository.findById(tableSettings.getGameId()).orElseThrow()
         );
-        savePlayerSettings(roundSettings);
-        saveRound(roundSettings);
+        savePlayerSettings(tableSettings);
+        saveRound(tableSettings);
     }
 
     @Transactional
-    public void updateBlinds(RoundSettings roundSettings) {
-        actionLogService.logBlinds(roundSettings);
+    public void updateBlinds(TableSettings tableSettings) {
+        actionLogService.logBlinds(tableSettings);
     }
 
 
-    private void saveRound(RoundSettings roundSettings) {
+    private void saveRound(TableSettings tableSettings) {
         final RoundEntity roundEntity = getRoundEntity(
-                roundSettings,
-                gameRepository.findById(roundSettings.getGameId()).orElse(null)
+                tableSettings,
+                gameRepository.findById(tableSettings.getGameId()).orElse(null)
         );
-        if (roundSettings.getRoundId() == null) {
+        if (tableSettings.getRoundId() == null) {
             final Long idSavedRound = roundRepository.save(roundEntity).getId();
-            roundSettings.setRoundId(idSavedRound);
+            tableSettings.setRoundId(idSavedRound);
         }
 
         roundRepository.save(roundEntity);
     }
 
-    private void savePlayerSettings(RoundSettings roundSettings) {
-        final List<PlayerSettingsEntity> playerSettingsEntities = roundSettings.getPlayers().stream()
+    private void savePlayerSettings(TableSettings tableSettings) {
+        final List<PlayerSettingsEntity> playerSettingsEntities = tableSettings.getPlayers().stream()
                 .map(PlayerEntity::getSettings)
                 .collect(Collectors.toList());
 
         playerSettingsRepository.saveAll(playerSettingsEntities);
     }
 
-    private void saveCards(RoundSettings roundSettings, GameEntity gameEntity) {
-        final List<CardEntity> cardEntities = roundSettings.getPlayers().stream()
+    private void saveCards(TableSettings tableSettings, GameEntity gameEntity) {
+        final List<CardEntity> cardEntities = tableSettings.getPlayers().stream()
                 .flatMap(players -> players.getCards().stream())
                 .collect(Collectors.toList());
 
@@ -86,8 +86,8 @@ public class GameService {
 
     }
 
-    private void saveChipsCount(RoundSettings roundSettings) {
-        final List<ChipsCountEntity> chipsCountEntities = roundSettings.getPlayers().stream()
+    private void saveChipsCount(TableSettings tableSettings) {
+        final List<ChipsCountEntity> chipsCountEntities = tableSettings.getPlayers().stream()
                 .map(PlayerEntity::getChipsCount)
                 .collect(Collectors.toList());
 
@@ -95,77 +95,77 @@ public class GameService {
     }
 
 
-    private RoundEntity getRoundEntity(RoundSettings roundSettings, GameEntity gameEntity) {
+    private RoundEntity getRoundEntity(TableSettings tableSettings, GameEntity gameEntity) {
         final RoundEntity roundEntity = RoundEntity.builder()
-                .bank(roundSettings.getBank())
-                .bigBlindBet(roundSettings.getBigBlindBet())
-                .id(roundSettings.getRoundId())
-                .smallBlindBet(roundSettings.getSmallBlindBet())
+                .bank(tableSettings.getBank())
+                .bigBlindBet(tableSettings.getBigBlindBet())
+                .id(tableSettings.getRoundId())
+                .smallBlindBet(tableSettings.getSmallBlindBet())
                 .game(gameEntity)
-                .stageType(roundSettings.getStageType())
-                .isFinished(roundSettings.isFinished())
-                .lastBet(roundSettings.getLastBet())
+                .stageType(tableSettings.getStageType())
+                .isFinished(tableSettings.isFinished())
+                .lastBet(tableSettings.getLastBet())
                 .build();
 
-        if (roundSettings.getActivePlayer() != null) {
-            roundEntity.setActivePlayer(roundSettings.getActivePlayer());
+        if (tableSettings.getActivePlayer() != null) {
+            roundEntity.setActivePlayer(tableSettings.getActivePlayer());
         }
-        if (roundSettings.getButton() != null) {
-            roundEntity.setButton(roundSettings.getButton());
+        if (tableSettings.getButton() != null) {
+            roundEntity.setButton(tableSettings.getButton());
         }
-        if (roundSettings.getSmallBlind() != null) {
-            roundEntity.setSmallBlind(roundSettings.getSmallBlind());
+        if (tableSettings.getSmallBlind() != null) {
+            roundEntity.setSmallBlind(tableSettings.getSmallBlind());
         }
-        if (roundSettings.getBigBlind() != null) {
-            roundEntity.setBigBlind(roundSettings.getBigBlind());
+        if (tableSettings.getBigBlind() != null) {
+            roundEntity.setBigBlind(tableSettings.getBigBlind());
         }
 
-        if (roundSettings.getFlop() != null && !roundSettings.getFlop().isEmpty()) {
-            roundEntity.setF1(roundSettings.getFlop().get(0));
-            roundEntity.setF2(roundSettings.getFlop().get(1));
-            roundEntity.setF3(roundSettings.getFlop().get(2));
+        if (tableSettings.getFlop() != null && !tableSettings.getFlop().isEmpty()) {
+            roundEntity.setF1(tableSettings.getFlop().get(0));
+            roundEntity.setF2(tableSettings.getFlop().get(1));
+            roundEntity.setF3(tableSettings.getFlop().get(2));
         }
-        if (roundSettings.getTern() != null) {
-            roundEntity.setTern(roundSettings.getTern());
+        if (tableSettings.getTern() != null) {
+            roundEntity.setTern(tableSettings.getTern());
         }
-        if (roundSettings.getRiver() != null) {
-            roundEntity.setRiver(roundSettings.getRiver());
+        if (tableSettings.getRiver() != null) {
+            roundEntity.setRiver(tableSettings.getRiver());
         }
         return roundEntity;
     }
 
     public void doAction(
             PlayerEntity player,
-            RoundSettings roundSettings,
+            TableSettings tableSettings,
             long removeChips,
             long lastBet
     ) {
         player.removeChips(removeChips);
-        addBank(roundSettings, removeChips);
-        setLastBet(roundSettings, lastBet);
-        addActionInHistory(roundSettings, player);
+        addBank(tableSettings, removeChips);
+        setLastBet(tableSettings, lastBet);
+        addActionInHistory(tableSettings, player);
     }
 
-    public void log(PlayerEntity player, RoundSettings roundSettings, Action action) {
-        actionLogService.log(player, action, roundSettings);
+    public void log(PlayerEntity player, TableSettings tableSettings, Action action) {
+        actionLogService.log(player, action, tableSettings);
     }
 
-    public void addBank(RoundSettings roundSettings, long count) {
-        roundSettings.setBank(roundSettings.getBank() + count);
+    public void addBank(TableSettings tableSettings, long count) {
+        tableSettings.setBank(tableSettings.getBank() + count);
     }
 
-    public void setActivePlayer(RoundSettings roundSettings, PlayerEntity player) {
+    public void setActivePlayer(TableSettings tableSettings, PlayerEntity player) {
         player.setActive(true);
-        roundSettings.setActivePlayer(player);
+        tableSettings.setActivePlayer(player);
     }
 
-    public void setInActivePlayer(RoundSettings roundSettings, PlayerEntity player) {
+    public void setInActivePlayer(TableSettings tableSettings, PlayerEntity player) {
         player.setActive(false);
-        roundSettings.setActivePlayer(null);
+        tableSettings.setActivePlayer(null);
     }
 
-    public void setLastBet(RoundSettings roundSettings, long count) {
-        roundSettings.setLastBet(count);
+    public void setLastBet(TableSettings tableSettings, long count) {
+        tableSettings.setLastBet(count);
     }
 
 }

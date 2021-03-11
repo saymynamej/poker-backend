@@ -33,6 +33,7 @@ public class HoldemSortService implements SortService {
         final Optional<PlayerEntity> bigBlind = getPlayerByRole(players, RoleType.BIG_BLIND);
         final Optional<PlayerEntity> smallBlind = getPlayerByRole(players, RoleType.SMALL_BLIND);
         final Optional<PlayerEntity> button = getPlayerByRole(players, RoleType.BUTTON);
+
         if (bigBlind.isEmpty() || smallBlind.isEmpty() || button.isEmpty()) {
             throw new RuntimeException("cannot find all roles for preflop");
         }

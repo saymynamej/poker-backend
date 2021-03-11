@@ -10,7 +10,7 @@ import ru.smn.poker.stream.PlayerPredicates;
 import java.util.List;
 import java.util.Map;
 
-public interface RoundSettings {
+public interface TableSettings {
 
     boolean isNotFirstMoveOnBigBlind();
 

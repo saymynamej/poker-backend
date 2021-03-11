@@ -4,19 +4,18 @@ import ru.smn.poker.action.Action;
 import ru.smn.poker.action.holdem.Call;
 import ru.smn.poker.action.holdem.Fold;
 import ru.smn.poker.action.holdem.Wait;
-import ru.smn.poker.dto.HoldemRoundSettings;
+import ru.smn.poker.dto.HoldemTableSettings;
 import ru.smn.poker.entities.CardEntity;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.*;
 import ru.smn.poker.util.PlayerUtil;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static ru.smn.poker.util.HistoryUtil.unionHistory;
-
-public class HoldemRoundSettingsManager implements RoundSettingsManager {
+public class HoldemTableSettingsManager implements TableSettingsManager {
     private final Random random;
     private final List<CardType> allCards;
     private final List<PlayerEntity> players;
@@ -27,35 +26,38 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
     private final long bigBlindBet;
     private final long smallBlindBet;
     private final long gameId;
+    private long bank;
+    private final Map<PlayerEntity, List<Action>> fullHistory = new ConcurrentHashMap<>();
 
-    public HoldemRoundSettingsManager(
+    private StageType stageType;
+
+    public HoldemTableSettingsManager(
             Random random,
-            RoundSettings roundSettings
+            TableSettings tableSettings
     ) {
         this.allCards = CardType.getAllCardsAsListWithFilter(
                 mergeCards(
-                        roundSettings.getFlop(),
-                        roundSettings.getTern(),
-                        roundSettings.getRiver(),
-                        roundSettings.getPlayers().stream()
+                        tableSettings.getFlop(),
+                        tableSettings.getTern(),
+                        tableSettings.getRiver(),
+                        tableSettings.getPlayers().stream()
                                 .flatMap(player -> player.getCards().stream())
                                 .map(CardEntity::getCardType)
                                 .collect(Collectors.toList())
                 )
         );
         this.random = random;
-        this.players = roundSettings.getPlayers();
-        flop = roundSettings.getFlop();
-        tern = roundSettings.getTern();
-        river = roundSettings.getRiver();
-        gameName = roundSettings.getGameName();
-        bigBlindBet = roundSettings.getBigBlindBet();
-        smallBlindBet = roundSettings.getSmallBlindBet();
-        gameId = roundSettings.getGameId();
-
+        this.players = tableSettings.getPlayers();
+        flop = tableSettings.getFlop();
+        tern = tableSettings.getTern();
+        river = tableSettings.getRiver();
+        gameName = tableSettings.getGameName();
+        bigBlindBet = tableSettings.getBigBlindBet();
+        smallBlindBet = tableSettings.getSmallBlindBet();
+        gameId = tableSettings.getGameId();
     }
 
-    public HoldemRoundSettingsManager(
+    public HoldemTableSettingsManager(
             Random random,
             List<PlayerEntity> players,
             String gameName,
@@ -81,37 +83,34 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
         setAllActivePlayers();
     }
 
+
     @Override
-    public RoundSettings getSettings(RoundSettings prevSettings) {
-        if (prevSettings == null || prevSettings.isFinished()) {
-            return getPreflopSettings();
-        }
-        switch (prevSettings.getStageType()) {
-            case PREFLOP:
-                return getPostFlopSettings(
-                        prevSettings.getBank(),
-                        prevSettings.getStageHistory(),
-                        prevSettings.getRoundId()
-                );
-            case FLOP:
-                return getPostFlopSettingsWithTern(prevSettings.getBank(), unionHistory(
-                        prevSettings.getStageHistory(),
-                        prevSettings.getFullHistory()),
-                        prevSettings.getRoundId()
-                );
-            case TERN:
-                return getPostFlopSettingsWithRiver(prevSettings.getBank(), unionHistory(
-                        prevSettings.getStageHistory(),
-                        prevSettings.getFullHistory()),
-                        prevSettings.getRoundId()
-                );
-            default:
-                throw new RuntimeException();
-        }
+    public void commit(TableSettings tableSettings) {
+        this.bank += tableSettings.getBank();
+//        mergeHistories(tableSettings);
     }
 
-    private RoundSettings getPreflopSettings() {
-        return HoldemRoundSettings.builder()
+    private void mergeHistories(TableSettings tableSettings) {
+        final Map<PlayerEntity, List<Action>> stageHistory = tableSettings.getStageHistory();
+        stageHistory.forEach((playerEntity, actions) -> fullHistory.merge(playerEntity, actions, (actions1, actions2) -> {
+            actions1.addAll(actions2);
+            return actions1;
+        }));
+    }
+
+    @Override
+    public TableSettings getSettings() {
+        if (this.stageType == null) {
+            this.stageType = StageType.PREFLOP;
+        }
+        final TableSettings currentSettings = stageType.getCurrentSettings(this);
+        this.stageType = stageType.getNextStage();
+        return currentSettings;
+    }
+
+    @Override
+    public TableSettings getPreflopSettings() {
+        return HoldemTableSettings.builder()
                 .gameName(gameName)
                 .bank(bigBlindBet + smallBlindBet)
                 .smallBlindBet(smallBlindBet)
@@ -124,25 +123,21 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .button(getPlayerByRole(RoleType.BUTTON).orElse(null))
                 .players(players)
                 .stageType(StageType.PREFLOP)
-                .stageHistory(setBlindsHistory())
+                .stageHistory(getBlindsHistory())
                 .lastBet(bigBlindBet)
                 .isFinished(false)
                 .build();
     }
 
-
-    private RoundSettings getPostFlopSettings(
-            long bank,
-            Map<PlayerEntity, List<Action>> prevHistory,
-            Long roundId
-    ) {
+    @Override
+    public TableSettings getFlopSettings() {
         setAllActivePlayersTest();
-        return HoldemRoundSettings.builder()
+        return HoldemTableSettings.builder()
                 .flop(flop)
                 .gameName(gameName)
                 .bank(bank)
                 .smallBlindBet(smallBlindBet)
-                .fullHistory(prevHistory)
+                .fullHistory(fullHistory)
                 .stageHistory(new HashMap<>())
                 .gameId(gameId)
                 .isAfk(false)
@@ -151,20 +146,16 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElse(null))
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElseThrow())
                 .players(players)
-                .roundId(roundId)
                 .lastBet(0L)
                 .isFinished(false)
                 .stageType(StageType.FLOP)
                 .build();
     }
 
-    private RoundSettings getPostFlopSettingsWithTern(
-            long bank,
-            Map<PlayerEntity, List<Action>> fullHistory,
-            Long roundId
-    ) {
+    @Override
+    public TableSettings getTernSettings() {
         setAllActivePlayersTest();
-        return HoldemRoundSettings.builder()
+        return HoldemTableSettings.builder()
                 .flop(flop)
                 .tern(tern)
                 .gameName(gameName)
@@ -174,7 +165,6 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .gameId(gameId)
                 .fullHistory(fullHistory)
                 .stageHistory(new HashMap<>())
-                .roundId(roundId)
                 .bigBlindBet(bigBlindBet)
                 .button(getPlayerByRole(RoleType.BUTTON).orElseThrow())
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElse(null))
@@ -186,14 +176,10 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .build();
     }
 
-
-    private RoundSettings getPostFlopSettingsWithRiver(
-            long bank,
-            Map<PlayerEntity, List<Action>> fullHistory,
-            Long roundId
-    ) {
+    @Override
+    public TableSettings getRiverSettings() {
         setAllActivePlayersTest();
-        return HoldemRoundSettings.builder()
+        return HoldemTableSettings.builder()
                 .flop(flop)
                 .tern(tern)
                 .fullHistory(fullHistory)
@@ -203,7 +189,6 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .lastBet(0L)
                 .isAfk(false)
                 .gameId(gameId)
-                .roundId(roundId)
                 .bank(bank)
                 .stageType(StageType.RIVER)
                 .smallBlindBet(smallBlindBet)
@@ -236,7 +221,6 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
         );
     }
 
-
     private CardType getRandomCard() {
         final int randomIntCard = getRandomIntCard();
         final CardType cardType = allCards.get(randomIntCard);
@@ -252,7 +236,6 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
         allCards.remove(randomIntCard);
     }
 
-
     private int getRandomPlayer() {
         return random.nextInt(players.size());
     }
@@ -260,7 +243,6 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
     private int getIndexOfSmallBlind() {
         return players.indexOf(getPlayerByRole(RoleType.SMALL_BLIND).orElseThrow(() -> new RuntimeException("cannot find small blind")));
     }
-
 
     private int getIndexOfButton() {
         return players.indexOf(getPlayerByRole(RoleType.BUTTON).orElseThrow(() -> new RuntimeException("cannot find button")));
@@ -293,7 +275,6 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
             player.setAction(new Wait());
         });
     }
-
 
     protected void setSmallBlind() {
         clearRole(RoleType.SMALL_BLIND);
@@ -334,7 +315,6 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
 
     }
 
-
     protected void setBigBlind() {
         clearRole(RoleType.BIG_BLIND);
         final int indexOfSmallBlind = getIndexOfSmallBlind();
@@ -361,7 +341,7 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
                 .findFirst();
     }
 
-    protected Map<PlayerEntity, List<Action>> setBlindsHistory() {
+    protected Map<PlayerEntity, List<Action>> getBlindsHistory() {
         final Map<PlayerEntity, List<Action>> history = new HashMap<>();
         final Optional<PlayerEntity> optionalSmallBlind = getPlayerByRole(RoleType.SMALL_BLIND);
         final Optional<PlayerEntity> optionalBigBlind = getPlayerByRole(RoleType.BIG_BLIND);
@@ -410,7 +390,6 @@ public class HoldemRoundSettingsManager implements RoundSettingsManager {
         return cards;
 
     }
-
 
     protected void setAllActivePlayersTest() {
         this.players.forEach(player -> {

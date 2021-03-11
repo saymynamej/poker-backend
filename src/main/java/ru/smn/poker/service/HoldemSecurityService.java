@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.Game;
-import ru.smn.poker.game.RoundSettings;
+import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.util.RoundSettingsUtil;
 
 import java.util.List;
@@ -36,8 +36,8 @@ public class HoldemSecurityService implements SecurityService {
     }
 
     @Override
-    public RoundSettings secureCards(List<String> filterName, RoundSettings roundSettings) {
-        return RoundSettingsUtil.copyWithSecureCard(roundSettings, filterName);
+    public TableSettings secureCards(List<String> filterName, TableSettings tableSettings) {
+        return RoundSettingsUtil.copyWithSecureCard(tableSettings, filterName);
     }
 
     @Override

@@ -4,31 +4,31 @@ import ru.smn.poker.action.ActionStrategy;
 import ru.smn.poker.action.CountAction;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.StageType;
-import ru.smn.poker.game.RoundSettings;
+import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.service.ActionService;
 import ru.smn.poker.service.GameService;
 
 public class CheckStrategy implements ActionStrategy {
 
     @Override
-    public void execute(PlayerEntity player, GameService gameService, ActionService actionService, CountAction countAction, RoundSettings roundSettings) {
-        if (isPreflopAndBigBlindCanCheck(roundSettings, player)) {
-            gameService.log(player, roundSettings, countAction);
+    public void execute(PlayerEntity player, GameService gameService, ActionService actionService, CountAction countAction, TableSettings tableSettings) {
+        if (isPreflopAndBigBlindCanCheck(tableSettings, player)) {
+            gameService.log(player, tableSettings, countAction);
             return;
         }
-        if (isPostFlopAndLastBetIsZero(roundSettings)) {
-            gameService.log(player, roundSettings, countAction);
+        if (isPostFlopAndLastBetIsZero(tableSettings)) {
+            gameService.log(player, tableSettings, countAction);
             return;
         }
-        actionService.waitPlayerAction(player, roundSettings);
+        actionService.waitPlayerAction(player, tableSettings);
     }
 
-    private boolean isPreflopAndBigBlindCanCheck(RoundSettings roundSettings, PlayerEntity player){
-        return roundSettings.getStageType() == StageType.PREFLOP && player.isBigBlind() && roundSettings.getBigBlindBet() == roundSettings.getLastBet();
+    private boolean isPreflopAndBigBlindCanCheck(TableSettings tableSettings, PlayerEntity player){
+        return tableSettings.getStageType() == StageType.PREFLOP && player.isBigBlind() && tableSettings.getBigBlindBet() == tableSettings.getLastBet();
     }
 
-    private boolean isPostFlopAndLastBetIsZero(RoundSettings roundSettings){
-        return roundSettings.getStageType() != StageType.PREFLOP && roundSettings.getLastBet() == 0;
+    private boolean isPostFlopAndLastBetIsZero(TableSettings tableSettings){
+        return tableSettings.getStageType() != StageType.PREFLOP && tableSettings.getLastBet() == 0;
     }
 
 }

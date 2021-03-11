@@ -13,7 +13,7 @@ import ru.smn.poker.enums.ActionType;
 import ru.smn.poker.enums.InformationType;
 import ru.smn.poker.enums.MessageType;
 import ru.smn.poker.game.Game;
-import ru.smn.poker.game.RoundSettings;
+import ru.smn.poker.game.TableSettings;
 
 import static java.lang.String.format;
 
@@ -39,9 +39,9 @@ public class SimpleActionService implements ActionService {
                 log.info(String.format(MessageType.SETTINGS_NOT_FOUND.getMessage(), playerName));
                 return;
             }
-            final RoundSettings roundSettings = game.getRoundSettings();
+            final TableSettings tableSettings = game.getRoundSettings();
             player.changeState();
-            securityNotificationService.sendToAllWithSecurity(roundSettings);
+            securityNotificationService.sendToAllWithSecurity(tableSettings);
             log.info(format(InformationType.CHANGED_STATE_TYPE_INFO.getMessage(), playerName, player.getStateType()));
         }
     }
@@ -63,31 +63,32 @@ public class SimpleActionService implements ActionService {
     }
 
     @Override
-    public void waitPlayerAction(PlayerEntity player, RoundSettings roundSettings) {
+    public void waitPlayerAction(PlayerEntity player, TableSettings tableSettings) {
         log.info("waiting action from player:" + player.getName());
         player.setWait();
-        gameService.setActivePlayer(roundSettings, player);
-        gameService.update(roundSettings);
-        securityNotificationService.sendToAllWithSecurity(roundSettings);
+        gameService.setActivePlayer(tableSettings, player);
+        gameService.update(tableSettings);
+        securityNotificationService.sendToAllWithSecurity(tableSettings);
         final ResultTime timer = simpleTimeBankService.activateTime(player);
+
         while (true) {
             if (player.isNotInGame()) {
                 break;
             }
             if (player.didAction()) {
                 simpleTimeBankService.cancel(timer, player);
-                doAction(player, roundSettings);
+                doAction(player, tableSettings);
                 break;
             }
         }
-        gameService.setInActivePlayer(roundSettings, player);
-        gameService.update(roundSettings);
+        gameService.setInActivePlayer(tableSettings, player);
+        gameService.update(tableSettings);
     }
 
-    public void doAction(PlayerEntity player, RoundSettings roundSettings) {
+    public void doAction(PlayerEntity player, TableSettings tableSettings) {
         final Action action = player.getAction();
         if (action instanceof ExecutableAction) {
-            ((ExecutableAction) action).doAction(roundSettings, player, gameService, this);
+            ((ExecutableAction) action).doAction(tableSettings, player, gameService, this);
             log.info("player: " + player.getName() + " did action:" + action);
         }
     }

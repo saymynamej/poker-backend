@@ -9,9 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.smn.poker.action.holdem.Call;
-import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.game.RoundSettings;
+import ru.smn.poker.game.TableSettings;
 
 import static ru.smn.poker.util.DTOUtilTest.*;
 
@@ -26,15 +25,15 @@ public class GameEntityServiceTest {
     @Test
     public void testDoAction(){
         final long countCall = 4;
-        final RoundSettings roundSettingsDTO = getRoundSettingsDTO();
+        final TableSettings tableSettingsDTO = getRoundSettingsDTO();
         final PlayerEntity player = getPlayer();
         final Call call = new Call(countCall);
-        gameService.doAction(player, roundSettingsDTO, call.getCount(), call.getCount());
+        gameService.doAction(player, tableSettingsDTO, call.getCount(), call.getCount());
         Assertions.assertEquals(DEFAULT_CHIPS_COUNT - call.getCount(), player.getChipsCount().getCount());
-        Assertions.assertEquals(call.getCount(), roundSettingsDTO.getLastBet());
+        Assertions.assertEquals(call.getCount(), tableSettingsDTO.getLastBet());
         Assertions.assertEquals(
-                call.getCount() + roundSettingsDTO.getBigBlindBet() + roundSettingsDTO.getSmallBlindBet(),
-                roundSettingsDTO.getBank()
+                call.getCount() + tableSettingsDTO.getBigBlindBet() + tableSettingsDTO.getSmallBlindBet(),
+                tableSettingsDTO.getBank()
         );
     }
 }

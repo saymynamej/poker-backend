@@ -1,9 +1,7 @@
 package ru.smn.poker.util;
 
 import com.github.javafaker.Faker;
-import ru.smn.poker.action.holdem.Wait;
-import ru.smn.poker.dto.Card;
-import ru.smn.poker.dto.HoldemRoundSettings;
+import ru.smn.poker.dto.HoldemTableSettings;
 import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.CardEntity;
 import ru.smn.poker.entities.ChipsCountEntity;
@@ -13,7 +11,7 @@ import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.RoleType;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.enums.StateType;
-import ru.smn.poker.game.RoundSettings;
+import ru.smn.poker.game.TableSettings;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,24 +29,24 @@ public class DTOUtilTest {
     public final static long DEFAULT_LAST_BET = DEFAULT_BIG_BLIND_BET;
     public final static int DEFAULT_PLAYERS_SIZE = 9;
 
-    public static RoundSettings getRoundSettingsDTO() {
+    public static TableSettings getRoundSettingsDTO() {
         return getRoundSettingsDTO(DEFAULT_LAST_BET, Collections.emptyList());
     }
 
-    public static RoundSettings getRoundSettingsDTOWithPlayers(int count) {
+    public static TableSettings getRoundSettingsDTOWithPlayers(int count) {
         return getRoundSettingsDTO(DEFAULT_LAST_BET, getPlayers(count));
     }
 
-    public static RoundSettings getRoundSettingsDTO(StageType stageType) {
+    public static TableSettings getRoundSettingsDTO(StageType stageType) {
         return getRoundSettingsDTO(DEFAULT_PLAYERS_SIZE, stageType);
     }
 
-    public static RoundSettings getRoundSettingsDTO(int countPlayers, StageType stageType) {
+    public static TableSettings getRoundSettingsDTO(int countPlayers, StageType stageType) {
         return getRoundSettingsDTO(DEFAULT_LAST_BET, stageType, getPlayers(countPlayers));
     }
 
-    public static RoundSettings getRoundSettingsDTO(long lastBet, StageType stageType, List<PlayerEntity> players) {
-        return HoldemRoundSettings.builder()
+    public static TableSettings getRoundSettingsDTO(long lastBet, StageType stageType, List<PlayerEntity> players) {
+        return HoldemTableSettings.builder()
                 .lastBet(lastBet)
                 .stageType(stageType)
                 .bigBlindBet(DEFAULT_BIG_BLIND_BET)
@@ -59,12 +57,12 @@ public class DTOUtilTest {
                 .build();
     }
 
-    public static RoundSettings getRoundSettingsDTO(long lastBet) {
+    public static TableSettings getRoundSettingsDTO(long lastBet) {
         return getRoundSettingsDTO(lastBet, Collections.emptyList());
     }
 
-    public static RoundSettings getRoundSettingsDTO(long lastBet, List<PlayerEntity> players) {
-        return HoldemRoundSettings.builder()
+    public static TableSettings getRoundSettingsDTO(long lastBet, List<PlayerEntity> players) {
+        return HoldemTableSettings.builder()
                 .lastBet(lastBet)
                 .bigBlindBet(DEFAULT_BIG_BLIND_BET)
                 .smallBlindBet(DEFAULT_SMALL_BLIND_BET)
