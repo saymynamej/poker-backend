@@ -19,7 +19,7 @@ public abstract class Game {
         this.table = table;
     }
 
-    public Table getRound() {
+    public Table getTable() {
         return this.table;
     }
 
@@ -66,6 +66,6 @@ public abstract class Game {
 
     public abstract void start();
 
-    public abstract TableSettings getRoundSettings();
+    public abstract TableSettings getTableSettings();
 
 }

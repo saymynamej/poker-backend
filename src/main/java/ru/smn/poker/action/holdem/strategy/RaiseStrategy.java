@@ -25,8 +25,7 @@ public class RaiseStrategy implements ActionStrategy {
         }
         final long prevBets = sumStageHistoryBets(tableSettings, player);
         changeActionForHistory(player, countAction, prevBets);
-        gameService.doAction(player, tableSettings, countAction.getCount() - prevBets, countAction.getCount());
-        gameService.log(player, tableSettings, countAction);
+        gameService.doAction(player, tableSettings, countAction.getCount() - prevBets, countAction.getCount(), countAction);
     }
 
     private void changeActionForHistory(PlayerEntity player, CountAction countAction, long prevBets) {

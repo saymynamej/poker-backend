@@ -4,10 +4,12 @@ import ru.smn.poker.action.Action;
 import ru.smn.poker.action.holdem.Call;
 import ru.smn.poker.action.holdem.Fold;
 import ru.smn.poker.action.holdem.Wait;
+import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.dto.HoldemTableSettings;
 import ru.smn.poker.entities.CardEntity;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.*;
+import ru.smn.poker.service.HandService;
 import ru.smn.poker.util.PlayerUtil;
 
 import java.util.*;
@@ -22,10 +24,9 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
     private final List<CardType> flop;
     private final CardType tern;
     private final CardType river;
-    private final String gameName;
-    private final long bigBlindBet;
-    private final long smallBlindBet;
-    private final long gameId;
+    private final GameSettings gameSettings;
+    private final HandService handService;
+    private long handId;
     private long bank;
     private final Map<PlayerEntity, List<Action>> fullHistory = new ConcurrentHashMap<>();
 
@@ -33,8 +34,10 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
 
     public HoldemTableSettingsManager(
             Random random,
-            TableSettings tableSettings
+            TableSettings tableSettings,
+            HandService handService
     ) {
+        this.handService = handService;
         this.allCards = CardType.getAllCardsAsListWithFilter(
                 mergeCards(
                         tableSettings.getFlop(),
@@ -51,19 +54,14 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
         flop = tableSettings.getFlop();
         tern = tableSettings.getTern();
         river = tableSettings.getRiver();
-        gameName = tableSettings.getGameName();
-        bigBlindBet = tableSettings.getBigBlindBet();
-        smallBlindBet = tableSettings.getSmallBlindBet();
-        gameId = tableSettings.getGameId();
+        this.gameSettings = null;
     }
 
     public HoldemTableSettingsManager(
             Random random,
             List<PlayerEntity> players,
-            String gameName,
-            Long bigBlindBet,
-            Long smallBlindBet,
-            Long gameId
+            GameSettings gameSettings,
+            HandService handService
     ) {
         this.random = random;
         this.allCards = CardType.getAllCardsAsList();
@@ -71,10 +69,9 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
         this.flop = setFlop();
         this.tern = getRandomCard();
         this.river = getRandomCard();
-        this.gameName = gameName;
-        this.bigBlindBet = bigBlindBet;
-        this.smallBlindBet = smallBlindBet;
-        this.gameId = gameId;
+        this.gameSettings = gameSettings;
+        this.handService = handService;
+        this.handId = handService.saveNewRound();
         setAllPlayersGameName();
         dealCards();
         setButton();
@@ -87,7 +84,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
     @Override
     public void commit(TableSettings tableSettings) {
         this.bank += tableSettings.getBank();
-//        mergeHistories(tableSettings);
+        mergeHistories(tableSettings);
     }
 
     private void mergeHistories(TableSettings tableSettings) {
@@ -105,27 +102,29 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
         }
         final TableSettings currentSettings = stageType.getCurrentSettings(this);
         this.stageType = stageType.getNextStage();
+
         return currentSettings;
     }
 
     @Override
     public TableSettings getPreflopSettings() {
         return HoldemTableSettings.builder()
-                .gameName(gameName)
-                .bank(bigBlindBet + smallBlindBet)
-                .smallBlindBet(smallBlindBet)
-                .bigBlindBet(bigBlindBet)
+                .gameName(gameSettings.getGameName())
+                .bank(gameSettings.getStartBigBlindBet() + gameSettings.getStartSmallBlindBet())
+                .smallBlindBet(gameSettings.getStartSmallBlindBet())
+                .bigBlindBet(gameSettings.getStartBigBlindBet())
                 .fullHistory(new HashMap<>())
                 .isAfk(false)
-                .gameId(gameId)
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElse(null))
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElse(null))
                 .button(getPlayerByRole(RoleType.BUTTON).orElse(null))
                 .players(players)
                 .stageType(StageType.PREFLOP)
                 .stageHistory(getBlindsHistory())
-                .lastBet(bigBlindBet)
+                .lastBet(gameSettings.getStartBigBlindBet())
+                .gameId(gameSettings.getGameId())
                 .isFinished(false)
+                .handId(handId)
                 .build();
     }
 
@@ -134,20 +133,21 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
         setAllActivePlayersTest();
         return HoldemTableSettings.builder()
                 .flop(flop)
-                .gameName(gameName)
+                .gameName(gameSettings.getGameName())
                 .bank(bank)
-                .smallBlindBet(smallBlindBet)
+                .smallBlindBet(gameSettings.getStartSmallBlindBet())
                 .fullHistory(fullHistory)
                 .stageHistory(new HashMap<>())
-                .gameId(gameId)
                 .isAfk(false)
-                .bigBlindBet(bigBlindBet)
+                .lastBet(gameSettings.getStartBigBlindBet())
                 .button(getPlayerByRole(RoleType.BUTTON).orElseThrow())
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElse(null))
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElseThrow())
                 .players(players)
                 .lastBet(0L)
+                .gameId(gameSettings.getGameId())
                 .isFinished(false)
+                .handId(handId)
                 .stageType(StageType.FLOP)
                 .build();
     }
@@ -158,19 +158,20 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
         return HoldemTableSettings.builder()
                 .flop(flop)
                 .tern(tern)
-                .gameName(gameName)
+                .gameName(gameSettings.getGameName())
                 .bank(bank)
-                .smallBlindBet(smallBlindBet)
+                .lastBet(gameSettings.getStartSmallBlindBet())
                 .isAfk(false)
-                .gameId(gameId)
                 .fullHistory(fullHistory)
                 .stageHistory(new HashMap<>())
-                .bigBlindBet(bigBlindBet)
+                .bigBlindBet(gameSettings.getStartBigBlindBet())
                 .button(getPlayerByRole(RoleType.BUTTON).orElseThrow())
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElse(null))
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElseThrow())
                 .stageType(StageType.TERN)
+                .gameId(gameSettings.getGameId())
                 .lastBet(0L)
+                .handId(handId)
                 .isFinished(false)
                 .players(players)
                 .build();
@@ -184,16 +185,17 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
                 .tern(tern)
                 .fullHistory(fullHistory)
                 .stageHistory(new HashMap<>())
-                .gameName(gameName)
+                .gameName(gameSettings.getGameName())
                 .river(river)
                 .lastBet(0L)
                 .isAfk(false)
-                .gameId(gameId)
                 .bank(bank)
+                .gameId(gameSettings.getGameId())
                 .stageType(StageType.RIVER)
-                .smallBlindBet(smallBlindBet)
-                .bigBlindBet(bigBlindBet)
+                .smallBlindBet(gameSettings.getStartSmallBlindBet())
+                .bigBlindBet(gameSettings.getStartBigBlindBet())
                 .isFinished(false)
+                .handId(handId)
                 .button(getPlayerByRole(RoleType.BUTTON).orElseThrow())
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElse(null))
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElseThrow())
@@ -202,7 +204,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
     }
 
     private void setAllPlayersGameName() {
-        players.forEach(player -> player.setGameName(gameName));
+        players.forEach(player -> player.setGameName(gameSettings.getGameName()));
     }
 
     private void dealCards() {
@@ -286,7 +288,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
         }
         smallBlind = players.get(indexOfSmallBlind);
         smallBlind.setRole(RoleType.SMALL_BLIND);
-        removeChipsFromPlayer(smallBlind, smallBlindBet);
+        removeChipsFromPlayer(smallBlind, gameSettings.getStartSmallBlindBet());
     }
 
     protected void setButton() {
@@ -320,7 +322,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
         final int indexOfSmallBlind = getIndexOfSmallBlind();
         PlayerEntity bigBlind = getPlayer(indexOfSmallBlind);
         bigBlind.setRole(RoleType.BIG_BLIND);
-        removeChipsFromPlayer(bigBlind, bigBlindBet);
+        removeChipsFromPlayer(bigBlind, gameSettings.getStartBigBlindBet());
     }
 
     protected void clearRole(RoleType roleType) {
@@ -353,9 +355,9 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
         final PlayerEntity bigBlind = optionalBigBlind.get();
         final PlayerEntity smallBlind = optionalSmallBlind.get();
         final List<Action> forBigBlind = new ArrayList<>();
-        forBigBlind.add(new Call(bigBlindBet));
+        forBigBlind.add(new Call(gameSettings.getStartBigBlindBet()));
         final List<Action> forSmallBlind = new ArrayList<>();
-        forSmallBlind.add(new Call(smallBlindBet));
+        forSmallBlind.add(new Call(gameSettings.getStartSmallBlindBet()));
         history.put(bigBlind, forBigBlind);
         history.put(smallBlind, forSmallBlind);
         return history;
@@ -366,11 +368,11 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
     }
 
     protected long getBigBlindBet() {
-        return bigBlindBet;
+        return gameSettings.getStartBigBlindBet();
     }
 
     protected long getSmallBlindBet() {
-        return smallBlindBet;
+        return gameSettings.getStartSmallBlindBet();
     }
 
     private List<CardType> mergeCards(List<CardType> flop, CardType tern, CardType river, List<CardType> playerCards) {

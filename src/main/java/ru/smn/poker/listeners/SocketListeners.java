@@ -40,7 +40,7 @@ public class SocketListeners {
                 if (player.getGameName() != null) {
                     final Game game = games.get(player.getGameName());
 
-                    final TableSettings tableSettings = game.getRoundSettings();
+                    final TableSettings tableSettings = game.getTableSettings();
 
                     final TableSettings securedTableSettings = securityService.secureCards(
                             List.of(user.getName()),

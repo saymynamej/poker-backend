@@ -7,12 +7,11 @@ import ru.smn.poker.action.Action;
 import ru.smn.poker.action.ExecutableAction;
 import ru.smn.poker.entities.ActionEntity;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.entities.RoundEntity;
-import ru.smn.poker.enums.ActionType;
+import ru.smn.poker.entities.HandEntity;
 import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.repository.ActionRepository;
 import ru.smn.poker.repository.PlayerRepository;
-import ru.smn.poker.repository.RoundRepository;
+import ru.smn.poker.repository.HandRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,34 +21,7 @@ import java.util.Optional;
 public class ActionLogService {
     private final ActionRepository actionRepository;
     private final PlayerRepository playerRepository;
-    private final RoundRepository roundRepository;
-
-    public void logBlinds(TableSettings tableSettings) {
-        final RoundEntity roundEntity = roundRepository.findById(tableSettings.getRoundId()).orElseThrow();
-
-        final boolean isLoggedBlind = roundEntity.getActions().stream()
-                .anyMatch(actionEntity -> actionEntity.getActionType() == ActionType.BB_BET);
-
-        if (!isLoggedBlind) {
-            final ActionEntity sbAction = ActionEntity.builder()
-                    .count(tableSettings.getSmallBlindBet())
-                    .stageType(roundEntity.getStageType())
-                    .player(roundEntity.getSmallBlind() == null ? roundEntity.getButton() : roundEntity.getSmallBlind())
-                    .actionType(roundEntity.getSmallBlind() == null ? ActionType.BUTTON_BET : ActionType.SB_BET)
-                    .round(roundEntity)
-                    .build();
-
-            final ActionEntity bbAction = ActionEntity.builder()
-                    .count(tableSettings.getBigBlindBet())
-                    .player(roundEntity.getBigBlind())
-                    .stageType(roundEntity.getStageType())
-                    .actionType(ActionType.BB_BET)
-                    .round(roundEntity)
-                    .build();
-
-            saveAll(List.of(sbAction, bbAction));
-        }
-    }
+    private final HandRepository handRepository;
 
     @Transactional
     public void log(PlayerEntity player, Action action, TableSettings tableSettings) {
@@ -57,11 +29,15 @@ public class ActionLogService {
 
         final Optional<PlayerEntity> optionalPlayerEntity = playerRepository.findById(player.getId());
 
-        final Optional<RoundEntity> optionalRoundEntity = roundRepository.findById(tableSettings.getRoundId());
+        final Optional<HandEntity> optionalRoundEntity = handRepository.findById(tableSettings.getHandId());
+
+        if (optionalRoundEntity.isEmpty()){
+            throw new RuntimeException("cannot find");
+        }
 
         save(ActionEntity.builder()
                 .count(count)
-                .round(optionalRoundEntity.orElseThrow())
+                .hand(optionalRoundEntity.orElseThrow())
                 .actionType(action.getActionType())
                 .stageType(tableSettings.getStageType())
                 .player(optionalPlayerEntity.orElseThrow())

@@ -1,6 +1,8 @@
 package ru.smn.poker.game;
 
+import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.entities.PlayerEntity;
+import ru.smn.poker.service.HandService;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -13,20 +15,9 @@ public class HoldemRoundSettingsManagerFactory {
 
     public static TableSettingsManager getManager(
             List<PlayerEntity> players,
-            String gameName,
-            long bigBlindBet,
-            long smallBlindBet,
-            long gameId
+            GameSettings gameSettings,
+            HandService handService
     ) {
-        return new HoldemTableSettingsManagerHU(random, new ArrayList<>(players), gameName, bigBlindBet, smallBlindBet, gameId);
-
-    }
-
-    public static TableSettingsManager getManager(
-            TableSettings tableSettings
-    ) {
-        return tableSettings.getPlayers().size() > 2
-                ? new HoldemTableSettingsManager(random, tableSettings)
-                : new HoldemTableSettingsManagerHU(random, tableSettings);
+        return new HoldemTableSettingsManagerHU(random, new ArrayList<>(players), gameSettings, handService);
     }
 }

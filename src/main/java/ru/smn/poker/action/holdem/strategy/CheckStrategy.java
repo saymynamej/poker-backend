@@ -12,12 +12,8 @@ public class CheckStrategy implements ActionStrategy {
 
     @Override
     public void execute(PlayerEntity player, GameService gameService, ActionService actionService, CountAction countAction, TableSettings tableSettings) {
-        if (isPreflopAndBigBlindCanCheck(tableSettings, player)) {
-            gameService.log(player, tableSettings, countAction);
-            return;
-        }
-        if (isPostFlopAndLastBetIsZero(tableSettings)) {
-            gameService.log(player, tableSettings, countAction);
+        if (isPreflopAndBigBlindCanCheck(tableSettings, player) || isPostFlopAndLastBetIsZero(tableSettings)) {
+            gameService.doAction(player,tableSettings,0,tableSettings.getLastBet(), countAction);
             return;
         }
         actionService.waitPlayerAction(player, tableSettings);

@@ -34,11 +34,10 @@ public class HoldemTableSettings implements TableSettings {
     private final StageType stageType;
     private Long lastBet;
     private long bank;
-    private Long roundId;
+    private Long handId;
     private PlayerEntity activePlayer;
     private boolean isAfk;
     private boolean isFinished;
-
 
     public boolean isNotFirstMoveOnBigBlind(){
         return bigBlind.isNotFirstMoveOnBigBlind();

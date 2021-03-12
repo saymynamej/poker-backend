@@ -28,7 +28,7 @@ public class GameEntityServiceTest {
         final TableSettings tableSettingsDTO = getRoundSettingsDTO();
         final PlayerEntity player = getPlayer();
         final Call call = new Call(countCall);
-        gameService.doAction(player, tableSettingsDTO, call.getCount(), call.getCount());
+        gameService.doAction(player, tableSettingsDTO, call.getCount(), call.getCount(), this);
         Assertions.assertEquals(DEFAULT_CHIPS_COUNT - call.getCount(), player.getChipsCount().getCount());
         Assertions.assertEquals(call.getCount(), tableSettingsDTO.getLastBet());
         Assertions.assertEquals(

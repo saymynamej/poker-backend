@@ -15,8 +15,9 @@ import static ru.smn.poker.util.HistoryUtil.sumBets;
 
 @RequiredArgsConstructor
 @Service
-public class SimplerPrizeService implements PrizeService {
+public class SimplePrizeService implements PrizeService {
     private final WinnerService winnerService;
+    private final GameService gameService;
 
     @Override
     public void sendPrizes(TableSettings tableSettings) {
@@ -27,6 +28,7 @@ public class SimplerPrizeService implements PrizeService {
         }
         final List<PlayerCombination> winners = winnerService.findWinners(tableSettings);
         calculate(winners, tableSettings);
+        gameService.update(tableSettings);
     }
 
     private void calculate(List<PlayerCombination> winners, TableSettings tableSettings) {

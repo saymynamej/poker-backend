@@ -1,12 +1,16 @@
 package ru.smn.poker.config.game.holdem;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.enums.GameType;
 
 @RequiredArgsConstructor
 @Component
+@Getter
+@Setter
 public class HoldemHUTableSettings implements GameSettings {
 
     private final static int MAX_PLAYERS_SIZE = 2;
@@ -20,6 +24,10 @@ public class HoldemHUTableSettings implements GameSettings {
     private final static int MIN_BIG_BLIND_BET = 2;
 
     private final GameType gameType = GameType.HOLDEM_HU;
+
+    private String gameName;
+
+    private Long gameId;
 
     @Override
     public int getMaxPlayerSize() {

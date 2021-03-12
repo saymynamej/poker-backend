@@ -31,7 +31,7 @@ public class ActionEntity {
     private StageType stageType;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "round_id")
-    private RoundEntity round;
+    @JoinColumn(name = "hand_id")
+    private HandEntity hand;
 
 }

@@ -28,9 +28,6 @@ public class BootStrapGames {
     @PostConstruct
     public void init2() {
         gameManagementService.create(2, 5000L, GameType.HOLDEM_HU);
-
-//        gameManagementService.createEmptyGame(GameType.HOLDEM_HU);
-
     }
 
 

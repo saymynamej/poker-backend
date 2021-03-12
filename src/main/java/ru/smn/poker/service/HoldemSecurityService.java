@@ -20,8 +20,8 @@ public class HoldemSecurityService implements SecurityService {
     @Override
     public boolean isLegalPlayer(String gameName, PlayerEntity player) {
         final Game game = holdemGameDataService.getGameByName(gameName);
-        if (player != null && game.getRoundSettings() != null && game.getRoundSettings().getActivePlayer() != null) {
-            return game.getRoundSettings()
+        if (player != null && game.getTableSettings() != null && game.getTableSettings().getActivePlayer() != null) {
+            return game.getTableSettings()
                     .getActivePlayer()
                     .equals(player);
         }

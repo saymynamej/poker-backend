@@ -11,6 +11,6 @@ public class FoldStrategy implements ActionStrategy {
 
     @Override
     public void execute(PlayerEntity player, GameService gameService, ActionService actionService, CountAction countAction, TableSettings tableSettings) {
-        gameService.log(player, tableSettings, countAction);
+        gameService.doAction(player, tableSettings, 0, tableSettings.getLastBet(), countAction);
     }
 }

@@ -24,34 +24,6 @@ public class RoundSettingsUtil {
         return copy(tableSettings, playersWithSecureCards);
     }
 
-    public static void substituteCardsForPlayer(TableSettings tableSettings, GameEntity gameEntity){
-        if (tableSettings.getStageType() == StageType.PREFLOP) {
-            for (final PlayerEntity player : tableSettings.getPlayers()) {
-                final PlayerEntity playerEntity = gameEntity.getPlayers().stream()
-                        .filter(pe -> pe.getName().equals(player.getName()))
-                        .findFirst()
-                        .orElseThrow();
-
-                final List<CardEntity> cards = new ArrayList<>();
-                for (CardEntity card : player.getSettings().getCards()) {
-                    final CardEntity finalCard = card;
-                    final CardEntity cardEntity = playerEntity.getSettings().getCards()
-                            .stream()
-                            .filter(ce -> ce.getCardType()
-                                    .equals(finalCard.getCardType()))
-                            .findFirst()
-                            .orElseThrow();
-
-                    cards.add(CardEntity.builder()
-                            .id(cardEntity.getId())
-                            .cardType(cardEntity.getCardType())
-                            .build());
-                }
-                player.getSettings().setCards(cards);
-            }
-        }
-    }
-
     public static TableSettings copy(TableSettings tableSettings, List<PlayerEntity> players) {
         return HoldemTableSettings.builder()
                 .gameName(tableSettings.getGameName())

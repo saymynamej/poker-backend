@@ -14,8 +14,7 @@ public class BetStrategy implements ActionStrategy {
         if (canNotDoBet(tableSettings, countAction)) {
             actionService.waitPlayerAction(player, tableSettings);
         }
-        gameService.doAction(player, tableSettings, countAction.getCount(), countAction.getCount());
-        gameService.log(player, tableSettings, countAction);
+        gameService.doAction(player, tableSettings, countAction.getCount(), countAction.getCount(), countAction);
     }
 
     public boolean canNotDoBet(TableSettings tableSettings, CountAction countAction){

@@ -24,8 +24,7 @@ public class CallStrategy implements ActionStrategy {
             return;
         }
 
-        gameService.doAction(player, tableSettings, countAction.getCount(), bets);
-        gameService.log(player, tableSettings, countAction);
+        gameService.doAction(player, tableSettings, countAction.getCount(), bets, countAction);
     }
 
     private boolean allBetsNotEqualsLastBet(long allBets, long lastBet){

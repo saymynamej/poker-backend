@@ -3,10 +3,10 @@ package ru.smn.poker.game;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.enums.StageType;
 import ru.smn.poker.enums.StateType;
-import ru.smn.poker.service.GameService;
+import ru.smn.poker.service.HandService;
 import ru.smn.poker.service.OrderService;
 import ru.smn.poker.service.PrizeService;
 
@@ -17,13 +17,10 @@ import java.util.List;
 @Slf4j
 public class HoldemTable implements Table {
     private final List<PlayerEntity> players;
-    private final String gameName;
     private final OrderService orderService;
     private final PrizeService prizeService;
-    private final GameService gameService;
-    private final long smallBlindBet;
-    private final long bigBlindBet;
-    private final long gameId;
+    private final GameSettings gameSettings;
+    private final HandService handService;
     private TableSettings settings;
 
     @Override
@@ -39,7 +36,6 @@ public class HoldemTable implements Table {
                 tableSettingsManager.commit(settings);
             }
             prizeService.sendPrizes(settings);
-//            gameService.update(settings);
         }
     }
 
@@ -50,10 +46,8 @@ public class HoldemTable implements Table {
     private TableSettingsManager getTableSettingsManager() {
         return HoldemRoundSettingsManagerFactory.getManager(
                 players,
-                gameName,
-                bigBlindBet,
-                smallBlindBet,
-                gameId
+                gameSettings,
+                handService
         );
     }
 
@@ -68,7 +62,7 @@ public class HoldemTable implements Table {
 
     @Override
     public String getGameName() {
-        return this.gameName;
+        return this.gameSettings.getGameName();
     }
 
     @Override

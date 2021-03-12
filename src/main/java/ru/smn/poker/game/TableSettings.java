@@ -46,9 +46,9 @@ public interface TableSettings {
 
     long getBank();
 
-    Long getRoundId();
+    Long getHandId();
 
-    void setRoundId(Long id);
+    void setHandId(Long id);
 
     PlayerEntity getActivePlayer();
 

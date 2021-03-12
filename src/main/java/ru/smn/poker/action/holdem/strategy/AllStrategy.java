@@ -12,7 +12,13 @@ import static ru.smn.poker.util.HistoryUtil.sumAllHistoryBetsWithNewAction;
 public class AllStrategy implements ActionStrategy {
 
     @Override
-    public void execute(PlayerEntity player, GameService gameService, ActionService actionService, CountAction countAction, TableSettings tableSettings) {
+    public void execute(
+            PlayerEntity player,
+            GameService gameService,
+            ActionService actionService,
+            CountAction countAction,
+            TableSettings tableSettings
+    ) {
         if (countActionNotEqualsChipsCount(countAction, player)) {
             actionService.waitPlayerAction(player, tableSettings);
             return;
@@ -20,12 +26,16 @@ public class AllStrategy implements ActionStrategy {
 
         final long allBets = sumAllHistoryBetsWithNewAction(tableSettings, player, countAction);
         if (allBetsMoreThanLastBet(allBets, tableSettings.getLastBet())) {
-            gameService.doAction(player, tableSettings, countAction.getCount(), allBets);
-            gameService.log(player, tableSettings, countAction);
+            gameService.doAction(
+                    player,
+                    tableSettings,
+                    countAction.getCount(),
+                    allBets,
+                    countAction
+            );
             return;
         }
-        gameService.doAction(player, tableSettings, countAction.getCount(), tableSettings.getLastBet());
-        gameService.log(player, tableSettings, countAction);
+        gameService.doAction(player, tableSettings, countAction.getCount(), tableSettings.getLastBet(), countAction);
     }
 
     private boolean allBetsMoreThanLastBet(long allBets, long lastBet) {

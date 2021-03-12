@@ -14,18 +14,18 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "rounds")
+@Table(name = "hands")
 @EqualsAndHashCode(of = "id")
-public class RoundEntity {
+public class HandEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "game_id")
-    private GameEntity game;
+    @JoinColumn(name = "table_id")
+    private TableEntity table;
 
-    @OneToMany(mappedBy = "round", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "hand", cascade = CascadeType.ALL)
     private List<ActionEntity> actions;
 
     private long lastBet;

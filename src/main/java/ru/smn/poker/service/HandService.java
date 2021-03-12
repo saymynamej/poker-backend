@@ -1,0 +1,16 @@
+package ru.smn.poker.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import ru.smn.poker.entities.HandEntity;
+import ru.smn.poker.repository.HandRepository;
+
+@Service
+@RequiredArgsConstructor
+public class HandService {
+    private final HandRepository handRepository;
+
+    public Long saveNewRound(){
+        return handRepository.save(new HandEntity()).getId();
+    }
+}

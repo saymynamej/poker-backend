@@ -2,8 +2,10 @@ package ru.smn.poker.game;
 
 import ru.smn.poker.action.Action;
 import ru.smn.poker.action.holdem.Call;
+import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.RoleType;
+import ru.smn.poker.service.HandService;
 
 import java.util.*;
 
@@ -12,16 +14,10 @@ public class HoldemTableSettingsManagerHU extends HoldemTableSettingsManager {
     public HoldemTableSettingsManagerHU(
             Random random,
             List<PlayerEntity> players,
-            String gameName,
-            long bigBlindBet,
-            long smallBlindBet,
-            long gameId
+            GameSettings gameSettings,
+            HandService handService
     ) {
-        super(random, players, gameName, bigBlindBet, smallBlindBet, gameId);
-    }
-
-    public HoldemTableSettingsManagerHU(Random random, TableSettings tableSettings) {
-        super(random, tableSettings);
+        super(random, players, gameSettings, handService);
     }
 
     @Override

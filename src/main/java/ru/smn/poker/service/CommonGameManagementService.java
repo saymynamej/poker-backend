@@ -36,6 +36,7 @@ public class CommonGameManagementService implements GameManagementService {
     private final PrizeService prizeService;
     private final PasswordEncoder passwordEncoder;
     private final RandomNameService randomNameService;
+    private final HandService handService;
 
     @Override
     public void create(int countOfPlayers, long defaultChipsCount, GameType gameType) {
@@ -52,85 +53,8 @@ public class CommonGameManagementService implements GameManagementService {
                 .build()).collect(Collectors.toList());
 
         final Game game = create(defaultChipsCount, gameType, randomName, players);
-
         run(game);
     }
-
-
-    @Transactional(readOnly = true)
-    @Override
-    public void restoreAll() {
-        final List<GameEntity> games = gameService.findAll();
-
-        for (GameEntity gameEntity : games) {
-            final Optional<RoundEntity> isNotFinishedRound = gameEntity.getRounds()
-                    .stream()
-                    .filter(roundEntity -> !roundEntity.isFinished())
-                    .findFirst();
-
-            if (isNotFinishedRound.isEmpty()) {
-                run(gameEntity);
-                return;
-            }
-
-            final RoundEntity roundEntity = isNotFinishedRound.get();
-
-            final Map<PlayerEntity, List<Action>> allActions = roundEntity.getActions().stream()
-                    .collect(Collectors.groupingBy(ActionEntity::getPlayer)).entrySet()
-                    .stream()
-                    .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
-                            .map(actionEntity -> ActionType.getActionByType(actionEntity.getActionType(), actionEntity.getCount()))
-                            .collect(Collectors.toList())));
-
-            final Map<PlayerEntity, List<Action>> stageActions = roundEntity.getActions().stream()
-                    .filter(actionEntity -> actionEntity.getStageType() == roundEntity.getStageType())
-                    .collect(Collectors.groupingBy(ActionEntity::getPlayer)).entrySet()
-                    .stream()
-                    .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
-                            .map(actionEntity -> ActionType.getActionByType(actionEntity.getActionType(), actionEntity.getCount()))
-                            .collect(Collectors.toList())));
-
-            stageActions.forEach((player, action) -> {
-                final boolean playerHasOnlyBlindBet = action.size() == 1 && roundEntity.getStageType() == StageType.PREFLOP;
-                if (action.isEmpty() || playerHasOnlyBlindBet) {
-                    player.setAction(new Wait());
-                } else {
-                    player.setAction(action.get(action.size() - 1));
-                }
-            });
-
-            final TableSettings tableSettings = HoldemTableSettings.builder()
-                    .roundId(roundEntity.getId())
-                    .players(gameEntity.getPlayers())
-                    .activePlayer(roundEntity.getActivePlayer())
-                    .bigBlind(roundEntity.getBigBlind())
-                    .smallBlind(roundEntity.getSmallBlind())
-                    .bigBlindBet(roundEntity.getBigBlindBet())
-                    .button(roundEntity.getButton())
-                    .flop(roundEntity.getF1() == null ? null : List.of(
-                            roundEntity.getF1(),
-                            roundEntity.getF2(),
-                            roundEntity.getF3()))
-                    .gameId(gameEntity.getId())
-                    .gameName(gameEntity.getName())
-                    .isFinished(roundEntity.isFinished())
-                    .lastBet(roundEntity.getLastBet())
-                    .river(roundEntity.getRiver())
-                    .smallBlindBet(roundEntity.getSmallBlindBet())
-                    .stageType(roundEntity.getStageType())
-                    .tern(roundEntity.getTern())
-                    .fullHistory(allActions)
-                    .stageHistory(stageActions)
-                    .isAfk(false)
-                    .bank(roundEntity.getBank())
-                    .build();
-
-            final Game game = convert(gameEntity, tableSettings);
-
-            run(game);
-        }
-    }
-
 
     @Override
     public void run(GameEntity gameEntity) {
@@ -143,8 +67,14 @@ public class CommonGameManagementService implements GameManagementService {
         saveInCache(game);
         runnableGames.computeIfAbsent(game, game2 -> {
             final ExecutorService executorService = Executors.newSingleThreadExecutor();
-            final boolean isRestore = game.getRoundSettings() != null;
-            executorService.submit(game::start);
+            final boolean isRestore = game.getTableSettings() != null;
+            executorService.submit(() -> {
+                try {
+                    game.start();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
             if (isRestore) {
                 log.info("game was restored: " + game.getGameName());
             } else {
@@ -175,9 +105,6 @@ public class CommonGameManagementService implements GameManagementService {
     public void createEmptyGame(GameType gameType) {
         final GameEntity emptyGame = GameEntity.builder()
                 .gameType(gameType)
-                .rounds(new ArrayList<>())
-                .counts(new ArrayList<>())
-                .players(new ArrayList<>())
                 .name(randomNameService.getRandomName())
                 .build();
 
@@ -195,40 +122,18 @@ public class CommonGameManagementService implements GameManagementService {
         return !games.containsKey(gameName);
     }
 
-    private Game convert(GameEntity gameEntity, TableSettings tableSettings) {
-        final GameSettings gameSettings = mapSettings.get(gameEntity.getGameType());
-
-        final Table table = new HoldemTable(
-                gameEntity.getPlayers(),
-                gameEntity.getName(),
-                orderService,
-                prizeService,
-                gameService,
-                gameSettings.getStartSmallBlindBet(),
-                gameSettings.getStartBigBlindBet(),
-                gameEntity.getId(),
-                tableSettings
-        );
-
-        return new HoldemGame(
-                gameSettings,
-                table
-        );
-
-    }
-
     private Game convert(GameEntity gameEntity) {
         final GameSettings gameSettings = mapSettings.get(gameEntity.getGameType());
 
+        gameSettings.setGameName(randomNameService.getRandomName());
+        gameSettings.setGameId(gameEntity.getId());
+
         final Table table = new HoldemTable(
-                gameEntity.getPlayers(),
-                gameEntity.getName(),
+                gameEntity.getTables().get(0).getPlayers(),
                 orderService,
                 prizeService,
-                gameService,
-                gameSettings.getStartSmallBlindBet(),
-                gameSettings.getStartBigBlindBet(),
-                gameEntity.getId()
+                gameSettings,
+                handService
         );
 
         return new HoldemGame(
@@ -241,9 +146,10 @@ public class CommonGameManagementService implements GameManagementService {
         final GameEntity gameEntity = GameEntity.builder()
                 .gameType(gameType)
                 .name(randomName)
+                .build();
+
+        final TableEntity tableEntity = TableEntity.builder()
                 .players(players)
-                .counts(Collections.emptyList())
-                .rounds(Collections.emptyList())
                 .build();
 
         players.forEach(playerEntity -> {
@@ -253,6 +159,8 @@ public class CommonGameManagementService implements GameManagementService {
                     .count(defaultChipsCount)
                     .build());
         });
+
+        gameEntity.setTables(Collections.singletonList(tableEntity));
 
         final GameEntity gameEntityFromBase = gameService.saveGame(gameEntity);
 

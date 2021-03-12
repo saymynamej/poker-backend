@@ -10,11 +10,11 @@ public class HoldemGame extends Game {
 
     @Override
     public void start() {
-        getRound().start();
+        getTable().start();
     }
 
     @Override
-    public TableSettings getRoundSettings() {
-        return getRound().getTableSettings();
+    public TableSettings getTableSettings() {
+        return getTable().getTableSettings();
     }
 }

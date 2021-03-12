@@ -2,7 +2,10 @@ package ru.smn.poker.converter;
 
 import ru.smn.poker.dto.Game;
 import ru.smn.poker.entities.GameEntity;
+import ru.smn.poker.entities.TableEntity;
 import ru.smn.poker.game.TableSettings;
+
+import java.util.Collections;
 
 
 public class GameConverter {
@@ -13,7 +16,7 @@ public class GameConverter {
                         .gameType(game.getGameSettings().getGameType())
                         .players(game.getPlayers())
                         .build(),
-                game.getRoundSettings());
+                game.getTableSettings());
     }
 
     public static GameEntity toEntity(Game game, TableSettings tableSettings) {
@@ -22,11 +25,16 @@ public class GameConverter {
                 .name(game.getGameName())
                 .build();
 
+        TableEntity tableEntity = TableEntity.builder()
+                .players(game.getPlayers())
+                .build();
+
         if (game.getId() != null) {
             gameEntity.setId(game.getId());
         }
 
-        gameEntity.setPlayers(game.getPlayers());
+        gameEntity.setTables(Collections.singletonList(tableEntity));
+
 
 
         return gameEntity;

@@ -35,11 +35,11 @@ public class SimpleActionService implements ActionService {
 
         if (player.hasGame()) {
             final Game game = holdemGameDataService.getGameByName(player.getGameName());
-            if (game.getRoundSettings() == null) {
+            if (game.getTableSettings() == null) {
                 log.info(String.format(MessageType.SETTINGS_NOT_FOUND.getMessage(), playerName));
                 return;
             }
-            final TableSettings tableSettings = game.getRoundSettings();
+            final TableSettings tableSettings = game.getTableSettings();
             player.changeState();
             securityNotificationService.sendToAllWithSecurity(tableSettings);
             log.info(format(InformationType.CHANGED_STATE_TYPE_INFO.getMessage(), playerName, player.getStateType()));
@@ -67,7 +67,6 @@ public class SimpleActionService implements ActionService {
         log.info("waiting action from player:" + player.getName());
         player.setWait();
         gameService.setActivePlayer(tableSettings, player);
-        gameService.update(tableSettings);
         securityNotificationService.sendToAllWithSecurity(tableSettings);
         final ResultTime timer = simpleTimeBankService.activateTime(player);
 
@@ -82,7 +81,6 @@ public class SimpleActionService implements ActionService {
             }
         }
         gameService.setInActivePlayer(tableSettings, player);
-        gameService.update(tableSettings);
     }
 
     public void doAction(PlayerEntity player, TableSettings tableSettings) {

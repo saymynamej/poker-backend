@@ -9,7 +9,6 @@ import java.util.List;
 
 public interface GameManagementService {
 
-
     void createEmptyGame(GameType gameType);
 
     void create(List<PlayerEntity> players,
@@ -25,5 +24,4 @@ public interface GameManagementService {
 
     void addListener(Runnable runnable);
 
-    void restoreAll();
 }

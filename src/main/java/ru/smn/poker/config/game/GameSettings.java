@@ -14,4 +14,14 @@ public interface GameSettings {
     long getStartBigBlindBet();
 
     GameType getGameType();
+
+    Long getGameId();
+
+    String getGameName();
+
+    void setGameName(String gameName);
+
+    void setGameId(Long gameId);
+
+
 }

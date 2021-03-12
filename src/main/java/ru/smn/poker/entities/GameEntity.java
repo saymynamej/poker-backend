@@ -4,6 +4,7 @@ import lombok.*;
 import ru.smn.poker.enums.GameType;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -24,13 +25,7 @@ public class GameEntity {
 
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "player_id")
-    private List<PlayerEntity> players;
+    @OneToMany(mappedBy = "gameEntity")
+    private List<TableEntity> tables;
 
-    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
-    private List<RoundEntity> rounds;
-
-    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL)
-    private List<ChipsCountEntity> counts;
 }
