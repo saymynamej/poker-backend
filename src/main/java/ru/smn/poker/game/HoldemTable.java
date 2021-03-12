@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.StateType;
-import ru.smn.poker.service.HandService;
-import ru.smn.poker.service.OrderService;
+import ru.smn.poker.service.common.HandService;
+import ru.smn.poker.service.OrderActionService;
 import ru.smn.poker.service.PrizeService;
 
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
 @Slf4j
 public class HoldemTable implements Table {
     private final List<PlayerEntity> players;
-    private final OrderService orderService;
+    private final OrderActionService orderActionService;
     private final PrizeService prizeService;
     private final GameSettings gameSettings;
     private final HandService handService;
@@ -30,7 +30,7 @@ public class HoldemTable implements Table {
             final TableSettingsManager tableSettingsManager = getTableSettingsManager();
             while (true) {
                 this.settings = tableSettingsManager.getSettings();
-                if (orderService.start(settings)) {
+                if (orderActionService.start(settings)) {
                     break;
                 }
                 tableSettingsManager.commit(settings);

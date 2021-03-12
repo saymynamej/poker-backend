@@ -5,7 +5,7 @@ import ru.smn.poker.action.holdem.Call;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.RoleType;
-import ru.smn.poker.service.HandService;
+import ru.smn.poker.service.common.HandService;
 
 import java.util.*;
 

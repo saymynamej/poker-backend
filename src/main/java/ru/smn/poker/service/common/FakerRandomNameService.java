@@ -1,7 +1,8 @@
-package ru.smn.poker.service;
+package ru.smn.poker.service.common;
 
 import com.github.javafaker.Faker;
 import org.springframework.stereotype.Service;
+import ru.smn.poker.service.RandomNameService;
 
 import java.util.HashSet;
 import java.util.Set;

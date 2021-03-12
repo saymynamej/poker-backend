@@ -6,7 +6,7 @@ import ru.smn.poker.action.holdem.Raise;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.service.ActionService;
-import ru.smn.poker.service.GameService;
+import ru.smn.poker.service.common.GameService;
 
 import static ru.smn.poker.util.HistoryUtil.sumStageHistoryBets;
 

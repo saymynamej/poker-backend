@@ -9,7 +9,7 @@ import ru.smn.poker.dto.HoldemTableSettings;
 import ru.smn.poker.entities.CardEntity;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.*;
-import ru.smn.poker.service.HandService;
+import ru.smn.poker.service.common.HandService;
 import ru.smn.poker.util.PlayerUtil;
 
 import java.util.*;

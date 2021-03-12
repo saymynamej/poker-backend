@@ -1,4 +1,4 @@
-package ru.smn.poker.service;
+package ru.smn.poker.service.common;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +14,9 @@ import ru.smn.poker.enums.InformationType;
 import ru.smn.poker.enums.MessageType;
 import ru.smn.poker.game.Game;
 import ru.smn.poker.game.TableSettings;
+import ru.smn.poker.service.ActionService;
+import ru.smn.poker.service.GameDataService;
+import ru.smn.poker.service.SecurityService;
 
 import static java.lang.String.format;
 

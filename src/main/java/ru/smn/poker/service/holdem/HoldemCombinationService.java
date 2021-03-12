@@ -1,10 +1,11 @@
-package ru.smn.poker.service;
+package ru.smn.poker.service.holdem;
 
 import org.springframework.stereotype.Service;
 import ru.smn.poker.dto.Combination;
 import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.CombinationType;
 import ru.smn.poker.enums.PowerType;
+import ru.smn.poker.service.CombinationService;
 
 import java.util.*;
 import java.util.stream.Collectors;

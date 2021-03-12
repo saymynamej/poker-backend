@@ -13,7 +13,7 @@ import ru.smn.poker.game.Game;
 import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.service.GameDataService;
 import ru.smn.poker.service.SecurityService;
-import ru.smn.poker.service.SimpleNotificationService;
+import ru.smn.poker.service.common.SimpleNotificationService;
 
 import java.security.Principal;
 import java.util.List;

@@ -1,4 +1,4 @@
-package ru.smn.poker.service;
+package ru.smn.poker.service.common;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -6,6 +6,8 @@ import ru.smn.poker.dto.PlayerCombination;
 import ru.smn.poker.entities.CardEntity;
 import ru.smn.poker.enums.CardType;
 import ru.smn.poker.game.TableSettings;
+import ru.smn.poker.service.CombinationService;
+import ru.smn.poker.service.WinnerService;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,4 +1,4 @@
-package ru.smn.poker.service;
+package ru.smn.poker.service.common;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

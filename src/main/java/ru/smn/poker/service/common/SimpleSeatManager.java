@@ -1,4 +1,4 @@
-package ru.smn.poker.service;
+package ru.smn.poker.service.common;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.MessageType;
 import ru.smn.poker.game.Game;
+import ru.smn.poker.service.NotificationService;
+import ru.smn.poker.service.SeatManager;
 
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -19,7 +21,7 @@ import static ru.smn.poker.enums.MessageType.SUCCESS_JOIN_IN_QUEUE;
 @Slf4j
 public class SimpleSeatManager implements SeatManager {
 
-    private final CommonGameDataService commonGameManager;
+    private final SimpleGameDataService commonGameManager;
     private final NotificationService notificationService;
     private final Queue<PlayerEntity> players = new LinkedBlockingQueue<>();
 

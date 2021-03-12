@@ -1,20 +1,18 @@
-package ru.smn.poker.service;
+package ru.smn.poker.service.common;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import ru.smn.poker.action.Action;
-import ru.smn.poker.action.holdem.Wait;
 import ru.smn.poker.config.game.GameSettings;
-import ru.smn.poker.dto.HoldemTableSettings;
 import ru.smn.poker.entities.*;
-import ru.smn.poker.enums.ActionType;
 import ru.smn.poker.enums.GameType;
 import ru.smn.poker.enums.PlayerType;
-import ru.smn.poker.enums.StageType;
 import ru.smn.poker.game.*;
+import ru.smn.poker.service.GameManagementService;
+import ru.smn.poker.service.OrderActionService;
+import ru.smn.poker.service.PrizeService;
+import ru.smn.poker.service.RandomNameService;
 
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -26,13 +24,13 @@ import java.util.stream.IntStream;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CommonGameManagementService implements GameManagementService {
+public class SimpleGameManagementService implements GameManagementService {
     private final Map<Game, ExecutorService> runnableGames;
     private final Map<String, Game> games;
     private final ExecutorService executorForListeners = Executors.newCachedThreadPool();
     private final Map<GameType, GameSettings> mapSettings;
     private final GameService gameService;
-    private final OrderService orderService;
+    private final OrderActionService orderActionService;
     private final PrizeService prizeService;
     private final PasswordEncoder passwordEncoder;
     private final RandomNameService randomNameService;
@@ -119,7 +117,7 @@ public class CommonGameManagementService implements GameManagementService {
 
         final Table table = new HoldemTable(
                 gameEntity.getTables().get(0).getPlayers(),
-                orderService,
+                orderActionService,
                 prizeService,
                 gameSettings,
                 handService

@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import ru.smn.poker.enums.GameType;
 import ru.smn.poker.repository.GameRepository;
 import ru.smn.poker.service.GameManagementService;
-import ru.smn.poker.service.GameService;
-import ru.smn.poker.service.OrderService;
+import ru.smn.poker.service.common.GameService;
+import ru.smn.poker.service.OrderActionService;
 
 import javax.annotation.PostConstruct;
 
@@ -16,7 +16,7 @@ import javax.annotation.PostConstruct;
 public class BootStrapGames {
     private final GameManagementService gameManagementService;
     private final GameService gameService;
-    private final OrderService orderService;
+    private final OrderActionService orderActionService;
     private final PasswordEncoder passwordEncoder;
     private final GameRepository gameRepository;
 

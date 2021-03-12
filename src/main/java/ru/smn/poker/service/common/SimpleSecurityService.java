@@ -1,4 +1,4 @@
-package ru.smn.poker.service;
+package ru.smn.poker.service.common;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.Game;
 import ru.smn.poker.game.TableSettings;
+import ru.smn.poker.service.GameDataService;
+import ru.smn.poker.service.SecurityService;
 import ru.smn.poker.util.RoundSettingsUtil;
 
 import java.util.List;
@@ -14,7 +16,7 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class HoldemSecurityService implements SecurityService {
+public class SimpleSecurityService implements SecurityService {
     private final GameDataService holdemGameDataService;
 
     @Override

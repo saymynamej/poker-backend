@@ -1,9 +1,10 @@
-package ru.smn.poker.service;
+package ru.smn.poker.service.common;
 
 import org.springframework.stereotype.Service;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.RoleType;
 import ru.smn.poker.enums.StageType;
+import ru.smn.poker.service.SortService;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class HoldemSortService implements SortService {
+public class SimpleSortService implements SortService {
 
     public List<PlayerEntity> sort(List<PlayerEntity> players, StageType stageType) {
         return stageType == StageType.PREFLOP ? sortPreflop(players) : sortPostflop(players);

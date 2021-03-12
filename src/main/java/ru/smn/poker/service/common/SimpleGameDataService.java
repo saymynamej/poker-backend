@@ -1,10 +1,11 @@
-package ru.smn.poker.service;
+package ru.smn.poker.service.common;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.Game;
+import ru.smn.poker.service.GameDataService;
 
 import java.util.Map;
 import java.util.Optional;
@@ -12,7 +13,7 @@ import java.util.Optional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class CommonGameDataService implements GameDataService {
+public class SimpleGameDataService implements GameDataService {
 
     private final Map<String, Game> games;
 

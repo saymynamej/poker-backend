@@ -13,7 +13,7 @@ import ru.smn.poker.action.holdem.Bet;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.service.ActionService;
-import ru.smn.poker.service.GameService;
+import ru.smn.poker.service.common.GameService;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

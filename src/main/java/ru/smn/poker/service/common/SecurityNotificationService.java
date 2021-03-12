@@ -1,10 +1,11 @@
-package ru.smn.poker.service;
+package ru.smn.poker.service.common;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.smn.poker.converter.RoundSettingsConverter;
 import ru.smn.poker.dto.HoldemRoundSettingsDTO;
 import ru.smn.poker.game.TableSettings;
+import ru.smn.poker.service.SecurityService;
 import ru.smn.poker.util.PlayerUtil;
 
 import java.util.List;
