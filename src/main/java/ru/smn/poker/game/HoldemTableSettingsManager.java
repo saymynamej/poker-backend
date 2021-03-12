@@ -25,37 +25,11 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
     private final CardType tern;
     private final CardType river;
     private final GameSettings gameSettings;
-    private final HandService handService;
-    private long handId;
-    private long bank;
+    private final long handId;
     private final Map<PlayerEntity, List<Action>> fullHistory = new ConcurrentHashMap<>();
+    private long bank;
 
     private StageType stageType;
-
-    public HoldemTableSettingsManager(
-            Random random,
-            TableSettings tableSettings,
-            HandService handService
-    ) {
-        this.handService = handService;
-        this.allCards = CardType.getAllCardsAsListWithFilter(
-                mergeCards(
-                        tableSettings.getFlop(),
-                        tableSettings.getTern(),
-                        tableSettings.getRiver(),
-                        tableSettings.getPlayers().stream()
-                                .flatMap(player -> player.getCards().stream())
-                                .map(CardEntity::getCardType)
-                                .collect(Collectors.toList())
-                )
-        );
-        this.random = random;
-        this.players = tableSettings.getPlayers();
-        flop = tableSettings.getFlop();
-        tern = tableSettings.getTern();
-        river = tableSettings.getRiver();
-        this.gameSettings = null;
-    }
 
     public HoldemTableSettingsManager(
             Random random,
@@ -70,7 +44,6 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
         this.tern = getRandomCard();
         this.river = getRandomCard();
         this.gameSettings = gameSettings;
-        this.handService = handService;
         this.handId = handService.saveNewRound();
         setAllPlayersGameName();
         dealCards();
@@ -373,24 +346,6 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
 
     protected long getSmallBlindBet() {
         return gameSettings.getStartSmallBlindBet();
-    }
-
-    private List<CardType> mergeCards(List<CardType> flop, CardType tern, CardType river, List<CardType> playerCards) {
-        final List<CardType> cards = new ArrayList<>();
-        if (flop != null && flop.isEmpty()) {
-            cards.addAll(flop);
-        }
-        if (tern != null) {
-            cards.add(tern);
-        }
-        if (river != null) {
-            cards.add(river);
-        }
-        if (playerCards != null && playerCards.isEmpty()) {
-            cards.addAll(playerCards);
-        }
-        return cards;
-
     }
 
     protected void setAllActivePlayersTest() {

@@ -67,7 +67,6 @@ public class CommonGameManagementService implements GameManagementService {
         saveInCache(game);
         runnableGames.computeIfAbsent(game, game2 -> {
             final ExecutorService executorService = Executors.newSingleThreadExecutor();
-            final boolean isRestore = game.getTableSettings() != null;
             executorService.submit(() -> {
                 try {
                     game.start();
@@ -75,16 +74,6 @@ public class CommonGameManagementService implements GameManagementService {
                     e.printStackTrace();
                 }
             });
-            if (isRestore) {
-                log.info("game was restored: " + game.getGameName());
-            } else {
-                log.info("game was started: " + game.getGameName());
-            }
-            try {
-                Thread.sleep(3 * 1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             return executorService;
         });
     }
@@ -159,6 +148,8 @@ public class CommonGameManagementService implements GameManagementService {
                     .count(defaultChipsCount)
                     .build());
         });
+
+        tableEntity.setGameEntity(gameEntity);
 
         gameEntity.setTables(Collections.singletonList(tableEntity));
 

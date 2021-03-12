@@ -25,7 +25,8 @@ public class GameEntity {
 
     private String name;
 
-    @OneToMany(mappedBy = "gameEntity")
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "table_id")
     private List<TableEntity> tables;
 
 }
