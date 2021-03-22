@@ -1,4 +1,4 @@
-package ru.smn.poker.service.holdem;
+package ru.smn.poker.service.common;
 
 import org.springframework.stereotype.Service;
 import ru.smn.poker.dto.Combination;
@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class HoldemCombinationService implements CombinationService {
+public class SimpleCombinationService implements CombinationService {
     private final static int COMBINATION_SIZE = 5;
     private final static int FULL_COMBINATION_SIZE = 7;
     private final static int KARE_SIZE = 4;
