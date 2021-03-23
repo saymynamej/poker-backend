@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.smn.poker.entities.ChipsCountEntity;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.entities.PlayerSettingsEntity;
+import ru.smn.poker.enums.AccessType;
 import ru.smn.poker.enums.PlayerType;
 import ru.smn.poker.enums.StateType;
 
@@ -24,6 +25,7 @@ public class PlayerGenerator {
         return IntStream.range(0, countOfPlayers).mapToObj(i -> PlayerEntity.builder()
                 .name(String.valueOf(i))
                 .enable(true)
+                .accessType(AccessType.FULL)
                 .settings(singletonList(PlayerSettingsEntity.builder()
                         .timeBank(50000L)
                         .stateType(StateType.IN_GAME)

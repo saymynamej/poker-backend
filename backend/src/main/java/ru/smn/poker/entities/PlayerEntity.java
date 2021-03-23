@@ -2,6 +2,7 @@ package ru.smn.poker.entities;
 
 import lombok.*;
 import ru.smn.poker.action.Action;
+import ru.smn.poker.enums.AccessType;
 
 import javax.persistence.*;
 import java.util.ArrayList;
