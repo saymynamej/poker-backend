@@ -40,7 +40,6 @@ public class SimpleGameManagementService implements GameManagementService {
     private final PlayerRepository playerRepository;
     private final ExecutorService tables = Executors.newCachedThreadPool();
 
-
     public void createTable(int countOfPlayers, GameType gameType) {
         final String randomName = randomNameService.getRandomName();
 
@@ -56,7 +55,8 @@ public class SimpleGameManagementService implements GameManagementService {
                         .playerType(PlayerType.ORDINARY)
                         .build())
                 .password(passwordEncoder.encode(String.valueOf(i)))
-                .build()).collect(Collectors.toList());
+                .build())
+                .collect(Collectors.toList());
 
         playerRepository.saveAll(players);
 
