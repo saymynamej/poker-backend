@@ -30,6 +30,6 @@ public class SimpleSecurityService implements SecurityService {
 
     @Override
     public boolean isLegalPlayer(PlayerEntity player) {
-        return isLegalPlayer(player.getGameName(), player);
+        return isLegalPlayer(player.getTableSettings().getGameName(), player);
     }
 }

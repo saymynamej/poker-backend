@@ -17,18 +17,8 @@ import static ru.smn.poker.util.HistoryUtil.addActionInHistory;
 @RequiredArgsConstructor
 @Slf4j
 public class GameService {
-    private final GameRepository gameRepository;
     private final ActionLogService actionLogService;
     private final HandRepository handRepository;
-
-    public List<GameEntity> findAll() {
-        return gameRepository.findAll();
-    }
-
-    @Transactional
-    public GameEntity saveGame(GameEntity gameEntity) {
-        return gameRepository.save(gameEntity);
-    }
 
     @Transactional
     public void update(TableSettings tableSettings) {
@@ -42,7 +32,7 @@ public class GameService {
             long lastBet,
             Action action
     ) {
-        player.removeChips(removeChips);
+        player.getTableSettings().removeChips(removeChips);
         tableSettings.setBank(tableSettings.getBank() + removeChips);
         setLastBet(tableSettings, lastBet);
         addActionInHistory(tableSettings, player);
@@ -50,13 +40,13 @@ public class GameService {
     }
 
     public void setActivePlayer(TableSettings tableSettings, PlayerEntity player) {
-        player.setActive(true);
+        player.getTableSettings().setActive(true);
         tableSettings.setActivePlayer(player);
         update(tableSettings);
     }
 
     public void setInActivePlayer(TableSettings tableSettings, PlayerEntity player) {
-        player.setActive(false);
+        player.getTableSettings().setActive(false);
         tableSettings.setActivePlayer(null);
         update(tableSettings);
     }

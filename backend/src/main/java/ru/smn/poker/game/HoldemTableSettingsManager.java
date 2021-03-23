@@ -177,7 +177,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
 
     private void dealCards() {
         PlayerUtil.getPlayerWhichMayPlay(players).forEach(
-                player -> player.addCards(
+                player -> player.getTableSettings().addCards(
                         Arrays.asList(
                                 CardEntity.builder()
                                         .cardType(getRandomCard())
@@ -234,15 +234,15 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
     }
 
     private void removeChips(PlayerEntity player, long chips) {
-        player.removeChips(chips);
+        player.getTableSettings().removeChips(chips);
     }
 
     private void setAllActivePlayers() {
         this.players.forEach(player -> {
-            if (player.hasNotSpecialRoles()) {
-                player.setRole(RoleType.ORDINARY);
+            if (player.getTableSettings().hasNotSpecialRoles()) {
+                player.getTableSettings().setRole(RoleType.ORDINARY);
             }
-            player.setAction(new Wait());
+            player.getTableSettings().setAction(new Wait());
         });
     }
 
@@ -255,7 +255,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
             indexOfSmallBlind = indexOfButton + 1;
         }
         smallBlind = players.get(indexOfSmallBlind);
-        smallBlind.setRole(RoleType.SMALL_BLIND);
+        smallBlind.getTableSettings().setRole(RoleType.SMALL_BLIND);
         removeChipsFromPlayer(smallBlind, gameSettings.getStartSmallBlindBet());
     }
 
@@ -263,25 +263,25 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
         final List<PlayerEntity> players = PlayerUtil.getPlayerWhichMayPlay(this.players);
         final Optional<PlayerEntity> foundButton = players
                 .stream()
-                .filter(PlayerEntity::isButton)
+                .filter(playerEntity -> playerEntity.getTableSettings().isButton())
                 .findAny();
 
         if (foundButton.isEmpty()) {
-            players.get(getRandomPlayer()).setButton();
+            players.get(getRandomPlayer()).getTableSettings().setButton();
             return;
         }
 
         final PlayerEntity button = foundButton.get();
-        button.removeRole();
+        button.getTableSettings().removeRole();
         int indexOfButton = players.indexOf(button);
 
         if (indexOfButton + 1 < players.size()) {
-            players.get(indexOfButton + 1).setButton();
+            players.get(indexOfButton + 1).getTableSettings().setButton();
             return;
         }
 
         indexOfButton = 0;
-        players.get(indexOfButton).setButton();
+        players.get(indexOfButton).getTableSettings().setButton();
 
     }
 
@@ -289,7 +289,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
         clearRole(RoleType.BIG_BLIND);
         final int indexOfSmallBlind = getIndexOfSmallBlind();
         PlayerEntity bigBlind = getPlayer(indexOfSmallBlind);
-        bigBlind.setRole(RoleType.BIG_BLIND);
+        bigBlind.getTableSettings().setRole(RoleType.BIG_BLIND);
         removeChipsFromPlayer(bigBlind, gameSettings.getStartBigBlindBet());
     }
 
@@ -298,7 +298,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
                 .filter(player -> player.getRoleType() == roleType)
                 .findAny();
 
-        playerByRole.ifPresent(PlayerEntity::removeRole);
+        playerByRole.ifPresent(playerEntity -> playerEntity.getTableSettings().removeRole());
     }
 
     protected void removeChipsFromPlayer(PlayerEntity player, long chips) {
@@ -346,8 +346,8 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
     protected void setAllActivePlayersTest() {
         this.players.forEach(player -> {
             if (player.getAction() != null && player.getRoleType() != null) {
-                if (!(player.getAction() instanceof Fold) && player.getAction().getActionType() != ActionType.ALLIN && player.getStateType() == StateType.IN_GAME) {
-                    player.setAction(new Wait());
+                if (!(player.getAction() instanceof Fold) && player.getAction().getActionType() != ActionType.ALLIN && player.getTableSettings().getStateType() == StateType.IN_GAME) {
+                    player.getTableSettings().setAction(new Wait());
                 }
             }
         });

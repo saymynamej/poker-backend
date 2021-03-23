@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import ru.smn.poker.repository.CardRepository;
-import ru.smn.poker.repository.GameRepository;
 import ru.smn.poker.repository.PlayerRepository;
 
 @ExtendWith(SpringExtension.class)

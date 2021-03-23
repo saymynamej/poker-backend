@@ -12,7 +12,7 @@ public class CallStrategy implements ActionStrategy {
 
     @Override
     public void execute(PlayerEntity player, GameService gameService, ActionService actionService, CountAction countAction, TableSettings tableSettings) {
-        if (player.hasNotChipsForAction(countAction)) {
+        if (player.getTableSettings().hasNotChipsForAction(countAction)) {
             actionService.waitPlayerAction(player, tableSettings);
             return;
         }

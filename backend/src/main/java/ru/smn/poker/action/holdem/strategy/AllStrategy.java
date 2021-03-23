@@ -43,6 +43,6 @@ public class AllStrategy implements ActionStrategy {
     }
 
     private boolean countActionNotEqualsChipsCount(CountAction countAction, PlayerEntity player) {
-        return countAction.getCount() != player.getChipsCount().getCount();
+        return countAction.getCount() != player.getTableSettings().getChipsCount().getCount();
     }
 }

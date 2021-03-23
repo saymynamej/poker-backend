@@ -25,7 +25,7 @@ public class SimplePrizeService implements PrizeService {
     public void sendPrizes(TableSettings tableSettings) {
         final List<PlayerEntity> playersInGame = PlayerUtil.getPlayersInAction(tableSettings.getPlayers());
         if (tableSettings.isOnePlayerLeft()) {
-            playersInGame.get(0).addChips(tableSettings.getBank());
+            playersInGame.get(0).getTableSettings().addChips(tableSettings.getBank());
             return;
         }
         final List<PlayerCombination> winners = winnerService.findWinners(tableSettings);
@@ -51,10 +51,10 @@ public class SimplePrizeService implements PrizeService {
                     } else {
                         generatedBank += winnerBets;
                         long returnChips = Math.abs(otherPlayer - winnerBets);
-                        player.addChips(returnChips);
+                        player.getTableSettings().addChips(returnChips);
                     }
                 }
-                winnerFromLoop.getPlayer().addChips(generatedBank);
+                winnerFromLoop.getPlayer().getTableSettings().addChips(generatedBank);
             }
         }
     }
@@ -73,7 +73,7 @@ public class SimplePrizeService implements PrizeService {
     }
 
     private void returnChips(TableSettings tableSettings, PlayerCombination playerCombination) {
-        playerCombination.getPlayer().addChips(
+        playerCombination.getPlayer().getTableSettings().addChips(
                 sumBets(tableSettings.getFullHistory().get(playerCombination.getPlayer()))
         );
     }

@@ -19,10 +19,6 @@ public class CardEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "game_id")
-    private GameEntity game;
-
     @Enumerated(value = EnumType.STRING)
     private CardType cardType;
 

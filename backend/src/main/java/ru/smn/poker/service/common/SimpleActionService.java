@@ -41,27 +41,27 @@ public class SimpleActionService implements ActionService {
 
         action = changeCallOnAllInIfNeeded(action, player);
 
-        if (!holdemSecurityService.isLegalPlayer(player.getGameName(), player)) {
+        if (!holdemSecurityService.isLegalPlayer(player.getTableSettings().getGameName(), player)) {
             simpleNotificationService.sendSystemMessageToUser(playerName, format(MessageType.QUEUE_ERROR.getMessage(), player.getName()));
             log.info(String.format(MessageType.QUEUE_ERROR.getMessage(), player.getName()));
             return;
         }
-        player.setAction(action);
+        player.getTableSettings().setAction(action);
     }
 
     @Override
     public void waitPlayerAction(PlayerEntity player, TableSettings tableSettings) {
         log.info("waiting action from player:" + player.getName());
-        player.setWait();
+        player.getTableSettings().setWait();
         gameService.setActivePlayer(tableSettings, player);
         securityNotificationService.sendToAllWithSecurity(tableSettings);
         final ResultTime timer = simpleTimeBankService.activateTime(player);
 
         while (true) {
-            if (player.isNotInGame()) {
+            if (player.getTableSettings().isNotInGame()) {
                 break;
             }
-            if (player.didAction()) {
+            if (player.getTableSettings().didAction()) {
                 simpleTimeBankService.cancel(timer, player);
                 doAction(player, tableSettings);
                 break;
@@ -81,7 +81,7 @@ public class SimpleActionService implements ActionService {
     private Action changeCallOnAllInIfNeeded(Action action, PlayerEntity player) {
         if (action.getActionType() == ActionType.CALL || action.getActionType() == ActionType.RAISE) {
             final CountAction countAction = (CountAction) action;
-            if (countAction.getCount() == player.getChipsCount().getCount()) {
+            if (countAction.getCount() == player.getTableSettings().getChipsCount().getCount()) {
                 action = new AllIn(countAction.getCount());
             }
         }

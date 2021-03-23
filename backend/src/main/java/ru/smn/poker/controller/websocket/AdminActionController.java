@@ -56,6 +56,7 @@ public class AdminActionController {
         //TODO
         if (actionInfo.getActionType() == ActionType.ALLIN){
             final long count = gameDataService.getPlayerByName(actionInfo.getName()).orElseThrow()
+                    .getTableSettings()
                     .getChipsCount()
                     .getCount();
             actionInfo.setCount(String.valueOf(count));

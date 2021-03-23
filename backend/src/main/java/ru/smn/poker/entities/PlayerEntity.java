@@ -36,6 +36,13 @@ public class PlayerEntity {
 
     private boolean enable;
 
+    public PlayerSettingsEntity getTableSettings(){
+        return settings.get(0);
+    }
+
+    public Action getAction(){
+        return settings.get(0).getAction();
+    }
 
     public PlayerEntity copy() {
         return PlayerEntity

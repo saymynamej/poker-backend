@@ -18,12 +18,7 @@ public class ChipsCountEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "game_id")
-    private GameEntity game;
-
     private long count;
-
 
     public ChipsCountEntity(long count) {
         this.count = count;

@@ -41,7 +41,7 @@ public class HoldemTable implements Table {
     }
 
     private void setInGame() {
-        players.forEach(playerEntity -> playerEntity.setStateType(StateType.IN_GAME));
+        players.forEach(playerEntity -> playerEntity.getTableSettings().setStateType(StateType.IN_GAME));
     }
 
     private TableSettingsManager getTableSettingsManager() {

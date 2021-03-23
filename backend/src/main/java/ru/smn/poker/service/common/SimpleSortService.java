@@ -74,7 +74,7 @@ public class SimpleSortService implements SortService {
 
     private Optional<PlayerEntity> getPlayerByRole(List<PlayerEntity> players, RoleType roleType) {
         return players.stream()
-                .filter(player -> player.getSettings().getRoleType() == roleType)
+                .filter(player -> player.getTableSettings().getRoleType() == roleType)
                 .findFirst();
     }
 }

@@ -34,7 +34,7 @@ public class HoldemTableSettingsManagerHU extends HoldemTableSettingsManager {
                 .filter(pl -> pl.getRoleType() != RoleType.BUTTON)
                 .findAny()
                 .orElseThrow();
-        player.setRole(RoleType.BIG_BLIND);
+        player.getTableSettings().setRole(RoleType.BIG_BLIND);
         removeChipsFromPlayer(player, getBigBlindBet());
     }
 

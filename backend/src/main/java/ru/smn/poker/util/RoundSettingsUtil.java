@@ -1,13 +1,9 @@
 package ru.smn.poker.util;
 
 import ru.smn.poker.dto.HoldemTableSettings;
-import ru.smn.poker.entities.CardEntity;
-import ru.smn.poker.entities.GameEntity;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.enums.StageType;
 import ru.smn.poker.game.TableSettings;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,7 +13,7 @@ public class RoundSettingsUtil {
         final List<PlayerEntity> playersWithSecureCards = PlayerUtil.copies(tableSettings.getPlayers());
         playersWithSecureCards.forEach(player -> {
             if (!filters.contains(player.getName())) {
-                player.addCards(Collections.emptyList());
+                player.getTableSettings().addCards(Collections.emptyList());
             }
         });
 

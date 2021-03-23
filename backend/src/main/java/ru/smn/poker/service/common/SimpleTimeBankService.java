@@ -25,9 +25,9 @@ public class SimpleTimeBankService implements TimeBankService {
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        player.setInActive();
+                        player.getTableSettings().setInActive();
                     }
-                }, player.getTimeBank() * MILLISECONDS_IN_SECONDS);
+                }, player.getTableSettings().getTimeBank() * MILLISECONDS_IN_SECONDS);
             }
         }, DEFAULT_TIME_FOR_ACTION * MILLISECONDS_IN_SECONDS);
 
@@ -41,8 +41,8 @@ public class SimpleTimeBankService implements TimeBankService {
             final long startTime = result.getStartTime();
             final long endTime = System.currentTimeMillis();
             final long calculatedTime = (endTime - startTime) / MILLISECONDS_IN_SECONDS;
-            final long timeBank = player.getTimeBank() - calculatedTime;
-            player.setTimeBank(
+            final long timeBank = player.getTableSettings().getTimeBank() - calculatedTime;
+            player.getTableSettings().setTimeBank(
                     timeBank < 0 ? 0 : timeBank
             );
         }

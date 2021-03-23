@@ -14,7 +14,7 @@ public class RaiseStrategy implements ActionStrategy {
 
     @Override
     public void execute(PlayerEntity player, GameService gameService, ActionService actionService, CountAction countAction, TableSettings tableSettings) {
-        if (player.hasNotChipsForAction(countAction)) {
+        if (player.getTableSettings().hasNotChipsForAction(countAction)) {
             actionService.waitPlayerAction(player, tableSettings);
             return;
         }
@@ -29,7 +29,7 @@ public class RaiseStrategy implements ActionStrategy {
     }
 
     private void changeActionForHistory(PlayerEntity player, CountAction countAction, long prevBets) {
-        player.setAction(new Raise(countAction.getCount() - prevBets));
+        player.getTableSettings().setAction(new Raise(countAction.getCount() - prevBets));
     }
 
     private boolean raiseLessThanPrevBetByFormulas(TableSettings tableSettings, CountAction countAction) {

@@ -20,7 +20,7 @@ public class CheckStrategy implements ActionStrategy {
     }
 
     private boolean isPreflopAndBigBlindCanCheck(TableSettings tableSettings, PlayerEntity player){
-        return tableSettings.getStageType() == StageType.PREFLOP && player.isBigBlind() && tableSettings.getBigBlindBet() == tableSettings.getLastBet();
+        return tableSettings.getStageType() == StageType.PREFLOP && player.getTableSettings().isBigBlind() && tableSettings.getBigBlindBet() == tableSettings.getLastBet();
     }
 
     private boolean isPostFlopAndLastBetIsZero(TableSettings tableSettings){

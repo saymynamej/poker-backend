@@ -31,7 +31,7 @@ public class SimpleWinnerService implements WinnerService {
                 .map(player -> {
                     final List<CardType> concatCards = Stream.concat(
                             deck.stream(),
-                            player.getCards()
+                            player.getTableSettings().getCards()
                                     .stream()
                                     .map(CardEntity::getCardType)
                     ).collect(Collectors.toList());

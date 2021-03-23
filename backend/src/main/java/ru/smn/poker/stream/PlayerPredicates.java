@@ -25,15 +25,15 @@ public class PlayerPredicates {
     }
 
     public static Predicate<? super PlayerEntity> playerCanMakeMove() {
-        return (Predicate<PlayerEntity>) player -> player.getAction().getActionType() != ActionType.FOLD && player.getStateType() == StateType.IN_GAME;
+        return (Predicate<PlayerEntity>) player -> player.getAction().getActionType() != ActionType.FOLD && player.getTableSettings().getStateType() == StateType.IN_GAME;
     }
 
 
     public static Predicate<? super PlayerEntity> playerHasChips(){
-        return (Predicate<PlayerEntity>) player -> player.getSettings().getChipsCount().getCount() > 0;
+        return (Predicate<PlayerEntity>) player -> player.getTableSettings().getChipsCount().getCount() > 0;
     }
 
     public static Predicate<? super PlayerEntity> playerInGame() {
-        return (Predicate<PlayerEntity>) player -> player.getSettings().getStateType() == StateType.IN_GAME;
+        return (Predicate<PlayerEntity>) player -> player.getTableSettings().getStateType() == StateType.IN_GAME;
     }
 }
