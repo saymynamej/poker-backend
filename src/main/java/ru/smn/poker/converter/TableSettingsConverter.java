@@ -1,12 +1,12 @@
 package ru.smn.poker.converter;
 
-import ru.smn.poker.dto.HoldemRoundSettingsDTO;
+import ru.smn.poker.dto.TableSettingsDTO;
 import ru.smn.poker.game.TableSettings;
 
-public class RoundSettingsConverter {
+public class TableSettingsConverter {
 
-    public static HoldemRoundSettingsDTO toDTO(TableSettings tableSettings) {
-        return HoldemRoundSettingsDTO.builder()
+    public static TableSettingsDTO toDTO(TableSettings tableSettings) {
+        return TableSettingsDTO.builder()
                 .activePlayer(PlayerConverter.toDTO(tableSettings.getActivePlayer()))
                 .bank(tableSettings.getBank())
                 .bigBlind(PlayerConverter.toDTO(tableSettings.getBigBlind()))

@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.enums.GameType;
-import ru.smn.poker.game.Game;
 
 import java.util.List;
 import java.util.Map;
@@ -18,11 +17,6 @@ public class OptionSettings {
 
     public OptionSettings(List<GameSettings> gameSettingsList) {
         this.gameSettingsList = gameSettingsList;
-    }
-
-    @Bean
-    public Map<Game, ExecutorService> getMapForRunnableGames(){
-        return new ConcurrentHashMap<>();
     }
 
     @Bean

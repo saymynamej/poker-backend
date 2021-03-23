@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.game.Game;
 import ru.smn.poker.game.Table;
 import ru.smn.poker.service.GameDataService;
 

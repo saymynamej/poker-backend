@@ -2,8 +2,8 @@ package ru.smn.poker.service.common;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.smn.poker.converter.RoundSettingsConverter;
-import ru.smn.poker.dto.HoldemRoundSettingsDTO;
+import ru.smn.poker.converter.TableSettingsConverter;
+import ru.smn.poker.dto.TableSettingsDTO;
 import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.service.SecurityService;
 import ru.smn.poker.util.PlayerUtil;
@@ -21,7 +21,7 @@ public class SecurityNotificationService {
 
         final TableSettings secureSettings = securityService.secureCards(filter, tableSettings);
 
-        final HoldemRoundSettingsDTO holdemRoundSetting = RoundSettingsConverter.toDTO(secureSettings);
+        final TableSettingsDTO holdemRoundSetting = TableSettingsConverter.toDTO(secureSettings);
 
         secureSettings.getPlayers().forEach(player -> simpleNotificationService.sendGameInformationToUser(
                 player.getName(),
@@ -35,7 +35,7 @@ public class SecurityNotificationService {
 
     public void sendToUserWithSecurity(TableSettings tableSettings, String userName) {
         final TableSettings secureSettings = securityService.secureCards(List.of(userName), tableSettings);
-        final HoldemRoundSettingsDTO holdemRoundSettings = RoundSettingsConverter.toDTO(secureSettings);
+        final TableSettingsDTO holdemRoundSettings = TableSettingsConverter.toDTO(secureSettings);
         simpleNotificationService.sendGameInformationToUser(userName, holdemRoundSettings);
     }
 }

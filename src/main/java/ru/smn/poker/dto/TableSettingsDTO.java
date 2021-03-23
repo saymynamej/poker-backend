@@ -15,7 +15,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
-public class HoldemRoundSettingsDTO {
+public class TableSettingsDTO {
     private final Map<Player, List<Action>> stageHistory;
     private final Map<Player, List<Action>> fullHistory;
     private final List<Player> players;
