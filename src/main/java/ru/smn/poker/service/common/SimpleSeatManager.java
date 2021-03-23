@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.MessageType;
 import ru.smn.poker.game.Game;
+import ru.smn.poker.game.Table;
 import ru.smn.poker.service.NotificationService;
 import ru.smn.poker.service.SeatManager;
 
@@ -32,13 +33,9 @@ public class SimpleSeatManager implements SeatManager {
                 notificationService.sendSystemMessageToUser(player.getName(), MessageType.ONLY_ONE_TABLE_MESSAGE.getMessage());
                 return;
             }
-            final Game game = commonGameManager.getGameByName(gameName);
-            final int actualSize = game.getPlayers().size();
-            final int maxPlayerSize = game.getGameSettings().getMaxPlayerSize();
-            if (actualSize < maxPlayerSize) {
-                game.addPlayer(player);
-                log.info(format("player:%s, joined to the game:%s", player.getName(), gameName));
-            }
+            final Table game = commonGameManager.getGameByName(gameName);
+
+            game.addPlayer(player);
         }
     }
 
@@ -61,10 +58,7 @@ public class SimpleSeatManager implements SeatManager {
 
     @Override
     public void leaveGame(String playerName, String gameName) {
-        final Game game = commonGameManager.getGameByName(gameName);
-        if (game.removePlayer(playerName)) {
-            log.info(format("player %s leave the game %s", playerName, gameName));
-        }
+
     }
 
     @Override

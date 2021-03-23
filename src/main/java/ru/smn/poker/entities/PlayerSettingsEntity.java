@@ -36,8 +36,7 @@ public class PlayerSettingsEntity {
     private List<CardEntity> cards;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "game_id")
-    private GameEntity game;
+    private TableEntity game;
 
     @Builder.Default
     @Enumerated(value = EnumType.STRING)

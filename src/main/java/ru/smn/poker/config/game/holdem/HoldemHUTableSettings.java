@@ -27,7 +27,7 @@ public class HoldemHUTableSettings implements GameSettings {
 
     private String gameName;
 
-    private Long gameId;
+    private Long tableId;
 
     @Override
     public int getMaxPlayerSize() {

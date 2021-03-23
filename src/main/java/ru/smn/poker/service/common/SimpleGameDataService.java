@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.Game;
+import ru.smn.poker.game.Table;
 import ru.smn.poker.service.GameDataService;
 
 import java.util.Map;
@@ -15,7 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SimpleGameDataService implements GameDataService {
 
-    private final Map<String, Game> games;
+    private final Map<String, Table> games;
 
     @Override
     public Optional<PlayerEntity> getPlayerByName(String name) {
@@ -26,15 +27,15 @@ public class SimpleGameDataService implements GameDataService {
     }
 
     @Override
-    public Game getGameByName(String gameName) {
+    public Table getGameByName(String gameName) {
         if (gameName == null) {
             throw new RuntimeException("game is null");
         }
-        final Game game = games.get(gameName);
-        if (game == null) {
+        final Table table = games.get(gameName);
+        if (table == null) {
             throw new RuntimeException("cannot find game");
         }
-        return game;
+        return table;
     }
 
 }

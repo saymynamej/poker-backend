@@ -5,16 +5,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.smn.poker.config.game.GameSettings;
-import ru.smn.poker.entities.*;
+import ru.smn.poker.entities.ChipsCountEntity;
+import ru.smn.poker.entities.PlayerEntity;
+import ru.smn.poker.entities.PlayerSettingsEntity;
 import ru.smn.poker.enums.GameType;
 import ru.smn.poker.enums.PlayerType;
-import ru.smn.poker.game.*;
+import ru.smn.poker.game.HoldemTable;
+import ru.smn.poker.game.Table;
+import ru.smn.poker.repository.PlayerRepository;
 import ru.smn.poker.service.GameManagementService;
 import ru.smn.poker.service.OrderActionService;
 import ru.smn.poker.service.PrizeService;
 import ru.smn.poker.service.RandomNameService;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -25,143 +30,68 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor
 @Slf4j
 public class SimpleGameManagementService implements GameManagementService {
-    private final Map<Game, ExecutorService> runnableGames;
-    private final Map<String, Game> games;
-    private final ExecutorService executorForListeners = Executors.newCachedThreadPool();
+    private final Map<String, Table> games;
     private final Map<GameType, GameSettings> mapSettings;
-    private final GameService gameService;
     private final OrderActionService orderActionService;
     private final PrizeService prizeService;
-    private final PasswordEncoder passwordEncoder;
-    private final RandomNameService randomNameService;
     private final HandService handService;
+    private final RandomNameService randomNameService;
+    private final PasswordEncoder passwordEncoder;
+    private final PlayerRepository playerRepository;
+    private final ExecutorService tables = Executors.newCachedThreadPool();
 
-    @Override
-    public void create(int countOfPlayers, long defaultChipsCount, GameType gameType) {
+
+    public void createTable(int countOfPlayers, GameType gameType) {
         final String randomName = randomNameService.getRandomName();
+
         final List<PlayerEntity> players = IntStream.range(0, countOfPlayers).mapToObj(i -> PlayerEntity.builder()
                 .name(String.valueOf(i))
                 .enable(true)
                 .settings(PlayerSettingsEntity.builder()
                         .timeBank(50000L)
+                        .chipsCount(ChipsCountEntity.builder()
+                                .count(5000L)
+                                .build())
                         .gameName(randomName)
                         .playerType(PlayerType.ORDINARY)
                         .build())
                 .password(passwordEncoder.encode(String.valueOf(i)))
                 .build()).collect(Collectors.toList());
 
-        final Game game = create(defaultChipsCount, gameType, randomName, players);
-        run(game);
+        playerRepository.saveAll(players);
+
+        createTable(players, gameType, randomName);
     }
 
-    @Override
-    public void run(GameEntity gameEntity) {
-        final Game generatedGame = convert(gameEntity);
-        run(generatedGame);
-    }
+    public void createTable(List<PlayerEntity> players, GameType gameType, String gameName) {
+        final GameSettings gameSettings = mapSettings.get(gameType);
 
-    @Override
-    public void run(Game game) {
-        saveInCache(game);
-        runnableGames.computeIfAbsent(game, game2 -> {
-            final ExecutorService executorService = Executors.newSingleThreadExecutor();
-            executorService.submit(() -> {
-                try {
-                    game.start();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
-            return executorService;
-        });
-    }
-
-    @Override
-    public void create(List<PlayerEntity> players, GameType gameType, long defaultChipsCount) {
-        final Game game = create(
-                defaultChipsCount,
-                gameType,
-                randomNameService.getRandomName(),
-                players
-        );
-
-        run(game);
-    }
-
-    @Override
-    public void createEmptyGame(GameType gameType) {
-        final GameEntity emptyGame = GameEntity.builder()
-                .gameType(gameType)
-                .name(randomNameService.getRandomName())
-                .build();
-
-        final GameEntity gameEntityFromBase = gameService.saveGame(emptyGame);
-
-        run(gameEntityFromBase);
-    }
-
-    @Override
-    public void addListener(Runnable runnable) {
-        executorForListeners.submit(runnable);
-    }
-
-    private boolean checkGameName(String gameName) {
-        return !games.containsKey(gameName);
-    }
-
-    private Game convert(GameEntity gameEntity) {
-        final GameSettings gameSettings = mapSettings.get(gameEntity.getGameType());
-
-        gameSettings.setGameName(randomNameService.getRandomName());
-        gameSettings.setGameId(gameEntity.getId());
+        gameSettings.setGameName(gameName);
+        gameSettings.setTableId(5L);
 
         final Table table = new HoldemTable(
-                gameEntity.getTables().get(0).getPlayers(),
+                players,
                 orderActionService,
                 prizeService,
                 gameSettings,
                 handService
         );
 
-        return new HoldemGame(
-                gameSettings,
-                table
-        );
+        run(table);
     }
 
-    private Game create(long defaultChipsCount, GameType gameType, String randomName, List<PlayerEntity> players) {
-        final GameEntity gameEntity = GameEntity.builder()
-                .gameType(gameType)
-                .name(randomName)
-                .build();
-
-        final TableEntity tableEntity = TableEntity.builder()
-                .players(players)
-                .build();
-
-        players.forEach(playerEntity -> {
-            playerEntity.setGame(gameEntity);
-            playerEntity.setChipsCount(ChipsCountEntity.builder()
-                    .game(gameEntity)
-                    .count(defaultChipsCount)
-                    .build());
+    public void run(Table table) {
+        if (games.containsKey(table.getGameName())) {
+            throw new RuntimeException("table with name: " + table.getGameName() + " already exist");
+        }
+        games.put(table.getGameName(), table);
+        tables.submit(() -> {
+            try {
+                table.start();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
 
-        tableEntity.setGameEntity(gameEntity);
-
-        gameEntity.setTables(Collections.singletonList(tableEntity));
-
-        final GameEntity gameEntityFromBase = gameService.saveGame(gameEntity);
-
-        return convert(gameEntityFromBase);
-    }
-
-
-    private void saveInCache(Game game) {
-        if (checkGameName(game.getGameName())) {
-            this.games.put(game.getGameName(), game);
-            return;
-        }
-        throw new RuntimeException("duplicate game with name: " + game.getGameName());
     }
 }

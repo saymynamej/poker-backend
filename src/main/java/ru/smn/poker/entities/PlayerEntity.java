@@ -215,8 +215,8 @@ public class PlayerEntity {
         this.settings.setActive(isActive);
     }
 
-    public void setGame(GameEntity game){
-        this.settings.setGame(game);
+    public void setGame(TableEntity tableEntity){
+        this.settings.setGame(tableEntity);
     }
 
     public void setGameName(String gameName){

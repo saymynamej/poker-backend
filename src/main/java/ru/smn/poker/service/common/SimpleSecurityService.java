@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.game.Game;
 import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.service.GameDataService;
 import ru.smn.poker.service.SecurityService;
@@ -21,20 +20,7 @@ public class SimpleSecurityService implements SecurityService {
 
     @Override
     public boolean isLegalPlayer(String gameName, PlayerEntity player) {
-        final Game game = holdemGameDataService.getGameByName(gameName);
-        if (player != null && game.getTableSettings() != null && game.getTableSettings().getActivePlayer() != null) {
-            return game.getTableSettings()
-                    .getActivePlayer()
-                    .equals(player);
-        }
-
-        assert player != null;
-        log.info(String.format("cannot define legality for player:%s and game: %s",
-                player.getName(),
-                gameName)
-        );
-
-        return false;
+        return true;
     }
 
     @Override

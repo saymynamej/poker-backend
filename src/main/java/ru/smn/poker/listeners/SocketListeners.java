@@ -5,18 +5,14 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
-import ru.smn.poker.converter.RoundSettingsConverter;
-import ru.smn.poker.dto.HoldemRoundSettingsDTO;
-import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.MessageType;
-import ru.smn.poker.game.Game;
-import ru.smn.poker.game.TableSettings;
+import ru.smn.poker.game.Table;
 import ru.smn.poker.service.GameDataService;
 import ru.smn.poker.service.SecurityService;
+import ru.smn.poker.service.common.SecurityNotificationService;
 import ru.smn.poker.service.common.SimpleNotificationService;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -26,38 +22,21 @@ import static java.lang.String.format;
 @RequiredArgsConstructor
 public class SocketListeners {
     private final GameDataService gameDataService;
+    private final SecurityNotificationService securityNotificationService;
     private final SimpleNotificationService simpleNotificationService;
     private final SecurityService securityService;
-    private final Map<String, Game> games;
+    private final Map<String, Table> tables;
 
     @EventListener(SessionSubscribeEvent.class)
     public void handleWebsocketConnectListener(SessionSubscribeEvent event) {
-        final Principal user = event.getUser();
-        if (user != null) {
-            final Optional<PlayerEntity> optionalPlayer = gameDataService.getPlayerByName(user.getName());
-            if (optionalPlayer.isPresent()) {
-                final PlayerEntity player = optionalPlayer.get();
-                if (player.getGameName() != null) {
-                    final Game game = games.get(player.getGameName());
-
-                    final TableSettings tableSettings = game.getTableSettings();
-
-                    final TableSettings securedTableSettings = securityService.secureCards(
-                            List.of(user.getName()),
-                            tableSettings
-                    );
-
-                    final HoldemRoundSettingsDTO holdemRoundSettings = RoundSettingsConverter.toDTO(securedTableSettings);
-
-                    simpleNotificationService.sendGameInformationToUser(
-                            player.getName(),
-                            holdemRoundSettings
-                    );
-                }
-            }
-        }
+        Optional.ofNullable(event.getUser())
+                .map(Principal::getName)
+                .map(gameDataService::getPlayerByName)
+                .map(Optional::get)
+                .map(player -> tables.get(player.getGameName()))
+                .map(Table::getTableSettings)
+                .ifPresent(tableSettings -> securityNotificationService.sendToUserWithSecurity(tableSettings, event.getUser().getName()));
     }
-
 
     @EventListener(SessionConnectEvent.class)
     public void handleWebsocketConnectListener(SessionConnectEvent event) {

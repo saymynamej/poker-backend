@@ -18,15 +18,17 @@ public class PlayerConverter {
     }
 
     public static List<PlayerEntity> toEntities(List<Player> playerDTO, GameEntity gameEntity) {
-        return playerDTO.stream()
-                .map(player -> toEntity(player, gameEntity))
-                .collect(Collectors.toList());
+//        return playerDTO.stream()
+//                .map(player -> toEntity(player, gameEntity))
+//                .collect(Collectors.toList());
+        return null;
     }
 
-    public static PlayerEntity toEntity(Player player, GameEntity gameEntity) {
-        final PlayerEntity playerEntity = getPlayerEntity(player, gameEntity);
-        playerEntity.setGame(gameEntity);
-        return playerEntity;
+    public static PlayerEntity toEntity(Player player, TableEntity gameEntity) {
+//        final PlayerEntity playerEntity = getPlayerEntity(player, gameEntity);
+//        playerEntity.setGame(gameEntity);
+//        return playerEntity;
+        return null;
     }
 
     public static PlayerEntity toEntity(Player player) {
@@ -100,7 +102,6 @@ public class PlayerConverter {
                 .active(playerEntity.getSettings().isActive())
                 .roleType(playerEntity.getSettings().getRoleType())
                 .action(playerEntity.getAction())
-                .gameName(playerEntity.getSettings().getGame().getName())
                 .name(playerEntity.getName())
                 .build();
     }

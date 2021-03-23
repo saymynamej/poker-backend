@@ -17,8 +17,6 @@ public class AdminGameController {
 
     @PostMapping("/create")
     public void createGame(GameType gameType) {
-        gameManagementService.createEmptyGame(
-                gameType
-        );
+
     }
 }

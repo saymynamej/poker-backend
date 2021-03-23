@@ -14,4 +14,6 @@ public interface Table {
 
     List<PlayerEntity> getPlayers();
 
+    void addPlayer(PlayerEntity playerEntity);
+
 }

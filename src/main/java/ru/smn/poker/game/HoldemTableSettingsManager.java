@@ -45,7 +45,6 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
         this.river = getRandomCard();
         this.gameSettings = gameSettings;
         this.handId = handService.saveNewRound();
-        setAllPlayersGameName();
         dealCards();
         setButton();
         setSmallBlind();
@@ -95,7 +94,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
                 .stageType(StageType.PREFLOP)
                 .stageHistory(getBlindsHistory())
                 .lastBet(gameSettings.getStartBigBlindBet())
-                .gameId(gameSettings.getGameId())
+                .gameId(gameSettings.getTableId())
                 .isFinished(false)
                 .handId(handId)
                 .build();
@@ -118,7 +117,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElseThrow())
                 .players(players)
                 .lastBet(0L)
-                .gameId(gameSettings.getGameId())
+                .gameId(gameSettings.getTableId())
                 .isFinished(false)
                 .handId(handId)
                 .stageType(StageType.FLOP)
@@ -142,7 +141,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElse(null))
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElseThrow())
                 .stageType(StageType.TERN)
-                .gameId(gameSettings.getGameId())
+                .gameId(gameSettings.getTableId())
                 .lastBet(0L)
                 .handId(handId)
                 .isFinished(false)
@@ -163,7 +162,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
                 .lastBet(0L)
                 .isAfk(false)
                 .bank(bank)
-                .gameId(gameSettings.getGameId())
+                .gameId(gameSettings.getTableId())
                 .stageType(StageType.RIVER)
                 .smallBlindBet(gameSettings.getStartSmallBlindBet())
                 .bigBlindBet(gameSettings.getStartBigBlindBet())
@@ -174,10 +173,6 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElseThrow())
                 .players(players)
                 .build();
-    }
-
-    private void setAllPlayersGameName() {
-        players.forEach(player -> player.setGameName(gameSettings.getGameName()));
     }
 
     private void dealCards() {

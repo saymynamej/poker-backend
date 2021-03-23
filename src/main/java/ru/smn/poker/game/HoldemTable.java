@@ -25,6 +25,7 @@ public class HoldemTable implements Table {
 
     @Override
     public void start() {
+        log.info("table with name:" + getGameName() + " started");
         setInGame();
         while (isEnable()) {
             final TableSettingsManager tableSettingsManager = getTableSettingsManager();
@@ -68,5 +69,10 @@ public class HoldemTable implements Table {
     @Override
     public synchronized TableSettings getTableSettings() {
         return this.settings;
+    }
+
+    @Override
+    public void addPlayer(PlayerEntity playerEntity) {
+        players.add(playerEntity);
     }
 }

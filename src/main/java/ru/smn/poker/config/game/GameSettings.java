@@ -15,13 +15,13 @@ public interface GameSettings {
 
     GameType getGameType();
 
-    Long getGameId();
+    Long getTableId();
 
     String getGameName();
 
     void setGameName(String gameName);
 
-    void setGameId(Long gameId);
+    void setTableId(Long gameId);
 
 
 }

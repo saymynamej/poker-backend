@@ -33,20 +33,6 @@ public class SimpleActionService implements ActionService {
 
     @Override
     public void changeStateType(String playerName) {
-        final PlayerEntity player = holdemGameDataService.getPlayerByName(playerName)
-                .orElseThrow(() -> new RuntimeException("cannot find player with name:" + playerName));
-
-        if (player.hasGame()) {
-            final Game game = holdemGameDataService.getGameByName(player.getGameName());
-            if (game.getTableSettings() == null) {
-                log.info(String.format(MessageType.SETTINGS_NOT_FOUND.getMessage(), playerName));
-                return;
-            }
-            final TableSettings tableSettings = game.getTableSettings();
-            player.changeState();
-            securityNotificationService.sendToAllWithSecurity(tableSettings);
-            log.info(format(InformationType.CHANGED_STATE_TYPE_INFO.getMessage(), playerName, player.getStateType()));
-        }
     }
 
 
