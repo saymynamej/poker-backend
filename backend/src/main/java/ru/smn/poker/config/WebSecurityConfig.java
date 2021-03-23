@@ -56,7 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .dataSource(dataSource)
                 .passwordEncoder(passwordEncoder)
                 .usersByUsernameQuery("select name as username, password, enable from players where name =?")
-                .authoritiesByUsernameQuery("select name as username, role_type from players where name =?");
+                .authoritiesByUsernameQuery("select name as username, access_type from players where name =?");
     }
 
 

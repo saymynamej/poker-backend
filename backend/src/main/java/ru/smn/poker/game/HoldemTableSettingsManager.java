@@ -81,7 +81,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
     @Override
     public TableSettings getPreflopSettings() {
         return HoldemTableSettings.builder()
-                .gameName(gameSettings.getGameName())
+                .tableName(gameSettings.getGameName())
                 .bank(gameSettings.getStartBigBlindBet() + gameSettings.getStartSmallBlindBet())
                 .smallBlindBet(gameSettings.getStartSmallBlindBet())
                 .bigBlindBet(gameSettings.getStartBigBlindBet())
@@ -94,7 +94,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
                 .stageType(StageType.PREFLOP)
                 .stageHistory(getBlindsHistory())
                 .lastBet(gameSettings.getStartBigBlindBet())
-                .gameId(gameSettings.getTableId())
+                .tableId(gameSettings.getTableId())
                 .isFinished(false)
                 .handId(handId)
                 .build();
@@ -105,7 +105,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
         setAllActivePlayersTest();
         return HoldemTableSettings.builder()
                 .flop(flop)
-                .gameName(gameSettings.getGameName())
+                .tableName(gameSettings.getGameName())
                 .bank(bank)
                 .smallBlindBet(gameSettings.getStartSmallBlindBet())
                 .fullHistory(fullHistory)
@@ -117,7 +117,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElseThrow())
                 .players(players)
                 .lastBet(0L)
-                .gameId(gameSettings.getTableId())
+                .tableId(gameSettings.getTableId())
                 .isFinished(false)
                 .handId(handId)
                 .stageType(StageType.FLOP)
@@ -130,7 +130,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
         return HoldemTableSettings.builder()
                 .flop(flop)
                 .tern(tern)
-                .gameName(gameSettings.getGameName())
+                .tableName(gameSettings.getGameName())
                 .bank(bank)
                 .lastBet(gameSettings.getStartSmallBlindBet())
                 .isAfk(false)
@@ -141,7 +141,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
                 .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElse(null))
                 .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElseThrow())
                 .stageType(StageType.TERN)
-                .gameId(gameSettings.getTableId())
+                .tableId(gameSettings.getTableId())
                 .lastBet(0L)
                 .handId(handId)
                 .isFinished(false)
@@ -157,12 +157,12 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
                 .tern(tern)
                 .fullHistory(fullHistory)
                 .stageHistory(new HashMap<>())
-                .gameName(gameSettings.getGameName())
+                .tableName(gameSettings.getGameName())
                 .river(river)
                 .lastBet(0L)
                 .isAfk(false)
                 .bank(bank)
-                .gameId(gameSettings.getTableId())
+                .tableId(gameSettings.getTableId())
                 .stageType(StageType.RIVER)
                 .smallBlindBet(gameSettings.getStartSmallBlindBet())
                 .bigBlindBet(gameSettings.getStartBigBlindBet())
@@ -295,7 +295,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
 
     protected void clearRole(RoleType roleType) {
         final Optional<PlayerEntity> playerByRole = players.stream()
-                .filter(player -> player.getRoleType() == roleType)
+                .filter(player -> player.getTableSettings().getRoleType() == roleType)
                 .findAny();
 
         playerByRole.ifPresent(playerEntity -> playerEntity.getTableSettings().removeRole());
@@ -307,7 +307,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
 
     protected Optional<PlayerEntity> getPlayerByRole(RoleType roleType) {
         return this.players.stream()
-                .filter(player -> player.getRoleType() == roleType)
+                .filter(player -> player.getTableSettings().getRoleType() == roleType)
                 .findFirst();
     }
 
@@ -345,7 +345,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
 
     protected void setAllActivePlayersTest() {
         this.players.forEach(player -> {
-            if (player.getAction() != null && player.getRoleType() != null) {
+            if (player.getAction() != null && player.getTableSettings().getRoleType() != null) {
                 if (!(player.getAction() instanceof Fold) && player.getAction().getActionType() != ActionType.ALLIN && player.getTableSettings().getStateType() == StateType.IN_GAME) {
                     player.getTableSettings().setAction(new Wait());
                 }

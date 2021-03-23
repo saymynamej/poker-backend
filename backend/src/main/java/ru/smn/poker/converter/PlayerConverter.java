@@ -3,6 +3,7 @@ package ru.smn.poker.converter;
 import ru.smn.poker.dto.Card;
 import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.PlayerEntity;
+import ru.smn.poker.entities.PlayerSettingsEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,21 +21,22 @@ public class PlayerConverter {
         if (playerEntity == null) {
             return null;
         }
+        final PlayerSettingsEntity tableSettings = playerEntity.getTableSettings();
         return Player.builder()
-//                .chipsCount(playerEntity.getSettings().getChipsCount().getCount())
-//                .cards(playerEntity.getSettings().getCards() == null ? null : playerEntity.getSettings().getCards().stream()
-//                        .map(cardEntity -> Card.builder()
-//                                .id(cardEntity.getId())
-//                                .cardType(cardEntity.getCardType())
-//                                .build())
-//                        .collect(Collectors.toList()))
-//                .chipsId(playerEntity.getSettings().getChipsCount().getId())
-//                .id(playerEntity.getId())
-//                .timeBank(playerEntity.getTimeBank())
-//                .active(playerEntity.getSettings().isActive())
-//                .roleType(playerEntity.getSettings().getRoleType())
-//                .action(playerEntity.getAction())
-//                .name(playerEntity.getName())
+                .chipsCount(tableSettings.getChipsCount().getCount())
+                .cards(tableSettings.getCards() == null ? null : tableSettings.getCards().stream()
+                        .map(cardEntity -> Card.builder()
+                                .id(cardEntity.getId())
+                                .cardType(cardEntity.getCardType())
+                                .build())
+                        .collect(Collectors.toList()))
+                .chipsId(tableSettings.getChipsCount().getId())
+                .id(playerEntity.getId())
+                .timeBank(tableSettings.getTimeBank())
+                .active(tableSettings.isActive())
+                .roleType(tableSettings.getRoleType())
+                .action(playerEntity.getAction())
+                .name(playerEntity.getName())
                 .build();
     }
 }

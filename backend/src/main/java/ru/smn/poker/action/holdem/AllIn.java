@@ -21,7 +21,7 @@ public class AllIn implements ExecutableAction {
 
     @Override
     public void doAction(TableSettings tableSettings, PlayerEntity player, GameService gameService, ActionService actionService) {
-        StrategyData.ALLIN_STRATEGIES.get(player.getRoleType()).execute(
+        StrategyData.ALLIN_STRATEGIES.get(player.getTableSettings().getRoleType()).execute(
                 player,
                 gameService,
                 actionService,

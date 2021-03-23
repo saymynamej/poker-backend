@@ -2,16 +2,16 @@ package ru.smn.poker.entities;
 
 import lombok.*;
 import ru.smn.poker.action.Action;
-import ru.smn.poker.enums.RoleType;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @Entity
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "players")
@@ -26,20 +26,26 @@ public class PlayerEntity {
     @JoinColumn(name = "settings_id")
     private List<PlayerSettingsEntity> settings = new ArrayList<>();
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    private List<TableEntity> tables;
+
     private String name;
 
     private String password;
 
-    @Builder.Default
-    @Enumerated(value = EnumType.STRING)
-    private RoleType roleType = RoleType.ORDINARY;
-
     private boolean enable;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "access_type")
+    private AccessType accessType;
+
+
+    //TODO
     public PlayerSettingsEntity getTableSettings(){
         return settings.get(0);
     }
 
+    //TODO
     public Action getAction(){
         return settings.get(0).getAction();
     }
@@ -48,7 +54,13 @@ public class PlayerEntity {
         return PlayerEntity
                 .builder()
                 .name(name)
-                .settings(settings)
+                .accessType(accessType)
+                .enable(enable)
+                .tables(tables)
+                .settings(this.settings.stream()
+                        .map(settings -> settings.toBuilder().build())
+                        .collect(Collectors.toList())
+                )
                 .build();
     }
 

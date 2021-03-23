@@ -28,7 +28,7 @@ public class Call implements ExecutableAction {
 
     @Override
     public void doAction(TableSettings tableSettings, PlayerEntity player, GameService gameService, ActionService actionService) {
-        CALL_STRATEGIES.get(player.getRoleType()).execute
+        CALL_STRATEGIES.get(player.getTableSettings().getRoleType()).execute
                 (
                         player,
                         gameService,

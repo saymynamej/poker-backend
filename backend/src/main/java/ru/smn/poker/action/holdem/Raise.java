@@ -29,7 +29,7 @@ public class Raise implements ExecutableAction, CountAction {
 
     @Override
     public void doAction(TableSettings tableSettings, PlayerEntity player, GameService gameService, ActionService actionService) {
-        RAISE_STRATEGIES.get(player.getRoleType()).execute
+        RAISE_STRATEGIES.get(player.getTableSettings().getRoleType()).execute
                 (
                         player,
                         gameService,

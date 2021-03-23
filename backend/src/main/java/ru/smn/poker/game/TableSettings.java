@@ -26,11 +26,11 @@ public interface TableSettings {
 
     CardType getRiver();
 
-    String getGameName();
+    String getTableName();
 
     long getSmallBlindBet();
 
-    long getGameId();
+    long getTableId();
 
     long getBigBlindBet();
 

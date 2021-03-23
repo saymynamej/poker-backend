@@ -24,7 +24,7 @@ public class Check implements ExecutableAction {
 
     @Override
     public void doAction(TableSettings tableSettings, PlayerEntity player, GameService gameService, ActionService actionService) {
-        CHECK_STRATEGIES.get(player.getRoleType()).execute(
+        CHECK_STRATEGIES.get(player.getTableSettings().getRoleType()).execute(
                 player,
                 gameService,
                 actionService,

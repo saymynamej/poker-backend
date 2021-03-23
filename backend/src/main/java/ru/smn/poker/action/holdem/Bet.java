@@ -29,7 +29,7 @@ public class Bet implements ExecutableAction {
 
     @Override
     public void doAction(TableSettings tableSettings, PlayerEntity player, GameService gameService, ActionService actionService) {
-        BET_STRATEGIES.get(player.getRoleType()).execute(
+        BET_STRATEGIES.get(player.getTableSettings().getRoleType()).execute(
                 player,
                 gameService,
                 actionService,

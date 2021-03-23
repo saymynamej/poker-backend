@@ -9,7 +9,5 @@ public interface SecurityService {
 
     boolean isLegalPlayer(String gameName, PlayerEntity player);
 
-    boolean isLegalPlayer(PlayerEntity player);
-
     TableSettings secureCards(List<String> filter, TableSettings tableSettings);
 }

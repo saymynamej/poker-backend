@@ -33,7 +33,7 @@ public class SocketListeners {
                 .map(Principal::getName)
                 .map(gameDataService::getPlayerByName)
                 .map(Optional::get)
-                .map(player -> tables.get(player.getTableSettings().getGameName()))
+                .map(player -> tables.get(player.getTableSettings().getTableName()))
                 .map(Table::getTableSettings)
                 .ifPresent(tableSettings -> securityNotificationService.sendToUserWithSecurity(tableSettings, event.getUser().getName()));
     }

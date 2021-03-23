@@ -31,8 +31,8 @@ public class SimpleActionService implements ActionService {
 
     @Override
     public void changeStateType(String playerName) {
-    }
 
+    }
 
     @Override
     public void setAction(String playerName, Action action) {
@@ -41,7 +41,7 @@ public class SimpleActionService implements ActionService {
 
         action = changeCallOnAllInIfNeeded(action, player);
 
-        if (!holdemSecurityService.isLegalPlayer(player.getTableSettings().getGameName(), player)) {
+        if (!holdemSecurityService.isLegalPlayer(player.getTableSettings().getTableName(), player)) {
             simpleNotificationService.sendSystemMessageToUser(playerName, format(MessageType.QUEUE_ERROR.getMessage(), player.getName()));
             log.info(String.format(MessageType.QUEUE_ERROR.getMessage(), player.getName()));
             return;

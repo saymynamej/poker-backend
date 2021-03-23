@@ -24,7 +24,7 @@ public class Fold implements ExecutableAction {
 
     @Override
     public void doAction(TableSettings tableSettings, PlayerEntity player, GameService gameService, ActionService actionService) {
-        FOLD_STRATEGIES.get(player.getRoleType()).execute(
+        FOLD_STRATEGIES.get(player.getTableSettings().getRoleType()).execute(
                 player,
                 gameService,
                 actionService,

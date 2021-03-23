@@ -18,7 +18,7 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-@Builder
+@Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "player_settings")
@@ -30,19 +30,11 @@ public class PlayerSettingsEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private PlayerEntity player;
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
     private List<ActionEntity> actions;
 
-    private String gameName;
-
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "settings", fetch = FetchType.EAGER)
     private List<CardEntity> cards;
-
-    @ManyToOne(cascade = CascadeType.ALL)
-    private TableEntity table;
 
     @Builder.Default
     @Enumerated(value = EnumType.STRING)
@@ -61,6 +53,8 @@ public class PlayerSettingsEntity {
     private long timeBank;
 
     private boolean active;
+
+    private String tableName;
 
     @Transient
     private Action action;
@@ -132,10 +126,6 @@ public class PlayerSettingsEntity {
         return getAction().getActionType() == ActionType.FOLD;
     }
 
-    public boolean isNotFolded() {
-        return !isFolded();
-    }
-
     public void setInActive() {
         setAction(new Fold());
         setStateType(StateType.AFK);
@@ -152,19 +142,10 @@ public class PlayerSettingsEntity {
     }
 
     public void addCards(List<CardEntity> cards) {
-        setCards(new ArrayList<>(cards));
-    }
-
-    public boolean isBot() {
-        return getPlayerType() == PlayerType.BOT;
-    }
-
-    public boolean isOrdinaryPlayer() {
-        return getPlayerType() == PlayerType.ORDINARY;
+        this.cards = new ArrayList<>(cards);
     }
 
     public PlayerType getPlayerType() {
         return PlayerType.ORDINARY;
     }
-
 }

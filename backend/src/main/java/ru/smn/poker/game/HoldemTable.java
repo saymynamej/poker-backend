@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.entities.PlayerEntity;
+import ru.smn.poker.enums.StageType;
 import ru.smn.poker.enums.StateType;
 import ru.smn.poker.service.common.HandService;
 import ru.smn.poker.service.OrderActionService;
@@ -16,17 +17,16 @@ import java.util.List;
 @AllArgsConstructor
 @Slf4j
 public class HoldemTable implements Table {
-    private final List<PlayerEntity> players;
     private final OrderActionService orderActionService;
     private final PrizeService prizeService;
-    private final GameSettings gameSettings;
     private final HandService handService;
+    private final List<PlayerEntity> players;
+    private final GameSettings gameSettings;
     private TableSettings settings;
 
     @Override
     public void start() {
         log.info("table with name:" + getGameName() + " started");
-        setInGame();
         while (isEnable()) {
             final TableSettingsManager tableSettingsManager = getTableSettingsManager();
             while (true) {
@@ -34,14 +34,13 @@ public class HoldemTable implements Table {
                 if (orderActionService.start(settings)) {
                     break;
                 }
+                if (this.settings.getStageType() == StageType.RIVER){
+                    break;
+                }
                 tableSettingsManager.commit(settings);
             }
             prizeService.sendPrizes(settings);
         }
-    }
-
-    private void setInGame() {
-        players.forEach(playerEntity -> playerEntity.getTableSettings().setStateType(StateType.IN_GAME));
     }
 
     private TableSettingsManager getTableSettingsManager() {

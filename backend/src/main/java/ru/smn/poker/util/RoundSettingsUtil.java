@@ -16,13 +16,12 @@ public class RoundSettingsUtil {
                 player.getTableSettings().addCards(Collections.emptyList());
             }
         });
-
         return copy(tableSettings, playersWithSecureCards);
     }
 
     public static TableSettings copy(TableSettings tableSettings, List<PlayerEntity> players) {
         return HoldemTableSettings.builder()
-                .gameName(tableSettings.getGameName())
+                .tableName(tableSettings.getTableName())
                 .bank(tableSettings.getBank())
                 .smallBlindBet(tableSettings.getSmallBlindBet())
                 .bigBlindBet(tableSettings.getBigBlindBet())

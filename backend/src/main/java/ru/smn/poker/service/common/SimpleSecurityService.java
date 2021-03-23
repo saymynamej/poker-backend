@@ -27,9 +27,4 @@ public class SimpleSecurityService implements SecurityService {
     public TableSettings secureCards(List<String> filterName, TableSettings tableSettings) {
         return RoundSettingsUtil.copyWithSecureCard(tableSettings, filterName);
     }
-
-    @Override
-    public boolean isLegalPlayer(PlayerEntity player) {
-        return isLegalPlayer(player.getTableSettings().getGameName(), player);
-    }
 }

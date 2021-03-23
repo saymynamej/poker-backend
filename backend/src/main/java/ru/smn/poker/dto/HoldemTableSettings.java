@@ -24,9 +24,9 @@ public class HoldemTableSettings implements TableSettings {
     private final List<CardType> flop;
     private final CardType tern;
     private final CardType river;
-    private final String gameName;
+    private final String tableName;
     private final long smallBlindBet;
-    private final long gameId;
+    private final long tableId;
     private final long bigBlindBet;
     private final PlayerEntity button;
     private final PlayerEntity smallBlind;

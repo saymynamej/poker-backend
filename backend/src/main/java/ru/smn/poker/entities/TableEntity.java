@@ -1,5 +1,7 @@
 package ru.smn.poker.entities;
+
 import lombok.*;
+import ru.smn.poker.enums.GameType;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,8 +20,12 @@ public class TableEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "player_id")
+    private String name;
+
+    @Enumerated(EnumType.STRING)
+    private GameType gameType;
+
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "tables")
     @Builder.Default
     private List<PlayerEntity> players = new ArrayList<>();
 

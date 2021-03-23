@@ -31,7 +31,7 @@ public class HoldemTableSettingsManagerHU extends HoldemTableSettingsManager {
     protected void setBigBlind() {
         clearRole(RoleType.BIG_BLIND);
         final PlayerEntity player = getPlayers().stream()
-                .filter(pl -> pl.getRoleType() != RoleType.BUTTON)
+                .filter(pl -> pl.getTableSettings().getRoleType() != RoleType.BUTTON)
                 .findAny()
                 .orElseThrow();
         player.getTableSettings().setRole(RoleType.BIG_BLIND);

@@ -5,11 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.smn.poker.action.Action;
-import ru.smn.poker.entities.*;
+import ru.smn.poker.converter.TableSettingsConverter;
+import ru.smn.poker.entities.PlayerEntity;
+import ru.smn.poker.entities.TableEntity;
 import ru.smn.poker.game.TableSettings;
-import ru.smn.poker.repository.*;
-
-import java.util.List;
+import ru.smn.poker.repository.HandRepository;
 
 import static ru.smn.poker.util.HistoryUtil.addActionInHistory;
 
@@ -17,12 +17,13 @@ import static ru.smn.poker.util.HistoryUtil.addActionInHistory;
 @RequiredArgsConstructor
 @Slf4j
 public class GameService {
-    private final ActionLogService actionLogService;
     private final HandRepository handRepository;
+    private final TableService tableService;
 
     @Transactional
     public void update(TableSettings tableSettings) {
-
+//        final TableEntity tableEntity = TableSettingsConverter.toEntity(tableSettings);
+//        tableService.save(tableEntity);
     }
 
     public void doAction(
@@ -36,7 +37,6 @@ public class GameService {
         tableSettings.setBank(tableSettings.getBank() + removeChips);
         setLastBet(tableSettings, lastBet);
         addActionInHistory(tableSettings, player);
-        actionLogService.log(player, action, tableSettings);
     }
 
     public void setActivePlayer(TableSettings tableSettings, PlayerEntity player) {
