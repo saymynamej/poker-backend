@@ -5,7 +5,6 @@ import ru.smn.poker.action.holdem.Call;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.RoleType;
-import ru.smn.poker.service.common.HandService;
 
 import java.util.*;
 
@@ -13,11 +12,16 @@ public class HoldemTableSettingsManagerHU extends HoldemTableSettingsManager {
 
     public HoldemTableSettingsManagerHU(
             Random random,
+            long handId,
             List<PlayerEntity> players,
-            GameSettings gameSettings,
-            HandService handService
+            GameSettings gameSettings
     ) {
-        super(random, players, gameSettings, handService);
+        super(
+                random,
+                handId,
+                players,
+                gameSettings
+        );
     }
 
     @Override
@@ -53,5 +57,5 @@ public class HoldemTableSettingsManagerHU extends HoldemTableSettingsManager {
     }
 
     @Override
-    protected void setSmallBlind() {}
+    protected void setSmallBlind() { }
 }

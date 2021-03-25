@@ -9,7 +9,6 @@ import ru.smn.poker.dto.HoldemTableSettings;
 import ru.smn.poker.entities.CardEntity;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.*;
-import ru.smn.poker.service.common.HandService;
 import ru.smn.poker.util.PlayerUtil;
 
 import java.util.*;
@@ -33,9 +32,9 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
 
     public HoldemTableSettingsManager(
             Random random,
+            long handId,
             List<PlayerEntity> players,
-            GameSettings gameSettings,
-            HandService handService
+            GameSettings gameSettings
     ) {
         this.random = random;
         this.allCards = CardType.getAllCardsAsList();
@@ -44,7 +43,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
         this.tern = getRandomCard();
         this.river = getRandomCard();
         this.gameSettings = gameSettings;
-        this.handId = handService.saveNewRound();
+        this.handId = handId;
         dealCards();
         setButton();
         setSmallBlind();

@@ -5,7 +5,6 @@ import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.service.common.HandService;
 
 import java.security.SecureRandom;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -18,6 +17,11 @@ public class HoldemRoundSettingsManagerFactory {
             GameSettings gameSettings,
             HandService handService
     ) {
-        return new HoldemTableSettingsManagerHU(random, new ArrayList<>(players), gameSettings, handService);
+        return new HoldemTableSettingsManagerHU(
+                random,
+                handService.getNewHandId(),
+                players,
+                gameSettings
+        );
     }
 }
