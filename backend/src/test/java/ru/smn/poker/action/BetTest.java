@@ -42,7 +42,7 @@ public class BetTest {
         executorServiceForActions.submit(() -> bet.doAction(tableSettingsDTO, player, gameService, actionService));
         executorServiceForActions.awaitTermination(2L, TimeUnit.SECONDS);
         Mockito.verify(actionService, Mockito.times(1)).waitPlayerAction(player, tableSettingsDTO);
-        Assertions.assertEquals(DEFAULT_CHIPS_COUNT, player.getChipsCount().getCount());
+        Assertions.assertEquals(DEFAULT_CHIPS_COUNT, player.getTableSettings().getChipsCount().getCount());
     }
 
     @Test
@@ -53,6 +53,6 @@ public class BetTest {
         executorServiceForActions.submit(() -> bet.doAction(tableSettingsDTO, player, gameService, actionService));
         executorServiceForActions.awaitTermination(2L, TimeUnit.SECONDS);
         Mockito.verify(actionService, Mockito.times(0)).waitPlayerAction(player, tableSettingsDTO);
-        Assertions.assertEquals(DEFAULT_CHIPS_COUNT - bet.getCount(), player.getChipsCount().getCount());
+        Assertions.assertEquals(DEFAULT_CHIPS_COUNT - bet.getCount(), player.getTableSettings().getChipsCount().getCount());
     }
 }

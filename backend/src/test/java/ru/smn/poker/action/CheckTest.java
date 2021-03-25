@@ -57,7 +57,7 @@ public class CheckTest {
         final TableSettings tableSettingsDTO = DTOUtilTest.getRoundSettingsDTO(StageType.PREFLOP);
         tableSettingsDTO.setLastBet(2L);
         final PlayerEntity player = DTOUtilTest.getPlayer();
-        player.setRole(RoleType.BIG_BLIND);
+        player.getTableSettings().setRole(RoleType.BIG_BLIND);
         executorService.submit(() -> new Check().doAction(tableSettingsDTO, player, gameService, actionService));
         executorService.awaitTermination(2L, TimeUnit.SECONDS);
     }

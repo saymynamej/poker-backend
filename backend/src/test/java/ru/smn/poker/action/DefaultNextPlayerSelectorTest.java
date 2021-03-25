@@ -40,8 +40,8 @@ class DefaultNextPlayerSelectorTest {
 
 
         defaultPlayersForHoldem.forEach(playerEntity -> {
-            playerEntity.setStateType(StateType.IN_GAME);
-            playerEntity.setAction(new Check());
+            playerEntity.getTableSettings().setStateType(StateType.IN_GAME);
+            playerEntity.getTableSettings().setAction(new Check());
         });
 
         final PlayerEntity firstPlayerForAction = defaultNextPlayerSelector.getPlayerForAction(defaultPlayersForHoldem, null);

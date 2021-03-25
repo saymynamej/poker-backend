@@ -45,7 +45,7 @@ class CallTest {
         final PlayerEntity player = getPlayer();
         executorServiceForActions.submit(() -> call.doAction(tableSettingsDTO, player, gameService, actionService));
         executorServiceForActions.awaitTermination(2L, TimeUnit.SECONDS);
-        Assertions.assertEquals(DEFAULT_CHIPS_COUNT - DEFAULT_LAST_BET, player.getChipsCount().getCount());
+        Assertions.assertEquals(DEFAULT_CHIPS_COUNT - DEFAULT_LAST_BET, player.getTableSettings().getChipsCount().getCount());
         Assertions.assertEquals(call.getCount(), tableSettingsDTO.getLastBet());
     }
 
@@ -53,7 +53,7 @@ class CallTest {
     void testCallWhenChipsAreNotEnough() throws InterruptedException {
         final TableSettings tableSettingsDTO = getRoundSettingsDTO(DEFAULT_LAST_BET);
         final PlayerEntity player = getPlayer();
-        final Call call = new Call(player.getChipsCount().getCount() + 1);
+        final Call call = new Call(player.getTableSettings().getChipsCount().getCount() + 1);
         executorServiceForActions.submit(() -> call.doAction(tableSettingsDTO, player, gameService, actionService));
         executorServiceForActions.awaitTermination(2L, TimeUnit.SECONDS);
         verify(actionService, times(1)).waitPlayerAction(player, tableSettingsDTO);
@@ -79,7 +79,7 @@ class CallTest {
         final Call call = new Call(tableSettingsDTO.getLastBet() - sumAllBets);
         executorServiceForActions.submit(() -> call.doAction(tableSettingsDTO, player, gameService, actionService));
         executorServiceForActions.awaitTermination(2L, TimeUnit.SECONDS);
-        Assertions.assertEquals(player.getChipsCount().getCount(), DEFAULT_CHIPS_COUNT - tableSettingsDTO.getLastBet());
+        Assertions.assertEquals(player.getTableSettings().getChipsCount().getCount(), DEFAULT_CHIPS_COUNT - tableSettingsDTO.getLastBet());
     }
 
 
@@ -92,7 +92,7 @@ class CallTest {
         executorServiceForActions.submit(() -> call.doAction(tableSettingsDTO, player, gameService, actionService));
         executorServiceForActions.awaitTermination(2L, TimeUnit.SECONDS);
         verify(actionService, times(1)).waitPlayerAction(player, tableSettingsDTO);
-        Assertions.assertEquals(player.getChipsCount().getCount(), DEFAULT_CHIPS_COUNT - sumAllBets);
+        Assertions.assertEquals(player.getTableSettings().getChipsCount().getCount(), DEFAULT_CHIPS_COUNT - sumAllBets);
     }
 
     private long setHistoryForPlayer(PlayerEntity player, TableSettings tableSettings) {
@@ -107,7 +107,7 @@ class CallTest {
                 new Call(thirdBet))
         );
 
-        player.removeChips(firstBet + secondBet + thirdBet);
+        player.getTableSettings().removeChips(firstBet + secondBet + thirdBet);
         tableSettings.setLastBet(500L);
 
         return firstBet + secondBet + thirdBet;

@@ -80,8 +80,8 @@ public class DTOUtilTest {
     public static PlayerEntity getPlayer() {
         return PlayerEntity.builder()
                 .name(faker.name().name())
-                .settings(PlayerSettingsEntity.builder()
-                        .gameName(DEFAULT_GAME_NAME)
+                .settings(Collections.singletonList(PlayerSettingsEntity.builder()
+                        .tableName(DEFAULT_GAME_NAME)
                         .chipsCount(new ChipsCountEntity(5000L))
                         .stateType(StateType.IN_GAME)
                         .cards(List.of(
@@ -90,7 +90,7 @@ public class DTOUtilTest {
                         )
                         .roleType(RoleType.ORDINARY)
                         .timeBank(60L)
-                        .build())
+                        .build()))
                 .build();
     }
 

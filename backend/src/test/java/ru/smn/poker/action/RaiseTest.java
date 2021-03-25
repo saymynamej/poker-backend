@@ -43,7 +43,7 @@ public class RaiseTest {
         final Raise raise = new Raise(raiseCount);
         executorService.submit(() -> raise.doAction(tableSettings, player, gameService, actionService));
         executorService.awaitTermination(2L, TimeUnit.SECONDS);
-        Assertions.assertEquals(DEFAULT_CHIPS_COUNT - raise.getCount(), player.getChipsCount().getCount());
+        Assertions.assertEquals(DEFAULT_CHIPS_COUNT - raise.getCount(), player.getTableSettings().getChipsCount().getCount());
     }
 
     @Test

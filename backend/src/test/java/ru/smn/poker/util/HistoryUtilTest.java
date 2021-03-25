@@ -51,7 +51,7 @@ public class HistoryUtilTest {
         long callCount = 100;
         final TableSettings tableSettingsDTO = DTOUtilTest.getRoundSettingsDTO();
         final PlayerEntity player = DTOUtilTest.getPlayer();
-        player.setAction(new Call(callCount));
+        player.getTableSettings().setAction(new Call(callCount));
         addActionInHistory(tableSettingsDTO, player);
         final CountAction action = (CountAction) tableSettingsDTO.getStageHistory().get(player).get(0);
         Assertions.assertEquals(action.getCount(), callCount);
@@ -73,7 +73,7 @@ public class HistoryUtilTest {
         final List<PlayerEntity> players = tableSettingsDTO.getPlayers();
         for (PlayerEntity player : players) {
             final Call action = new Call(DTOUtilTest.DEFAULT_BIG_BLIND_BET);
-            player.setAction(action);
+            player.getTableSettings().setAction(action);
             addActionInHistory(tableSettingsDTO, player, action);
         }
         final boolean inGameHaveSameCountOfBet = allPlayersInGameHaveSameCountOfBet(tableSettingsDTO);
@@ -86,7 +86,7 @@ public class HistoryUtilTest {
         final List<PlayerEntity> players = tableSettingsDTO.getPlayers();
         for (PlayerEntity player : players) {
             final Call action = new Call(DTOUtilTest.DEFAULT_BIG_BLIND_BET);
-            player.setAction(action);
+            player.getTableSettings().setAction(action);
             addActionInHistory(tableSettingsDTO, player, action);
         }
         addActionInHistory(tableSettingsDTO, players.get(0), new Call(DTOUtilTest.DEFAULT_BIG_BLIND_BET));

@@ -42,11 +42,11 @@ class SimplePrizeServiceTest {
         final Raise raise = new Raise(raiseCount);
         final Fold fold = new Fold();
 
-        player1.setAction(fold);
-        player2.setAction(call);
+        player1.getTableSettings().setAction(fold);
+        player2.getTableSettings().setAction(call);
 
-        player1.setStateType(StateType.IN_GAME);
-        player2.setStateType(StateType.IN_GAME);
+        player1.getTableSettings().setStateType(StateType.IN_GAME);
+        player2.getTableSettings().setStateType(StateType.IN_GAME);
 
         prizeService.sendPrizes(HoldemTableSettings.builder()
                 .fullHistory(Map.of(
@@ -60,30 +60,30 @@ class SimplePrizeServiceTest {
                 .bank(callCount)
                 .build());
 
-        Assertions.assertEquals(5100, player2.getChipsCount().getCount());
-        Assertions.assertEquals(5000, player1.getChipsCount().getCount());
+        Assertions.assertEquals(5100, player2.getTableSettings().getChipsCount().getCount());
+        Assertions.assertEquals(5000, player1.getTableSettings().getChipsCount().getCount());
     }
 
     @Test
     void testWhenNeedChop() {
         final PlayerEntity player1 = PlayerUtil.getDefaultPlayerForHoldem("1");
-        player1.addCards(Arrays.asList(
+        player1.getTableSettings().addCards(Arrays.asList(
                 CardEntity.builder().cardType(CardType.TWO_C).build(),
                 CardEntity.builder().cardType(CardType.THREE_H).build())
         );
-        final AllIn allIn1 = new AllIn(player1.getChipsCount().getCount());
-        player1.setAction(allIn1);
+        final AllIn allIn1 = new AllIn(player1.getTableSettings().getChipsCount().getCount());
+        player1.getTableSettings().setAction(allIn1);
 
         final PlayerEntity player2 = PlayerUtil.getDefaultPlayerForHoldem("2");
-        player2.addCards(Arrays.asList(
+        player2.getTableSettings().addCards(Arrays.asList(
                 CardEntity.builder().cardType(CardType.TWO_D).build(),
                 CardEntity.builder().cardType(CardType.THREE_S).build())
         );
-        final AllIn allIn2 = new AllIn(player2.getChipsCount().getCount());
-        player2.setAction(allIn2);
+        final AllIn allIn2 = new AllIn(player2.getTableSettings().getChipsCount().getCount());
+        player2.getTableSettings().setAction(allIn2);
 
-        player1.setStateType(StateType.IN_GAME);
-        player2.setStateType(StateType.IN_GAME);
+        player1.getTableSettings().setStateType(StateType.IN_GAME);
+        player2.getTableSettings().setStateType(StateType.IN_GAME);
 
         TableSettings tableSettings = HoldemTableSettings.builder()
                 .flop(Arrays.asList(
@@ -101,56 +101,56 @@ class SimplePrizeServiceTest {
                         player1,
                         player2
                 ))
-                .bank(player1.getChipsCount().getCount() + player2.getChipsCount().getCount())
+                .bank(player1.getTableSettings().getChipsCount().getCount() + player2.getTableSettings().getChipsCount().getCount())
                 .build();
 
-        player1.setChipsCount(new ChipsCountEntity());
-        player2.setChipsCount(new ChipsCountEntity());
+        player1.getTableSettings().setChipsCount(new ChipsCountEntity());
+        player2.getTableSettings().setChipsCount(new ChipsCountEntity());
 
         prizeService.sendPrizes(tableSettings);
 
-        Assertions.assertEquals(5000, player2.getChipsCount().getCount());
-        Assertions.assertEquals(5000, player1.getChipsCount().getCount());
+        Assertions.assertEquals(5000, player2.getTableSettings().getChipsCount().getCount());
+        Assertions.assertEquals(5000, player1.getTableSettings().getChipsCount().getCount());
     }
 
     @Test
     void testWhenNeedCalculate() {
         final PlayerEntity player1 = PlayerUtil.getDefaultPlayerForHoldem("1");
-        player1.addCards(
+        player1.getTableSettings().addCards(
                 Arrays.asList(
                         CardEntity.builder().cardType(CardType.K_C).build(),
                         CardEntity.builder().cardType(CardType.K_D).build()
                 )
         );
         final AllIn allIn1 = new AllIn(5000);
-        player1.setAction(allIn1);
-        player1.setChipsCount(new ChipsCountEntity());
+        player1.getTableSettings().setAction(allIn1);
+        player1.getTableSettings().setChipsCount(new ChipsCountEntity());
 
         final PlayerEntity player2 = PlayerUtil.getDefaultPlayerForHoldem("2");
-        player2.addCards(
+        player2.getTableSettings().addCards(
                 Arrays.asList(
                         CardEntity.builder().cardType(CardType.EIGHT_S).build(),
                         CardEntity.builder().cardType(CardType.NINE_S).build()
                 )
         );
         final AllIn allIn2 = new AllIn(2000);
-        player2.setChipsCount(new ChipsCountEntity());
-        player2.setAction(allIn2);
+        player2.getTableSettings().setChipsCount(new ChipsCountEntity());
+        player2.getTableSettings().setAction(allIn2);
 
         final PlayerEntity player3 = PlayerUtil.getDefaultPlayerForHoldem("3");
-        player3.addCards(
+        player3.getTableSettings().addCards(
                 Arrays.asList(
                         CardEntity.builder().cardType(CardType.TWO_C).build(),
                         CardEntity.builder().cardType(CardType.THREE_S).build()
                 )
         );
         final AllIn allIn3 = new AllIn(100);
-        player3.setChipsCount(new ChipsCountEntity());
-        player3.setAction(allIn3);
+        player3.getTableSettings().setChipsCount(new ChipsCountEntity());
+        player3.getTableSettings().setAction(allIn3);
 
-        player1.setStateType(StateType.IN_GAME);
-        player2.setStateType(StateType.IN_GAME);
-        player3.setStateType(StateType.IN_GAME);
+        player1.getTableSettings().setStateType(StateType.IN_GAME);
+        player2.getTableSettings().setStateType(StateType.IN_GAME);
+        player3.getTableSettings().setStateType(StateType.IN_GAME);
 
         prizeService.sendPrizes(HoldemTableSettings.builder()
                 .flop(Arrays.asList(
@@ -173,9 +173,9 @@ class SimplePrizeServiceTest {
                 .bank(7100)
                 .build());
 
-        Assertions.assertEquals(4100, player2.getChipsCount().getCount());
-        Assertions.assertEquals(3000, player1.getChipsCount().getCount());
-        Assertions.assertEquals(0, player3.getChipsCount().getCount());
+        Assertions.assertEquals(4100, player2.getTableSettings().getChipsCount().getCount());
+        Assertions.assertEquals(3000, player1.getTableSettings().getChipsCount().getCount());
+        Assertions.assertEquals(0, player3.getTableSettings().getChipsCount().getCount());
     }
 
 }
