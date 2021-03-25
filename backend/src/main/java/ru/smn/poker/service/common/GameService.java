@@ -5,9 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.smn.poker.action.Action;
-import ru.smn.poker.converter.TableSettingsConverter;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.entities.TableEntity;
 import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.repository.HandRepository;
 

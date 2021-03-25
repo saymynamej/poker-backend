@@ -41,6 +41,10 @@ public class PlayerEntity {
     private AccessType accessType;
 
 
+    public PlayerEntity(String name) {
+        this.name = name;
+    }
+
     //TODO
     public PlayerSettingsEntity getTableSettings(){
         return settings.get(0);
