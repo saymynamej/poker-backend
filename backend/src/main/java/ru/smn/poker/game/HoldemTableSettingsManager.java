@@ -2,14 +2,13 @@ package ru.smn.poker.game;
 
 import ru.smn.poker.action.Action;
 import ru.smn.poker.action.holdem.Call;
+import ru.smn.poker.action.holdem.Fold;
 import ru.smn.poker.action.holdem.Wait;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.dto.HoldemTableSettings;
 import ru.smn.poker.entities.CardEntity;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.enums.CardType;
-import ru.smn.poker.enums.RoleType;
-import ru.smn.poker.enums.StageType;
+import ru.smn.poker.enums.*;
 import ru.smn.poker.util.PlayerUtil;
 
 import java.util.*;
@@ -62,7 +61,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
 
     @Override
     public TableSettings getPreflopSettings() {
-        this.tableSettings.setFullHistory(new HashMap<>());
+        this.tableSettings.setFullHistory(getBlindsHistory());
         this.tableSettings.setStageHistory(getBlindsHistory());
         this.tableSettings.setTableName(gameSettings.getGameName());
         this.tableSettings.setBank(gameSettings.getStartBigBlindBet() + gameSettings.getStartSmallBlindBet());
@@ -83,6 +82,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
 
     @Override
     public TableSettings getFlopSettings() {
+        setWaitForAllPlayers();
         this.tableSettings.setFlop(flop);
         this.tableSettings.setStageHistory(new HashMap<>());
         this.tableSettings.setLastBet(0L);
@@ -92,6 +92,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
 
     @Override
     public TableSettings getTernSettings() {
+        setWaitForAllPlayers();
         this.tableSettings.setTern(tern);
         this.tableSettings.setStageHistory(new HashMap<>());
         this.tableSettings.setLastBet(0L);
@@ -101,6 +102,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
 
     @Override
     public TableSettings getRiverSettings() {
+        setWaitForAllPlayers();
         this.tableSettings.setRiver(river);
         this.tableSettings.setStageHistory(new HashMap<>());
         this.tableSettings.setLastBet(0L);
@@ -274,5 +276,15 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
 
     protected long getSmallBlindBet() {
         return gameSettings.getStartSmallBlindBet();
+    }
+
+    protected void setWaitForAllPlayers() {
+        this.players.forEach(player -> {
+            if (player.getAction() != null && player.getTableSettings().getRoleType() != null) {
+                if (!(player.getAction() instanceof Fold) && player.getAction().getActionType() != ActionType.ALLIN && player.getTableSettings().getStateType() == StateType.IN_GAME) {
+                    player.getTableSettings().setAction(new Wait());
+                }
+            }
+        });
     }
 }

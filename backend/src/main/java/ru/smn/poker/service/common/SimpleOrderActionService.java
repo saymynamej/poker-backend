@@ -46,10 +46,6 @@ public class SimpleOrderActionService implements OrderActionService {
             }
             activePlayer = nextPlayerSelector.getPlayerForAction(sortedPlayers, activePlayer);
             actionServiceHoldem.waitPlayerAction(activePlayer, tableSettings);
-
-            if (tableSettings.getStageType() == StageType.RIVER) {
-                return true;
-            }
         }
     }
 
