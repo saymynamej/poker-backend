@@ -46,6 +46,10 @@ public class PlayerEntity {
         this.name = name;
     }
 
+    public PlayerEntity(Long id) {
+        this.id = id;
+    }
+
     //TODO
     public PlayerSettingsEntity getTableSettings(){
         return settings.get(0);

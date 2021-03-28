@@ -25,7 +25,7 @@ public class HandEntity {
     @JoinColumn(name = "table_id")
     private TableEntity table;
 
-    @OneToMany(mappedBy = "hand", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "hand", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<ActionEntity> actions;
 
     private long lastBet;
@@ -70,5 +70,5 @@ public class HandEntity {
     @Enumerated(value = EnumType.STRING)
     private StageType stageType;
 
-    private boolean isFinished;
+    private boolean finished;
 }

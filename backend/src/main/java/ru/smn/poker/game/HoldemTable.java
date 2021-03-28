@@ -39,6 +39,7 @@ public class HoldemTable implements Table {
                     break;
                 }
             }
+            this.settings.setFinished(true);
             prizeService.sendPrizes(settings);
         }
     }

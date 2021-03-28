@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface HandRepository extends JpaRepository<HandEntity, Long> {
-    Optional<HandEntity> findByTableId(Long id);
+    Optional<HandEntity> findByTableIdAndFinishedFalse(Long id);
 }
