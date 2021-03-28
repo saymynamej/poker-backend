@@ -24,9 +24,6 @@ public class SimpleOrderActionService implements OrderActionService {
     private final SortService sortService;
     private final NextPlayerSelector nextPlayerSelector;
 
-    /*
-     * @return true if need skip next stages, false if not
-     * */
     @Override
     public boolean start(TableSettings tableSettings) {
         final List<PlayerEntity> sortedPlayers = sortService.sort(
@@ -50,7 +47,7 @@ public class SimpleOrderActionService implements OrderActionService {
             activePlayer = nextPlayerSelector.getPlayerForAction(sortedPlayers, activePlayer);
             actionServiceHoldem.waitPlayerAction(activePlayer, tableSettings);
 
-            if (tableSettings.getStageType() == StageType.RIVER){
+            if (tableSettings.getStageType() == StageType.RIVER) {
                 return true;
             }
         }

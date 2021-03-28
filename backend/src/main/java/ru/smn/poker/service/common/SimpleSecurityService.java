@@ -7,7 +7,7 @@ import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.service.GameDataService;
 import ru.smn.poker.service.SecurityService;
-import ru.smn.poker.util.RoundSettingsUtil;
+import ru.smn.poker.util.TableSettingsUtil;
 
 import java.util.List;
 
@@ -25,6 +25,6 @@ public class SimpleSecurityService implements SecurityService {
 
     @Override
     public TableSettings secureCards(List<String> filterName, TableSettings tableSettings) {
-        return RoundSettingsUtil.copyWithSecureCard(tableSettings, filterName);
+        return TableSettingsUtil.copyWithSecureCard(tableSettings, filterName);
     }
 }

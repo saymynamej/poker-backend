@@ -4,8 +4,8 @@ import ru.smn.poker.action.Action;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.StageType;
-import ru.smn.poker.util.PlayerUtil;
 import ru.smn.poker.stream.PlayerPredicates;
+import ru.smn.poker.util.PlayerUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -13,6 +13,10 @@ import java.util.Map;
 public interface TableSettings {
 
     boolean isNotFirstMoveOnBigBlind();
+
+    void setFullHistory(Map<PlayerEntity, List<Action>> actions);
+
+    void setStageHistory(Map<PlayerEntity, List<Action>> actions);
 
     Map<PlayerEntity, List<Action>> getStageHistory();
 
@@ -48,7 +52,7 @@ public interface TableSettings {
 
     Long getHandId();
 
-    void setHandId(Long id);
+    void setTableName(String name);
 
     PlayerEntity getActivePlayer();
 
@@ -89,5 +93,11 @@ public interface TableSettings {
     default boolean isOnePlayerLeft() {
         return getPlayersInGame().size() == 1;
     }
+
+
+
+    TableSettings copy();
+
+    TableSettings copy(List<PlayerEntity> players);
 
 }

@@ -2,17 +2,17 @@ package ru.smn.poker.game;
 
 import ru.smn.poker.action.Action;
 import ru.smn.poker.action.holdem.Call;
-import ru.smn.poker.action.holdem.Fold;
 import ru.smn.poker.action.holdem.Wait;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.dto.HoldemTableSettings;
 import ru.smn.poker.entities.CardEntity;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.enums.*;
+import ru.smn.poker.enums.CardType;
+import ru.smn.poker.enums.RoleType;
+import ru.smn.poker.enums.StageType;
 import ru.smn.poker.util.PlayerUtil;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,8 +25,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
     private final CardType river;
     private final GameSettings gameSettings;
     private final long handId;
-    private final Map<PlayerEntity, List<Action>> fullHistory = new ConcurrentHashMap<>();
-    private long bank;
+    private final HoldemTableSettings tableSettings = new HoldemTableSettings();
 
     private StageType stageType;
 
@@ -51,21 +50,6 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
         setAllActivePlayers();
     }
 
-
-    @Override
-    public void commit(TableSettings tableSettings) {
-        this.bank += tableSettings.getBank();
-        mergeHistories(tableSettings);
-    }
-
-    private void mergeHistories(TableSettings tableSettings) {
-        final Map<PlayerEntity, List<Action>> stageHistory = tableSettings.getStageHistory();
-        stageHistory.forEach((playerEntity, actions) -> fullHistory.merge(playerEntity, actions, (actions1, actions2) -> {
-            actions1.addAll(actions2);
-            return actions1;
-        }));
-    }
-
     @Override
     public TableSettings getSettings() {
         if (this.stageType == null) {
@@ -73,105 +57,55 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
         }
         final TableSettings currentSettings = stageType.getCurrentSettings(this);
         this.stageType = stageType.getNextStage();
-
         return currentSettings;
     }
 
     @Override
     public TableSettings getPreflopSettings() {
-        return HoldemTableSettings.builder()
-                .tableName(gameSettings.getGameName())
-                .bank(gameSettings.getStartBigBlindBet() + gameSettings.getStartSmallBlindBet())
-                .smallBlindBet(gameSettings.getStartSmallBlindBet())
-                .bigBlindBet(gameSettings.getStartBigBlindBet())
-                .fullHistory(new HashMap<>())
-                .isAfk(false)
-                .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElse(null))
-                .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElse(null))
-                .button(getPlayerByRole(RoleType.BUTTON).orElse(null))
-                .players(players)
-                .stageType(StageType.PREFLOP)
-                .stageHistory(getBlindsHistory())
-                .lastBet(gameSettings.getStartBigBlindBet())
-                .tableId(gameSettings.getTableId())
-                .isFinished(false)
-                .handId(handId)
-                .build();
+        this.tableSettings.setFullHistory(new HashMap<>());
+        this.tableSettings.setStageHistory(getBlindsHistory());
+        this.tableSettings.setTableName(gameSettings.getGameName());
+        this.tableSettings.setBank(gameSettings.getStartBigBlindBet() + gameSettings.getStartSmallBlindBet());
+        this.tableSettings.setSmallBlindBet(gameSettings.getStartSmallBlindBet());
+        this.tableSettings.setBigBlindBet(gameSettings.getStartBigBlindBet());
+        this.tableSettings.setAfk(false);
+        this.tableSettings.setBigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElse(null));
+        this.tableSettings.setSmallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElse(null));
+        this.tableSettings.setButton(getPlayerByRole(RoleType.BUTTON).orElse(null));
+        this.tableSettings.setPlayers(players);
+        this.tableSettings.setStageType(StageType.PREFLOP);
+        this.tableSettings.setLastBet(gameSettings.getStartBigBlindBet());
+        this.tableSettings.setTableId(gameSettings.getTableId());
+        this.tableSettings.setFinished(false);
+        this.tableSettings.setHandId(handId);
+        return this.tableSettings;
     }
 
     @Override
     public TableSettings getFlopSettings() {
-        setAllActivePlayersTest();
-        return HoldemTableSettings.builder()
-                .flop(flop)
-                .tableName(gameSettings.getGameName())
-                .bank(bank)
-                .smallBlindBet(gameSettings.getStartSmallBlindBet())
-                .fullHistory(fullHistory)
-                .stageHistory(new HashMap<>())
-                .isAfk(false)
-                .lastBet(gameSettings.getStartBigBlindBet())
-                .button(getPlayerByRole(RoleType.BUTTON).orElseThrow())
-                .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElse(null))
-                .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElseThrow())
-                .players(players)
-                .lastBet(0L)
-                .tableId(gameSettings.getTableId())
-                .isFinished(false)
-                .handId(handId)
-                .stageType(StageType.FLOP)
-                .build();
+        this.tableSettings.setFlop(flop);
+        this.tableSettings.setStageHistory(new HashMap<>());
+        this.tableSettings.setLastBet(0L);
+        this.tableSettings.setStageType(StageType.FLOP);
+        return this.tableSettings;
     }
 
     @Override
     public TableSettings getTernSettings() {
-        setAllActivePlayersTest();
-        return HoldemTableSettings.builder()
-                .flop(flop)
-                .tern(tern)
-                .tableName(gameSettings.getGameName())
-                .bank(bank)
-                .lastBet(gameSettings.getStartSmallBlindBet())
-                .isAfk(false)
-                .fullHistory(fullHistory)
-                .stageHistory(new HashMap<>())
-                .bigBlindBet(gameSettings.getStartBigBlindBet())
-                .button(getPlayerByRole(RoleType.BUTTON).orElseThrow())
-                .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElse(null))
-                .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElseThrow())
-                .stageType(StageType.TERN)
-                .tableId(gameSettings.getTableId())
-                .lastBet(0L)
-                .handId(handId)
-                .isFinished(false)
-                .players(players)
-                .build();
+        this.tableSettings.setTern(tern);
+        this.tableSettings.setStageHistory(new HashMap<>());
+        this.tableSettings.setLastBet(0L);
+        this.tableSettings.setStageType(StageType.TERN);
+        return tableSettings;
     }
 
     @Override
     public TableSettings getRiverSettings() {
-        setAllActivePlayersTest();
-        return HoldemTableSettings.builder()
-                .flop(flop)
-                .tern(tern)
-                .fullHistory(fullHistory)
-                .stageHistory(new HashMap<>())
-                .tableName(gameSettings.getGameName())
-                .river(river)
-                .lastBet(0L)
-                .isAfk(false)
-                .bank(bank)
-                .tableId(gameSettings.getTableId())
-                .stageType(StageType.RIVER)
-                .smallBlindBet(gameSettings.getStartSmallBlindBet())
-                .bigBlindBet(gameSettings.getStartBigBlindBet())
-                .isFinished(false)
-                .handId(handId)
-                .button(getPlayerByRole(RoleType.BUTTON).orElseThrow())
-                .smallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElse(null))
-                .bigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElseThrow())
-                .players(players)
-                .build();
+        this.tableSettings.setRiver(river);
+        this.tableSettings.setStageHistory(new HashMap<>());
+        this.tableSettings.setLastBet(0L);
+        this.tableSettings.setStageType(StageType.RIVER);
+        return tableSettings;
     }
 
     private void dealCards() {
@@ -340,15 +274,5 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
 
     protected long getSmallBlindBet() {
         return gameSettings.getStartSmallBlindBet();
-    }
-
-    protected void setAllActivePlayersTest() {
-        this.players.forEach(player -> {
-            if (player.getAction() != null && player.getTableSettings().getRoleType() != null) {
-                if (!(player.getAction() instanceof Fold) && player.getAction().getActionType() != ActionType.ALLIN && player.getTableSettings().getStateType() == StateType.IN_GAME) {
-                    player.getTableSettings().setAction(new Wait());
-                }
-            }
-        });
     }
 }

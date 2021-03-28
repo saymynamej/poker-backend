@@ -1,7 +1,6 @@
 package ru.smn.poker.game;
 
 public interface TableSettingsManager {
-    void commit(TableSettings tableSettings);
 
     TableSettings getSettings();
 

@@ -9,7 +9,8 @@ import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.repository.HandRepository;
 
-import static ru.smn.poker.util.HistoryUtil.addActionInHistory;
+import static ru.smn.poker.util.HistoryUtil.addActionInFullHistory;
+import static ru.smn.poker.util.HistoryUtil.addActionInStageHistory;
 
 @Service
 @RequiredArgsConstructor
@@ -19,10 +20,7 @@ public class GameService {
     private final TableService tableService;
 
     @Transactional
-    public void update(TableSettings tableSettings) {
-//        final TableEntity tableEntity = TableSettingsConverter.toEntity(tableSettings);
-//        tableService.save(tableEntity);
-    }
+    public void update(TableSettings tableSettings) { }
 
     public void doAction(
             PlayerEntity player,
@@ -34,7 +32,8 @@ public class GameService {
         player.getTableSettings().removeChips(removeChips);
         tableSettings.setBank(tableSettings.getBank() + removeChips);
         setLastBet(tableSettings, lastBet);
-        addActionInHistory(tableSettings, player);
+        addActionInStageHistory(tableSettings, player);
+        addActionInFullHistory(tableSettings, player);
     }
 
     public void setActivePlayer(TableSettings tableSettings, PlayerEntity player) {

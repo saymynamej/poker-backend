@@ -3,19 +3,16 @@ package ru.smn.poker.util;
 import ru.smn.poker.action.Action;
 import ru.smn.poker.action.CountAction;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.enums.StageType;
 import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.stream.PlayerPredicates;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class HistoryUtil {
-
-
-    public static boolean canMoveNextAndStageRiver(TableSettings tableSettings) {
-        return canMoveNext(tableSettings) && tableSettings.getStageType() == StageType.RIVER;
-    }
 
     public static boolean canMoveNext(TableSettings tableSettings) {
         return allPlayersInGameHaveSameCountOfBet(tableSettings) && tableSettings.isNotFirstMoveOnBigBlind() && (tableSettings.lastBetIsNotZero() || tableSettings.allPlayersCheck());
@@ -32,14 +29,6 @@ public class HistoryUtil {
         return players.stream()
                 .noneMatch(player -> sumStageHistoryBets(tableSettings, player) != tableSettings.getLastBet());
     }
-
-
-    public static long sumRoundHistoryBets(TableSettings tableSettings, PlayerEntity player) {
-        final Map<PlayerEntity, List<Action>> fullHistory = tableSettings.getFullHistory();
-        final List<Action> countActions = fullHistory.get(player);
-        return sumBets(countActions);
-    }
-
 
     public static long sumStageHistoryBets(TableSettings tableSettings, PlayerEntity player) {
         final Map<PlayerEntity, List<Action>> history = tableSettings.getStageHistory();
@@ -71,38 +60,24 @@ public class HistoryUtil {
     }
 
 
-    public static void addActionInHistory(TableSettings tableSettings, PlayerEntity player, Action action) {
-        final Map<PlayerEntity, List<Action>> history = tableSettings.getStageHistory();
+    public static void addActionInHistory(Map<PlayerEntity, List<Action>> history, PlayerEntity player) {
+        final Action action = player.getAction();
         final List<Action> newActionsList = history.get(player);
         if (newActionsList != null) {
             newActionsList.add(action);
             return;
         }
-
         final List<Action> actionsList = new ArrayList<>();
         actionsList.add(action);
         history.put(player, actionsList);
     }
 
-    public static void addActionInHistory(TableSettings tableSettings, PlayerEntity player) {
-        addActionInHistory(tableSettings, player, player.getAction());
+    public static void addActionInStageHistory(TableSettings tableSettings, PlayerEntity player) {
+        addActionInHistory(tableSettings.getStageHistory(), player);
     }
 
-    public static Map<PlayerEntity, List<Action>> unionHistory(
-            Map<PlayerEntity, List<Action>> firstHistory,
-            Map<PlayerEntity, List<Action>> secondHistory
-    ) {
-        final Map<PlayerEntity, List<Action>> unionActions = new HashMap<>(firstHistory);
-
-        secondHistory.forEach((key, value) -> {
-            final List<Action> countActions = unionActions.get(key);
-            if (countActions != null) {
-                countActions.addAll(value);
-            } else {
-                unionActions.put(key, value);
-            }
-        });
-
-        return unionActions;
+    public static void addActionInFullHistory(TableSettings tableSettings, PlayerEntity player) {
+        addActionInHistory(tableSettings.getFullHistory(), player);
     }
+
 }
