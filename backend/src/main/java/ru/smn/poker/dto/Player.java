@@ -1,9 +1,7 @@
 package ru.smn.poker.dto;
 
 import lombok.*;
-import lombok.experimental.SuperBuilder;
 import ru.smn.poker.action.Action;
-import ru.smn.poker.action.CountAction;
 import ru.smn.poker.action.holdem.Fold;
 import ru.smn.poker.action.holdem.Wait;
 import ru.smn.poker.enums.ActionType;
@@ -152,12 +150,12 @@ public class Player {
         return getChipsCount() == 0;
     }
 
-    public boolean hasChipsForAction(CountAction countAction) {
-        return getChipsCount() >= countAction.getCount();
+    public boolean hasChipsForAction(Action action) {
+        return getChipsCount() >= action.getCount();
     }
 
-    public boolean hasNotChipsForAction(CountAction countAction) {
-        return !hasChipsForAction(countAction);
+    public boolean hasNotChipsForAction(Action action) {
+        return !hasChipsForAction(action);
     }
 
     public boolean didAction() {

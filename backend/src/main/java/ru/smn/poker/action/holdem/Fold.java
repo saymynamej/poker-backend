@@ -17,6 +17,8 @@ import static ru.smn.poker.data.StrategyData.FOLD_STRATEGIES;
 @ToString
 public class Fold implements ExecutableAction {
 
+    private final long count = 0;
+
     @Override
     public ActionType getActionType() {
         return ActionType.FOLD;
@@ -31,10 +33,5 @@ public class Fold implements ExecutableAction {
                 this,
                 tableSettings
         );
-    }
-
-    @Override
-    public long getCount() {
-        return 0;
     }
 }

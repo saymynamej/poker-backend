@@ -5,7 +5,7 @@ import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.service.ActionService;
 import ru.smn.poker.service.common.GameService;
 
-public interface ExecutableAction extends CountAction {
+public interface ExecutableAction extends Action {
     void doAction(
             TableSettings tableSettings,
             PlayerEntity player,

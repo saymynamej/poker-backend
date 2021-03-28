@@ -15,6 +15,7 @@ import ru.smn.poker.service.OrderActionService;
 import ru.smn.poker.service.PrizeService;
 import ru.smn.poker.service.RandomNameService;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -51,12 +52,16 @@ public class SimpleGameManagementService implements GameManagementService {
                 .gameType(gameType)
                 .name(tableName)
                 .build();
-
+        setTableForPlayers(players, tableEntity);
         tableService.save(tableEntity);
 
         final Table table = toTable(tableEntity);
 
         run(table);
+    }
+
+    private void setTableForPlayers(List<PlayerEntity> players, TableEntity tableEntity) {
+        players.forEach(playerEntity -> playerEntity.setTables(Collections.singletonList(tableEntity)));
     }
 
     public Table toTable(TableEntity tableEntity) {

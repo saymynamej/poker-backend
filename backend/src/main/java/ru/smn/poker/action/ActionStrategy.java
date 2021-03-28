@@ -11,7 +11,7 @@ public interface ActionStrategy {
             PlayerEntity player,
             GameService gameService,
             ActionService actionService,
-            CountAction countAction,
+            Action action,
             TableSettings tableSettings
     );
 }

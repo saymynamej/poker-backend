@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.smn.poker.entities.TableEntity;
 import ru.smn.poker.repository.TableRepository;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class TableService {
@@ -14,5 +16,9 @@ public class TableService {
     @Transactional
     public void save(TableEntity tableEntity){
         tableRepository.save(tableEntity);
+    }
+
+    public Optional<TableEntity> findById(Long id){
+        return tableRepository.findById(id);
     }
 }

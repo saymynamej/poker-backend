@@ -4,4 +4,6 @@ import ru.smn.poker.enums.ActionType;
 
 public interface Action {
     ActionType getActionType();
+
+    long getCount();
 }

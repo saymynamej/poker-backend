@@ -12,6 +12,8 @@ import java.util.Map;
 
 public interface TableSettings {
 
+    void setPlayers(List<PlayerEntity> players);
+
     boolean isNotFirstMoveOnBigBlind();
 
     void setFullHistory(Map<PlayerEntity, List<Action>> actions);
@@ -66,6 +68,34 @@ public interface TableSettings {
 
     void setActivePlayer(PlayerEntity activePlayer);
 
+    void setFlop(List<CardType> flop);
+
+    void setTern(CardType tern);
+
+    void setRiver(CardType river);
+
+    void setSmallBlindBet(long smallBlindBet);
+
+    void setTableId(long tableId);
+
+    void setBigBlindBet(long bigBlindBet);
+
+    void setButton(PlayerEntity button);
+
+    void setSmallBlind(PlayerEntity smallBlind);
+
+    void setBigBlind(PlayerEntity bigBlind);
+
+    void setStageType(StageType stageType);
+
+    void setHandId(Long handId);
+
+    void setAfk(boolean isAfk);
+
+    TableSettings copy();
+
+    TableSettings copy(List<PlayerEntity> players);
+
     default boolean lastBetIsNotZero() {
         return getLastBet() != 0;
     }
@@ -93,11 +123,5 @@ public interface TableSettings {
     default boolean isOnePlayerLeft() {
         return getPlayersInGame().size() == 1;
     }
-
-
-
-    TableSettings copy();
-
-    TableSettings copy(List<PlayerEntity> players);
 
 }

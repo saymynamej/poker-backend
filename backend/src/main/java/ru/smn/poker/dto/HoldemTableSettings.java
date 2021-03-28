@@ -44,7 +44,7 @@ public class HoldemTableSettings implements TableSettings {
 
     @Override
     public TableSettings copy(List<PlayerEntity> players) {
-        final HoldemTableSettings tableSettings = new HoldemTableSettings();
+        final TableSettings tableSettings = new HoldemTableSettings();
         tableSettings.setStageHistory(stageHistory);
         tableSettings.setFullHistory(fullHistory);
         tableSettings.setPlayers(players);

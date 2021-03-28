@@ -1,7 +1,7 @@
 package ru.smn.poker.action.holdem.strategy;
 
+import ru.smn.poker.action.Action;
 import ru.smn.poker.action.ActionStrategy;
-import ru.smn.poker.action.CountAction;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.service.ActionService;
@@ -16,33 +16,33 @@ public class AllStrategy implements ActionStrategy {
             PlayerEntity player,
             GameService gameService,
             ActionService actionService,
-            CountAction countAction,
+            Action action,
             TableSettings tableSettings
     ) {
-        if (countActionNotEqualsChipsCount(countAction, player)) {
+        if (countActionNotEqualsChipsCount(action, player)) {
             actionService.waitPlayerAction(player, tableSettings);
             return;
         }
 
-        final long allBets = sumAllHistoryBetsWithNewAction(tableSettings, player, countAction);
+        final long allBets = sumAllHistoryBetsWithNewAction(tableSettings, player, action);
         if (allBetsMoreThanLastBet(allBets, tableSettings.getLastBet())) {
             gameService.doAction(
                     player,
                     tableSettings,
-                    countAction.getCount(),
+                    action.getCount(),
                     allBets,
-                    countAction
+                    action
             );
             return;
         }
-        gameService.doAction(player, tableSettings, countAction.getCount(), tableSettings.getLastBet(), countAction);
+        gameService.doAction(player, tableSettings, action.getCount(), tableSettings.getLastBet(), action);
     }
 
     private boolean allBetsMoreThanLastBet(long allBets, long lastBet) {
         return allBets >= lastBet;
     }
 
-    private boolean countActionNotEqualsChipsCount(CountAction countAction, PlayerEntity player) {
-        return countAction.getCount() != player.getTableSettings().getChipsCount().getCount();
+    private boolean countActionNotEqualsChipsCount(Action action, PlayerEntity player) {
+        return action.getCount() != player.getTableSettings().getChipsCount().getCount();
     }
 }

@@ -28,6 +28,7 @@ public class PlayerEntity {
     private List<PlayerSettingsEntity> settings = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "table_id")
     private List<TableEntity> tables;
 
     private String name;

@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import ru.smn.poker.action.CountAction;
 import ru.smn.poker.action.ExecutableAction;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.ActionType;
@@ -18,7 +17,7 @@ import static ru.smn.poker.data.StrategyData.RAISE_STRATEGIES;
 @Setter
 @RequiredArgsConstructor
 @ToString
-public class Raise implements ExecutableAction, CountAction {
+public class Raise implements ExecutableAction {
 
     private final long count;
 
@@ -38,4 +37,6 @@ public class Raise implements ExecutableAction, CountAction {
                         tableSettings
                 );
     }
+
+
 }

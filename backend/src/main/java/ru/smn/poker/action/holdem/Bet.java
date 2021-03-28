@@ -37,4 +37,5 @@ public class Bet implements ExecutableAction {
                 tableSettings
         );
     }
+
 }

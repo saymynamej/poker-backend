@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.smn.poker.action.Action;
-import ru.smn.poker.action.CountAction;
 import ru.smn.poker.action.ExecutableAction;
 import ru.smn.poker.action.holdem.AllIn;
 import ru.smn.poker.dto.ResultTime;
@@ -80,9 +79,8 @@ public class SimpleActionService implements ActionService {
 
     private Action changeCallOnAllInIfNeeded(Action action, PlayerEntity player) {
         if (action.getActionType() == ActionType.CALL || action.getActionType() == ActionType.RAISE) {
-            final CountAction countAction = (CountAction) action;
-            if (countAction.getCount() == player.getTableSettings().getChipsCount().getCount()) {
-                action = new AllIn(countAction.getCount());
+            if (action.getCount() == player.getTableSettings().getChipsCount().getCount()) {
+                action = new AllIn(action.getCount());
             }
         }
         return action;

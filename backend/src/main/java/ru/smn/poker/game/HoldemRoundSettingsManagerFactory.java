@@ -17,9 +17,11 @@ public class HoldemRoundSettingsManagerFactory {
             GameSettings gameSettings,
             HandService handService
     ) {
+
+        final Long tableId = gameSettings.getTableId();
         return new HoldemTableSettingsManagerHU(
                 random,
-                handService.getNewHandId(),
+                handService.getNewHandId(tableId),
                 players,
                 gameSettings
         );

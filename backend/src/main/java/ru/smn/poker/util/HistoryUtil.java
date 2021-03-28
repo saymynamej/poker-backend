@@ -1,7 +1,6 @@
 package ru.smn.poker.util;
 
 import ru.smn.poker.action.Action;
-import ru.smn.poker.action.CountAction;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.stream.PlayerPredicates;
@@ -42,8 +41,7 @@ public class HistoryUtil {
         }
 
         final Optional<Long> reduced = actions.stream()
-                .filter(CountAction.class::isInstance)
-                .map(action -> ((CountAction) action).getCount())
+                .map(Action::getCount)
                 .reduce(Long::sum);
 
         if (reduced.isPresent()) {
@@ -53,10 +51,10 @@ public class HistoryUtil {
     }
 
 
-    public static long sumAllHistoryBetsWithNewAction(TableSettings tableSettings, PlayerEntity player, CountAction countAction) {
+    public static long sumAllHistoryBetsWithNewAction(TableSettings tableSettings, PlayerEntity player, Action action) {
         final Map<PlayerEntity, List<Action>> history = tableSettings.getStageHistory();
         final List<Action> countActions = history.get(player);
-        return sumBets(countActions) + countAction.getCount();
+        return sumBets(countActions) + action.getCount();
     }
 
 

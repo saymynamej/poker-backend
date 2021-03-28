@@ -3,7 +3,6 @@ package ru.smn.poker.entities;
 
 import lombok.*;
 import ru.smn.poker.action.Action;
-import ru.smn.poker.action.CountAction;
 import ru.smn.poker.action.holdem.Fold;
 import ru.smn.poker.action.holdem.Wait;
 import ru.smn.poker.enums.ActionType;
@@ -110,12 +109,12 @@ public class PlayerSettingsEntity {
         return isBigBlind() && getAction().getActionType() != ActionType.WAIT;
     }
 
-    public boolean hasChipsForAction(CountAction countAction) {
-        return getChipsCount().getCount() >= countAction.getCount();
+    public boolean hasChipsForAction(Action action) {
+        return getChipsCount().getCount() >= action.getCount();
     }
 
-    public boolean hasNotChipsForAction(CountAction countAction) {
-        return !hasChipsForAction(countAction);
+    public boolean hasNotChipsForAction(Action action) {
+        return !hasChipsForAction(action);
     }
 
     public boolean didAction() {
