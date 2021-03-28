@@ -1,8 +1,6 @@
 package ru.smn.poker.dto;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import ru.smn.poker.action.Action;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.CardType;
@@ -15,6 +13,9 @@ import java.util.Map;
 @Getter
 @Setter
 @ToString
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class HoldemTableSettings implements TableSettings {
     private Map<PlayerEntity, List<Action>> stageHistory;
     private Map<PlayerEntity, List<Action>> fullHistory;
