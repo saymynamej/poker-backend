@@ -8,19 +8,21 @@ import ru.smn.poker.enums.RoleType;
 
 import java.util.*;
 
-public class HoldemTableSettingsManagerHU extends HoldemTableSettingsManager {
+public class HUTableSettingsManager extends SimpleTableSettingsManager {
 
-    public HoldemTableSettingsManagerHU(
+    public HUTableSettingsManager(
             Random random,
             long handId,
             List<PlayerEntity> players,
-            GameSettings gameSettings
+            GameSettings gameSettings,
+            TableSettings tableSettings
     ) {
         super(
                 random,
                 handId,
                 players,
-                gameSettings
+                gameSettings,
+                tableSettings
         );
     }
 

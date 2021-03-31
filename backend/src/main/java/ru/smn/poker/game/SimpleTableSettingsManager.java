@@ -5,7 +5,6 @@ import ru.smn.poker.action.holdem.Call;
 import ru.smn.poker.action.holdem.Fold;
 import ru.smn.poker.action.holdem.Wait;
 import ru.smn.poker.config.game.GameSettings;
-import ru.smn.poker.dto.HoldemTableSettings;
 import ru.smn.poker.entities.CardEntity;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.*;
@@ -15,7 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class HoldemTableSettingsManager implements TableSettingsManager {
+public class SimpleTableSettingsManager implements TableSettingsManager {
     private final Random random;
     private final List<CardType> allCards;
     private final List<PlayerEntity> players;
@@ -24,15 +23,16 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
     private final CardType river;
     private final GameSettings gameSettings;
     private final long handId;
-    private final HoldemTableSettings tableSettings = new HoldemTableSettings();
+    private final TableSettings tableSettings;
 
     private StageType stageType;
 
-    public HoldemTableSettingsManager(
+    public SimpleTableSettingsManager(
             Random random,
             long handId,
             List<PlayerEntity> players,
-            GameSettings gameSettings
+            GameSettings gameSettings,
+            TableSettings tableSettings
     ) {
         this.random = random;
         this.allCards = CardType.getAllCardsAsList();
@@ -42,6 +42,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
         this.river = getRandomCard();
         this.gameSettings = gameSettings;
         this.handId = handId;
+        this.tableSettings = tableSettings;
         dealCards();
         setButton();
         setSmallBlind();
@@ -63,7 +64,7 @@ public class HoldemTableSettingsManager implements TableSettingsManager {
     public TableSettings getPreflopSettings() {
         this.tableSettings.setFullHistory(getBlindsHistory());
         this.tableSettings.setStageHistory(getBlindsHistory());
-        this.tableSettings.setTableName(gameSettings.getGameName());
+        this.tableSettings.setTableName(gameSettings.getTableName());
         this.tableSettings.setBank(gameSettings.getStartBigBlindBet() + gameSettings.getStartSmallBlindBet());
         this.tableSettings.setSmallBlindBet(gameSettings.getStartSmallBlindBet());
         this.tableSettings.setBigBlindBet(gameSettings.getStartBigBlindBet());

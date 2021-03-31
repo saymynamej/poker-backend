@@ -7,7 +7,7 @@ import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.entities.TableEntity;
 import ru.smn.poker.enums.GameType;
-import ru.smn.poker.game.HoldemTable;
+import ru.smn.poker.game.SimpleTable;
 import ru.smn.poker.game.Table;
 import ru.smn.poker.generator.PlayerGenerator;
 import ru.smn.poker.service.GameManagementService;
@@ -30,7 +30,7 @@ public class SimpleGameManagementService implements GameManagementService {
     private final Map<GameType, GameSettings> mapSettings;
     private final OrderActionService orderActionService;
     private final PrizeService prizeService;
-    private final HandService handService;
+    private final SimpleHandService handService;
     private final RandomNameService randomNameService;
     private final TableService tableService;
     private final PlayerGenerator playerGenerator;
@@ -67,9 +67,9 @@ public class SimpleGameManagementService implements GameManagementService {
     public Table toTable(TableEntity tableEntity) {
         final GameSettings gameSettings = mapSettings.get(tableEntity.getGameType());
         gameSettings.setTableId(tableEntity.getId());
-        gameSettings.setGameName(tableEntity.getName());
+        gameSettings.setTableName(tableEntity.getName());
 
-        return new HoldemTable(
+        return new SimpleTable(
                 orderActionService,
                 prizeService,
                 handService,

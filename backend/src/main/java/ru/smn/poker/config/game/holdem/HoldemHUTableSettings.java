@@ -25,7 +25,7 @@ public class HoldemHUTableSettings implements GameSettings {
 
     private final GameType gameType = GameType.HOLDEM_HU;
 
-    private String gameName;
+    private String tableName;
 
     private Long tableId;
 

@@ -3,13 +3,14 @@ package ru.smn.poker.game;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ru.smn.poker.action.holdem.Wait;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.StageType;
+import ru.smn.poker.service.HandService;
 import ru.smn.poker.service.OrderActionService;
 import ru.smn.poker.service.PrizeService;
-import ru.smn.poker.service.common.HandService;
+import ru.smn.poker.util.PlayerUtil;
+import ru.smn.poker.util.ThreadUtil;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Slf4j
-public class HoldemTable implements Table {
+public class SimpleTable implements Table {
     private final OrderActionService orderActionService;
     private final PrizeService prizeService;
     private final HandService handService;
@@ -29,7 +30,10 @@ public class HoldemTable implements Table {
     public void start() {
         log.info("table with name:" + getGameName() + " started");
         while (isEnable()) {
+            if (waitPlayerForStart()) continue;
+
             final TableSettingsManager tableSettingsManager = getTableSettingsManager();
+
             while (true) {
                 this.settings = tableSettingsManager.getSettings();
                 if (orderActionService.start(this.settings)) {
@@ -38,14 +42,25 @@ public class HoldemTable implements Table {
                 if (this.settings.getStageType() == StageType.RIVER) {
                     break;
                 }
+                ThreadUtil.sleep(1);
             }
+
             this.settings.setFinished(true);
             prizeService.sendPrizes(settings);
         }
     }
 
+    private boolean waitPlayerForStart() {
+        if (PlayerUtil.getPlayerWhichMayPlay(players).size() < gameSettings.getMinActivePlayers()){
+            ThreadUtil.sleep(3);
+            log.info("wait players for table: "  + gameSettings.getTableName());
+            return false;
+        }
+        return true;
+    }
+
     private TableSettingsManager getTableSettingsManager() {
-        return HoldemRoundSettingsManagerFactory.getManager(
+        return HoldemRoundSettingsManagerFactory.getManagerHoldemHU(
                 players,
                 gameSettings,
                 handService
@@ -57,17 +72,17 @@ public class HoldemTable implements Table {
     }
 
     @Override
-    public synchronized List<PlayerEntity> getPlayers() {
+    public List<PlayerEntity> getPlayers() {
         return this.players;
     }
 
     @Override
     public String getGameName() {
-        return this.gameSettings.getGameName();
+        return this.gameSettings.getTableName();
     }
 
     @Override
-    public synchronized TableSettings getTableSettings() {
+    public TableSettings getTableSettings() {
         return this.settings;
     }
 

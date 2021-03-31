@@ -2,6 +2,7 @@ package ru.smn.poker.enums;
 
 import ru.smn.poker.action.Action;
 import ru.smn.poker.action.holdem.*;
+import ru.smn.poker.dto.ActionInfo;
 
 public enum ActionType {
     BET,
@@ -36,5 +37,12 @@ public enum ActionType {
                 return new Raise(count);
         }
         throw new RuntimeException("global error with defining action type");
+    }
+
+    private void changeCount() {
+//        final long count = gameDataService.getPlayerByName(actionInfo.getName()).orElseThrow()
+//                .getTableSettings()
+//                .getChipsCount()
+//                .getCount();
     }
 }

@@ -5,16 +5,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.smn.poker.action.Action;
+import ru.smn.poker.converter.TableSettingsConverter;
 import ru.smn.poker.entities.ActionEntity;
 import ru.smn.poker.entities.HandEntity;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.enums.ActionType;
+import ru.smn.poker.entities.TableEntity;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.repository.HandRepository;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import ru.smn.poker.repository.PlayerRepository;
+import ru.smn.poker.repository.TableRepository;
 
 import static ru.smn.poker.util.HistoryUtil.addActionInFullHistory;
 import static ru.smn.poker.util.HistoryUtil.addActionInStageHistory;
@@ -25,32 +25,13 @@ import static ru.smn.poker.util.HistoryUtil.addActionInStageHistory;
 public class GameService {
     private final HandRepository handRepository;
     private final TableService tableService;
+    private final TableRepository tableRepository;
+    private final PlayerRepository playerRepository;
 
     @Transactional
     public void update(TableSettings tableSettings) {
-        final HandEntity handEntity = handRepository.findByTableIdAndFinishedFalse(tableSettings.getTableId())
-                .orElseThrow();
-
-        handEntity.setBank(tableSettings.getBank());
-        handEntity.setTern(tableSettings.getTern());
-        handEntity.setRiver(tableSettings.getRiver());
-        handEntity.setActivePlayer(tableSettings.getActivePlayer());
-        handEntity.setButton(tableSettings.getButton());
-        handEntity.setBigBlind(tableSettings.getBigBlind());
-        handEntity.setSmallBlind(tableSettings.getSmallBlind());
-        handEntity.setLastBet(tableSettings.getLastBet());
-        handEntity.setSmallBlindBet(tableSettings.getSmallBlindBet());
-        handEntity.setBigBlindBet(tableSettings.getBigBlindBet());
-        handEntity.setStageType(tableSettings.getStageType());
-        handEntity.setFinished(tableSettings.isFinished());
-
-        if (tableSettings.getFlop() != null) {
-            handEntity.setF1(tableSettings.getFlop().get(0));
-            handEntity.setF2(tableSettings.getFlop().get(1));
-            handEntity.setF3(tableSettings.getFlop().get(2));
-        }
-
-        handRepository.save(handEntity);
+//        final TableEntity tableEntity = TableSettingsConverter.toEntity(tableSettings);
+//        tableRepository.save(tableEntity);
     }
 
     public void doAction(

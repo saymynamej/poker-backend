@@ -1,9 +1,12 @@
 package ru.smn.poker.enums;
 
+import lombok.RequiredArgsConstructor;
 import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.game.TableSettingsManager;
 
+@RequiredArgsConstructor
 public enum StageType implements Pipeline {
+
     PREFLOP {
         @Override
         public StageType getNextStage() {
@@ -59,5 +62,6 @@ public enum StageType implements Pipeline {
         public TableSettings getCurrentSettings(TableSettingsManager settingsManager) {
             throw new RuntimeException("FINISH ACTION NOT HAS THE CURRENT SETTINGS");
         }
-    }
+    };
+
 }

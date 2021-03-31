@@ -6,10 +6,11 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.smn.poker.entities.HandEntity;
 import ru.smn.poker.repository.HandRepository;
 import ru.smn.poker.repository.TableRepository;
+import ru.smn.poker.service.HandService;
 
 @Service
 @RequiredArgsConstructor
-public class HandService {
+public class SimpleHandService implements HandService {
     private final HandRepository handRepository;
     private final TableRepository tableRepository;
 

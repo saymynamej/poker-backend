@@ -31,7 +31,7 @@
             <p class="text-light">SMN ROOM</p>
           </div>
           <div class="col d-flex justify-content-center flex-wrap" v-if="inGame">
-            <Game :players="players" :stomp="stomp" :flop="flop" :tern="tern" :river="river"/>
+            <Game :players="players" :stomp="stomp" :flop="flop" :tern="tern" :river="river" :bank="bank"/>
             <ActionButtons :stomp="stomp"/>
           </div>
         </div>

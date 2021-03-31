@@ -7,4 +7,5 @@ public interface Pipeline {
     StageType getNextStage();
 
     TableSettings getCurrentSettings(TableSettingsManager settingsManager);
+
 }

@@ -17,9 +17,9 @@ public interface GameSettings {
 
     Long getTableId();
 
-    String getGameName();
+    String getTableName();
 
-    void setGameName(String gameName);
+    void setTableName(String gameName);
 
     void setTableId(Long gameId);
 
