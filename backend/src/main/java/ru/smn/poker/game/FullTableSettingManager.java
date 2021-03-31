@@ -23,6 +23,7 @@ public class FullTableSettingManager implements TableSettingsManager {
 
     private StageType stageType = StageType.PREFLOP;
     private List<CardType> allCards;
+    private boolean needRestore = false;
 
     public FullTableSettingManager(
             Random random,
@@ -50,10 +51,15 @@ public class FullTableSettingManager implements TableSettingsManager {
         this.gameSettings = gameSettings;
         this.handId = handId;
         this.tableSettings = tableSettings;
+        this.needRestore = true;
     }
 
     @Override
     public TableSettings getSettings() {
+        if (needRestore){
+            needRestore = false;
+            return tableSettings;
+        }
         final TableSettings currentSettings = stageType.getCurrentSettings(this);
         this.stageType = stageType.getNextStage();
         return currentSettings;
