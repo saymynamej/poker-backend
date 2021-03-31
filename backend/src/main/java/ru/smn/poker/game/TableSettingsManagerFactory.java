@@ -1,8 +1,7 @@
 package ru.smn.poker.game;
 
 import ru.smn.poker.config.game.GameSettings;
-import ru.smn.poker.config.game.holdem.HoldemFullTableSettings;
-import ru.smn.poker.dto.HoldemTableSettings;
+import ru.smn.poker.dto.ClassicTableSettings;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.service.HandService;
 
@@ -26,7 +25,7 @@ public class TableSettingsManagerFactory {
                 handService.getNewHandId(tableId),
                 players,
                 gameSettings,
-                new HoldemTableSettings()
+                new ClassicTableSettings()
         );
     }
 
@@ -42,7 +41,7 @@ public class TableSettingsManagerFactory {
                 handService.getNewHandId(tableId),
                 players,
                 gameSettings,
-                new HoldemTableSettings()
+                new ClassicTableSettings()
         );
     }
 }

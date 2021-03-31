@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.entities.TableEntity;
 import ru.smn.poker.enums.GameType;
-import ru.smn.poker.game.SimpleTable;
+import ru.smn.poker.game.ClassicTable;
 import ru.smn.poker.game.Table;
 import ru.smn.poker.service.HandService;
 import ru.smn.poker.service.OrderActionService;
@@ -26,7 +26,7 @@ public class TableConverter {
         gameSettings.setTableId(tableEntity.getId());
         gameSettings.setTableName(tableEntity.getName());
 
-        return new SimpleTable(
+        return new ClassicTable(
                 orderActionService,
                 prizeService,
                 tableEntity.getPlayers(),

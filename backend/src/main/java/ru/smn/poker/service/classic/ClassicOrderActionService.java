@@ -1,4 +1,4 @@
-package ru.smn.poker.service.common;
+package ru.smn.poker.service.classic;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +10,7 @@ import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.service.ActionService;
 import ru.smn.poker.service.OrderActionService;
 import ru.smn.poker.service.SortService;
+import ru.smn.poker.service.common.SecurityNotificationService;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ import static ru.smn.poker.util.HistoryUtil.canMoveNext;
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class SimpleOrderActionService implements OrderActionService {
+public class ClassicOrderActionService implements OrderActionService {
     private final ActionService actionServiceHoldem;
     private final SecurityNotificationService securityNotificationService;
     private final SortService sortService;

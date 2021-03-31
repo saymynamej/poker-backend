@@ -1,4 +1,4 @@
-package ru.smn.poker.service.common;
+package ru.smn.poker.service.classic;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -8,6 +8,7 @@ import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.service.PrizeService;
 import ru.smn.poker.service.WinnerService;
+import ru.smn.poker.service.common.GameService;
 import ru.smn.poker.util.PlayerUtil;
 
 import java.util.List;
@@ -17,7 +18,7 @@ import static ru.smn.poker.util.HistoryUtil.sumBets;
 
 @RequiredArgsConstructor
 @Service
-public class SimplePrizeService implements PrizeService {
+public class ClassicPrizeService implements PrizeService {
     private final WinnerService winnerService;
     private final GameService gameService;
 

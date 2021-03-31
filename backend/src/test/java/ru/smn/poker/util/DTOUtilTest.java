@@ -1,7 +1,7 @@
 package ru.smn.poker.util;
 
 import com.github.javafaker.Faker;
-import ru.smn.poker.dto.HoldemTableSettings;
+import ru.smn.poker.dto.ClassicTableSettings;
 import ru.smn.poker.dto.Player;
 import ru.smn.poker.entities.CardEntity;
 import ru.smn.poker.entities.ChipsCountEntity;
@@ -46,7 +46,7 @@ public class DTOUtilTest {
     }
 
     public static TableSettings getRoundSettingsDTO(long lastBet, StageType stageType, List<PlayerEntity> players) {
-        return HoldemTableSettings.builder()
+        return ClassicTableSettings.builder()
                 .lastBet(lastBet)
                 .stageType(stageType)
                 .bigBlindBet(DEFAULT_BIG_BLIND_BET)
@@ -62,7 +62,7 @@ public class DTOUtilTest {
     }
 
     public static TableSettings getRoundSettingsDTO(long lastBet, List<PlayerEntity> players) {
-        return HoldemTableSettings.builder()
+        return ClassicTableSettings.builder()
                 .lastBet(lastBet)
                 .bigBlindBet(DEFAULT_BIG_BLIND_BET)
                 .smallBlindBet(DEFAULT_SMALL_BLIND_BET)

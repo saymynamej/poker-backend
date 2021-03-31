@@ -5,7 +5,7 @@ import org.junit.Test;
 import ru.smn.poker.dto.Combination;
 import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.CombinationType;
-import ru.smn.poker.service.common.SimpleCombinationService;
+import ru.smn.poker.service.classic.ClassicCombinationService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,7 +15,7 @@ import static ru.smn.poker.enums.CardType.*;
 
 public class SimpleCombinationServiceTest {
 
-    private final SimpleCombinationService checkSimpleCombinationService = new SimpleCombinationService();
+    private final ClassicCombinationService checkSimpleCombinationService = new ClassicCombinationService();
 
     private static final List<CardType> FLUSH_ROYAL_HEART_FULL = new ArrayList<>(Arrays.asList(A_H, K_H, Q_H, J_H, TEN_H, FOUR_H, K_S));
     private static final List<CardType> FLUSH_ROYAL_HEART_COMBINATION = new ArrayList<>(Arrays.asList(A_H, K_H, Q_H, J_H, TEN_H));

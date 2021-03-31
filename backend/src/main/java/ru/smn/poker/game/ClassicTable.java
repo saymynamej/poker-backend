@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Slf4j
-public class SimpleTable implements Table {
+public class ClassicTable implements Table {
     private final OrderActionService orderActionService;
     private final PrizeService prizeService;
     private final List<PlayerEntity> players;

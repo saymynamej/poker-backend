@@ -11,7 +11,7 @@ import ru.smn.poker.action.holdem.AllIn;
 import ru.smn.poker.action.holdem.Call;
 import ru.smn.poker.action.holdem.Fold;
 import ru.smn.poker.action.holdem.Raise;
-import ru.smn.poker.dto.HoldemTableSettings;
+import ru.smn.poker.dto.ClassicTableSettings;
 import ru.smn.poker.entities.CardEntity;
 import ru.smn.poker.entities.ChipsCountEntity;
 import ru.smn.poker.entities.PlayerEntity;
@@ -48,7 +48,7 @@ class SimplePrizeServiceTest {
         player1.getTableSettings().setStateType(StateType.IN_GAME);
         player2.getTableSettings().setStateType(StateType.IN_GAME);
 
-        prizeService.sendPrizes(HoldemTableSettings.builder()
+        prizeService.sendPrizes(ClassicTableSettings.builder()
                 .fullHistory(Map.of(
                         player1, List.of(call),
                         player2, List.of(call, raise)
@@ -85,7 +85,7 @@ class SimplePrizeServiceTest {
         player1.getTableSettings().setStateType(StateType.IN_GAME);
         player2.getTableSettings().setStateType(StateType.IN_GAME);
 
-        TableSettings tableSettings = HoldemTableSettings.builder()
+        TableSettings tableSettings = ClassicTableSettings.builder()
                 .flop(Arrays.asList(
                         CardType.FOUR_C,
                         CardType.FIVE_D,
@@ -152,7 +152,7 @@ class SimplePrizeServiceTest {
         player2.getTableSettings().setStateType(StateType.IN_GAME);
         player3.getTableSettings().setStateType(StateType.IN_GAME);
 
-        prizeService.sendPrizes(HoldemTableSettings.builder()
+        prizeService.sendPrizes(ClassicTableSettings.builder()
                 .flop(Arrays.asList(
                         CardType.Q_S,
                         CardType.TWO_D,

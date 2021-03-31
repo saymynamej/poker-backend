@@ -16,7 +16,7 @@ import java.util.Map;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class HoldemTableSettings implements TableSettings {
+public class ClassicTableSettings implements TableSettings {
     private Map<PlayerEntity, List<Action>> stageHistory;
     private Map<PlayerEntity, List<Action>> fullHistory;
     private List<PlayerEntity> players;
@@ -44,7 +44,7 @@ public class HoldemTableSettings implements TableSettings {
 
     @Override
     public TableSettings copy(List<PlayerEntity> players) {
-        final TableSettings tableSettings = new HoldemTableSettings();
+        final TableSettings tableSettings = new ClassicTableSettings();
         tableSettings.setStageHistory(stageHistory);
         tableSettings.setFullHistory(fullHistory);
         tableSettings.setPlayers(players);
