@@ -30,7 +30,8 @@ public class PlayerSettingsEntity {
     private Long id;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
-    private List<ActionEntity> actions;
+    @Builder.Default
+    private List<ActionEntity> actions = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "settings", fetch = FetchType.EAGER)
     private List<CardEntity> cards;

@@ -7,6 +7,7 @@ import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.TableSettingsManager;
 import ru.smn.poker.game.TableSettingsManagerFactory;
 import ru.smn.poker.service.HandIdGenerator;
+import ru.smn.poker.service.common.TableService;
 
 import java.util.List;
 
@@ -19,12 +20,14 @@ public enum GameType implements TableSettingsManagerProducer {
         public TableSettingsManager produceManager(
                 List<PlayerEntity> players,
                 GameSettings gameSettings,
-                HandIdGenerator handIdGenerator
+                HandIdGenerator handIdGenerator,
+                TableService tableService
         ) {
             return TableSettingsManagerFactory.getManagerHoldemFull(
                     players,
                     gameSettings,
-                    handIdGenerator
+                    handIdGenerator,
+                    tableService
             );
         }
     },
@@ -33,12 +36,14 @@ public enum GameType implements TableSettingsManagerProducer {
         public TableSettingsManager produceManager(
                 List<PlayerEntity> players,
                 GameSettings gameSettings,
-                HandIdGenerator handIdGenerator
+                HandIdGenerator handIdGenerator,
+                TableService tableService
         ) {
             return TableSettingsManagerFactory.getManagerHoldemHU(
                     players,
                     gameSettings,
-                    handIdGenerator
+                    handIdGenerator,
+                    tableService
             );
         }
     };

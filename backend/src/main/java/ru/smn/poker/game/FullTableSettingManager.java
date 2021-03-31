@@ -9,6 +9,7 @@ import ru.smn.poker.entities.CardEntity;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.*;
 import ru.smn.poker.service.HandIdGenerator;
+import ru.smn.poker.service.common.TableService;
 import ru.smn.poker.util.PlayerUtil;
 
 import java.util.*;
@@ -25,29 +26,32 @@ public class FullTableSettingManager implements TableSettingsManager {
     private StageType stageType = StageType.PREFLOP;
     private List<CardType> allCards;
     private boolean needRestore;
+    private final TableService tableService;
 
     public FullTableSettingManager(
             Random random,
             List<PlayerEntity> players,
             GameSettings gameSettings,
             TableSettings tableSettings,
-            HandIdGenerator handIdGenerator
+            HandIdGenerator handIdGenerator,
+            TableService tableService
     ) {
         this.random = random;
         this.players = players;
         this.gameSettings = gameSettings;
         this.tableSettings = tableSettings;
         this.handIdGenerator = handIdGenerator;
+        this.tableService = tableService;
         //TODO
         this.needRestore = tableSettings.getFullHistory() != null && !tableSettings.getFullHistory().isEmpty();
-        if (this.needRestore){
+        if (this.needRestore) {
             stageType = tableSettings.getStageType();
         }
     }
 
     @Override
     public TableSettings getSettings() {
-        if (needRestore){
+        if (needRestore) {
             needRestore = false;
             return tableSettings;
         }
@@ -75,6 +79,9 @@ public class FullTableSettingManager implements TableSettingsManager {
         this.tableSettings.setTableId(gameSettings.getTableId());
         this.tableSettings.setFinished(false);
         this.tableSettings.setHandId(handIdGenerator.generate(gameSettings.getTableId()));
+        this.tableService.updateHand(this.tableSettings);
+        this.tableService.saveCards(players);
+
         return this.tableSettings;
     }
 
@@ -85,6 +92,7 @@ public class FullTableSettingManager implements TableSettingsManager {
         this.tableSettings.setStageHistory(new HashMap<>());
         this.tableSettings.setLastBet(0L);
         this.tableSettings.setStageType(StageType.FLOP);
+        this.tableService.updateHand(this.tableSettings);
         return this.tableSettings;
     }
 
@@ -95,6 +103,7 @@ public class FullTableSettingManager implements TableSettingsManager {
         this.tableSettings.setStageHistory(new HashMap<>());
         this.tableSettings.setLastBet(0L);
         this.tableSettings.setStageType(StageType.TERN);
+        this.tableService.updateHand(this.tableSettings);
         return tableSettings;
     }
 
@@ -105,6 +114,7 @@ public class FullTableSettingManager implements TableSettingsManager {
         this.tableSettings.setStageHistory(new HashMap<>());
         this.tableSettings.setLastBet(0L);
         this.tableSettings.setStageType(StageType.RIVER);
+        this.tableService.updateHand(this.tableSettings);
         return tableSettings;
     }
 
@@ -114,10 +124,12 @@ public class FullTableSettingManager implements TableSettingsManager {
                         Arrays.asList(
                                 CardEntity.builder()
                                         .cardType(getRandomCard())
+                                        .settings(player.getTableSettings())
                                         .player(player)
                                         .build(),
                                 CardEntity.builder()
                                         .cardType(getRandomCard())
+                                        .settings(player.getTableSettings())
                                         .player(player)
                                         .build()
                         ))

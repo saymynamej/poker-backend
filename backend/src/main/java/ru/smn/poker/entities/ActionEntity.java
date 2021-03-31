@@ -18,7 +18,7 @@ public class ActionEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "player_id")
     private PlayerEntity player;
 
@@ -30,7 +30,7 @@ public class ActionEntity {
     @Enumerated(value = EnumType.STRING)
     private StageType stageType;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "hand_id")
     private HandEntity hand;
 

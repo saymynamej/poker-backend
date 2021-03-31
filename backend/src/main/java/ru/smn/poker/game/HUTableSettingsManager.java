@@ -6,6 +6,7 @@ import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.RoleType;
 import ru.smn.poker.service.HandIdGenerator;
+import ru.smn.poker.service.common.TableService;
 
 import java.util.*;
 
@@ -16,14 +17,16 @@ public class HUTableSettingsManager extends FullTableSettingManager {
             List<PlayerEntity> players,
             GameSettings gameSettings,
             TableSettings tableSettings,
-            HandIdGenerator handIdGenerator
+            HandIdGenerator handIdGenerator,
+            TableService tableService
     ) {
         super(
                 random,
                 players,
                 gameSettings,
                 tableSettings,
-                handIdGenerator
+                handIdGenerator,
+                tableService
         );
     }
 

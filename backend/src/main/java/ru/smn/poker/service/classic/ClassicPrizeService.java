@@ -20,7 +20,6 @@ import static ru.smn.poker.util.HistoryUtil.sumBets;
 @Service
 public class ClassicPrizeService implements PrizeService {
     private final WinnerService winnerService;
-    private final GameService gameService;
 
     @Override
     public void sendPrizes(TableSettings tableSettings) {
@@ -31,7 +30,6 @@ public class ClassicPrizeService implements PrizeService {
         }
         final List<PlayerCombination> winners = winnerService.findWinners(tableSettings);
         calculate(winners, tableSettings);
-        gameService.update(tableSettings);
     }
 
     private void calculate(List<PlayerCombination> winners, TableSettings tableSettings) {
