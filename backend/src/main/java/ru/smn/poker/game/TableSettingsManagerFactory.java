@@ -3,7 +3,7 @@ package ru.smn.poker.game;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.dto.ClassicTableSettings;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.service.HandService;
+import ru.smn.poker.service.HandIdGenerator;
 
 import java.security.SecureRandom;
 import java.util.List;
@@ -16,32 +16,30 @@ public class TableSettingsManagerFactory {
     public static TableSettingsManager getManagerHoldemFull(
             List<PlayerEntity> players,
             GameSettings gameSettings,
-            HandService handService
+            HandIdGenerator handIdGenerator
     ) {
-        final Long tableId = gameSettings.getTableId();
 
         return new FullTableSettingManager(
                 random,
-                handService.getNewHandId(tableId),
                 players,
                 gameSettings,
-                new ClassicTableSettings()
+                new ClassicTableSettings(),
+                handIdGenerator
         );
     }
 
     public static TableSettingsManager getManagerHoldemHU(
             List<PlayerEntity> players,
             GameSettings gameSettings,
-            HandService handService
+            HandIdGenerator handIdGenerator
     ) {
-        final Long tableId = gameSettings.getTableId();
 
         return new HUTableSettingsManager(
                 random,
-                handService.getNewHandId(tableId),
                 players,
                 gameSettings,
-                new ClassicTableSettings()
+                new ClassicTableSettings(),
+                handIdGenerator
         );
     }
 }

@@ -8,6 +8,7 @@ import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.entities.CardEntity;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.*;
+import ru.smn.poker.service.HandIdGenerator;
 import ru.smn.poker.util.PlayerUtil;
 
 import java.util.*;
@@ -18,40 +19,30 @@ public class FullTableSettingManager implements TableSettingsManager {
     private final Random random;
     private final List<PlayerEntity> players;
     private final GameSettings gameSettings;
-    private final long handId;
     private final TableSettings tableSettings;
+    private final HandIdGenerator handIdGenerator;
 
     private StageType stageType = StageType.PREFLOP;
     private List<CardType> allCards;
-    private boolean needRestore = false;
-
-    public FullTableSettingManager(
-            Random random,
-            long handId,
-            List<PlayerEntity> players,
-            GameSettings gameSettings,
-            TableSettings tableSettings
-    ) {
-        this.random = random;
-        this.players = players;
-        this.gameSettings = gameSettings;
-        this.handId = handId;
-        this.tableSettings = tableSettings;
-    }
+    private boolean needRestore;
 
     public FullTableSettingManager(
             Random random,
             List<PlayerEntity> players,
             GameSettings gameSettings,
-            long handId,
-            TableSettings tableSettings
+            TableSettings tableSettings,
+            HandIdGenerator handIdGenerator
     ) {
         this.random = random;
         this.players = players;
         this.gameSettings = gameSettings;
-        this.handId = handId;
         this.tableSettings = tableSettings;
-        this.needRestore = true;
+        this.handIdGenerator = handIdGenerator;
+        //TODO
+        this.needRestore = tableSettings.getFullHistory() != null && !tableSettings.getFullHistory().isEmpty();
+        if (this.needRestore){
+            stageType = tableSettings.getStageType();
+        }
     }
 
     @Override
@@ -83,7 +74,7 @@ public class FullTableSettingManager implements TableSettingsManager {
         this.tableSettings.setLastBet(gameSettings.getStartBigBlindBet());
         this.tableSettings.setTableId(gameSettings.getTableId());
         this.tableSettings.setFinished(false);
-        this.tableSettings.setHandId(handId);
+        this.tableSettings.setHandId(handIdGenerator.generate(gameSettings.getTableId()));
         return this.tableSettings;
     }
 
@@ -283,6 +274,7 @@ public class FullTableSettingManager implements TableSettingsManager {
         setBigBlind();
         setAllActivePlayers();
     }
+
 
     private void resetAllCards() {
         this.allCards = CardType.getAllCardsAsList();
