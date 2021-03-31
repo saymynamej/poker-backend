@@ -7,6 +7,7 @@ import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.game.TableSettings;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,30 @@ public class ClassicTableSettings implements TableSettings {
 
     public boolean isNotFirstMoveOnBigBlind(){
         return bigBlind.getSettings().get(0).isNotFirstMoveOnBigBlind();
+    }
+
+    @Override
+    public void reset(){
+        setStageHistory(new HashMap<>());
+        setFullHistory(new HashMap<>());
+        setPlayers(players);
+        setFlop(null);
+        setTern(null);
+        setRiver(null);
+        setTableName(tableName);
+        setSmallBlindBet(smallBlindBet);
+        setTableId(tableId);
+        setBigBlindBet(bigBlindBet);
+        setButton(null);
+        setSmallBlind(null);
+        setBigBlind(null);
+        setStageType(StageType.PREFLOP);
+        setLastBet(0L);
+        setBank(0L);
+        setHandId(handId);
+        setActivePlayer(null);
+        setAfk(false);
+        setFinished(false);
     }
 
     @Override

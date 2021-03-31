@@ -31,7 +31,11 @@ public class TableConverter {
                 prizeService,
                 tableEntity.getPlayers(),
                 gameSettings,
-                handService
+                gameSettings.getGameType().produceManager(
+                        tableEntity.getPlayers(),
+                        gameSettings,
+                        handService
+                )
         );
     }
 }

@@ -94,6 +94,8 @@ public interface TableSettings {
 
     TableSettings copy();
 
+    void reset();
+
     TableSettings copy(List<PlayerEntity> players);
 
     default boolean lastBetIsNotZero() {

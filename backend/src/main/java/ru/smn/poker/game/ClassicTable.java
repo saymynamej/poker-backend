@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.StageType;
-import ru.smn.poker.service.HandService;
 import ru.smn.poker.service.OrderActionService;
 import ru.smn.poker.service.PrizeService;
 import ru.smn.poker.util.PlayerUtil;
@@ -23,7 +22,7 @@ public class ClassicTable implements Table {
     private final PrizeService prizeService;
     private final List<PlayerEntity> players;
     private final GameSettings gameSettings;
-    private final HandService handService;
+    private final TableSettingsManager tableSettingsManager;
     private TableSettings settings;
 
     @Override
@@ -31,9 +30,6 @@ public class ClassicTable implements Table {
         log.info("table with name:" + getGameName() + " started");
         while (isEnable()) {
             if (waitPlayerForStart()) continue;
-
-            final TableSettingsManager tableSettingsManager = getTableSettingsManager();
-
             while (true) {
                 this.settings = tableSettingsManager.getSettings();
                 if (orderActionService.start(this.settings)) {
@@ -42,20 +38,10 @@ public class ClassicTable implements Table {
                 if (this.settings.getStageType() == StageType.RIVER) {
                     break;
                 }
-                ThreadUtil.sleep(1);
             }
-
             this.settings.setFinished(true);
             prizeService.sendPrizes(settings);
         }
-    }
-
-    private TableSettingsManager getTableSettingsManager() {
-        return gameSettings.getGameType().produceManager(
-                players,
-                gameSettings,
-                handService
-        );
     }
 
     private boolean waitPlayerForStart() {

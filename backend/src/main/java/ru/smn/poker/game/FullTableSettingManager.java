@@ -16,16 +16,13 @@ import java.util.stream.Stream;
 
 public class FullTableSettingManager implements TableSettingsManager {
     private final Random random;
-    private final List<CardType> allCards;
     private final List<PlayerEntity> players;
-    private final List<CardType> flop;
-    private final CardType tern;
-    private final CardType river;
     private final GameSettings gameSettings;
     private final long handId;
     private final TableSettings tableSettings;
 
-    private StageType stageType;
+    private StageType stageType = StageType.PREFLOP;
+    private List<CardType> allCards;
 
     public FullTableSettingManager(
             Random random,
@@ -35,26 +32,28 @@ public class FullTableSettingManager implements TableSettingsManager {
             TableSettings tableSettings
     ) {
         this.random = random;
-        this.allCards = CardType.getAllCardsAsList();
         this.players = players;
-        this.flop = setFlop();
-        this.tern = getRandomCard();
-        this.river = getRandomCard();
         this.gameSettings = gameSettings;
         this.handId = handId;
         this.tableSettings = tableSettings;
-        dealCards();
-        setButton();
-        setSmallBlind();
-        setBigBlind();
-        setAllActivePlayers();
+    }
+
+    public FullTableSettingManager(
+            Random random,
+            List<PlayerEntity> players,
+            GameSettings gameSettings,
+            long handId,
+            TableSettings tableSettings
+    ) {
+        this.random = random;
+        this.players = players;
+        this.gameSettings = gameSettings;
+        this.handId = handId;
+        this.tableSettings = tableSettings;
     }
 
     @Override
     public TableSettings getSettings() {
-        if (this.stageType == null) {
-            this.stageType = StageType.PREFLOP;
-        }
         final TableSettings currentSettings = stageType.getCurrentSettings(this);
         this.stageType = stageType.getNextStage();
         return currentSettings;
@@ -62,8 +61,10 @@ public class FullTableSettingManager implements TableSettingsManager {
 
     @Override
     public TableSettings getPreflopSettings() {
+        init();
         this.tableSettings.setFullHistory(getBlindsHistory());
         this.tableSettings.setStageHistory(getBlindsHistory());
+        this.tableSettings.setStageType(StageType.PREFLOP);
         this.tableSettings.setTableName(gameSettings.getTableName());
         this.tableSettings.setBank(gameSettings.getStartBigBlindBet() + gameSettings.getStartSmallBlindBet());
         this.tableSettings.setSmallBlindBet(gameSettings.getStartSmallBlindBet());
@@ -73,7 +74,6 @@ public class FullTableSettingManager implements TableSettingsManager {
         this.tableSettings.setSmallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElse(null));
         this.tableSettings.setButton(getPlayerByRole(RoleType.BUTTON).orElse(null));
         this.tableSettings.setPlayers(players);
-        this.tableSettings.setStageType(StageType.PREFLOP);
         this.tableSettings.setLastBet(gameSettings.getStartBigBlindBet());
         this.tableSettings.setTableId(gameSettings.getTableId());
         this.tableSettings.setFinished(false);
@@ -84,7 +84,7 @@ public class FullTableSettingManager implements TableSettingsManager {
     @Override
     public TableSettings getFlopSettings() {
         setWaitForAllPlayers();
-        this.tableSettings.setFlop(flop);
+        this.tableSettings.setFlop(getFlop());
         this.tableSettings.setStageHistory(new HashMap<>());
         this.tableSettings.setLastBet(0L);
         this.tableSettings.setStageType(StageType.FLOP);
@@ -94,7 +94,7 @@ public class FullTableSettingManager implements TableSettingsManager {
     @Override
     public TableSettings getTernSettings() {
         setWaitForAllPlayers();
-        this.tableSettings.setTern(tern);
+        this.tableSettings.setTern(getRandomCard());
         this.tableSettings.setStageHistory(new HashMap<>());
         this.tableSettings.setLastBet(0L);
         this.tableSettings.setStageType(StageType.TERN);
@@ -104,7 +104,7 @@ public class FullTableSettingManager implements TableSettingsManager {
     @Override
     public TableSettings getRiverSettings() {
         setWaitForAllPlayers();
-        this.tableSettings.setRiver(river);
+        this.tableSettings.setRiver(getRandomCard());
         this.tableSettings.setStageHistory(new HashMap<>());
         this.tableSettings.setLastBet(0L);
         this.tableSettings.setStageType(StageType.RIVER);
@@ -154,8 +154,9 @@ public class FullTableSettingManager implements TableSettingsManager {
         return players.indexOf(getPlayerByRole(RoleType.BUTTON).orElseThrow(() -> new RuntimeException("cannot find button")));
     }
 
-    private List<CardType> setFlop() {
-        return Stream.generate(this::getRandomCard).limit(3)
+    private List<CardType> getFlop() {
+        return Stream.generate(this::getRandomCard)
+                .limit(3)
                 .collect(Collectors.toList());
     }
 
@@ -265,6 +266,24 @@ public class FullTableSettingManager implements TableSettingsManager {
         history.put(bigBlind, forBigBlind);
         history.put(smallBlind, forSmallBlind);
         return history;
+    }
+
+    private void init() {
+        resetTableSettings();
+        resetAllCards();
+        dealCards();
+        setButton();
+        setSmallBlind();
+        setBigBlind();
+        setAllActivePlayers();
+    }
+
+    private void resetAllCards() {
+        this.allCards = CardType.getAllCardsAsList();
+    }
+
+    private void resetTableSettings() {
+        this.tableSettings.reset();
     }
 
     protected List<PlayerEntity> getPlayers() {

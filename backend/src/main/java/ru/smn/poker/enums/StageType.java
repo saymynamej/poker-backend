@@ -43,25 +43,12 @@ public enum StageType implements Pipeline {
     RIVER {
         @Override
         public StageType getNextStage() {
-            return FINISH;
+            return PREFLOP;
         }
 
         @Override
         public TableSettings getCurrentSettings(TableSettingsManager settingsManager) {
             return settingsManager.getRiverSettings();
         }
-    },
-
-    FINISH {
-        @Override
-        public StageType getNextStage() {
-            throw new RuntimeException("FINISH ACTION NOT HAS THE NEXT STAGE");
-        }
-
-        @Override
-        public TableSettings getCurrentSettings(TableSettingsManager settingsManager) {
-            throw new RuntimeException("FINISH ACTION NOT HAS THE CURRENT SETTINGS");
-        }
-    };
-
+    }
 }
