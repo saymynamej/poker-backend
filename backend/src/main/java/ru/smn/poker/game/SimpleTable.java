@@ -54,13 +54,13 @@ public class SimpleTable implements Table {
         if (PlayerUtil.getPlayerWhichMayPlay(players).size() < gameSettings.getMinActivePlayers()){
             ThreadUtil.sleep(3);
             log.info("wait players for table: "  + gameSettings.getTableName());
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     private TableSettingsManager getTableSettingsManager() {
-        return HoldemRoundSettingsManagerFactory.getManagerHoldemHU(
+        return TableSettingsManagerFactory.getManagerHoldemHU(
                 players,
                 gameSettings,
                 handService

@@ -2,6 +2,7 @@ package ru.smn.poker.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import ru.smn.poker.game.Table;
 
 @RequiredArgsConstructor
 @Getter

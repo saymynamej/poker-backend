@@ -9,7 +9,7 @@ import java.security.SecureRandom;
 import java.util.List;
 import java.util.Random;
 
-public class HoldemRoundSettingsManagerFactory {
+public class TableSettingsManagerFactory {
 
     private final static Random random = new SecureRandom();
 
