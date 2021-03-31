@@ -39,10 +39,4 @@ public enum ActionType {
         throw new RuntimeException("global error with defining action type");
     }
 
-    private void changeCount() {
-//        final long count = gameDataService.getPlayerByName(actionInfo.getName()).orElseThrow()
-//                .getTableSettings()
-//                .getChipsCount()
-//                .getCount();
-    }
 }

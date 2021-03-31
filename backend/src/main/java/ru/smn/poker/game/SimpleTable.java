@@ -21,9 +21,9 @@ import java.util.List;
 public class SimpleTable implements Table {
     private final OrderActionService orderActionService;
     private final PrizeService prizeService;
-    private final HandService handService;
     private final List<PlayerEntity> players;
     private final GameSettings gameSettings;
+    private final HandService handService;
     private TableSettings settings;
 
     @Override
@@ -50,21 +50,21 @@ public class SimpleTable implements Table {
         }
     }
 
-    private boolean waitPlayerForStart() {
-        if (PlayerUtil.getPlayerWhichMayPlay(players).size() < gameSettings.getMinActivePlayers()){
-            ThreadUtil.sleep(3);
-            log.info("wait players for table: "  + gameSettings.getTableName());
-            return true;
-        }
-        return false;
-    }
-
     private TableSettingsManager getTableSettingsManager() {
-        return TableSettingsManagerFactory.getManagerHoldemHU(
+        return gameSettings.getGameType().produceManager(
                 players,
                 gameSettings,
                 handService
         );
+    }
+
+    private boolean waitPlayerForStart() {
+        if (PlayerUtil.getPlayerWhichMayPlay(players).size() < gameSettings.getMinActivePlayers()) {
+            ThreadUtil.sleep(3);
+            log.info("wait players for table: " + gameSettings.getTableName());
+            return true;
+        }
+        return false;
     }
 
     public boolean isEnable() {

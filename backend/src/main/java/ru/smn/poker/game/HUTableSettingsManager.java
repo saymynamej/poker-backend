@@ -8,7 +8,7 @@ import ru.smn.poker.enums.RoleType;
 
 import java.util.*;
 
-public class HUTableSettingsManager extends SimpleTableSettingsManager {
+public class HUTableSettingsManager extends FullTableSettingManager {
 
     public HUTableSettingsManager(
             Random random,

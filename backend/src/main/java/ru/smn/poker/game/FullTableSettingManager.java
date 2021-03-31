@@ -14,7 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class SimpleTableSettingsManager implements TableSettingsManager {
+public class FullTableSettingManager implements TableSettingsManager {
     private final Random random;
     private final List<CardType> allCards;
     private final List<PlayerEntity> players;
@@ -27,7 +27,7 @@ public class SimpleTableSettingsManager implements TableSettingsManager {
 
     private StageType stageType;
 
-    public SimpleTableSettingsManager(
+    public FullTableSettingManager(
             Random random,
             long handId,
             List<PlayerEntity> players,

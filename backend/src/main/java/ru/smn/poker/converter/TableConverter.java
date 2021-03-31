@@ -7,9 +7,9 @@ import ru.smn.poker.entities.TableEntity;
 import ru.smn.poker.enums.GameType;
 import ru.smn.poker.game.SimpleTable;
 import ru.smn.poker.game.Table;
+import ru.smn.poker.service.HandService;
 import ru.smn.poker.service.OrderActionService;
 import ru.smn.poker.service.PrizeService;
-import ru.smn.poker.service.common.SimpleHandService;
 
 import java.util.Map;
 
@@ -19,7 +19,7 @@ public class TableConverter {
     private final Map<GameType, GameSettings> mapSettings;
     private final OrderActionService orderActionService;
     private final PrizeService prizeService;
-    private final SimpleHandService handService;
+    private final HandService handService;
 
     public Table toTable(TableEntity tableEntity) {
         final GameSettings gameSettings = mapSettings.get(tableEntity.getGameType());
@@ -29,9 +29,9 @@ public class TableConverter {
         return new SimpleTable(
                 orderActionService,
                 prizeService,
-                handService,
                 tableEntity.getPlayers(),
-                gameSettings
+                gameSettings,
+                handService
         );
     }
 }
