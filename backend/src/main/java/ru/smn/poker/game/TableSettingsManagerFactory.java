@@ -14,6 +14,25 @@ public class TableSettingsManagerFactory {
 
     private final static Random random = new SecureRandom();
 
+
+    public static TableSettingsManager restoreManagerHoldemHU(
+            List<PlayerEntity> players,
+            GameSettings gameSettings,
+            HandIdGenerator handIdGenerator,
+            TableService tableService,
+            TableSettings tableSettings
+    ) {
+
+        return new HUTableSettingsManager(
+                random,
+                players,
+                gameSettings,
+                tableSettings,
+                handIdGenerator,
+                tableService
+        );
+    }
+
     public static TableSettingsManager getManagerHoldemFull(
             List<PlayerEntity> players,
             GameSettings gameSettings,

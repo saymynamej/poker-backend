@@ -1,6 +1,7 @@
 package ru.smn.poker.entities;
 
 import lombok.*;
+import org.springframework.transaction.annotation.Transactional;
 import ru.smn.poker.enums.GameType;
 
 import javax.persistence.*;
@@ -32,5 +33,10 @@ public class TableEntity {
     @OneToMany(mappedBy = "table", cascade = CascadeType.ALL)
     @Builder.Default
     private List<HandEntity> hands = new ArrayList<>();
+
+
+    public HandEntity getLastHand(){
+        return hands.get(hands.size() - 1);
+    }
 
 }

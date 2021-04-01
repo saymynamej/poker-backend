@@ -37,6 +37,11 @@ public class SimpleGameTableCreator implements GameManagementService {
         );
     }
 
+    public void restoreTable(TableEntity tableEntity) {
+        final Table table = tableConverter.restore(tableEntity);
+        tableRunner.run(table);
+    }
+
     public void createTable(
             List<PlayerEntity> players,
             String tableName,

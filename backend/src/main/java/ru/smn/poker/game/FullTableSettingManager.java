@@ -5,7 +5,9 @@ import ru.smn.poker.action.holdem.Call;
 import ru.smn.poker.action.holdem.Fold;
 import ru.smn.poker.action.holdem.Wait;
 import ru.smn.poker.config.game.GameSettings;
+import ru.smn.poker.entities.ActionEntity;
 import ru.smn.poker.entities.CardEntity;
+import ru.smn.poker.entities.HandEntity;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.*;
 import ru.smn.poker.service.HandIdGenerator;
@@ -71,18 +73,43 @@ public class FullTableSettingManager implements TableSettingsManager {
         this.tableSettings.setSmallBlindBet(gameSettings.getStartSmallBlindBet());
         this.tableSettings.setBigBlindBet(gameSettings.getStartBigBlindBet());
         this.tableSettings.setAfk(false);
-        this.tableSettings.setBigBlind(getPlayerByRole(RoleType.BIG_BLIND).orElse(null));
-        this.tableSettings.setSmallBlind(getPlayerByRole(RoleType.SMALL_BLIND).orElse(null));
-        this.tableSettings.setButton(getPlayerByRole(RoleType.BUTTON).orElse(null));
+
+        final PlayerEntity bigBlind = getPlayerByRole(RoleType.BIG_BLIND).orElseThrow();
+        final PlayerEntity smallBlind = getPlayerByRole(RoleType.SMALL_BLIND).orElse(null);
+        final PlayerEntity button = getPlayerByRole(RoleType.BUTTON).orElseThrow(null);
+
+        this.tableSettings.setBigBlind(bigBlind);
+        this.tableSettings.setSmallBlind(smallBlind);
+        this.tableSettings.setButton(button);
+
         this.tableSettings.setPlayers(players);
         this.tableSettings.setLastBet(gameSettings.getStartBigBlindBet());
         this.tableSettings.setTableId(gameSettings.getTableId());
         this.tableSettings.setFinished(false);
         this.tableSettings.setHandId(handIdGenerator.generate(gameSettings.getTableId()));
+
         this.tableService.updateHand(this.tableSettings);
         this.tableService.saveCards(players);
 
+        addBlindAction(smallBlind == null ? button : smallBlind, gameSettings.getStartSmallBlindBet(), ActionType.SB_BET);
+        addBlindAction(bigBlind, gameSettings.getStartBigBlindBet(), ActionType.BB_BET);
+
         return this.tableSettings;
+    }
+
+    private void addBlindAction(PlayerEntity player, long bet, ActionType actionType) {
+        player.getTableSettings().getActions().add(
+                ActionEntity.builder()
+                        .count(bet)
+                        .hand(HandEntity.builder()
+                                .id(this.tableSettings.getHandId())
+                                .build())
+                        .actionType(actionType)
+                        .player(player)
+                        .stageType(StageType.PREFLOP)
+                        .build()
+        );
+        this.tableService.updateInfo(player);
     }
 
     @Override
