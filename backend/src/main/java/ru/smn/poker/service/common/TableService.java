@@ -8,10 +8,7 @@ import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.entities.PlayerSettingsEntity;
 import ru.smn.poker.entities.TableEntity;
 import ru.smn.poker.game.TableSettings;
-import ru.smn.poker.repository.ActionRepository;
-import ru.smn.poker.repository.CardRepository;
-import ru.smn.poker.repository.ChipsCountRepository;
-import ru.smn.poker.repository.TableRepository;
+import ru.smn.poker.repository.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +21,7 @@ public class TableService {
     private final CardRepository cardRepository;
     private final ActionRepository actionRepository;
     private final ChipsCountRepository chipsCountRepository;
+    private final PlayerRepository playerRepository;
 
     @Transactional
     public void save(TableEntity tableEntity) {
@@ -35,6 +33,7 @@ public class TableService {
         final PlayerSettingsEntity playerSettings = playerEntity.getTableSettings();
         actionRepository.saveAll(playerSettings.getActions());
         chipsCountRepository.save(playerSettings.getChipsCount());
+        playerRepository.save(playerEntity);
     }
 
     @Transactional
