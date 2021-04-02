@@ -7,7 +7,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import ru.smn.poker.service.InfoService;
 
-@Profile({"enableInfoService"})
 @RequiredArgsConstructor
 @Service
 @EnableScheduling

@@ -1,5 +1,5 @@
 ***This is poker room with a backend and frontend modules,
-for start it you have to run commands below, and you must have docker, gradle, java11:***
+for start it on a test mode you have to run commands below, and you must have docker, gradle, java11:***
 ---
 ## For example:
 ##### BACKEND:

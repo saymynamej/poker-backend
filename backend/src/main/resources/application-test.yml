@@ -24,8 +24,6 @@ spring:
           lob:
             non_contextual_creation: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
-  profiles:
-    include: enableInfoService
 #eureka:
 #  client:
 #    serviceUrl:
