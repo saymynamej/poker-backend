@@ -1,10 +1,11 @@
 
 plugins {
     id 'java'
+    id "org.springframework.boot" version "2.2.0.RELEASE"
 }
 
-
 def springVersion = '2.2.0.RELEASE'
+
 
 group 'smn-poker-server'
 version '1.0-SNAPSHOT'
