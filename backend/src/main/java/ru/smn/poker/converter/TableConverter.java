@@ -43,7 +43,6 @@ public class TableConverter {
                 .bigBlindBet(lastHand.getBigBlindBet())
                 .smallBlindBet(lastHand.getSmallBlindBet())
                 .button(lastHand.getButton())
-                .flop(List.of(lastHand.getF1(), lastHand.getF2(), lastHand.getF3()))
                 .players(tableEntity.getPlayers())
                 .handId(lastHand.getId())
                 .tableId(tableEntity.getId())
@@ -52,6 +51,10 @@ public class TableConverter {
                 .river(lastHand.getRiver())
                 .tern(lastHand.getTern())
                 .build();
+
+        if (lastHand.getF1() != null) {
+            classicTableSettings.setFlop(List.of(lastHand.getF1(), lastHand.getF2(), lastHand.getF3()));
+        }
 
         return new ClassicTable(
                 orderActionService,

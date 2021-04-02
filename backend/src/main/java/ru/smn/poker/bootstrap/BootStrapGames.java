@@ -15,14 +15,14 @@ public class BootStrapGames {
     private final SimpleGameTableCreator gameTableCreator;
     private final TableRepository tableRepository;
 
-    @PostConstruct
-    public void init2() {
-        gameTableCreator.createTable(2, GameType.HOLDEM_HU);
-    }
-
 //    @PostConstruct
-//    public void init() {
-//        tableRepository.findAll().forEach(gameTableCreator::restoreTable);
+//    public void init2() {
+//        gameTableCreator.createTable(2, GameType.HOLDEM_HU);
 //    }
+
+    @PostConstruct
+    public void init() {
+        gameTableCreator.restoreAll();
+    }
 
 }

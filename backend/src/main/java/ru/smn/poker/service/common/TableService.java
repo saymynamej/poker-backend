@@ -76,4 +76,8 @@ public class TableService {
     public Optional<TableEntity> findById(Long id) {
         return tableRepository.findById(id);
     }
+
+    public List<TableEntity> findAll() {
+        return tableRepository.findAll();
+    }
 }

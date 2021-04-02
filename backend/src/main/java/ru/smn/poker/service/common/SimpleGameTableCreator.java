@@ -3,6 +3,7 @@ package ru.smn.poker.service.common;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.smn.poker.converter.TableConverter;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.entities.TableEntity;
@@ -27,22 +28,22 @@ public class SimpleGameTableCreator implements GameManagementService {
     private final TableConverter tableConverter;
     private final TableRunner tableRunner;
 
-    public void createTable(int countOfPlayers, GameType gameType) {
+    public void create(int countOfPlayers, GameType gameType) {
         final String randomName = randomNameService.getRandomName();
 
-        createTable(
+        create(
                 playerGenerator.generate(countOfPlayers, randomName),
                 randomName,
                 gameType
         );
     }
 
-    public void restoreTable(TableEntity tableEntity) {
+    public void restore(TableEntity tableEntity) {
         final Table table = tableConverter.restore(tableEntity);
         tableRunner.run(table);
     }
 
-    public void createTable(
+    public void create(
             List<PlayerEntity> players,
             String tableName,
             GameType gameType
@@ -62,4 +63,8 @@ public class SimpleGameTableCreator implements GameManagementService {
         tableRunner.run(table);
     }
 
+    @Transactional
+    public void restoreAll() {
+        tableService.findAll().forEach(this::restore);
+    }
 }
