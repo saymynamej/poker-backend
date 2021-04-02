@@ -34,7 +34,6 @@ public class TableEntity {
     @Builder.Default
     private List<HandEntity> hands = new ArrayList<>();
 
-
     public HandEntity getLastHand(){
         return hands.get(hands.size() - 1);
     }

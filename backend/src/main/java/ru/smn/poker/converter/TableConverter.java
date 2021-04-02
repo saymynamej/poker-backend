@@ -13,6 +13,7 @@ import ru.smn.poker.entities.TableEntity;
 import ru.smn.poker.enums.GameType;
 import ru.smn.poker.game.ClassicTable;
 import ru.smn.poker.game.Table;
+import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.service.HandIdGenerator;
 import ru.smn.poker.service.OrderActionService;
 import ru.smn.poker.service.PrizeService;
@@ -49,7 +50,7 @@ public class TableConverter {
 
         setActionsForPlayers(tableEntity, stageHistory);
 
-        final ClassicTableSettings classicTableSettings = ClassicTableSettings.builder()
+        final TableSettings tableSettings = ClassicTableSettings.builder()
                 .activePlayer(lastHand.getActivePlayer())
                 .bank(lastHand.getBank())
                 .bigBlind(lastHand.getBigBlind())
@@ -70,7 +71,7 @@ public class TableConverter {
                 .build();
 
         if (lastHand.getF1() != null) {
-            classicTableSettings.setFlop(List.of(lastHand.getF1(), lastHand.getF2(), lastHand.getF3()));
+            tableSettings.setFlop(List.of(lastHand.getF1(), lastHand.getF2(), lastHand.getF3()));
         }
 
         return new ClassicTable(
@@ -83,7 +84,7 @@ public class TableConverter {
                         gameSettings,
                         handIdGenerator,
                         tableService,
-                        classicTableSettings
+                        tableSettings
                 )
         );
     }
@@ -121,5 +122,4 @@ public class TableConverter {
             });
         }
     }
-
 }
