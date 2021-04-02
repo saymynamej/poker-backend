@@ -43,7 +43,10 @@ public class TableConverter {
         final List<ActionEntity> actions = lastHand.getActions();
 
         final Map<PlayerEntity, List<Action>> fullHistory = HistoryUtil.getFullHistory(actions);
+
         final Map<PlayerEntity, List<Action>> stageHistory = HistoryUtil.getStageHistory(actions, lastHand.getStageType());
+
+        setActionsForPlayers(tableEntity, stageHistory);
 
         final ClassicTableSettings classicTableSettings = ClassicTableSettings.builder()
                 .activePlayer(lastHand.getActivePlayer())
