@@ -36,7 +36,7 @@ class CallTest {
     @SpyBean
     private ActionService actionService;
 
-    private ExecutorService executorServiceForActions = Executors.newSingleThreadExecutor();
+    private final ExecutorService executorServiceForActions = Executors.newSingleThreadExecutor();
 
     @Test
     void testSuccessCall() throws InterruptedException {

@@ -31,7 +31,7 @@ public class CheckTest {
     @SpyBean
     private ActionService actionService;
 
-    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @Test
     public void testSuccessCheckWhenLastBetZero() throws InterruptedException {

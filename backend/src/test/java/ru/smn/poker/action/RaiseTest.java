@@ -32,7 +32,7 @@ public class RaiseTest {
     @SpyBean
     private GameService gameService;
 
-    private ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @Test
     public void testSuccessRaise() throws InterruptedException {

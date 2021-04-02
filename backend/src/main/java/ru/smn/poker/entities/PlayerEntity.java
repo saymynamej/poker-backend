@@ -26,6 +26,7 @@ public class PlayerEntity {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "settings_id")
+    @Builder.Default
     private List<PlayerSettingsEntity> settings = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.ALL)

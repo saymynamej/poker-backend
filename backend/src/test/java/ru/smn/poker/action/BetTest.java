@@ -32,7 +32,7 @@ public class BetTest {
     @SpyBean
     private ActionService actionService;
 
-    private ExecutorService executorServiceForActions = Executors.newSingleThreadExecutor();
+    private final ExecutorService executorServiceForActions = Executors.newSingleThreadExecutor();
 
     @Test
     public void testFailBet() throws InterruptedException {
