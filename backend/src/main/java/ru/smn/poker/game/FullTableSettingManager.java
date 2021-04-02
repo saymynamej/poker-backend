@@ -3,9 +3,7 @@ package ru.smn.poker.game;
 import ru.smn.poker.action.Action;
 import ru.smn.poker.action.holdem.*;
 import ru.smn.poker.config.game.GameSettings;
-import ru.smn.poker.entities.ActionEntity;
 import ru.smn.poker.entities.CardEntity;
-import ru.smn.poker.entities.HandEntity;
 import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.*;
 import ru.smn.poker.service.HandIdGenerator;
@@ -98,7 +96,8 @@ public class FullTableSettingManager implements TableSettingsManager {
     private void addBlindAction(PlayerEntity player, Action action) {
         player.addAction(
                 action,
-                tableSettings.getHandId()
+                tableSettings.getHandId(),
+                StageType.PREFLOP
         );
         this.tableService.updateInfo(player);
     }

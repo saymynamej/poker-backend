@@ -2,9 +2,13 @@ package ru.smn.poker.converter;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.smn.poker.action.Action;
+import ru.smn.poker.action.holdem.Wait;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.dto.ClassicTableSettings;
+import ru.smn.poker.entities.ActionEntity;
 import ru.smn.poker.entities.HandEntity;
+import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.entities.TableEntity;
 import ru.smn.poker.enums.GameType;
 import ru.smn.poker.game.ClassicTable;
@@ -14,6 +18,7 @@ import ru.smn.poker.service.HandIdGenerator;
 import ru.smn.poker.service.OrderActionService;
 import ru.smn.poker.service.PrizeService;
 import ru.smn.poker.service.common.TableService;
+import ru.smn.poker.util.HistoryUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -35,11 +40,18 @@ public class TableConverter {
 
         final HandEntity lastHand = tableEntity.getLastHand();
 
+        final List<ActionEntity> actions = lastHand.getActions();
+
+        final Map<PlayerEntity, List<Action>> fullHistory = HistoryUtil.getFullHistory(actions);
+        final Map<PlayerEntity, List<Action>> stageHistory = HistoryUtil.getStageHistory(actions, lastHand.getStageType());
+
         final ClassicTableSettings classicTableSettings = ClassicTableSettings.builder()
                 .activePlayer(lastHand.getActivePlayer())
                 .bank(lastHand.getBank())
                 .bigBlind(lastHand.getBigBlind())
                 .smallBlind(lastHand.getSmallBlind())
+                .fullHistory(fullHistory)
+                .stageHistory(stageHistory)
                 .bigBlindBet(lastHand.getBigBlindBet())
                 .smallBlindBet(lastHand.getSmallBlindBet())
                 .button(lastHand.getButton())
@@ -89,4 +101,20 @@ public class TableConverter {
                 )
         );
     }
+
+    private void setActionsForPlayers(TableEntity tableEntity, Map<PlayerEntity, List<Action>> stageHistory) {
+        if (stageHistory.isEmpty()) {
+            tableEntity.getPlayers().forEach(playerEntity -> playerEntity.getTableSettings().setAction(new Wait()));
+        } else {
+            tableEntity.getPlayers().forEach(playerEntity -> {
+                final List<Action> actions = stageHistory.get(playerEntity);
+                if (actions == null || actions.isEmpty()) {
+                    playerEntity.getTableSettings().setAction(new Wait());
+                } else {
+                    playerEntity.getTableSettings().setAction(actions.get(actions.size() - 1));
+                }
+            });
+        }
+    }
+
 }

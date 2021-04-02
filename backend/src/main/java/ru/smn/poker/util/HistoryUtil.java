@@ -1,7 +1,10 @@
 package ru.smn.poker.util;
 
 import ru.smn.poker.action.Action;
+import ru.smn.poker.entities.ActionEntity;
 import ru.smn.poker.entities.PlayerEntity;
+import ru.smn.poker.enums.ActionType;
+import ru.smn.poker.enums.StageType;
 import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.stream.PlayerPredicates;
 
@@ -12,6 +15,27 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class HistoryUtil {
+
+    public static Map<PlayerEntity, List<Action>> getStageHistory(List<ActionEntity> actions, StageType stageType) {
+        return actions.stream()
+                .filter(actionEntity -> actionEntity.getStageType() == stageType)
+                .collect(Collectors.groupingBy(ActionEntity::getPlayer))
+                .entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
+                        .map(actionEntity -> ActionType.getActionByType(actionEntity.getActionType(), actionEntity.getCount()))
+                        .collect(Collectors.toList()))
+                );
+    }
+
+    public static Map<PlayerEntity, List<Action>> getFullHistory(List<ActionEntity> actions) {
+        return actions.stream()
+                .collect(Collectors.groupingBy(ActionEntity::getPlayer))
+                .entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
+                        .map(actionEntity -> ActionType.getActionByType(actionEntity.getActionType(), actionEntity.getCount()))
+                        .collect(Collectors.toList()))
+                );
+    }
 
     public static boolean canMoveNext(TableSettings tableSettings) {
         return allPlayersInGameHaveSameCountOfBet(tableSettings) && tableSettings.isNotFirstMoveOnBigBlind() && (tableSettings.lastBetIsNotZero() || tableSettings.allPlayersCheck());

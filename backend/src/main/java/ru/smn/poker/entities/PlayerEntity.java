@@ -61,7 +61,7 @@ public class PlayerEntity {
         return settings.get(0).getAction();
     }
 
-    public void addAction(Action action, long handId) {
+    public void addAction(Action action, long handId, StageType stageType) {
         getTableSettings().getActions().add(
                 ActionEntity.builder()
                         .count(action.getCount())
@@ -70,7 +70,7 @@ public class PlayerEntity {
                                 .build())
                         .actionType(action.getActionType())
                         .player(this)
-                        .stageType(StageType.PREFLOP)
+                        .stageType(stageType)
                         .build()
         );
     }

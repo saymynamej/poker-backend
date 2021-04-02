@@ -44,15 +44,7 @@ public class GameService {
     }
 
     private void addActionToPlayer(PlayerEntity player, TableSettings tableSettings, Action action) {
-        player.getTableSettings().getActions().add(ActionEntity.builder()
-                .actionType(action.getActionType())
-                .player(player)
-                .hand(HandEntity.builder()
-                        .id(tableSettings.getHandId())
-                        .build())
-                .count(action.getCount())
-                .stageType(tableSettings.getStageType())
-                .build());
+        player.addAction(action, tableSettings.getHandId(), tableSettings.getStageType());
     }
 
     public void setActivePlayer(TableSettings tableSettings, PlayerEntity player) {
