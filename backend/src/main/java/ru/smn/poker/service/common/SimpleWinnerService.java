@@ -9,6 +9,7 @@ import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.service.CombinationService;
 import ru.smn.poker.service.WinnerService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -19,6 +20,7 @@ import static java.util.List.of;
 @RequiredArgsConstructor
 public class SimpleWinnerService implements WinnerService {
     private final CombinationService combinationService;
+    private final ResultCombinationService resultCombinationService;
 
     @Override
     public List<PlayerCombination> findWinners(TableSettings tableSettings) {
@@ -43,6 +45,8 @@ public class SimpleWinnerService implements WinnerService {
                 })
                 .collect(Collectors.toList());
 
+        final List<PlayerCombination> copyCombinations = new ArrayList<>(playerCombinations);
+
         final Integer maxPowerOfCombinationType = playerCombinations.stream()
                 .map(combo -> combo.getCombination().getCombinationType().getPower())
                 .max(Integer::compareTo)
@@ -60,6 +64,8 @@ public class SimpleWinnerService implements WinnerService {
         playerCombinations = playerCombinations.stream()
                 .filter(playerCombination -> playerCombination.getCombination().getPower().equals(maxPowerOfCombination))
                 .collect(Collectors.toList());
+
+        resultCombinationService.saveCombinations(copyCombinations, playerCombinations, tableSettings.getHandId());
 
         return playerCombinations;
     }

@@ -8,6 +8,7 @@ import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.game.TableSettings;
 import ru.smn.poker.service.PrizeService;
 import ru.smn.poker.service.WinnerService;
+import ru.smn.poker.service.common.ResultCombinationService;
 import ru.smn.poker.util.PlayerUtil;
 
 import java.util.List;

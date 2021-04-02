@@ -26,7 +26,7 @@ public class ClassicOrderActionService implements OrderActionService {
 
     @Override
     public boolean start(TableSettings tableSettings) {
-        final List<PlayerEntity> sortedPlayers = tableSettings.getActivePlayer() != null ? tableSettings.getPlayers() : sortService.sort(
+        final List<PlayerEntity> sortedPlayers = sortService.sort(
                 tableSettings.getPlayers(),
                 tableSettings.getStageType()
         );

@@ -17,7 +17,7 @@ spring:
     password: test
     url: jdbc:postgresql://localhost:6789/postgres
   application:
-    name: poker-server
+    name: poker-serverte
     properties:
       hibernate:
         jdbc:

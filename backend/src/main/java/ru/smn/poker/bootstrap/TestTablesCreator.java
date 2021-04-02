@@ -8,7 +8,7 @@ import ru.smn.poker.service.GameTableCreator;
 
 import javax.annotation.PostConstruct;
 
-@Profile(value = {"test"})
+//@Profile(value = {"test"})
 @RequiredArgsConstructor
 @Service
 public class TestTablesCreator {
@@ -16,7 +16,7 @@ public class TestTablesCreator {
 
     @PostConstruct
     public void init() {
-        gameTableCreator.create(2, GameType.HOLDEM_HU);
+        gameTableCreator.create(6, GameType.HOLDEM_FULL);
     }
 
 }
