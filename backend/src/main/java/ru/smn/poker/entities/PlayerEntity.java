@@ -3,6 +3,7 @@ package ru.smn.poker.entities;
 import lombok.*;
 import ru.smn.poker.action.Action;
 import ru.smn.poker.enums.AccessType;
+import ru.smn.poker.enums.StageType;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -51,13 +52,27 @@ public class PlayerEntity {
     }
 
     //TODO
-    public PlayerSettingsEntity getTableSettings(){
+    public PlayerSettingsEntity getTableSettings() {
         return settings.get(0);
     }
 
     //TODO
-    public Action getAction(){
+    public Action getAction() {
         return settings.get(0).getAction();
+    }
+
+    public void addAction(Action action, long handId) {
+        getTableSettings().getActions().add(
+                ActionEntity.builder()
+                        .count(action.getCount())
+                        .hand(HandEntity.builder()
+                                .id(handId)
+                                .build())
+                        .actionType(action.getActionType())
+                        .player(this)
+                        .stageType(StageType.PREFLOP)
+                        .build()
+        );
     }
 
     public PlayerEntity copy() {

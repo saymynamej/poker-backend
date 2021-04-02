@@ -1,9 +1,7 @@
 package ru.smn.poker.game;
 
 import ru.smn.poker.action.Action;
-import ru.smn.poker.action.holdem.Call;
-import ru.smn.poker.action.holdem.Fold;
-import ru.smn.poker.action.holdem.Wait;
+import ru.smn.poker.action.holdem.*;
 import ru.smn.poker.config.game.GameSettings;
 import ru.smn.poker.entities.ActionEntity;
 import ru.smn.poker.entities.CardEntity;
@@ -91,23 +89,16 @@ public class FullTableSettingManager implements TableSettingsManager {
         this.tableService.updateHand(this.tableSettings);
         this.tableService.saveCards(players);
 
-        addBlindAction(smallBlind == null ? button : smallBlind, gameSettings.getStartSmallBlindBet(), ActionType.SB_BET);
-        addBlindAction(bigBlind, gameSettings.getStartBigBlindBet(), ActionType.BB_BET);
+        addBlindAction(smallBlind == null ? button : smallBlind, new SmallBlindBet(gameSettings.getStartSmallBlindBet()));
+        addBlindAction(bigBlind, new BigBlindBet(gameSettings.getStartBigBlindBet()));
 
         return this.tableSettings;
     }
 
-    private void addBlindAction(PlayerEntity player, long bet, ActionType actionType) {
-        player.getTableSettings().getActions().add(
-                ActionEntity.builder()
-                        .count(bet)
-                        .hand(HandEntity.builder()
-                                .id(this.tableSettings.getHandId())
-                                .build())
-                        .actionType(actionType)
-                        .player(player)
-                        .stageType(StageType.PREFLOP)
-                        .build()
+    private void addBlindAction(PlayerEntity player, Action action) {
+        player.addAction(
+                action,
+                tableSettings.getHandId()
         );
         this.tableService.updateInfo(player);
     }
