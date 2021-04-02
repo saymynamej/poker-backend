@@ -76,7 +76,7 @@ public class TableConverter {
                 prizeService,
                 tableEntity.getPlayers(),
                 gameSettings,
-                TableSettingsManagerFactory.restoreManagerHoldemHU(
+                tableEntity.getGameType().restore(
                         tableEntity.getPlayers(),
                         gameSettings,
                         handIdGenerator,
@@ -96,7 +96,7 @@ public class TableConverter {
                 prizeService,
                 tableEntity.getPlayers(),
                 gameSettings,
-                gameSettings.getGameType().produceManager(
+                gameSettings.getGameType().produce(
                         tableEntity.getPlayers(),
                         gameSettings,
                         handIdGenerator,
