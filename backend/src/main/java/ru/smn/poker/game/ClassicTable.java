@@ -68,6 +68,11 @@ public class ClassicTable implements Table {
     }
 
     @Override
+    public GameSettings getGameSettings(){
+        return gameSettings;
+    }
+
+    @Override
     public TableSettings getTableSettings() {
         return this.settings;
     }
