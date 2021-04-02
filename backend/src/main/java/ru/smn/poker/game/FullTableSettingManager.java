@@ -40,10 +40,25 @@ public class FullTableSettingManager implements TableSettingsManager {
         this.tableSettings = tableSettings;
         this.handIdGenerator = handIdGenerator;
         this.tableService = tableService;
-        //TODO
-        this.needRestore = tableSettings.getFullHistory() != null && !tableSettings.getFullHistory().isEmpty();
-        if (this.needRestore) {
-            stageType = tableSettings.getStageType();
+        defineRestoreMode(tableSettings);
+    }
+
+    private void defineRestoreMode(TableSettings tableSettings) {
+        this.needRestore = tableSettings.getHandId() != null;
+        if (needRestore) {
+            final StageType stageType = tableSettings.getStageType();
+            this.stageType = stageType.getNextStage();
+            this.allCards = CardType.getAllCardsAsListWithFilter(
+                    getAllCards(
+                            tableSettings.getFlop(),
+                            tableSettings.getTern(),
+                            tableSettings.getRiver(),
+                            tableSettings.getPlayers().stream()
+                                    .flatMap(player -> player.getTableSettings().getCards().stream())
+                                    .map(CardEntity::getCardType)
+                                    .collect(Collectors.toList())
+                    )
+            );
         }
     }
 
@@ -304,6 +319,22 @@ public class FullTableSettingManager implements TableSettingsManager {
         setAllActivePlayers();
     }
 
+    private List<CardType> getAllCards(List<CardType> flop, CardType tern, CardType river, List<CardType> playerCards) {
+        final List<CardType> cards = new ArrayList<>();
+        if (flop != null && flop.isEmpty()) {
+            cards.addAll(flop);
+        }
+        if (tern != null) {
+            cards.add(tern);
+        }
+        if (river != null) {
+            cards.add(river);
+        }
+        if (playerCards != null && playerCards.isEmpty()) {
+            cards.addAll(playerCards);
+        }
+        return cards;
+    }
 
     private void resetAllCards() {
         this.allCards = CardType.getAllCardsAsList();

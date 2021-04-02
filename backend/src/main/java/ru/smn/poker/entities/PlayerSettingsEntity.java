@@ -2,6 +2,8 @@ package ru.smn.poker.entities;
 
 
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import ru.smn.poker.action.Action;
 import ru.smn.poker.action.holdem.Fold;
 import ru.smn.poker.action.holdem.Wait;
@@ -29,7 +31,8 @@ public class PlayerSettingsEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "player")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "player", fetch = FetchType.EAGER)
+    @Fetch(value = FetchMode.JOIN)
     @Builder.Default
     private List<ActionEntity> actions = new ArrayList<>();
 

@@ -13,7 +13,6 @@ import ru.smn.poker.entities.TableEntity;
 import ru.smn.poker.enums.GameType;
 import ru.smn.poker.game.ClassicTable;
 import ru.smn.poker.game.Table;
-import ru.smn.poker.game.TableSettingsManagerFactory;
 import ru.smn.poker.service.HandIdGenerator;
 import ru.smn.poker.service.OrderActionService;
 import ru.smn.poker.service.PrizeService;
@@ -35,7 +34,9 @@ public class TableConverter {
 
     public Table restore(TableEntity tableEntity) {
         final GameSettings gameSettings = mapSettings.get(tableEntity.getGameType());
+
         gameSettings.setTableId(tableEntity.getId());
+
         gameSettings.setTableName(tableEntity.getName());
 
         final HandEntity lastHand = tableEntity.getLastHand();
@@ -58,6 +59,7 @@ public class TableConverter {
                 .bigBlindBet(lastHand.getBigBlindBet())
                 .smallBlindBet(lastHand.getSmallBlindBet())
                 .button(lastHand.getButton())
+                .stageType(lastHand.getStageType())
                 .players(tableEntity.getPlayers())
                 .handId(lastHand.getId())
                 .tableId(tableEntity.getId())
