@@ -10,7 +10,7 @@ import ru.smn.poker.entities.TableEntity;
 import ru.smn.poker.enums.GameType;
 import ru.smn.poker.game.Table;
 import ru.smn.poker.generator.PlayerGenerator;
-import ru.smn.poker.service.GameManagementService;
+import ru.smn.poker.service.GameTableCreator;
 import ru.smn.poker.service.RandomNameService;
 import ru.smn.poker.service.TableRunner;
 
@@ -21,13 +21,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class SimpleGameTableCreator implements GameManagementService {
+public class SimpleGameTableCreator implements GameTableCreator {
     private final RandomNameService randomNameService;
     private final TableService tableService;
     private final PlayerGenerator playerGenerator;
     private final TableConverter tableConverter;
     private final TableRunner tableRunner;
 
+    @Override
     public void create(int countOfPlayers, GameType gameType) {
         final String randomName = randomNameService.getRandomName();
 
@@ -38,11 +39,13 @@ public class SimpleGameTableCreator implements GameManagementService {
         );
     }
 
+    @Override
     public void restore(TableEntity tableEntity) {
         final Table table = tableConverter.restore(tableEntity);
         tableRunner.run(table);
     }
 
+    @Override
     public void create(
             List<PlayerEntity> players,
             String tableName,
@@ -63,6 +66,7 @@ public class SimpleGameTableCreator implements GameManagementService {
         tableRunner.run(table);
     }
 
+    @Override
     @Transactional
     public void restoreAll() {
         tableService.findAll().forEach(this::restore);
