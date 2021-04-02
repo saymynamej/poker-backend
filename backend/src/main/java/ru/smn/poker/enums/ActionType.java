@@ -2,7 +2,6 @@ package ru.smn.poker.enums;
 
 import ru.smn.poker.action.Action;
 import ru.smn.poker.action.holdem.*;
-import ru.smn.poker.dto.ActionInfo;
 
 public enum ActionType {
     BET,

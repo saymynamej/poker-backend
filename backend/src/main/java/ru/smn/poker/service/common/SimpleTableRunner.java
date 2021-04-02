@@ -2,7 +2,6 @@ package ru.smn.poker.service.common;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.smn.poker.game.Table;
 import ru.smn.poker.service.TableRunner;
 

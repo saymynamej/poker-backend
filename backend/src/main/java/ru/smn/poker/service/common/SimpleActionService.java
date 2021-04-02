@@ -21,8 +21,8 @@ import static java.lang.String.format;
 @Slf4j
 @Component
 public class SimpleActionService implements ActionService {
-    private final SecurityService holdemSecurityService;
-    private final GameDataService holdemGameDataService;
+    private final SecurityService securityService;
+    private final GameDataService gameDataService;
     private final SecurityNotificationService securityNotificationService;
     private final SimpleNotificationService simpleNotificationService;
     private final SimpleTimeBankService simpleTimeBankService = new SimpleTimeBankService();
@@ -35,12 +35,12 @@ public class SimpleActionService implements ActionService {
 
     @Override
     public void setAction(String playerName, Action action) {
-        final PlayerEntity player = holdemGameDataService.getPlayerByName(playerName)
+        final PlayerEntity player = gameDataService.getPlayerByName(playerName)
                 .orElseThrow(() -> new RuntimeException("cannot find player with name:" + playerName));
 
-        action = changeCallOnAllInIfNeeded(action, player);
+        action = changeActionOnAllInIfNeeded(action, player);
 
-        if (!holdemSecurityService.isLegalPlayer(player.getTableSettings().getTableName(), player)) {
+        if (!securityService.isLegalPlayer(player.getTableSettings().getTableName(), player)) {
             simpleNotificationService.sendSystemMessageToUser(playerName, format(MessageType.QUEUE_ERROR.getMessage(), player.getName()));
             log.info(String.format(MessageType.QUEUE_ERROR.getMessage(), player.getName()));
             return;
@@ -77,11 +77,14 @@ public class SimpleActionService implements ActionService {
         }
     }
 
-    private Action changeCallOnAllInIfNeeded(Action action, PlayerEntity player) {
+    private Action changeActionOnAllInIfNeeded(Action action, PlayerEntity player) {
         if (action.getActionType() == ActionType.CALL || action.getActionType() == ActionType.RAISE) {
             if (action.getCount() == player.getTableSettings().getChipsCount().getCount()) {
                 action = new AllIn(action.getCount());
             }
+        }
+        if (action.getActionType() == ActionType.ALLIN) {
+            action = new AllIn(player.getTableSettings().getChipsCount().getCount());
         }
         return action;
     }

@@ -1,7 +1,6 @@
 package ru.smn.poker.entities;
 
 import lombok.*;
-import org.springframework.transaction.annotation.Transactional;
 import ru.smn.poker.enums.GameType;
 
 import javax.persistence.*;

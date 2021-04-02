@@ -14,8 +14,6 @@ import ru.smn.poker.util.PlayerUtil;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
 @ActiveProfiles("test")

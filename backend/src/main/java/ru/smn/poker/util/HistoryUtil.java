@@ -74,13 +74,11 @@ public class HistoryUtil {
         return 0;
     }
 
-
     public static long sumAllHistoryBetsWithNewAction(TableSettings tableSettings, PlayerEntity player, Action action) {
         final Map<PlayerEntity, List<Action>> history = tableSettings.getStageHistory();
         final List<Action> countActions = history.get(player);
         return sumBets(countActions) + action.getCount();
     }
-
 
     public static void addActionInHistory(Map<PlayerEntity, List<Action>> history, PlayerEntity player) {
         final Action action = player.getAction();

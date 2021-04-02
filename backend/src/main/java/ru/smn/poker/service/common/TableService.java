@@ -72,11 +72,6 @@ public class TableService {
         handEntity.setLastBet(tableSettings.getLastBet());
     }
 
-
-    public Optional<TableEntity> findById(Long id) {
-        return tableRepository.findById(id);
-    }
-
     public List<TableEntity> findAll() {
         return tableRepository.findAll();
     }

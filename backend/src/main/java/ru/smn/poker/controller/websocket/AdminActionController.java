@@ -6,28 +6,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.smn.poker.action.Action;
-import ru.smn.poker.action.holdem.*;
-import ru.smn.poker.dto.ActionInfo;
 import ru.smn.poker.dto.AdminAction;
 import ru.smn.poker.dto.AdminActionInfo;
-import ru.smn.poker.entities.PlayerEntity;
 import ru.smn.poker.enums.ActionType;
 import ru.smn.poker.service.ActionService;
-import ru.smn.poker.service.GameDataService;
 import ru.smn.poker.service.SeatManager;
 import ru.smn.poker.util.PlayerUtil;
 
 import java.security.Principal;
-import java.util.Optional;
-
-import static ru.smn.poker.util.LongUtil.parseLong;
 
 
 @RequiredArgsConstructor
 @RestController
 @Slf4j
 public class AdminActionController {
-    private final GameDataService gameDataService;
     private final ActionService actionService;
     private final SeatManager seatManager;
 
@@ -53,13 +45,6 @@ public class AdminActionController {
 
     @MessageMapping("/admin/doAction")
     public void doAction(AdminActionInfo actionInfo) {
-        if (actionInfo.getActionType() == ActionType.ALLIN){
-            final long count = gameDataService.getPlayerByName(actionInfo.getName()).orElseThrow()
-                    .getTableSettings()
-                    .getChipsCount()
-                    .getCount();
-            actionInfo.setCount(String.valueOf(count));
-        }
         final Action action = ActionType.getActionByType(actionInfo.getActionType(), Long.parseLong(actionInfo.getCount()));
         actionService.setAction(actionInfo.getName(), action);
     }

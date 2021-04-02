@@ -28,7 +28,6 @@ public class PlayerPredicates {
         return (Predicate<PlayerEntity>) player -> player.getAction().getActionType() != ActionType.FOLD && player.getTableSettings().getStateType() == StateType.IN_GAME;
     }
 
-
     public static Predicate<? super PlayerEntity> playerHasChips(){
         return (Predicate<PlayerEntity>) player -> player.getTableSettings().getChipsCount().getCount() > 0;
     }

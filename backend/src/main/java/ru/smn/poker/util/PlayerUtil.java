@@ -51,7 +51,6 @@ public class PlayerUtil {
                 .collect(Collectors.toList());
     }
 
-
     public static List<PlayerEntity> getPlayersInAction(List<PlayerEntity> players) {
         return players.stream()
                 .filter(playerEntity -> playerEntity.getTableSettings().getStateType() == StateType.IN_GAME && playerEntity.getAction().getActionType() != ActionType.FOLD)
