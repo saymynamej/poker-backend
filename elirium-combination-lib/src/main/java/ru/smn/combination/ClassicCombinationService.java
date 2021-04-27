@@ -8,6 +8,8 @@ import ru.smn.combination.data.PowerType;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static ru.smn.combination.data.CardType.*;
+
 public class ClassicCombinationService implements CombinationService {
     private final static int COMBINATION_SIZE = 5;
     private final static int FULL_COMBINATION_SIZE = 7;
@@ -66,7 +68,7 @@ public class ClassicCombinationService implements CombinationService {
             return pair;
         }
 
-        final Combination highCards = findHighCard(new ArrayList<>(cards));
+        final Combination highCards = findHighCard(cards);
         if (!highCards.isEmpty()) {
             return highCards;
         }
@@ -80,36 +82,39 @@ public class ClassicCombinationService implements CombinationService {
                 .orElseThrow(() -> new RuntimeException("cannot calculate sum"));
     }
 
-    private Combination findPair(List<CardType> cards) {
-        final int size = cards.size();
-        final List<CardType> foundPair = new ArrayList<>();
-        final List<CardType> copyList = new ArrayList<>(cards);
+    private Combination findPair(final List<CardType> cards) {
+//        THREE_H, THREE_C, A_C, K_S, TWO_D, FOUR_D, SEVEN_S
 
-        for (int i = 0; i < size; i++) {
-            final CardType biggerCard = findBiggerCard(cards);
 
-            final List<CardType> pair = cards.stream()
-                    .filter(cardType -> cardType.getPower() == biggerCard.getPower())
-                    .collect(Collectors.toList());
-            cards.remove(biggerCard);
-            if (pair.size() == PAIR_SIZE) {
-                foundPair.addAll(pair);
-                break;
-            }
-        }
-        if (foundPair.size() == PAIR_SIZE) {
-            copyList.removeAll(foundPair);
-            for (int i = 0; i < 3; i++) {
-                final CardType biggerCard = findBiggerCard(copyList);
-                foundPair.add(biggerCard);
-                copyList.remove(biggerCard);
-            }
-            return Combination.of(
-                    CombinationType.PAIR,
-                    foundPair,
-                    sumCards(foundPair)
-            );
-        }
+//        final int size = cards.size();
+//        final List<CardType> foundPair = new ArrayList<>();
+//        final List<CardType> copyList = new ArrayList<>(cards);
+//
+//        for (int i = 0; i < size; i++) {
+//            final CardType biggerCard = findBiggerCard(cards);
+//
+//            final List<CardType> pair = cards.stream()
+//                    .filter(cardType -> cardType.getPower() == biggerCard.getPower())
+//                    .collect(Collectors.toList());
+//            cards.remove(biggerCard);
+//            if (pair.size() == PAIR_SIZE) {
+//                foundPair.addAll(pair);
+//                break;
+//            }
+//        }
+//        if (foundPair.size() == PAIR_SIZE) {
+//            copyList.removeAll(foundPair);
+//            for (int i = 0; i < 3; i++) {
+//                final CardType biggerCard = findBiggerCard(copyList);
+//                foundPair.add(biggerCard);
+//                copyList.remove(biggerCard);
+//            }
+//            return Combination.of(
+//                    CombinationType.PAIR,
+//                    foundPair,
+//                    sumCards(foundPair)
+//            );
+//        }
         return Combination.empty();
     }
 
@@ -223,17 +228,12 @@ public class ClassicCombinationService implements CombinationService {
     }
 
     private Combination findHighCard(List<CardType> cards) {
-        final List<CardType> highCards = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            final CardType biggerCard = findBiggerCard(cards);
-            highCards.add(biggerCard);
-            cards.remove(biggerCard);
-        }
-        return Combination.of(
-                CombinationType.HIGH_CARD,
-                highCards,
-                sumCards(highCards)
-        );
+        final List<CardType> highCardCombination = sortByPowerDesc(cards)
+                .stream()
+                .limit(COMBINATION_SIZE)
+                .collect(Collectors.toList());
+
+        return Combination.of(CombinationType.HIGH_CARD, highCardCombination, sumCards(highCardCombination));
     }
 
     private Combination findStraitFlush(List<CardType> cardTypes) {
@@ -302,7 +302,7 @@ public class ClassicCombinationService implements CombinationService {
 
     private Combination findFlushRoyal(List<CardType> cardTypes) {
         final Combination flush = findFlush(cardTypes);
-        if (!flush.isEmpty() && isFlushRoyal(flush.getCards())) {
+        if (!flush.isEmpty() && containsAllCardsForFlushRoyal(flush.getCards())) {
             return Combination.of(
                     CombinationType.FLUSH_ROYAL,
                     sortByPowerDesc(flush.getCards()),
@@ -312,17 +312,17 @@ public class ClassicCombinationService implements CombinationService {
         return Combination.empty();
     }
 
-
-    private boolean isFlushRoyal(List<CardType> cardTypes) {
-        final List<CardType> flushRoyal = cardTypes.stream().filter(cardType -> cardType.getPower() == PowerType.A_POWER
-                || cardType.getPower() == PowerType.K_POWER
-                || cardType.getPower() == PowerType.Q_POWER
-                || cardType.getPower() == PowerType.J_POWER
-                || cardType.getPower() == PowerType.TEN_POWER).collect(Collectors.toList());
+    private boolean containsAllCardsForFlushRoyal(List<CardType> cardTypes) {
+        final List<CardType> flushRoyal = cardTypes.stream()
+                .filter(cardType -> cardType.getPower() == PowerType.A_POWER
+                        || cardType.getPower() == PowerType.K_POWER
+                        || cardType.getPower() == PowerType.Q_POWER
+                        || cardType.getPower() == PowerType.J_POWER
+                        || cardType.getPower() == PowerType.TEN_POWER).collect(Collectors.toList()
+                );
 
         return flushRoyal.size() == COMBINATION_SIZE;
     }
-
 
     private Combination findStrait(List<CardType> cards) {
         if (isStrait(cards)) {
@@ -421,7 +421,6 @@ public class ClassicCombinationService implements CombinationService {
         return false;
     }
 
-
     private List<CardType> sortByPowerDesc(List<CardType> cards) {
         return cards.stream()
                 .sorted(Comparator.comparingInt(CardType::getPowerAsInt).reversed())
@@ -433,7 +432,6 @@ public class ClassicCombinationService implements CombinationService {
                 .sorted(Comparator.comparingInt(CardType::getPowerAsInt))
                 .collect(Collectors.toList());
     }
-
 
     private Combination findFlush(List<CardType> cardTypes) {
         final List<CardType> spadeFlush = findFlushBySuit(cardTypes, CardType.SuitType.SPADE);
@@ -493,7 +491,6 @@ public class ClassicCombinationService implements CombinationService {
         return Collections.emptyList();
     }
 
-
     private List<CardType> cutFlush(List<CardType> cards) {
         if (cards.size() > COMBINATION_SIZE) {
             cards.remove(findSmallerCard(cards));
@@ -503,23 +500,20 @@ public class ClassicCombinationService implements CombinationService {
     }
 
     private CardType findSmallerCard(List<CardType> cardTypes) {
-        return cardTypes
-                .stream()
+        return cardTypes.stream()
                 .min(Comparator.comparingInt(CardType::getPowerAsInt))
                 .orElseThrow(() -> new RuntimeException("cannot find min card"));
     }
 
     private CardType findBiggerCardWithFilter(List<CardType> cardTypes, PowerType filter) {
-        return cardTypes
-                .stream()
+        return cardTypes.stream()
                 .filter(cardType -> cardType.getPower() != (filter))
                 .max(Comparator.comparingInt(CardType::getPowerAsInt))
                 .orElseThrow(() -> new RuntimeException("cannot find min card"));
     }
 
     private CardType findBiggerCard(List<CardType> cardTypes) {
-        return cardTypes
-                .stream()
+        return cardTypes.stream()
                 .max(Comparator.comparingInt(CardType::getPowerAsInt))
                 .orElseThrow(() -> new RuntimeException("cannot find max card"));
     }
