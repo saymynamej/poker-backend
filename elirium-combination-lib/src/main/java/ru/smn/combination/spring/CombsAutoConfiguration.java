@@ -9,7 +9,7 @@ import ru.smn.combination.CombinationService;
 public class CombsAutoConfiguration {
 
     @Bean
-    public CombinationService combinationService(){
+    public CombinationService combinationService() {
         return new ClassicCombinationService();
     }
 }

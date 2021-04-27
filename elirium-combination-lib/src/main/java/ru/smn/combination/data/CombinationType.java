@@ -2,14 +2,14 @@ package ru.smn.combination.data;
 
 public enum CombinationType {
     FLUSH_ROYAL(10),
-    STRAIT_FLUSH(9),
+    STRAIGHT_FLUSH(9),
     KARE(8),
     FULL_HOUSE(7),
     FLUSH(6),
-    STRAIT(5),
-    THREE(4),
+    STRAIGHT(5),
+    THREE_CARDS(4),
     TWO_PAIR(3),
-    PAIR(2),
+    ONE_PAIR(2),
     HIGH_CARD(1);
 
     private final int power;
