@@ -26,14 +26,11 @@ public class KareSearchStrategy implements SearchStrategy {
                 .flatMap(entry -> entry.getValue().stream())
                 .collect(Collectors.toList());
 
-        if (kareCards.isEmpty()) {
-            return Combination.empty();
-        }
-
-        return Combination.of(
+        return kareCards.isEmpty() ? Combination.empty() : Combination.of(
                 CombinationType.KARE,
                 kareCards,
                 kareCards.get(firstIndexOfCard).getPowerAsInt() + kareCards.get(lastIndexOfCard).getPowerAsInt()
         );
+
     }
 }
