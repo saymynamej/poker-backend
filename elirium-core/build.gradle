@@ -17,7 +17,7 @@ repositories {
 }
 
 dependencies {
-    compile(project(":combination-lib"))
+    compile(project(":elirium-combination-lib"))
     testCompile 'org.junit.jupiter:junit-jupiter-engine:5.1.0'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: "${springVersion}"
     testCompile group: 'org.mockito', name: 'mockito-core', version: '2.10.0'
