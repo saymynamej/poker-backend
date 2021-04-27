@@ -4,20 +4,25 @@ import ru.smn.combination.data.CardSizeData;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
-import ru.smn.combination.utils.CardUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static ru.smn.combination.utils.CardUtils.findBiggerCardWithFilter;
 
 public class KareSearchStrategy implements SearchStrategy {
 
     @Override
     public Combination find(List<CardType> cards) {
+        final int firstIndexOfCard = 0;
+        final int lastIndexOfCard = 4;
+
         final List<CardType> kareCards = cards.stream()
                 .collect(Collectors.groupingBy(CardType::getPowerAsInt))
                 .entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().size() == CardSizeData.KARE_SIZE)
+                .peek(entry -> entry.getValue().add(findBiggerCardWithFilter(cards, entry.getValue().get(firstIndexOfCard).getPower())))
                 .flatMap(entry -> entry.getValue().stream())
                 .collect(Collectors.toList());
 
@@ -25,15 +30,10 @@ public class KareSearchStrategy implements SearchStrategy {
             return Combination.empty();
         }
 
-        final CardType kareCard = kareCards.get(0);
-        final CardType biggerCardWithoutKare = CardUtils.findBiggerCardWithFilter(cards, kareCard.getPower());
-
-        kareCards.add(biggerCardWithoutKare);
-
         return Combination.of(
                 CombinationType.KARE,
                 kareCards,
-                kareCard.getPowerAsInt() + biggerCardWithoutKare.getPowerAsInt()
+                kareCards.get(firstIndexOfCard).getPowerAsInt() + kareCards.get(lastIndexOfCard).getPowerAsInt()
         );
     }
 }
