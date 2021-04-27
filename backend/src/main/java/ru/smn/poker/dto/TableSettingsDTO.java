@@ -4,8 +4,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import ru.smn.combination.data.CardType;
 import ru.smn.poker.action.Action;
-import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.StageType;
 
 import java.util.List;

@@ -1,5 +1,6 @@
 package ru.smn.poker.game;
 
+import ru.smn.combination.data.CardType;
 import ru.smn.poker.action.Action;
 import ru.smn.poker.action.holdem.*;
 import ru.smn.poker.config.game.GameSettings;

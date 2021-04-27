@@ -1,8 +1,8 @@
 package ru.smn.poker.game;
 
+import ru.smn.combination.data.CardType;
 import ru.smn.poker.action.Action;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.stream.PlayerPredicates;
 import ru.smn.poker.util.PlayerUtil;

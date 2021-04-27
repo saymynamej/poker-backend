@@ -2,6 +2,7 @@ package ru.smn.poker.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import ru.smn.combination.data.Combination;
 
 @AllArgsConstructor
 @Getter

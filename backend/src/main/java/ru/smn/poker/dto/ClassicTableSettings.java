@@ -1,9 +1,9 @@
 package ru.smn.poker.dto;
 
 import lombok.*;
+import ru.smn.combination.data.CardType;
 import ru.smn.poker.action.Action;
 import ru.smn.poker.entities.PlayerEntity;
-import ru.smn.poker.enums.CardType;
 import ru.smn.poker.enums.StageType;
 import ru.smn.poker.game.TableSettings;
 

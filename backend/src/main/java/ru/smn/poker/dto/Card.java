@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import ru.smn.poker.enums.CardType;
+import ru.smn.combination.data.CardType;
 
 @Getter
 @AllArgsConstructor

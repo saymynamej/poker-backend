@@ -2,7 +2,7 @@ package ru.smn.poker.entities;
 
 
 import lombok.*;
-import ru.smn.poker.enums.CombinationType;
+import ru.smn.combination.data.CombinationType;
 
 import javax.persistence.*;
 

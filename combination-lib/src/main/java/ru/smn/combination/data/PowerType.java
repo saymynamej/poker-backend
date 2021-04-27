@@ -1,4 +1,4 @@
-package ru.smn.poker.enums;
+package ru.smn.combination.data;
 
 
 public enum PowerType {

@@ -1,2 +1,8 @@
 include("backend")
+include 'pa'
 rootProject.name = "poker-room"
+include 'pa'
+include 'combination'
+include 'combs-lib'
+include 'combination-lib'
+

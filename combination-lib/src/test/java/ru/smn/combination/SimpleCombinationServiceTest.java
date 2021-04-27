@@ -1,17 +1,16 @@
-package ru.smn.poker.service;
+package ru.smn.combination;
 
-import org.junit.Assert;
-import org.junit.Test;
-import ru.smn.poker.dto.Combination;
-import ru.smn.poker.enums.CardType;
-import ru.smn.poker.enums.CombinationType;
-import ru.smn.poker.service.classic.ClassicCombinationService;
+import org.junit.jupiter.api.Test;
+import ru.smn.combination.data.CardType;
+import ru.smn.combination.data.Combination;
+import ru.smn.combination.data.CombinationType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static ru.smn.poker.enums.CardType.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static ru.smn.combination.data.CardType.*;
 
 public class SimpleCombinationServiceTest {
 
@@ -134,267 +133,268 @@ public class SimpleCombinationServiceTest {
     @Test
     public void testHeardFlushRoyal() {
         final Combination flashRoyal = checkSimpleCombinationService.findCombination(FLUSH_ROYAL_HEART_FULL);
-        Assert.assertEquals(CombinationType.FLUSH_ROYAL, flashRoyal.getCombinationType());
-        Assert.assertEquals(FLUSH_ROYAL_HEART_COMBINATION, flashRoyal.getCards());
+        assertEquals(CombinationType.FLUSH_ROYAL, flashRoyal.getCombinationType());
+        assertEquals(FLUSH_ROYAL_HEART_COMBINATION, flashRoyal.getCards());
     }
 
     @Test
     public void testSpadeFlushRoyal() {
         final Combination flashRoyal = checkSimpleCombinationService.findCombination(FLUSH_ROYAL_SPADE_FULL);
-        Assert.assertEquals(CombinationType.FLUSH_ROYAL, flashRoyal.getCombinationType());
-        Assert.assertEquals(FLUSH_ROYAL_SPADE_COMBINATION, flashRoyal.getCards());
+        assertEquals(CombinationType.FLUSH_ROYAL, flashRoyal.getCombinationType());
+        assertEquals(FLUSH_ROYAL_SPADE_COMBINATION, flashRoyal.getCards());
     }
 
     @Test
     public void testDiamondFlushRoyal() {
         final Combination flashRoyal = checkSimpleCombinationService.findCombination(FLUSH_ROYAL_DIAMOND_FULL);
-        Assert.assertEquals(CombinationType.FLUSH_ROYAL, flashRoyal.getCombinationType());
-        Assert.assertEquals(FLUSH_ROYAL_DIAMOND_COMBINATION, flashRoyal.getCards());
+        assertEquals(CombinationType.FLUSH_ROYAL, flashRoyal.getCombinationType());
+        assertEquals(FLUSH_ROYAL_DIAMOND_COMBINATION, flashRoyal.getCards());
     }
 
     @Test
     public void testClubFlushRoyal() {
         final Combination flashRoyal = checkSimpleCombinationService.findCombination(FLUSH_ROYAL_CLUB_FULL);
-        Assert.assertEquals(CombinationType.FLUSH_ROYAL, flashRoyal.getCombinationType());
-        Assert.assertEquals(FLUSH_ROYAL_CLUB_COMBINATION, flashRoyal.getCards());
+        assertEquals(CombinationType.FLUSH_ROYAL, flashRoyal.getCombinationType());
+        assertEquals(FLUSH_ROYAL_CLUB_COMBINATION, flashRoyal.getCards());
     }
 
     @Test
     public void testStraitFlush() {
         final Combination straitFlush = checkSimpleCombinationService.findCombination(STRAIT_FLUSH_FULL);
-        Assert.assertEquals(CombinationType.STRAIT_FLUSH, straitFlush.getCombinationType());
-        Assert.assertEquals(STRAIT_FLUSH_COMBINATION, straitFlush.getCards());
+        assertEquals(CombinationType.STRAIT_FLUSH, straitFlush.getCombinationType());
+        assertEquals(STRAIT_FLUSH_COMBINATION, straitFlush.getCards());
     }
 
     @Test
     public void testStraitFlush2() {
         final Combination straitFlush = checkSimpleCombinationService.findCombination(STRAIT_FLUSH_FULL_2);
-        Assert.assertEquals(CombinationType.STRAIT_FLUSH, straitFlush.getCombinationType());
-        Assert.assertEquals(STRAIT_FLUSH_COMBINATION_2, straitFlush.getCards());
+        assertEquals(CombinationType.STRAIT_FLUSH, straitFlush.getCombinationType());
+        assertEquals(STRAIT_FLUSH_COMBINATION_2, straitFlush.getCards());
     }
 
     @Test
     public void testClubStraitFlush() {
         final Combination straitFlush = checkSimpleCombinationService.findCombination(STRAIT_FLUSH_CLUB_FULL);
-        Assert.assertEquals(CombinationType.STRAIT_FLUSH, straitFlush.getCombinationType());
-        Assert.assertEquals(STRAIT_FLUSH_CLUB_COMBINATION, straitFlush.getCards());
+        assertEquals(CombinationType.STRAIT_FLUSH, straitFlush.getCombinationType());
+        assertEquals(STRAIT_FLUSH_CLUB_COMBINATION, straitFlush.getCards());
     }
 
     @Test
     public void testHeartStraitFlush() {
         final Combination straitFlush2 = checkSimpleCombinationService.findCombination(STRAIT_FLUSH_HEART_FULL);
-        Assert.assertEquals(CombinationType.STRAIT_FLUSH, straitFlush2.getCombinationType());
-        Assert.assertEquals(STRAIT_FLUSH_HEART_COMBINATION, straitFlush2.getCards());
+        assertEquals(CombinationType.STRAIT_FLUSH, straitFlush2.getCombinationType());
+        assertEquals(STRAIT_FLUSH_HEART_COMBINATION, straitFlush2.getCards());
     }
 
     @Test
     public void testDiamondStraitFlush() {
         final Combination straitFlush2 = checkSimpleCombinationService.findCombination(STRAIT_FLUSH_DIAMOND_FULL);
-        Assert.assertEquals(CombinationType.STRAIT_FLUSH, straitFlush2.getCombinationType());
-        Assert.assertEquals(STRAIT_FLUSH_DIAMOND_COMBINATION, straitFlush2.getCards());
+        assertEquals(CombinationType.STRAIT_FLUSH, straitFlush2.getCombinationType());
+        assertEquals(STRAIT_FLUSH_DIAMOND_COMBINATION, straitFlush2.getCards());
     }
 
     @Test
     public void testSpadeStraitFlush() {
         final Combination straitFlush2 = checkSimpleCombinationService.findCombination(STRAIT_FLUSH_SPADE_FULL);
-        Assert.assertEquals(CombinationType.STRAIT_FLUSH, straitFlush2.getCombinationType());
-        Assert.assertEquals(STRAIT_FLUSH_SPADE_COMBINATION, straitFlush2.getCards());
+        assertEquals(CombinationType.STRAIT_FLUSH, straitFlush2.getCombinationType());
+        assertEquals(STRAIT_FLUSH_SPADE_COMBINATION, straitFlush2.getCards());
     }
 
     @Test
     public void testStraitFlushWithAce() {
         final Combination straitFlushWithAce = checkSimpleCombinationService.findCombination(STRAIT_FLUSH_WITH_ACE_FULL);
-        Assert.assertEquals(CombinationType.STRAIT_FLUSH, straitFlushWithAce.getCombinationType());
-        Assert.assertEquals(STRAIT_FLUSH_WITH_ACE_COMBINATION, straitFlushWithAce.getCards());
+        assertEquals(CombinationType.STRAIT_FLUSH, straitFlushWithAce.getCombinationType());
+        assertEquals(STRAIT_FLUSH_WITH_ACE_COMBINATION, straitFlushWithAce.getCards());
     }
 
     @Test
     public void testKare() {
         final Combination kare = checkSimpleCombinationService.findCombination(KARE_FULL);
-        Assert.assertEquals(CombinationType.KARE, kare.getCombinationType());
-        Assert.assertEquals(KARE_COMBINATION, kare.getCards());
+        assertEquals(CombinationType.KARE, kare.getCombinationType());
+        assertEquals(KARE_COMBINATION, kare.getCards());
     }
 
     @Test
     public void testKare2() {
         final Combination kare = checkSimpleCombinationService.findCombination(KARE_FULL2);
-        Assert.assertEquals(CombinationType.KARE, kare.getCombinationType());
-        Assert.assertEquals(KARE_COMBINATION2, kare.getCards());
+        assertEquals(CombinationType.KARE, kare.getCombinationType());
+        assertEquals(KARE_COMBINATION2, kare.getCards());
     }
 
     @Test
     public void testKare3() {
         final Combination kare = checkSimpleCombinationService.findCombination(KARE_FULL3);
-        Assert.assertEquals(CombinationType.KARE, kare.getCombinationType());
-        Assert.assertEquals(KARE_COMBINATION3, kare.getCards());
+        assertEquals(CombinationType.KARE, kare.getCombinationType());
+        assertEquals(KARE_COMBINATION3, kare.getCards());
     }
 
     @Test
     public void testKare4() {
         final Combination kare = checkSimpleCombinationService.findCombination(KARE_FULL4);
-        Assert.assertEquals(CombinationType.KARE, kare.getCombinationType());
-        Assert.assertEquals(KARE_COMBINATION4, kare.getCards());
+        assertEquals(CombinationType.KARE, kare.getCombinationType());
+        assertEquals(KARE_COMBINATION4, kare.getCards());
     }
 
     @Test
     public void testFullHouse() {
         final Combination fullHouse = checkSimpleCombinationService.findCombination(FULL_HOUSE_FULL);
-        Assert.assertEquals(CombinationType.FULL_HOUSE, fullHouse.getCombinationType());
-        Assert.assertEquals(FULL_HOUSE_COMBINATION, fullHouse.getCards());
+        assertEquals(CombinationType.FULL_HOUSE, fullHouse.getCombinationType());
+        assertEquals(FULL_HOUSE_COMBINATION, fullHouse.getCards());
     }
 
     @Test
     public void testFullHouse2() {
         final Combination fullHouse = checkSimpleCombinationService.findCombination(FULL_HOUSE_FULL2);
-        Assert.assertEquals(CombinationType.FULL_HOUSE, fullHouse.getCombinationType());
-        Assert.assertEquals(FULL_HOUSE_COMBINATION2, fullHouse.getCards());
+        assertEquals(CombinationType.FULL_HOUSE, fullHouse.getCombinationType());
+        assertEquals(FULL_HOUSE_COMBINATION2, fullHouse.getCards());
     }
 
     @Test
     public void testFullHouse3() {
         final Combination fullHouse = checkSimpleCombinationService.findCombination(FULL_HOUSE_FULL3);
-        Assert.assertEquals(CombinationType.FULL_HOUSE, fullHouse.getCombinationType());
-        Assert.assertEquals(FULL_HOUSE_COMBINATION3, fullHouse.getCards());
+        assertEquals(CombinationType.FULL_HOUSE, fullHouse.getCombinationType());
+        assertEquals(FULL_HOUSE_COMBINATION3, fullHouse.getCards());
     }
+
 
     @Test
     public void testFullHouse4() {
         final Combination fullHouse = checkSimpleCombinationService.findCombination(FULL_HOUSE_FULL4);
-        Assert.assertEquals(CombinationType.FULL_HOUSE, fullHouse.getCombinationType());
-        Assert.assertEquals(FULL_HOUSE_COMBINATION4, fullHouse.getCards());
+        assertEquals(CombinationType.FULL_HOUSE, fullHouse.getCombinationType());
+        assertEquals(FULL_HOUSE_COMBINATION4, fullHouse.getCards());
     }
 
     @Test
     public void testHeartFlush() {
         final Combination flush = checkSimpleCombinationService.findCombination(FLUSH_HEART_FULL);
-        Assert.assertEquals(CombinationType.FLUSH, flush.getCombinationType());
-        Assert.assertEquals(FLUSH_HEART_COMBINATION, flush.getCards());
+        assertEquals(CombinationType.FLUSH, flush.getCombinationType());
+        assertEquals(FLUSH_HEART_COMBINATION, flush.getCards());
     }
 
     @Test
     public void testClubFlush() {
         final Combination flush = checkSimpleCombinationService.findCombination(FLUSH_CLUB_FULL);
-        Assert.assertEquals(CombinationType.FLUSH, flush.getCombinationType());
-        Assert.assertEquals(FLUSH_CLUB_COMBINATION, flush.getCards());
+        assertEquals(CombinationType.FLUSH, flush.getCombinationType());
+        assertEquals(FLUSH_CLUB_COMBINATION, flush.getCards());
     }
 
     @Test
     public void testDiamondFlush() {
         final Combination flush = checkSimpleCombinationService.findCombination(FLUSH_DIAMOND_FULL);
-        Assert.assertEquals(CombinationType.FLUSH, flush.getCombinationType());
-        Assert.assertEquals(FLUSH_DIAMOND_COMBINATION, flush.getCards());
+        assertEquals(CombinationType.FLUSH, flush.getCombinationType());
+        assertEquals(FLUSH_DIAMOND_COMBINATION, flush.getCards());
     }
 
     @Test
     public void testSpadeFlush() {
         final Combination flush = checkSimpleCombinationService.findCombination(FLUSH_SPADE_FULL);
-        Assert.assertEquals(CombinationType.FLUSH, flush.getCombinationType());
-        Assert.assertEquals(FLUSH_SPADE_COMBINATION, flush.getCards());
+        assertEquals(CombinationType.FLUSH, flush.getCombinationType());
+        assertEquals(FLUSH_SPADE_COMBINATION, flush.getCards());
     }
 
     @Test
     public void testStrait() {
         final Combination straight = checkSimpleCombinationService.findCombination(STRAIT_FULL);
-        Assert.assertEquals(CombinationType.STRAIT, straight.getCombinationType());
-        Assert.assertEquals(STRAIT_COMBINATION, straight.getCards());
+        assertEquals(CombinationType.STRAIT, straight.getCombinationType());
+        assertEquals(STRAIT_COMBINATION, straight.getCards());
     }
 
     @Test
     public void testStrait2() {
         final Combination straight2 = checkSimpleCombinationService.findCombination(STRAIT_FULL_2);
-        Assert.assertEquals(CombinationType.STRAIT, straight2.getCombinationType());
-        Assert.assertEquals(STRAIT_COMBINATION_2, straight2.getCards());
+        assertEquals(CombinationType.STRAIT, straight2.getCombinationType());
+        assertEquals(STRAIT_COMBINATION_2, straight2.getCards());
     }
 
     @Test
     public void testStraight3() {
         Combination strait3 = checkSimpleCombinationService.findCombination(STRAIT_FULL_3);
-        Assert.assertEquals(CombinationType.STRAIT, strait3.getCombinationType());
-        Assert.assertEquals(STRAIT_COMBINATION_3, strait3.getCards());
+        assertEquals(CombinationType.STRAIT, strait3.getCombinationType());
+        assertEquals(STRAIT_COMBINATION_3, strait3.getCards());
     }
 
     @Test
     public void testStraight4() {
         Combination strait4 = checkSimpleCombinationService.findCombination(STRAIT_FULL_4);
-        Assert.assertEquals(CombinationType.STRAIT, strait4.getCombinationType());
-        Assert.assertEquals(STRAIT_COMBINATION_4, strait4.getCards());
+        assertEquals(CombinationType.STRAIT, strait4.getCombinationType());
+        assertEquals(STRAIT_COMBINATION_4, strait4.getCards());
     }
 
     @Test
     public void testStraight5() {
         Combination strait5 = checkSimpleCombinationService.findCombination(STRAIT_FULL_5);
-        Assert.assertEquals(CombinationType.STRAIT, strait5.getCombinationType());
-        Assert.assertEquals(STRAIT_COMBINATION_5, strait5.getCards());
+        assertEquals(CombinationType.STRAIT, strait5.getCombinationType());
+        assertEquals(STRAIT_COMBINATION_5, strait5.getCards());
     }
 
     @Test
     public void testStraight6() {
         Combination strait6 = checkSimpleCombinationService.findCombination(STRAIT_FULL_6);
-        Assert.assertEquals(CombinationType.STRAIT, strait6.getCombinationType());
-        Assert.assertEquals(STRAIT_COMBINATION_6, strait6.getCards());
+        assertEquals(CombinationType.STRAIT, strait6.getCombinationType());
+        assertEquals(STRAIT_COMBINATION_6, strait6.getCards());
     }
 
     @Test
     public void testStraight7() {
         Combination strait7 = checkSimpleCombinationService.findCombination(STRAIT_FULL_7);
-        Assert.assertEquals(CombinationType.STRAIT, strait7.getCombinationType());
-        Assert.assertEquals(STRAIT_COMBINATION_7, strait7.getCards());
+        assertEquals(CombinationType.STRAIT, strait7.getCombinationType());
+        assertEquals(STRAIT_COMBINATION_7, strait7.getCards());
     }
 
     @Test
     public void testStraight8() {
         Combination strait8 = checkSimpleCombinationService.findCombination(STRAIT_FULL_8);
-        Assert.assertEquals(CombinationType.STRAIT, strait8.getCombinationType());
-        Assert.assertEquals(STRAIT_COMBINATION_8, strait8.getCards());
+        assertEquals(CombinationType.STRAIT, strait8.getCombinationType());
+        assertEquals(STRAIT_COMBINATION_8, strait8.getCards());
     }
 
     @Test
     public void testThree() {
         final Combination three = checkSimpleCombinationService.findCombination(THREE_FULL);
-        Assert.assertEquals(CombinationType.THREE, three.getCombinationType());
-        Assert.assertEquals(THREE_COMBINATION, three.getCards());
+        assertEquals(CombinationType.THREE, three.getCombinationType());
+        assertEquals(THREE_COMBINATION, three.getCards());
     }
 
     @Test
     public void testThree2() {
         final Combination three_2 = checkSimpleCombinationService.findCombination(THREE_FULL_2);
-        Assert.assertEquals(CombinationType.THREE, three_2.getCombinationType());
-        Assert.assertEquals(THREE_COMBINATION_2, three_2.getCards());
+        assertEquals(CombinationType.THREE, three_2.getCombinationType());
+        assertEquals(THREE_COMBINATION_2, three_2.getCards());
     }
 
     @Test
     public void testThree3() {
         final Combination three_3 = checkSimpleCombinationService.findCombination(THREE_FULL_3);
-        Assert.assertEquals(CombinationType.THREE, three_3.getCombinationType());
-        Assert.assertEquals(THREE_COMBINATION_3, three_3.getCards());
+        assertEquals(CombinationType.THREE, three_3.getCombinationType());
+        assertEquals(THREE_COMBINATION_3, three_3.getCards());
     }
 
     @Test
     public void testTwoPair() {
         final Combination twoPair = checkSimpleCombinationService.findCombination(TWO_PAIR_FULL);
-        Assert.assertEquals(CombinationType.TWO_PAIR, twoPair.getCombinationType());
-        Assert.assertEquals(TWO_PAIR_COMBINATION, twoPair.getCards());
+        assertEquals(CombinationType.TWO_PAIR, twoPair.getCombinationType());
+        assertEquals(TWO_PAIR_COMBINATION, twoPair.getCards());
     }
 
     @Test
     public void testOnePair() {
         final Combination pair = checkSimpleCombinationService.findCombination(PAIR_FULL);
-        Assert.assertEquals(CombinationType.PAIR, pair.getCombinationType());
-        Assert.assertEquals(PAIR_FULL_COMBINATION, pair.getCards());
+        assertEquals(CombinationType.PAIR, pair.getCombinationType());
+        assertEquals(PAIR_FULL_COMBINATION, pair.getCards());
     }
 
     @Test
     public void testHighCard() {
         final Combination highCards = checkSimpleCombinationService.findCombination(HIGH_CARD_FULL);
-        Assert.assertEquals(CombinationType.HIGH_CARD, highCards.getCombinationType());
-        Assert.assertEquals(HIGH_COMBINATION, highCards.getCards());
+        assertEquals(CombinationType.HIGH_CARD, highCards.getCombinationType());
+        assertEquals(HIGH_COMBINATION, highCards.getCards());
     }
 
     @Test
     public void testHighCard2() {
         final Combination highCards_2 = checkSimpleCombinationService.findCombination(HIGH_CARD_FULL_2);
-        Assert.assertEquals(CombinationType.HIGH_CARD, highCards_2.getCombinationType());
-        Assert.assertEquals(HIGH_COMBINATION_2, highCards_2.getCards());
+        assertEquals(CombinationType.HIGH_CARD, highCards_2.getCombinationType());
+        assertEquals(HIGH_COMBINATION_2, highCards_2.getCards());
     }
 
 }

@@ -1,7 +1,8 @@
-package ru.smn.poker.service;
+package ru.smn.combination;
 
-import ru.smn.poker.dto.Combination;
-import ru.smn.poker.enums.CardType;
+
+import ru.smn.combination.data.CardType;
+import ru.smn.combination.data.Combination;
 
 import java.util.List;
 

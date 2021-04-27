@@ -16,7 +16,7 @@ public class TestTablesCreator {
 
     @PostConstruct
     public void init() {
-        gameTableCreator.create(6, GameType.HOLDEM_FULL);
+        gameTableCreator.create(2, GameType.HOLDEM_HU);
     }
 
 }

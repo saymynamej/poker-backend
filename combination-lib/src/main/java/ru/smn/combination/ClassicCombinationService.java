@@ -1,16 +1,13 @@
-package ru.smn.poker.service.classic;
+package ru.smn.combination;
 
-import org.springframework.stereotype.Service;
-import ru.smn.poker.dto.Combination;
-import ru.smn.poker.enums.CardType;
-import ru.smn.poker.enums.CombinationType;
-import ru.smn.poker.enums.PowerType;
-import ru.smn.poker.service.CombinationService;
+import ru.smn.combination.data.CardType;
+import ru.smn.combination.data.Combination;
+import ru.smn.combination.data.CombinationType;
+import ru.smn.combination.data.PowerType;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
 public class ClassicCombinationService implements CombinationService {
     private final static int COMBINATION_SIZE = 5;
     private final static int FULL_COMBINATION_SIZE = 7;

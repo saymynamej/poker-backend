@@ -1,4 +1,4 @@
-package ru.smn.poker.enums;
+package ru.smn.combination.data;
 
 import lombok.Getter;
 
@@ -6,8 +6,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.smn.poker.enums.CardType.SuitType.*;
-import static ru.smn.poker.enums.PowerType.*;
+import static ru.smn.combination.data.CardType.SuitType.*;
+import static ru.smn.combination.data.PowerType.*;
+
 
 public enum CardType {
     A_D(A_POWER, DIAMOND),

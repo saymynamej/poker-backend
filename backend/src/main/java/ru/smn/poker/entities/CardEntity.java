@@ -1,7 +1,7 @@
 package ru.smn.poker.entities;
 
 import lombok.*;
-import ru.smn.poker.enums.CardType;
+import ru.smn.combination.data.CardType;
 
 import javax.persistence.*;
 

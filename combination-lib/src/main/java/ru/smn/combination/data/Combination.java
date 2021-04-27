@@ -1,11 +1,9 @@
-package ru.smn.poker.dto;
+package ru.smn.combination.data;
 
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import ru.smn.poker.enums.CardType;
-import ru.smn.poker.enums.CombinationType;
 
 import java.util.List;
 
