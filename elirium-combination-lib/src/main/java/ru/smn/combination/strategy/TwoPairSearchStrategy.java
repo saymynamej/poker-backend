@@ -1,53 +1,42 @@
 package ru.smn.combination.strategy;
 
+import ru.smn.combination.data.CardSizeData;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static ru.smn.combination.data.CardSizeData.COMBINATION_SIZE;
-import static ru.smn.combination.data.CardSizeData.PAIR_SIZE;
-import static ru.smn.combination.utils.CardUtils.*;
+import static ru.smn.combination.data.CardSizeData.*;
+import static ru.smn.combination.utils.CardUtils.findBiggerCardWithFilter;
+import static ru.smn.combination.utils.CardUtils.sumCards;
 
 public class TwoPairSearchStrategy implements SearchStrategy {
 
     @Override
     public Combination find(List<CardType> cards) {
-        final int size = cards.size();
-        final List<CardType> copyList = new ArrayList<>(cards);
-        final List<CardType> firstPair = new ArrayList<>();
-        final List<CardType> secondPair = new ArrayList<>();
-        final List<CardType> combination = new ArrayList<>();
+        final List<CardType> twoPairs = cards.stream()
+                .collect(Collectors.groupingBy(CardType::getPowerAsInt))
+                .entrySet().stream()
+                .filter(entry -> entry.getValue().size() == PAIR_SIZE)
+                .sorted(Map.Entry.<Integer, List<CardType>>comparingByKey().reversed())
+                .limit(2)
+                .flatMap(entry -> entry.getValue().stream())
+                .collect(Collectors.toList());
 
-        for (int i = 0; i < size; i++) {
-            final CardType biggerCard = findBiggerCard(cards);
-            final List<CardType> pair = filterByPower(cards, biggerCard.getPower());
-
-            if (pair.size() == PAIR_SIZE && firstPair.isEmpty()) {
-                firstPair.addAll(pair);
-                copyList.removeAll(pair);
-            } else if (pair.size() == PAIR_SIZE) {
-                secondPair.addAll(pair);
-                copyList.removeAll(pair);
-            }
-            if (!firstPair.isEmpty() && !secondPair.isEmpty()) {
-                break;
-            }
-            cards.remove(biggerCard);
+        if (twoPairs.isEmpty() || twoPairs.size() < TWO_PAIR_SIZE) {
+            return Combination.empty();
         }
-        combination.addAll(secondPair);
-        combination.addAll(firstPair);
-        combination.add(findBiggerCard(copyList));
 
-        if (combination.size() == COMBINATION_SIZE) {
-            return Combination.of(
-                    CombinationType.TWO_PAIR,
-                    combination,
-                    sumCards(combination)
-            );
-        }
-        return Combination.empty();
+        twoPairs.add(findBiggerCardWithFilter(cards, twoPairs.get(0).getPower()));
+
+        return Combination.of(
+                CombinationType.TWO_PAIR,
+                twoPairs,
+                sumCards(twoPairs)
+        );
     }
 }

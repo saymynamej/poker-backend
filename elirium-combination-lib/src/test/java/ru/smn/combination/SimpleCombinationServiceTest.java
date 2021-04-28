@@ -110,7 +110,7 @@ public class SimpleCombinationServiceTest {
     private static final List<CardType> STRAIT_COMBINATION_8 = new ArrayList<>(Arrays.asList(A_C, TWO_C, THREE_C, FOUR_D, FIVE_D));
 
     private static final List<CardType> TWO_PAIR_FULL = new ArrayList<>(Arrays.asList(A_H, A_D, FOUR_H, FOUR_C, SEVEN_S, SEVEN_C, K_D));
-    private static final List<CardType> TWO_PAIR_COMBINATION = new ArrayList<>(Arrays.asList(SEVEN_S, SEVEN_C, A_H, A_D, K_D));
+    private static final List<CardType> TWO_PAIR_COMBINATION = new ArrayList<>(Arrays.asList(A_H, A_D, SEVEN_S, SEVEN_C, K_D));
 
     private static final List<CardType> THREE_FULL = new ArrayList<>(Arrays.asList(THREE_H, THREE_C, THREE_S, K_D, SEVEN_S, FOUR_H, NINE_C));
     private static final List<CardType> THREE_COMBINATION = new ArrayList<>(Arrays.asList(THREE_H, THREE_C, THREE_S, K_D, NINE_C));
