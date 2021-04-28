@@ -1,50 +1,44 @@
 package ru.smn.combination.strategy;
 
+import ru.smn.combination.data.CardSizeData;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
+import ru.smn.combination.utils.CardUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static ru.smn.combination.data.CardSizeData.PAIR_SIZE;
-import static ru.smn.combination.utils.CardUtils.findBiggerCard;
 import static ru.smn.combination.utils.CardUtils.sumCards;
 
 public class OnePairSearchStrategy implements SearchStrategy {
 
     @Override
     public Combination find(List<CardType> cards) {
-        final int size = cards.size();
-        final List<CardType> foundPair = new ArrayList<>();
-        final List<CardType> copyList = new ArrayList<>(cards);
+        final List<CardType> pair = cards.stream()
+                .collect(Collectors.groupingBy(CardType::getPowerAsInt))
+                .entrySet().stream()
+                .filter(entry -> entry.getValue().size() == CardSizeData.PAIR_SIZE)
+                .flatMap(entry -> entry.getValue().stream())
+                .collect(Collectors.toList());
 
-        for (int i = 0; i < size; i++) {
-            final CardType biggerCard = findBiggerCard(cards);
+        if (pair.isEmpty()) {
+            return Combination.empty();
+        }
 
-            final List<CardType> pair = cards.stream()
-                    .filter(cardType -> cardType.getPower() == biggerCard.getPower())
-                    .collect(Collectors.toList());
-            cards.remove(biggerCard);
-            if (pair.size() == PAIR_SIZE) {
-                foundPair.addAll(pair);
-                break;
-            }
-        }
-        if (foundPair.size() == PAIR_SIZE) {
-            copyList.removeAll(foundPair);
-            for (int i = 0; i < 3; i++) {
-                final CardType biggerCard = findBiggerCard(copyList);
-                foundPair.add(biggerCard);
-                copyList.remove(biggerCard);
-            }
-            return Combination.of(
-                    CombinationType.ONE_PAIR,
-                    foundPair,
-                    sumCards(foundPair)
-            );
-        }
-        return Combination.empty();
+        final List<CardType> highCards = CardUtils.sortCardsByDesc(cards).stream()
+                .filter(cardType -> cardType.getPowerAsInt() != pair.get(0).getPowerAsInt())
+                .limit(3)
+                .collect(Collectors.toList());
+
+        final List<CardType> pairCombination = Stream.concat(pair.stream(), highCards.stream())
+                .collect(Collectors.toList());
+
+        return Combination.of(
+                CombinationType.ONE_PAIR,
+                pairCombination,
+                sumCards(pair)
+        );
     }
 }
