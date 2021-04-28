@@ -1,6 +1,8 @@
 package ru.smn.combination.data;
 
 import ru.smn.combination.strategy.*;
+import ru.smn.combination.strategy.needref.FullHouseSearchStrategy;
+import ru.smn.combination.strategy.needref.StraightSearchStrategy;
 
 import java.util.HashMap;
 import java.util.List;

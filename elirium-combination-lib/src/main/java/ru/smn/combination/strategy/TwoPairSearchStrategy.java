@@ -3,6 +3,7 @@ package ru.smn.combination.strategy;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
+import ru.smn.combination.strategy.SearchStrategy;
 
 import java.util.List;
 import java.util.Map;

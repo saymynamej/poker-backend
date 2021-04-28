@@ -1,8 +1,9 @@
-package ru.smn.combination.strategy;
+package ru.smn.combination.strategy.needref;
 
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
+import ru.smn.combination.strategy.SearchStrategy;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,7 +46,7 @@ public class StraightSearchStrategy implements SearchStrategy {
             return Combination.of(
                     CombinationType.STRAIGHT,
                     straitWithAce,
-                    5 // because 5 is bigger card for this combination type
+                    5
             );
         }
         return Combination.empty();

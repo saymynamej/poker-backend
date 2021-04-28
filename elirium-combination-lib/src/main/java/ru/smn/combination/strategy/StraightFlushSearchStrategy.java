@@ -22,6 +22,7 @@ public class StraightFlushSearchStrategy implements SearchStrategy {
                     findBiggerCard(flush.getCards()).getPowerAsInt()
             );
         }
+
         final List<CardType> straitWithAce = checkStraitWithAce(cards);
         if (!straitWithAce.isEmpty()) {
             final Combination straitFlushWithAce = SearchAssistant.find(CombinationType.FLUSH, straitWithAce);
@@ -29,7 +30,7 @@ public class StraightFlushSearchStrategy implements SearchStrategy {
                 return Combination.of(
                         CombinationType.STRAIGHT_FLUSH,
                         sortCardsByDesc(straitFlushWithAce.getCards()),
-                        5 // because 5 is bigger card for this combination type
+                        5
                 );
             }
         }

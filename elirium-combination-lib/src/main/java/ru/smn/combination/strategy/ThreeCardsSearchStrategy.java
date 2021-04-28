@@ -3,18 +3,15 @@ package ru.smn.combination.strategy;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
-import ru.smn.combination.utils.CardUtils;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static ru.smn.combination.data.CardSizeData.PAIR_SIZE;
 import static ru.smn.combination.data.CardSizeData.THREE_SIZE;
-import static ru.smn.combination.utils.CardUtils.*;
+import static ru.smn.combination.utils.CardUtils.sumCards;
 
 public class ThreeCardsSearchStrategy implements SearchStrategy {
 

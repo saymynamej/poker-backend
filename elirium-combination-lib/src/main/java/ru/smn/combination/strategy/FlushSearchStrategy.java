@@ -12,46 +12,16 @@ public class FlushSearchStrategy implements SearchStrategy {
 
     @Override
     public Combination find(List<CardType> cards) {
-        final List<CardType> spadeFlush = findFlushBySuit(cards, CardType.SuitType.SPADE);
-
-        if (!spadeFlush.isEmpty()) {
-            return Combination.of(
-                    CombinationType.FLUSH,
-                    sortCardsByDesc(spadeFlush),
-                    findBiggerCard(spadeFlush).getPowerAsInt()
-            );
+        for (CardType.SuitType suitType : CardType.SuitType.values()) {
+            final List<CardType> flushBySuit = findFlushBySuit(cards, suitType);
+            if (!flushBySuit.isEmpty()) {
+                return Combination.of(
+                        CombinationType.FLUSH,
+                        sortCardsByDesc(flushBySuit),
+                        findBiggerCard(flushBySuit).getPowerAsInt()
+                );
+            }
         }
-
-        final List<CardType> heartFlush = findFlushBySuit(cards, CardType.SuitType.HEART);
-
-        if (!heartFlush.isEmpty()) {
-            return Combination.of(
-                    CombinationType.FLUSH,
-                    sortCardsByDesc(heartFlush),
-                    findBiggerCard(heartFlush).getPowerAsInt()
-            );
-        }
-
-        final List<CardType> clubFlush = findFlushBySuit(cards, CardType.SuitType.CLUB);
-
-        if (!clubFlush.isEmpty()) {
-            return Combination.of(
-                    CombinationType.FLUSH,
-                    sortCardsByDesc(clubFlush),
-                    findBiggerCard(clubFlush).getPowerAsInt()
-            );
-        }
-
-        final List<CardType> diamondFlush = findFlushBySuit(cards, CardType.SuitType.DIAMOND);
-
-        if (!diamondFlush.isEmpty()) {
-            return Combination.of(
-                    CombinationType.FLUSH,
-                    sortCardsByDesc(diamondFlush),
-                    findBiggerCard(diamondFlush).getPowerAsInt()
-            );
-        }
-
         return Combination.empty();
     }
 }
