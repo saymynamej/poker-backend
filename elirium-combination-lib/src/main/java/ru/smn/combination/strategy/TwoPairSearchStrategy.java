@@ -1,6 +1,5 @@
 package ru.smn.combination.strategy;
 
-import ru.smn.combination.data.CardSizeData;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
@@ -8,9 +7,9 @@ import ru.smn.combination.data.CombinationType;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static ru.smn.combination.data.CardSizeData.*;
+import static ru.smn.combination.data.CardSizeData.PAIR_SIZE;
+import static ru.smn.combination.data.CardSizeData.TWO_PAIR_SIZE;
 import static ru.smn.combination.utils.CardUtils.findBiggerCardWithFilter;
 import static ru.smn.combination.utils.CardUtils.sumCards;
 
