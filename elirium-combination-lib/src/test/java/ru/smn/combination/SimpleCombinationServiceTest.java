@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
+import ru.smn.combination.utils.CardUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;

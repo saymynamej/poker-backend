@@ -53,45 +53,27 @@ public class CardUtils {
     }
 
     public static boolean isStrait(List<CardType> cards) {
-        final List<CardType> distinctList = sortCardsByAsc(removeCardsWithSamePower(cards));
-        int i = 0;
-        for (CardType cardFromFirstLoop : distinctList) {
-            CardType equalsCard = cardFromFirstLoop;
-            for (CardType cardFromSecondLoop : distinctList) {
-                if (cardFromFirstLoop.equals(cardFromSecondLoop)) {
-                    continue;
-                }
-                if (equalsCard.getPowerAsInt() - cardFromSecondLoop.getPowerAsInt() == -1) {
-                    i++;
-                } else {
-                    if (i < 4) {
-                        i = 0;
-                    }
-                }
-                equalsCard = cardFromSecondLoop;
-            }
-            if (i >= 4) {
-                return true;
-            } else {
-                i = 0;
-            }
+        if (cards.size() != COMBINATION_SIZE) {
+            throw new RuntimeException("card size to check straight must be " + COMBINATION_SIZE);
         }
-        return false;
+
+        final List<CardType> cardTypes = sortCardsByDesc(cards);
+
+        int i = cardTypes.get(0).getPowerAsInt();
+
+        for (int m = 1; m < cardTypes.size(); m++) {
+            if (i - cardTypes.get(m).getPowerAsInt() != 1) {
+                return false;
+            }
+            i = cardTypes.get(m).getPowerAsInt();
+        }
+        return true;
     }
 
     public static List<CardType> removeCardsWithSamePower(List<CardType> cards) {
-        final List<CardType> distinctList = new ArrayList<>();
-
-        for (CardType card : cards) {
-            if (distinctList.isEmpty()) {
-                distinctList.add(card);
-                continue;
-            }
-            if (distinctList.stream().noneMatch(cardType -> cardType.getPowerAsInt() == card.getPowerAsInt())) {
-                distinctList.add(card);
-            }
-        }
-        return distinctList;
+        return cards.stream()
+                .filter(StreamUtils.distinctByKey(CardType::getPowerAsInt))
+                .collect(Collectors.toList());
     }
 
     public static CardType findBiggerCardWithFilter(List<CardType> cardTypes, PowerType filter) {

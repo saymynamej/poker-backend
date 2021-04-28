@@ -1,12 +1,13 @@
 package ru.smn.combination.strategy.needref;
 
+import ru.smn.combination.data.CardSizeData;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
 import ru.smn.combination.strategy.SearchStrategy;
+import ru.smn.combination.utils.CardUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static ru.smn.combination.utils.CardUtils.*;
 
@@ -14,41 +15,29 @@ public class StraightSearchStrategy implements SearchStrategy {
 
     @Override
     public Combination find(List<CardType> cards) {
-        if (isStrait(cards)) {
-            final List<CardType> sortedCards = sortCardsByDesc(removeCardsWithSamePower(cards));
+        final List<CardType> sortedCards = sortCardsByDesc(removeCardsWithSamePower(cards));
 
-            if (sortedCards.size() == 5) {
-                return Combination.of(
-                        CombinationType.STRAIGHT,
-                        sortedCards,
-                        findBiggerCard(sortedCards).getPowerAsInt()
-                );
-            }
-
-            while (true) {
-                final List<CardType> firstFiveCards = sortedCards.stream()
-                        .limit(5)
-                        .collect(Collectors.toList());
-
-                if (isStrait(firstFiveCards)) {
-                    return Combination.of(
-                            CombinationType.STRAIGHT,
-                            firstFiveCards,
-                            findBiggerCard(firstFiveCards).getPowerAsInt()
-                    );
-                }
-                sortedCards.remove(0);
-            }
+        for (int i = 0; i < sortedCards.size() % 4; i++) {
+            final List<CardType> cardTypes = sortedCards.subList(i, CardSizeData.COMBINATION_SIZE + i);
+             if (CardUtils.isStrait(cardTypes)) {
+                 return Combination.builder()
+                         .combinationType(CombinationType.STRAIGHT)
+                         .cards(cardTypes)
+                         .power(findBiggerCard(cardTypes).getPowerAsInt())
+                         .build();
+             }
         }
-        final List<CardType> straitWithAce = checkStraitWithAce(cards);
 
-        if (!straitWithAce.isEmpty()) {
-            return Combination.of(
-                    CombinationType.STRAIGHT,
-                    straitWithAce,
-                    5
-            );
+        final List<CardType> straightWithAce = checkStraitWithAce(cards);
+
+        if (!straightWithAce.isEmpty()){
+            return Combination.builder()
+                    .combinationType(CombinationType.STRAIGHT)
+                    .cards(straightWithAce)
+                    .power(5)
+                    .build();
         }
+
         return Combination.empty();
     }
 }

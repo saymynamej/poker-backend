@@ -12,4 +12,5 @@ public class ComparatorUtils {
     public static <T> Comparator<T> asc(ToIntFunction<? super T> keyExtractor) {
         return Comparator.comparingInt(keyExtractor);
     }
+
 }
