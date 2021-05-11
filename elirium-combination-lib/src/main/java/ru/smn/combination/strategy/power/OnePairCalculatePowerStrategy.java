@@ -1,12 +1,17 @@
 package ru.smn.combination.strategy.power;
 
 import ru.smn.combination.data.CardType;
+import ru.smn.combination.data.PowerType;
+import ru.smn.combination.utils.CardUtils;
 
 import java.util.List;
 
 public class OnePairCalculatePowerStrategy implements CalculatePowerStrategy {
     @Override
     public int calc(List<CardType> combination) {
-        return 0;
+        final PowerType powerType = CardUtils.findPowerOfCardWithFilter(combination, (entry) -> entry.getValue() == 2)
+                .orElseThrow();
+
+        return powerType.getPowerAsInt() * 2;
     }
 }

@@ -17,10 +17,11 @@ public class StraightFlushSearchStrategy implements SearchStrategy {
         final Combination flush = SearchAssistant.find(CombinationType.FLUSH, cards);
 
         if (!flush.isEmpty() && isStrait(flush.getCards())) {
+            final int power = PowerAssistant.calc(flush.getCards(), CombinationType.STRAIGHT_FLUSH);
             return Combination.of(
                     CombinationType.STRAIGHT_FLUSH,
                     sortCardsByDesc(flush.getCards()),
-                    findBiggerCard(flush.getCards()).getPowerAsInt()
+                    power
             );
         }
 

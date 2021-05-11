@@ -4,52 +4,56 @@ import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.PowerType;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static ru.smn.combination.data.CardSizeData.COMBINATION_SIZE;
+import static ru.smn.combination.data.CardSizeData.TWO_PAIR_SIZE;
 
 public class CardUtils {
 
-    public static boolean containsAllCardsForFlushRoyal(List<CardType> cardTypes) {
-        final List<CardType> flushRoyal = cardTypes.stream()
-                .filter(cardType -> cardType.getPower() == PowerType.A_POWER
-                        || cardType.getPower() == PowerType.K_POWER
-                        || cardType.getPower() == PowerType.Q_POWER
-                        || cardType.getPower() == PowerType.J_POWER
-                        || cardType.getPower() == PowerType.TEN_POWER).collect(Collectors.toList()
-                );
+    public static Optional<PowerType> findPowerOfCardWithFilter(List<CardType> cards, Predicate<Map.Entry<PowerType, Long>> predicate) {
+        return cards.stream()
+                .collect(Collectors.groupingBy(CardType::getPower, Collectors.counting()))
+                .entrySet()
+                .stream()
+                .filter(predicate)
+                .sorted(Map.Entry.comparingByKey())
+                .limit(1)
+                .map(Map.Entry::getKey)
+                .findFirst();
+    }
 
-        return flushRoyal.size() == COMBINATION_SIZE;
+    public static boolean containsAllCardsForFlushRoyal(List<CardType> cardTypes) {
+        final Optional<CardType> ace = findCard(cardTypes, PowerType.A_POWER);
+        final Optional<CardType> king = findCard(cardTypes, PowerType.K_POWER);
+        final Optional<CardType> queen = findCard(cardTypes, PowerType.Q_POWER);
+        final Optional<CardType> jack = findCard(cardTypes, PowerType.J_POWER);
+        final Optional<CardType> ten = findCard(cardTypes, PowerType.TEN_POWER);
+
+        return ace.isPresent() && king.isPresent() && queen.isPresent() && jack.isPresent() && ten.isPresent();
     }
 
     public static List<CardType> checkStraitWithAce(List<CardType> cards) {
         final List<CardType> distinctList = sortCardsByAsc(removeCardsWithSamePower(cards));
 
-        final Optional<CardType> ace = distinctList.stream()
-                .filter(cardType -> cardType.getPowerAsInt() == PowerType.A_POWER.getPowerAsInt())
-                .findAny();
-
-        final Optional<CardType> two = distinctList.stream()
-                .filter(cardType -> cardType.getPowerAsInt() == PowerType.TWO_POWER.getPowerAsInt())
-                .findAny();
-
-        final Optional<CardType> three = distinctList.stream()
-                .filter(cardType -> cardType.getPowerAsInt() == PowerType.THREE_POWER.getPowerAsInt())
-                .findAny();
-
-        final Optional<CardType> four = distinctList.stream()
-                .filter(cardType -> cardType.getPowerAsInt() == PowerType.FOUR_POWER.getPowerAsInt())
-                .findAny();
-
-        final Optional<CardType> five = distinctList.stream()
-                .filter(cardType -> cardType.getPowerAsInt() == PowerType.FIVE_POWER.getPowerAsInt())
-                .findAny();
+        final Optional<CardType> ace = findCard(distinctList, PowerType.A_POWER);
+        final Optional<CardType> two = findCard(distinctList, PowerType.TWO_POWER);
+        final Optional<CardType> three = findCard(distinctList, PowerType.THREE_POWER);
+        final Optional<CardType> four = findCard(distinctList, PowerType.FOUR_POWER);
+        final Optional<CardType> five = findCard(distinctList, PowerType.FIVE_POWER);
 
         if (ace.isPresent() && two.isPresent() && three.isPresent() && four.isPresent() && five.isPresent()) {
             return Arrays.asList(ace.get(), two.get(), three.get(), four.get(), five.get());
         }
 
         return Collections.emptyList();
+    }
+
+    private static Optional<CardType> findCard(List<CardType> distinctList, PowerType powerType) {
+        return distinctList.stream()
+                .filter(cardType -> cardType.getPowerAsInt() == powerType.getPowerAsInt())
+                .findAny();
     }
 
     public static boolean isStrait(List<CardType> cards) {

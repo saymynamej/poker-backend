@@ -16,7 +16,6 @@ public class KareSearchStrategy implements SearchStrategy {
     @Override
     public Combination find(List<CardType> cards) {
         final int firstIndexOfCard = 0;
-        final int lastIndexOfCard = 4;
 
         final List<CardType> kareCards = cards.stream()
                 .collect(Collectors.groupingBy(CardType::getPowerAsInt))

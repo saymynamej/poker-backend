@@ -16,14 +16,17 @@ public class StraightSearchStrategy implements SearchStrategy {
     @Override
     public Combination find(List<CardType> cards) {
         final List<CardType> sortedCards = sortCardsByDesc(removeCardsWithSamePower(cards));
+        final CombinationType straight = CombinationType.STRAIGHT;
 
         for (int i = 0; i < sortedCards.size() % 4; i++) {
+
             final List<CardType> cardTypes = sortedCards.subList(i, CardSizeData.COMBINATION_SIZE + i);
             if (CardUtils.isStrait(cardTypes)) {
+                final int power = PowerAssistant.calc(cardTypes, straight);
                 return Combination.builder()
                         .combinationType(CombinationType.STRAIGHT)
                         .cards(cardTypes)
-                        .power(findBiggerCard(cardTypes).getPowerAsInt())
+                        .power(power)
                         .build();
             }
         }
@@ -31,8 +34,6 @@ public class StraightSearchStrategy implements SearchStrategy {
         final List<CardType> straightWithAce = checkStraitWithAce(cards);
 
         if (!straightWithAce.isEmpty()) {
-            final CombinationType straight = CombinationType.STRAIGHT;
-
             final int power = PowerAssistant.calc(straightWithAce, straight);
 
             return Combination.builder()

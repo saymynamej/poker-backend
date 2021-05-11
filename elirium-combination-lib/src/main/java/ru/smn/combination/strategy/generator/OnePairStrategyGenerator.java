@@ -1,23 +1,49 @@
 package ru.smn.combination.strategy.generator;
 
+import ru.smn.combination.assistant.PowerAssistant;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
+import ru.smn.combination.data.CombinationType;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class OnePairStrategyGenerator implements GeneratorStrategy {
 
     @Override
     public Combination generate() {
-        final List<CardType> cards = CardType.getAllCardsAsList().stream()
-                .limit(3)
-                .collect(Collectors.toList());
+//        final List<CardType> cards = CardType.getAllCardsAsList();
+//
+//        final Random random = new Random();
+//
+//        final CardType firstCardForPair = cards.get(random.nextInt(cards.size()));
+//
+//        cards.remove(firstCardForPair);
+//
+//        final CardType secondCardForPair = cards.stream()
+//                .filter(card -> card.getPower().equals(firstCardForPair.getPower()))
+//                .findAny()
+//                .orElseThrow();
+//
+//        final List<CardType> combination = Stream.of(firstCardForPair, secondCardForPair)
+//                .collect(Collectors.toList());
+//
+//        for (int i = 0; i < 3; i++) {
+//            final CardType cardType = cards.get(random.nextInt(cards.size()));
+//            combination.add(cardType);
+//            cards.remove(cardType);
+//        }
+//
+//        final int power = PowerAssistant.calc(combination, CombinationType.ONE_PAIR);
+//
+//        return Combination.of(
+//                CombinationType.ONE_PAIR,
+//                combination,
+//                power
+//        );
 
-        final CardType cardType = CardType.getAllCardsAsListWithFilter(cards)
-                .stream()
-                .limit(1).findFirst().orElseThrow();
-
-        return null;
+        return Combination.empty();
     }
 }
