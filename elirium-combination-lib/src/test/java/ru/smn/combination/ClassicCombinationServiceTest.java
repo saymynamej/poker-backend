@@ -74,16 +74,16 @@ public class ClassicCombinationServiceTest {
     private static final List<CardType> FLUSH_CLUB_COMBINATION = new ArrayList<>(Arrays.asList(A_C, K_C, Q_C, J_C, NINE_C));
 
     private static final List<CardType> FULL_HOUSE_FULL = new ArrayList<>(Arrays.asList(EIGHT_C, EIGHT_D, EIGHT_H, FIVE_D, FIVE_C, FIVE_H, FOUR_H));
-    private static final List<CardType> FULL_HOUSE_COMBINATION = new ArrayList<>(Arrays.asList(FIVE_D, FIVE_C, EIGHT_C, EIGHT_D, EIGHT_H));
+    private static final List<CardType> FULL_HOUSE_COMBINATION = new ArrayList<>(Arrays.asList(EIGHT_C, EIGHT_D, EIGHT_H, FIVE_D, FIVE_C));
 
     private static final List<CardType> FULL_HOUSE_FULL2 = new ArrayList<>(Arrays.asList(A_D, A_C, SEVEN_D, A_H, K_C, K_H, FOUR_H));
-    private static final List<CardType> FULL_HOUSE_COMBINATION2 = new ArrayList<>(Arrays.asList(K_C, K_H, A_D, A_C, A_H));
+    private static final List<CardType> FULL_HOUSE_COMBINATION2 = new ArrayList<>(Arrays.asList(A_D, A_C, A_H, K_C, K_H));
 
     private static final List<CardType> FULL_HOUSE_FULL3 = new ArrayList<>(Arrays.asList(EIGHT_C, EIGHT_D, Q_C, Q_H, Q_D, TEN_C, TEN_D));
-    private static final List<CardType> FULL_HOUSE_COMBINATION3 = new ArrayList<>(Arrays.asList(TEN_C, TEN_D, Q_C, Q_H, Q_D));
+    private static final List<CardType> FULL_HOUSE_COMBINATION3 = new ArrayList<>(Arrays.asList(Q_C, Q_H, Q_D, TEN_C, TEN_D));
 
     private static final List<CardType> FULL_HOUSE_FULL4 = new ArrayList<>(Arrays.asList(J_D, EIGHT_D, SEVEN_H, SEVEN_D, FIVE_C, J_C, J_H));
-    private static final List<CardType> FULL_HOUSE_COMBINATION4 = new ArrayList<>(Arrays.asList(SEVEN_H, SEVEN_D, J_D, J_C, J_H));
+    private static final List<CardType> FULL_HOUSE_COMBINATION4 = new ArrayList<>(Arrays.asList(J_D, J_C, J_H, SEVEN_H, SEVEN_D));
 
     private static final List<CardType> STRAIT_FULL = new ArrayList<>(Arrays.asList(EIGHT_C, SEVEN_S, SIX_H, FIVE_D, THREE_D, FOUR_H, TWO_D));
     private static final List<CardType> STRAIT_COMBINATION = new ArrayList<>(Arrays.asList(EIGHT_C, SEVEN_S, SIX_H, FIVE_D, FOUR_H));

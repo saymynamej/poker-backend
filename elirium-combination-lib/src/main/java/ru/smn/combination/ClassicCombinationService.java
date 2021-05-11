@@ -6,7 +6,6 @@ import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
 import ru.smn.combination.utils.ComparatorUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +25,7 @@ public class ClassicCombinationService implements CombinationService {
                 .collect(Collectors.toList());
 
         for (CombinationType combinationType : sortedCombinationTypes) {
-            final Combination combination = SearchAssistant.find(combinationType, new ArrayList<>(cards));
+            final Combination combination = SearchAssistant.find(combinationType, cards);
             if (!combination.isEmpty()){
                 return combination;
             }
