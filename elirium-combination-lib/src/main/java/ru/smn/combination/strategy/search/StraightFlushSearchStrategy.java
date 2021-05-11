@@ -1,9 +1,10 @@
-package ru.smn.combination.strategy;
+package ru.smn.combination.strategy.search;
 
+import ru.smn.combination.assistant.PowerAssistant;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
-import ru.smn.combination.data.SearchAssistant;
+import ru.smn.combination.assistant.SearchAssistant;
 
 import java.util.List;
 
@@ -27,10 +28,12 @@ public class StraightFlushSearchStrategy implements SearchStrategy {
         if (!straitWithAce.isEmpty()) {
             final Combination straitFlushWithAce = SearchAssistant.find(CombinationType.FLUSH, straitWithAce);
             if (!straitFlushWithAce.isEmpty()) {
+                final int power = PowerAssistant.calc(straitFlushWithAce.getCards(), CombinationType.STRAIGHT_FLUSH);
+
                 return Combination.of(
                         CombinationType.STRAIGHT_FLUSH,
                         sortCardsByDesc(straitFlushWithAce.getCards()),
-                        5
+                        power
                 );
             }
         }

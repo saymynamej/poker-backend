@@ -1,5 +1,6 @@
-package ru.smn.combination.strategy;
+package ru.smn.combination.strategy.search;
 
+import ru.smn.combination.assistant.PowerAssistant;
 import ru.smn.combination.data.CardSizeData;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
@@ -26,10 +27,16 @@ public class KareSearchStrategy implements SearchStrategy {
                 .flatMap(entry -> entry.getValue().stream())
                 .collect(Collectors.toList());
 
-        return kareCards.isEmpty() ? Combination.empty() : Combination.of(
+        if (kareCards.isEmpty()) {
+            return Combination.empty();
+        }
+
+        final int power = PowerAssistant.calc(kareCards, CombinationType.KARE);
+
+        return Combination.of(
                 CombinationType.KARE,
                 kareCards,
-                kareCards.get(firstIndexOfCard).getPowerAsInt() + kareCards.get(lastIndexOfCard).getPowerAsInt()
+                power
         );
 
     }

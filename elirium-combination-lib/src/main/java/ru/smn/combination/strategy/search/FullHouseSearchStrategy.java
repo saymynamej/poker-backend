@@ -1,9 +1,8 @@
-package ru.smn.combination.strategy.needref;
+package ru.smn.combination.strategy.search;
 
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
-import ru.smn.combination.strategy.SearchStrategy;
 
 import java.util.ArrayList;
 import java.util.Comparator;

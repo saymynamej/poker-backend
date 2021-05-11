@@ -87,7 +87,6 @@ public enum CardType {
         return getAllCardsAsList().stream()
                 .filter(card -> !filter.contains(card))
                 .collect(Collectors.toList());
-
     }
 
     public enum SuitType {

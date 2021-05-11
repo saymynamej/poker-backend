@@ -1,9 +1,10 @@
-package ru.smn.combination.strategy;
+package ru.smn.combination.strategy.search;
 
+import ru.smn.combination.assistant.PowerAssistant;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
-import ru.smn.combination.data.SearchAssistant;
+import ru.smn.combination.assistant.SearchAssistant;
 
 import java.util.List;
 
@@ -15,10 +16,13 @@ public class FlushRoyalSearchStrategy implements SearchStrategy {
     public Combination find(List<CardType> cards) {
         final Combination flush = SearchAssistant.find(CombinationType.FLUSH, cards);
         if (!flush.isEmpty() && containsAllCardsForFlushRoyal(flush.getCards())) {
+            final CombinationType flushRoyal = CombinationType.FLUSH_ROYAL;
+            final int power = PowerAssistant.calc(flush.getCards(), flushRoyal);
+
             return Combination.of(
-                    CombinationType.FLUSH_ROYAL,
+                    flushRoyal,
                     sortCardsByDesc(flush.getCards()),
-                    findBiggerCard(flush.getCards()).getPowerAsInt()
+                    power
             );
         }
         return Combination.empty();

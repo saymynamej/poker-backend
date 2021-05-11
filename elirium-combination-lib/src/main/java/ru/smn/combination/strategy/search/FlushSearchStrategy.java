@@ -1,5 +1,6 @@
-package ru.smn.combination.strategy;
+package ru.smn.combination.strategy.search;
 
+import ru.smn.combination.assistant.PowerAssistant;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
@@ -15,10 +16,12 @@ public class FlushSearchStrategy implements SearchStrategy {
         for (CardType.SuitType suitType : CardType.SuitType.values()) {
             final List<CardType> flushBySuit = findFlushBySuit(cards, suitType);
             if (!flushBySuit.isEmpty()) {
+                final CombinationType flush = CombinationType.FLUSH;
+                final int power = PowerAssistant.calc(flushBySuit, flush);
                 return Combination.of(
-                        CombinationType.FLUSH,
+                        flush,
                         sortCardsByDesc(flushBySuit),
-                        findBiggerCard(flushBySuit).getPowerAsInt()
+                        power
                 );
             }
         }

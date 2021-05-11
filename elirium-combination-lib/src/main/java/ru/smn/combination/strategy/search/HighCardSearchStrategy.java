@@ -1,5 +1,6 @@
-package ru.smn.combination.strategy;
+package ru.smn.combination.strategy.search;
 
+import ru.smn.combination.assistant.PowerAssistant;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
@@ -9,7 +10,6 @@ import java.util.stream.Collectors;
 
 import static ru.smn.combination.data.CardSizeData.COMBINATION_SIZE;
 import static ru.smn.combination.utils.CardUtils.sortCardsByDesc;
-import static ru.smn.combination.utils.CardUtils.sumCards;
 
 public class HighCardSearchStrategy implements SearchStrategy {
 
@@ -20,6 +20,12 @@ public class HighCardSearchStrategy implements SearchStrategy {
                 .limit(COMBINATION_SIZE)
                 .collect(Collectors.toList());
 
-        return Combination.of(CombinationType.HIGH_CARD, highCardCombination, sumCards(highCardCombination));
+        final int power = PowerAssistant.calc(highCardCombination, CombinationType.HIGH_CARD);
+
+        return Combination.of(
+                CombinationType.HIGH_CARD,
+                highCardCombination,
+                power
+        );
     }
 }

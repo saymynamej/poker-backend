@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
-import ru.smn.combination.utils.CardUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +12,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static ru.smn.combination.data.CardType.*;
 
-public class SimpleCombinationServiceTest {
+public class ClassicCombinationServiceTest {
 
     private final ClassicCombinationService checkSimpleCombinationService = new ClassicCombinationService();
 

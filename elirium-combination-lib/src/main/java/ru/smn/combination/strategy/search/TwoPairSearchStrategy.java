@@ -1,9 +1,9 @@
-package ru.smn.combination.strategy;
+package ru.smn.combination.strategy.search;
 
+import ru.smn.combination.assistant.PowerAssistant;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
-import ru.smn.combination.strategy.SearchStrategy;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import static ru.smn.combination.data.CardSizeData.PAIR_SIZE;
 import static ru.smn.combination.data.CardSizeData.TWO_PAIR_SIZE;
 import static ru.smn.combination.utils.CardUtils.findBiggerCardWithFilter;
-import static ru.smn.combination.utils.CardUtils.sumCards;
 
 public class TwoPairSearchStrategy implements SearchStrategy {
 
@@ -33,10 +32,12 @@ public class TwoPairSearchStrategy implements SearchStrategy {
 
         twoPairs.add(findBiggerCardWithFilter(cards, twoPairs.get(0).getPower()));
 
+        final int power = PowerAssistant.calc(twoPairs, CombinationType.TWO_PAIR);
+
         return Combination.of(
                 CombinationType.TWO_PAIR,
                 twoPairs,
-                sumCards(twoPairs)
+                power
         );
     }
 }
