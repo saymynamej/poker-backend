@@ -5,7 +5,7 @@ import ru.smn.combination.utils.CardUtils;
 
 import java.util.List;
 
-class StraightFlushPowerStrategy implements CalculatePowerStrategy {
+class StraightFlushCalculatePowerStrategy implements CalculatePowerStrategy {
 
     @Override
     public int calc(List<CardType> combination) {

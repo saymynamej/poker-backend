@@ -19,7 +19,7 @@ public class PowerAssistant {
         calculatePowerStrategies.put(CombinationType.FLUSH, new FlushCalculatePowerStrategy());
         calculatePowerStrategies.put(CombinationType.FULL_HOUSE, new FullHouseCalculatePowerStrategy());
         calculatePowerStrategies.put(CombinationType.KARE, new KareCalculatePowerStrategy());
-        calculatePowerStrategies.put(CombinationType.STRAIGHT_FLUSH, new StraightFlushPowerStrategy());
+        calculatePowerStrategies.put(CombinationType.STRAIGHT_FLUSH, new StraightFlushCalculatePowerStrategy());
         calculatePowerStrategies.put(CombinationType.FLUSH_ROYAL, new FlushRoyalCalculatePowerStrategy());
     }
 
