@@ -6,7 +6,8 @@ import ru.smn.combination.data.CombinationType;
 
 import java.util.List;
 
-import static ru.smn.combination.utils.CardUtils.*;
+import static ru.smn.combination.utils.CardUtils.checkStraitWithAce;
+import static ru.smn.combination.utils.CardUtils.isStrait;
 
 class StraightFlushSearchStrategy implements SearchStrategy {
 

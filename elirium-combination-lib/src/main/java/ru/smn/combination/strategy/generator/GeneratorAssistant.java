@@ -2,7 +2,6 @@ package ru.smn.combination.strategy.generator;
 
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
-import ru.smn.combination.strategy.generator.*;
 
 import java.util.HashMap;
 import java.util.Map;

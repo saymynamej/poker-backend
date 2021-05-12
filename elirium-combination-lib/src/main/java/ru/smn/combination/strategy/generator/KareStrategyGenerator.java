@@ -4,9 +4,9 @@ import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
 import ru.smn.combination.utils.CardUtils;
+import ru.smn.combination.utils.RandomUtils;
 
 import java.util.List;
-import java.util.Random;
 
 class KareStrategyGenerator implements GeneratorStrategy {
 
@@ -14,15 +14,15 @@ class KareStrategyGenerator implements GeneratorStrategy {
     public Combination generate() {
         final List<CardType> cards = CardType.getAllCardsAsList();
 
-        final Random random = new Random();
+        final CardType randomCardForKare = RandomUtils.getRandomCard(cards);
 
-        final CardType randomCardForKare = cards.get(random.nextInt(cards.size()));
+        final List<CardType> kare = CardUtils.getCardsWithPower(cards, randomCardForKare.getPower(), 4);
 
-        final List<CardType> kare = CardUtils.filterByPower(cards, randomCardForKare.getPower());
+        CardUtils.removeCardsWithPower(cards, randomCardForKare.getPower());
 
-        cards.removeAll(kare);
+        final CardType highCard = RandomUtils.getRandomCard(cards);
 
-        kare.add(cards.get(random.nextInt(cards.size())));
+        kare.add(highCard);
 
         return Combination.of(CombinationType.KARE, kare);
     }

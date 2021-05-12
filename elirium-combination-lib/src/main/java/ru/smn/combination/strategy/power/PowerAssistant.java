@@ -2,7 +2,6 @@ package ru.smn.combination.strategy.power;
 
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.CombinationType;
-import ru.smn.combination.strategy.power.*;
 
 import java.util.HashMap;
 import java.util.List;

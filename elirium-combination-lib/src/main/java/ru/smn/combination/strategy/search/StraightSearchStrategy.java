@@ -17,7 +17,7 @@ class StraightSearchStrategy implements SearchStrategy {
         final List<CardType> sortedCards = sortByDesc(distinctByPowerType(cards));
         final CombinationType straight = CombinationType.STRAIGHT;
 
-        if (sortedCards.size() < CardSizeData.COMBINATION_SIZE){
+        if (sortedCards.size() < CardSizeData.COMBINATION_SIZE) {
             return Combination.empty();
         }
 

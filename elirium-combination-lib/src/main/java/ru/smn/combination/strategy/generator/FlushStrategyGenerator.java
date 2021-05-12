@@ -4,9 +4,9 @@ import ru.smn.combination.data.CardSizeData;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
+import ru.smn.combination.utils.RandomUtils;
 
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 class FlushStrategyGenerator implements GeneratorStrategy {
@@ -14,9 +14,8 @@ class FlushStrategyGenerator implements GeneratorStrategy {
     @Override
     public Combination generate() {
         final List<CardType> cards = CardType.getAllCardsAsList();
-        final Random random = new Random();
-        final CardType.SuitType[] values = CardType.SuitType.values();
-        final CardType.SuitType randomSuit = values[random.nextInt(values.length)];
+
+        final CardType.SuitType randomSuit = RandomUtils.getRandomSuit();
 
         final List<CardType> suitCards = cards.stream()
                 .filter(cardType -> cardType.getSuitType().equals(randomSuit))

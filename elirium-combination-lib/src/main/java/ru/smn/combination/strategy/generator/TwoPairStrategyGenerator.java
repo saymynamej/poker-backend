@@ -3,50 +3,27 @@ package ru.smn.combination.strategy.generator;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
+import ru.smn.combination.utils.CardUtils;
+import ru.smn.combination.utils.RandomUtils;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 class TwoPairStrategyGenerator implements GeneratorStrategy {
 
     @Override
     public Combination generate() {
         final List<CardType> cards = CardType.getAllCardsAsList();
-        final Random random = new Random();
-        final CardType firstRandomCard = cards.get(random.nextInt(cards.size()));
+        final List<CardType> combination = new ArrayList<>();
 
-        final List<CardType> firstPair = cards.stream()
-                .filter(cardType -> cardType.getPower().equals(firstRandomCard.getPower()))
-                .limit(2)
-                .collect(Collectors.toList());
+        for (int i = 0; i < 2; i++) {
+            final CardType randomCard = RandomUtils.getRandomCard(cards);
+            final List<CardType> pair = CardUtils.getCardsWithPower(cards, randomCard.getPower(), 2);
+            combination.addAll(pair);
+            CardUtils.removeCardsWithPower(cards, randomCard.getPower());
+        }
 
-        cards.removeAll(
-                cards.stream()
-                        .filter(cardType -> cardType.getPower().equals(firstRandomCard.getPower()))
-                        .collect(Collectors.toList())
-        );
-
-        final CardType secondRandomCard = cards.get(random.nextInt(cards.size()));
-
-        final List<CardType> secondPair = cards.stream()
-                .filter(cardType -> cardType.getPower().equals(secondRandomCard.getPower()))
-                .limit(2)
-                .collect(Collectors.toList());
-
-        cards.removeAll(
-                cards.stream()
-                        .filter(cardType -> cardType.getPower().equals(secondRandomCard.getPower()))
-                        .collect(Collectors.toList())
-        );
-
-        final List<CardType> combination = Stream.concat(
-                firstPair.stream(),
-                secondPair.stream()
-        ).collect(Collectors.toList());
-
-        combination.add(cards.get(random.nextInt(cards.size())));
+        combination.add(RandomUtils.getRandomCard(cards));
 
         return Combination.of(
                 CombinationType.TWO_PAIR,

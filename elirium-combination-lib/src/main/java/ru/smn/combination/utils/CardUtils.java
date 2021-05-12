@@ -73,12 +73,12 @@ public class CardUtils {
         return true;
     }
 
-    public static void removeCardWithSamePower(List<CardType> cards, PowerType powerType) {
-        cards.removeAll(
-                cards.stream()
-                        .filter(cardType -> cardType.getPower().equals(powerType))
-                        .collect(Collectors.toList())
-        );
+    public static void removeCardsWithPower(List<CardType> cards, PowerType powerType) {
+        final List<CardType> cardsForDelete = cards.stream()
+                .filter(cardType -> cardType.getPower().equals(powerType))
+                .collect(Collectors.toList());
+
+        cards.removeAll(cardsForDelete);
     }
 
     public static List<CardType> distinctByPowerType(List<CardType> cards) {
@@ -92,12 +92,6 @@ public class CardUtils {
                 .filter(cardType -> cardType.getPower() != (filter))
                 .max(Comparator.comparingInt(CardType::getPowerAsInt))
                 .orElseThrow(() -> new RuntimeException("cannot find min card"));
-    }
-
-    public static List<CardType> filterByPower(List<CardType> cards, PowerType powerFilter) {
-        return cards.stream()
-                .filter(cardTypeN -> cardTypeN.getPower() == powerFilter)
-                .collect(Collectors.toList());
     }
 
     public static CardType findTheBiggestCard(List<CardType> cardTypes) {
@@ -138,6 +132,13 @@ public class CardUtils {
             return cards;
         }
         return Collections.emptyList();
+    }
+
+    public static List<CardType> getCardsWithPower(List<CardType> cards, PowerType powerType, int count) {
+        return cards.stream()
+                .filter(cardType -> cardType.getPower().equals(powerType))
+                .limit(count)
+                .collect(Collectors.toList());
     }
 
     public static List<CardType> sortByDesc(List<CardType> cards) {

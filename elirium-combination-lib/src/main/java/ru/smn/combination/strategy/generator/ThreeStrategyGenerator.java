@@ -3,37 +3,26 @@ package ru.smn.combination.strategy.generator;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
+import ru.smn.combination.utils.CardUtils;
+import ru.smn.combination.utils.RandomUtils;
 
 import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
 
 class ThreeStrategyGenerator implements GeneratorStrategy {
 
     @Override
     public Combination generate() {
         final List<CardType> cards = CardType.getAllCardsAsList();
-        final Random random = new Random();
-        final int randomIndex = random.nextInt(cards.size());
-        final CardType randomCard = cards.get(randomIndex);
+        final CardType randomCardForThree = RandomUtils.getRandomCard(cards);
+        final List<CardType> combination = CardUtils.getCardsWithPower(cards, randomCardForThree.getPower(), 3);
 
-        final List<CardType> combination = cards.stream()
-                .filter(cardType -> cardType.getPower().equals(randomCard.getPower()))
-                .limit(3)
-                .collect(Collectors.toList());
+        CardUtils.removeCardsWithPower(cards, randomCardForThree.getPower());
 
-        final CardType highCard_1 = cards.stream()
-                .filter(cardType -> cardType.getPowerAsInt() != randomCard.getPowerAsInt())
-                .findAny().orElseThrow();
-
-        combination.add(highCard_1);
-
-        final CardType highCard_2 = cards.stream()
-                .filter(cardType -> cardType.getPowerAsInt() != randomCard.getPowerAsInt())
-                .filter(cardType -> cardType.getPowerAsInt() != highCard_1.getPowerAsInt())
-                .findAny().orElseThrow();
-
-        combination.add(highCard_2);
+        for (int i = 0; i < 2; i++) {
+            final CardType randomCard = RandomUtils.getRandomCard(cards);
+            combination.add(randomCard);
+            CardUtils.removeCardsWithPower(cards, randomCard.getPower());
+        }
 
         return Combination.of(
                 CombinationType.THREE_CARDS,
