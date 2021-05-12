@@ -1,5 +1,6 @@
 package ru.smn.combination.strategy.generator;
 
+import ru.smn.combination.data.CardSizeData;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
@@ -20,6 +21,7 @@ public class FlushStrategyGenerator implements GeneratorStrategy {
         final List<CardType> suitCards = cards.stream()
                 .filter(cardType -> cardType.getSuitType().equals(randomSuit))
                 .filter(cardType -> cardType.getPower().getPowerAsInt() % 2 == 0)
+                .limit(CardSizeData.COMBINATION_SIZE)
                 .collect(Collectors.toList());
 
         return Combination.of(

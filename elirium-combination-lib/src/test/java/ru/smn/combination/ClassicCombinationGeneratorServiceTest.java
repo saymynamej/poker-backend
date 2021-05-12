@@ -28,15 +28,17 @@ public class ClassicCombinationGeneratorServiceTest {
             final Combination combination = combinationService.findCombination(straightFlush.getCards());
             Assertions.assertEquals(STRAIGHT_FLUSH, combination.getCombinationType());
             Assertions.assertEquals(CardSizeData.COMBINATION_SIZE, straightFlush.getCards().size());
+            Assertions.assertEquals(CardSizeData.COMBINATION_SIZE, straightFlush.getCards().size());
         }
     }
 
     @Test
     public void shouldGenerateKareCombination() {
         for (int i = 0; i < 100; i++) {
-            final Combination highCard = combinationGeneratorService.generate(KARE);
-            final Combination combination = combinationService.findCombination(highCard.getCards());
+            final Combination kare = combinationGeneratorService.generate(KARE);
+            final Combination combination = combinationService.findCombination(kare.getCards());
             Assertions.assertEquals(KARE, combination.getCombinationType());
+            Assertions.assertEquals(CardSizeData.COMBINATION_SIZE, kare.getCards().size());
         }
     }
 
@@ -46,6 +48,7 @@ public class ClassicCombinationGeneratorServiceTest {
             final Combination fullHouse = combinationGeneratorService.generate(FULL_HOUSE);
             final Combination combination = combinationService.findCombination(fullHouse.getCards());
             Assertions.assertEquals(FULL_HOUSE, combination.getCombinationType());
+            Assertions.assertEquals(CardSizeData.COMBINATION_SIZE, fullHouse.getCards().size());
         }
     }
 
@@ -55,6 +58,17 @@ public class ClassicCombinationGeneratorServiceTest {
             final Combination flush = combinationGeneratorService.generate(FLUSH);
             final Combination combination = combinationService.findCombination(flush.getCards());
             Assertions.assertEquals(FLUSH, combination.getCombinationType());
+            Assertions.assertEquals(CardSizeData.COMBINATION_SIZE, flush.getCards().size());
+        }
+    }
+
+    @Test
+    public void shouldGenerateStraightCombination() {
+        for (int i = 0; i < 100; i++) {
+            final Combination straight = combinationGeneratorService.generate(STRAIGHT);
+            final Combination combination = combinationService.findCombination(straight.getCards());
+            Assertions.assertEquals(STRAIGHT, combination.getCombinationType());
+            Assertions.assertEquals(CardSizeData.COMBINATION_SIZE, straight.getCards().size());
         }
     }
 
