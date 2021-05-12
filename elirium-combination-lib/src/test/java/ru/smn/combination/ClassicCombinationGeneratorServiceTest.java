@@ -1,7 +1,6 @@
 package ru.smn.combination;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import ru.smn.combination.data.CardSizeData;
 import ru.smn.combination.data.Combination;
@@ -42,12 +41,21 @@ public class ClassicCombinationGeneratorServiceTest {
     }
 
     @Test
-    @Disabled
-    public void shouldGenerateOnePairCombination() {
+    public void shouldGenerateFullHouseCombination() {
         for (int i = 0; i < 100; i++) {
-            final Combination onePair = combinationGeneratorService.generate(ONE_PAIR);
-            final Combination combination = combinationService.findCombination(onePair.getCards());
-            Assertions.assertEquals(ONE_PAIR, combination.getCombinationType());
+            final Combination fullHouse = combinationGeneratorService.generate(FULL_HOUSE);
+            final Combination combination = combinationService.findCombination(fullHouse.getCards());
+            Assertions.assertEquals(FULL_HOUSE, combination.getCombinationType());
         }
     }
+
+    @Test
+    public void shouldGenerateOneFlushCombination() {
+        for (int i = 0; i < 100; i++) {
+            final Combination flush = combinationGeneratorService.generate(FLUSH);
+            final Combination combination = combinationService.findCombination(flush.getCards());
+            Assertions.assertEquals(FLUSH, combination.getCombinationType());
+        }
+    }
+
 }

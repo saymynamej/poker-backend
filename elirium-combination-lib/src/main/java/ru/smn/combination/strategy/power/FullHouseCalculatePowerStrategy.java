@@ -10,15 +10,12 @@ public class FullHouseCalculatePowerStrategy implements CalculatePowerStrategy {
 
     @Override
     public int calc(List<CardType> combination) {
-        final PowerType threeCardPower = CardUtils.findPowerOfCardWithFilter(combination, (entry) -> entry.getValue() == 3)
-                .stream()
-                .findAny()
+        final PowerType powerOfThree = CardUtils.findPowerOfCardWithFilter(combination, (entry) -> entry.getValue() == 3)
                 .orElseThrow();
 
-        final PowerType twoCardPower = CardUtils.findPowerOfCardWithFilter(combination, (entry) -> entry.getValue() == 2).stream()
-                .findAny()
+        final PowerType powerOfTwo = CardUtils.findPowerOfCardWithFilter(combination, (entry) -> entry.getValue() == 2)
                 .orElseThrow();
 
-        return threeCardPower.getPowerAsInt() + twoCardPower.getPowerAsInt();
+        return powerOfThree.getPowerAsInt() + powerOfTwo.getPowerAsInt();
     }
 }

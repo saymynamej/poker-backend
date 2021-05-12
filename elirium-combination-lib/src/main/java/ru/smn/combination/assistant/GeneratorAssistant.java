@@ -16,7 +16,7 @@ public class GeneratorAssistant {
         generateStrategies.put(CombinationType.TWO_PAIR, new TwoPairStrategyGenerator());
         generateStrategies.put(CombinationType.THREE_CARDS, new ThreeStrategyGenerator());
         generateStrategies.put(CombinationType.STRAIGHT, new StraightStrategyGenerator());
-        generateStrategies.put(CombinationType.FLUSH, new FlushRoyalStrategyGenerator());
+        generateStrategies.put(CombinationType.FLUSH, new FlushStrategyGenerator());
         generateStrategies.put(CombinationType.FULL_HOUSE, new FullHouseStrategyGenerator());
         generateStrategies.put(CombinationType.KARE, new KareStrategyGenerator());
         generateStrategies.put(CombinationType.STRAIGHT_FLUSH, new StraightFlushStrategyGenerator());
