@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class FlushRoyalStrategyGenerator implements GeneratorStrategy {
+class FlushRoyalStrategyGenerator implements GeneratorStrategy {
+
     @Override
     public Combination generate() {
         final List<CardType> cards = CardType.getAllCardsAsList();

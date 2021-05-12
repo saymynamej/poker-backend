@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class OnePairSearchStrategy implements SearchStrategy {
+class OnePairSearchStrategy implements SearchStrategy {
 
     @Override
     public Combination find(List<CardType> cards) {
@@ -25,7 +25,7 @@ public class OnePairSearchStrategy implements SearchStrategy {
             return Combination.empty();
         }
 
-        final List<CardType> highCards = CardUtils.sortCardsByDesc(cards).stream()
+        final List<CardType> highCards = CardUtils.sortByDesc(cards).stream()
                 .filter(cardType -> cardType.getPowerAsInt() != pair.get(0).getPowerAsInt())
                 .limit(3)
                 .collect(Collectors.toList());

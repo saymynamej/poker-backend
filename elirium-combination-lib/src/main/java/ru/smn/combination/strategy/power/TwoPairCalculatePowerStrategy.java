@@ -6,11 +6,13 @@ import ru.smn.combination.utils.CardUtils;
 
 import java.util.List;
 
-public class TwoPairCalculatePowerStrategy implements CalculatePowerStrategy {
+class TwoPairCalculatePowerStrategy implements CalculatePowerStrategy {
+
     @Override
     public int calc(List<CardType> combination) {
+        final PowerType powerType = CardUtils.findPowerOfCardWithFilter(combination, (entry) -> entry.getValue() == 2)
+                .orElseThrow();
 
-
-        return 0;
+        return powerType.getPowerAsInt();
     }
 }

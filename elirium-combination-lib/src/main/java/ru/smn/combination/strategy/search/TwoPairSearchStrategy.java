@@ -10,9 +10,9 @@ import java.util.stream.Collectors;
 
 import static ru.smn.combination.data.CardSizeData.PAIR_SIZE;
 import static ru.smn.combination.data.CardSizeData.TWO_PAIR_SIZE;
-import static ru.smn.combination.utils.CardUtils.findBiggerCardWithFilter;
+import static ru.smn.combination.utils.CardUtils.findTheBiggestCardIgnoringFilter;
 
-public class TwoPairSearchStrategy implements SearchStrategy {
+class TwoPairSearchStrategy implements SearchStrategy {
 
     @Override
     public Combination find(List<CardType> cards) {
@@ -29,7 +29,7 @@ public class TwoPairSearchStrategy implements SearchStrategy {
             return Combination.empty();
         }
 
-        twoPairs.add(findBiggerCardWithFilter(cards, twoPairs.get(0).getPower()));
+        twoPairs.add(findTheBiggestCardIgnoringFilter(cards, twoPairs.get(0).getPower()));
 
         return Combination.of(CombinationType.TWO_PAIR, twoPairs);
     }

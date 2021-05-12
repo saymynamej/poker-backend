@@ -1,13 +1,16 @@
-package ru.smn.combination.assistant;
+package ru.smn.combination.strategy.search;
 
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
 import ru.smn.combination.strategy.search.*;
+import ru.smn.combination.utils.CardUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static ru.smn.combination.utils.CardUtils.*;
 
 public class SearchAssistant {
     private final static Map<CombinationType, SearchStrategy> searchStrategies = new HashMap<>();
@@ -26,6 +29,15 @@ public class SearchAssistant {
     }
 
     public static Combination find(CombinationType combinationType, List<CardType> cards) {
-        return searchStrategies.get(combinationType).find(cards);
+        final SearchStrategy searchStrategy = searchStrategies.get(combinationType);
+        final Combination combination = searchStrategy.find(cards);
+        if (combination.isEmpty()){
+            return combination;
+        }
+        return Combination.of(
+                combination.getCombinationType(),
+                sortByDesc(combination.getCards()),
+                combination.getPower()
+        );
     }
 }

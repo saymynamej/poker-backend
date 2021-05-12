@@ -1,6 +1,6 @@
 package ru.smn.combination;
 
-import ru.smn.combination.assistant.GeneratorAssistant;
+import ru.smn.combination.strategy.generator.GeneratorAssistant;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
 

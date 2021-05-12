@@ -5,10 +5,10 @@ import ru.smn.combination.utils.CardUtils;
 
 import java.util.List;
 
-public class FlushRoyalCalculatePowerStrategy implements CalculatePowerStrategy {
+class FlushRoyalCalculatePowerStrategy implements CalculatePowerStrategy {
 
     @Override
     public int calc(List<CardType> combination) {
-        return CardUtils.findBiggerCard(combination).getPowerAsInt();
+        return CardUtils.findTheBiggestCard(combination).getPowerAsInt();
     }
 }

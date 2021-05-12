@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 import static ru.smn.combination.data.CardSizeData.THREE_SIZE;
 
-public class ThreeCardsSearchStrategy implements SearchStrategy {
+class ThreeCardsSearchStrategy implements SearchStrategy {
 
     @Override
     public Combination find(List<CardType> cards) {

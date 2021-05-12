@@ -5,7 +5,7 @@ import ru.smn.combination.data.Combination;
 
 import java.util.List;
 
-public interface SearchStrategy {
+interface SearchStrategy {
     /**
      * This is the search strategy interface for find poker combinations.
      * Any implements of this interface must return {@link Combination#empty} if combination is not found,

@@ -4,6 +4,6 @@ import ru.smn.combination.data.CardType;
 
 import java.util.List;
 
-public interface CalculatePowerStrategy {
+interface CalculatePowerStrategy {
     int calc(List<CardType> combination);
 }

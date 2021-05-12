@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-import ru.smn.combination.assistant.PowerAssistant;
+import ru.smn.combination.strategy.power.PowerAssistant;
 
 import java.util.List;
 

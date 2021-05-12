@@ -16,7 +16,7 @@ import static ru.smn.combination.data.CardSizeData.PAIR_SIZE;
 import static ru.smn.combination.data.CardSizeData.THREE_SIZE;
 import static ru.smn.combination.utils.CardUtils.findPowerOfCardWithFilter;
 
-public class FullHouseSearchStrategy implements SearchStrategy {
+class FullHouseSearchStrategy implements SearchStrategy {
 
     @Override
     public Combination find(List<CardType> cards) {

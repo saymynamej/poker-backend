@@ -24,23 +24,23 @@ public class CardUtils {
     }
 
     public static boolean containsAllCardsForFlushRoyal(List<CardType> cardTypes) {
-        final Optional<CardType> ace = findCard(cardTypes, PowerType.A_POWER);
-        final Optional<CardType> king = findCard(cardTypes, PowerType.K_POWER);
-        final Optional<CardType> queen = findCard(cardTypes, PowerType.Q_POWER);
-        final Optional<CardType> jack = findCard(cardTypes, PowerType.J_POWER);
-        final Optional<CardType> ten = findCard(cardTypes, PowerType.TEN_POWER);
+        final Optional<CardType> ace = findCardByPowerType(cardTypes, PowerType.A_POWER);
+        final Optional<CardType> king = findCardByPowerType(cardTypes, PowerType.K_POWER);
+        final Optional<CardType> queen = findCardByPowerType(cardTypes, PowerType.Q_POWER);
+        final Optional<CardType> jack = findCardByPowerType(cardTypes, PowerType.J_POWER);
+        final Optional<CardType> ten = findCardByPowerType(cardTypes, PowerType.TEN_POWER);
 
         return ace.isPresent() && king.isPresent() && queen.isPresent() && jack.isPresent() && ten.isPresent();
     }
 
     public static List<CardType> checkStraitWithAce(List<CardType> cards) {
-        final List<CardType> distinctList = sortCardsByAsc(removeCardsWithSamePower(cards));
+        final List<CardType> distinctList = sortByAsc(distinctByPowerType(cards));
 
-        final Optional<CardType> ace = findCard(distinctList, PowerType.A_POWER);
-        final Optional<CardType> two = findCard(distinctList, PowerType.TWO_POWER);
-        final Optional<CardType> three = findCard(distinctList, PowerType.THREE_POWER);
-        final Optional<CardType> four = findCard(distinctList, PowerType.FOUR_POWER);
-        final Optional<CardType> five = findCard(distinctList, PowerType.FIVE_POWER);
+        final Optional<CardType> ace = findCardByPowerType(distinctList, PowerType.A_POWER);
+        final Optional<CardType> two = findCardByPowerType(distinctList, PowerType.TWO_POWER);
+        final Optional<CardType> three = findCardByPowerType(distinctList, PowerType.THREE_POWER);
+        final Optional<CardType> four = findCardByPowerType(distinctList, PowerType.FOUR_POWER);
+        final Optional<CardType> five = findCardByPowerType(distinctList, PowerType.FIVE_POWER);
 
         if (ace.isPresent() && two.isPresent() && three.isPresent() && four.isPresent() && five.isPresent()) {
             return Arrays.asList(ace.get(), two.get(), three.get(), four.get(), five.get());
@@ -49,7 +49,7 @@ public class CardUtils {
         return Collections.emptyList();
     }
 
-    private static Optional<CardType> findCard(List<CardType> distinctList, PowerType powerType) {
+    private static Optional<CardType> findCardByPowerType(List<CardType> distinctList, PowerType powerType) {
         return distinctList.stream()
                 .filter(cardType -> cardType.getPowerAsInt() == powerType.getPowerAsInt())
                 .findAny();
@@ -60,26 +60,34 @@ public class CardUtils {
             throw new RuntimeException("card size to check straight must be " + COMBINATION_SIZE);
         }
 
-        final List<CardType> cardTypes = sortCardsByDesc(cards);
+        final List<CardType> cardTypes = sortByDesc(cards);
 
-        int i = cardTypes.get(0).getPowerAsInt();
+        int lastPower = cardTypes.get(0).getPowerAsInt();
 
         for (int m = 1; m < cardTypes.size(); m++) {
-            if (i - cardTypes.get(m).getPowerAsInt() != 1) {
+            if (lastPower - cardTypes.get(m).getPowerAsInt() != 1) {
                 return false;
             }
-            i = cardTypes.get(m).getPowerAsInt();
+            lastPower = cardTypes.get(m).getPowerAsInt();
         }
         return true;
     }
 
-    public static List<CardType> removeCardsWithSamePower(List<CardType> cards) {
+    public static void removeCardWithSamePower(List<CardType> cards, PowerType powerType) {
+        cards.removeAll(
+                cards.stream()
+                        .filter(cardType -> cardType.getPower().equals(powerType))
+                        .collect(Collectors.toList())
+        );
+    }
+
+    public static List<CardType> distinctByPowerType(List<CardType> cards) {
         return cards.stream()
                 .filter(StreamUtils.distinctByKey(CardType::getPowerAsInt))
                 .collect(Collectors.toList());
     }
 
-    public static CardType findBiggerCardWithFilter(List<CardType> cardTypes, PowerType filter) {
+    public static CardType findTheBiggestCardIgnoringFilter(List<CardType> cardTypes, PowerType filter) {
         return cardTypes.stream()
                 .filter(cardType -> cardType.getPower() != (filter))
                 .max(Comparator.comparingInt(CardType::getPowerAsInt))
@@ -92,19 +100,19 @@ public class CardUtils {
                 .collect(Collectors.toList());
     }
 
-    public static CardType findBiggerCard(List<CardType> cardTypes) {
+    public static CardType findTheBiggestCard(List<CardType> cardTypes) {
         return cardTypes.stream()
                 .max(Comparator.comparingInt(CardType::getPowerAsInt))
                 .orElseThrow(() -> new RuntimeException("cannot find max card"));
     }
 
-    public static int sumCards(List<CardType> cards) {
+    public static int sumPowerOfCards(List<CardType> cards) {
         return cards.stream().map(CardType::getPowerAsInt)
                 .reduce(Integer::sum)
                 .orElseThrow(() -> new RuntimeException("cannot calculate sum"));
     }
 
-    public static CardType findSmallerCard(List<CardType> cardTypes) {
+    public static CardType findTheSmallestCard(List<CardType> cardTypes) {
         return cardTypes.stream()
                 .min(Comparator.comparingInt(CardType::getPowerAsInt))
                 .orElseThrow(() -> new RuntimeException("cannot find min card"));
@@ -112,7 +120,7 @@ public class CardUtils {
 
     public static List<CardType> cutFlush(List<CardType> cards) {
         if (cards.size() > COMBINATION_SIZE) {
-            cards.remove(findSmallerCard(cards));
+            cards.remove(findTheSmallestCard(cards));
             cutFlush(cards);
         }
         return cards;
@@ -132,13 +140,13 @@ public class CardUtils {
         return Collections.emptyList();
     }
 
-    public static List<CardType> sortCardsByDesc(List<CardType> cards) {
+    public static List<CardType> sortByDesc(List<CardType> cards) {
         return cards.stream()
                 .sorted(ComparatorUtils.desc(CardType::getPowerAsInt))
                 .collect(Collectors.toList());
     }
 
-    public static List<CardType> sortCardsByAsc(List<CardType> cards) {
+    public static List<CardType> sortByAsc(List<CardType> cards) {
         return cards.stream()
                 .sorted(ComparatorUtils.asc(CardType::getPowerAsInt))
                 .collect(Collectors.toList());

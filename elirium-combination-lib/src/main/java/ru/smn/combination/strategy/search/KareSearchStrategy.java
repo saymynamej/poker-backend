@@ -8,9 +8,9 @@ import ru.smn.combination.data.CombinationType;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static ru.smn.combination.utils.CardUtils.findBiggerCardWithFilter;
+import static ru.smn.combination.utils.CardUtils.findTheBiggestCardIgnoringFilter;
 
-public class KareSearchStrategy implements SearchStrategy {
+class KareSearchStrategy implements SearchStrategy {
 
     @Override
     public Combination find(List<CardType> cards) {
@@ -21,7 +21,7 @@ public class KareSearchStrategy implements SearchStrategy {
                 .entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().size() == CardSizeData.KARE_SIZE)
-                .peek(entry -> entry.getValue().add(findBiggerCardWithFilter(cards, entry.getValue().get(firstIndexOfCard).getPower())))
+                .peek(entry -> entry.getValue().add(findTheBiggestCardIgnoringFilter(cards, entry.getValue().get(firstIndexOfCard).getPower())))
                 .flatMap(entry -> entry.getValue().stream())
                 .collect(Collectors.toList());
 

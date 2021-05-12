@@ -7,9 +7,8 @@ import ru.smn.combination.data.CombinationType;
 import java.util.List;
 
 import static ru.smn.combination.utils.CardUtils.findFlushBySuit;
-import static ru.smn.combination.utils.CardUtils.sortCardsByDesc;
 
-public class FlushSearchStrategy implements SearchStrategy {
+class FlushSearchStrategy implements SearchStrategy {
 
     @Override
     public Combination find(List<CardType> cards) {
@@ -19,7 +18,7 @@ public class FlushSearchStrategy implements SearchStrategy {
                 final CombinationType flush = CombinationType.FLUSH;
                 return Combination.of(
                         flush,
-                        sortCardsByDesc(flushBySuit)
+                        flushBySuit
                 );
             }
         }

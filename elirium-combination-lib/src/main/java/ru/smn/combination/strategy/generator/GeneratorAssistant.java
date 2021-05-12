@@ -1,4 +1,4 @@
-package ru.smn.combination.assistant;
+package ru.smn.combination.strategy.generator;
 
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;

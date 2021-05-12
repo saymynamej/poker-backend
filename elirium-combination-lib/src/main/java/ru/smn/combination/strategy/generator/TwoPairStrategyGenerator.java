@@ -9,7 +9,7 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class TwoPairStrategyGenerator implements GeneratorStrategy {
+class TwoPairStrategyGenerator implements GeneratorStrategy {
 
     @Override
     public Combination generate() {

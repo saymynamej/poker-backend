@@ -1,4 +1,4 @@
-package ru.smn.combination.assistant;
+package ru.smn.combination.strategy.power;
 
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.CombinationType;

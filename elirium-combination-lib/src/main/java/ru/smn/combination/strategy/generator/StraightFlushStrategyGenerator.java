@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class StraightFlushStrategyGenerator implements GeneratorStrategy {
+class StraightFlushStrategyGenerator implements GeneratorStrategy {
     @Override
     public Combination generate() {
         final List<CardType> cards = CardType.getAllCardsAsList();
@@ -42,7 +42,6 @@ public class StraightFlushStrategyGenerator implements GeneratorStrategy {
                 .collect(Collectors.toList());
 
         straightFlushWithAce.add(cardType);
-
 
         return Combination.of(CombinationType.STRAIGHT_FLUSH, straightFlushWithAce);
     }

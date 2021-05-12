@@ -6,7 +6,8 @@ import ru.smn.combination.utils.CardUtils;
 
 import java.util.List;
 
-public class ThreeCalculatePowerStrategy implements CalculatePowerStrategy {
+class ThreeCalculatePowerStrategy implements CalculatePowerStrategy {
+
     @Override
     public int calc(List<CardType> combination) {
         final PowerType powerType = CardUtils.findPowerOfCardWithFilter(combination, (entry) -> entry.getValue() == 3)

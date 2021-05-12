@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class StraightStrategyGenerator implements GeneratorStrategy {
+class StraightStrategyGenerator implements GeneratorStrategy {
 
     @Override
     public Combination generate() {

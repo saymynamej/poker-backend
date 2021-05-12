@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class ThreeStrategyGenerator implements GeneratorStrategy {
+class ThreeStrategyGenerator implements GeneratorStrategy {
 
     @Override
     public Combination generate() {

@@ -6,7 +6,7 @@ import ru.smn.combination.utils.CardUtils;
 
 import java.util.List;
 
-public class FullHouseCalculatePowerStrategy implements CalculatePowerStrategy {
+class FullHouseCalculatePowerStrategy implements CalculatePowerStrategy {
 
     @Override
     public int calc(List<CardType> combination) {

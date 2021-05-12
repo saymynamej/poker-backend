@@ -10,11 +10,11 @@ import java.util.List;
 
 import static ru.smn.combination.utils.CardUtils.*;
 
-public class StraightSearchStrategy implements SearchStrategy {
+class StraightSearchStrategy implements SearchStrategy {
 
     @Override
     public Combination find(List<CardType> cards) {
-        final List<CardType> sortedCards = sortCardsByDesc(removeCardsWithSamePower(cards));
+        final List<CardType> sortedCards = sortByDesc(distinctByPowerType(cards));
         final CombinationType straight = CombinationType.STRAIGHT;
 
         if (sortedCards.size() < CardSizeData.COMBINATION_SIZE){

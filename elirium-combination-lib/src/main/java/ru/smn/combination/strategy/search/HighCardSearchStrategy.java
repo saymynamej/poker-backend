@@ -8,18 +8,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static ru.smn.combination.data.CardSizeData.COMBINATION_SIZE;
-import static ru.smn.combination.utils.CardUtils.sortCardsByDesc;
+import static ru.smn.combination.utils.CardUtils.sortByDesc;
 
-public class HighCardSearchStrategy implements SearchStrategy {
+class HighCardSearchStrategy implements SearchStrategy {
 
     @Override
     public Combination find(List<CardType> cards) {
-        final List<CardType> highCardCombination = sortCardsByDesc(cards)
+        final List<CardType> highCardCombination = sortByDesc(cards)
                 .stream()
                 .limit(COMBINATION_SIZE)
                 .collect(Collectors.toList());
 
-        return Combination.of(CombinationType.HIGH_CARD, highCardCombination
-        );
+        return Combination.of(CombinationType.HIGH_CARD, highCardCombination);
     }
 }

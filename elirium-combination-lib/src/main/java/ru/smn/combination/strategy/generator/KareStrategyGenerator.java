@@ -8,7 +8,8 @@ import ru.smn.combination.utils.CardUtils;
 import java.util.List;
 import java.util.Random;
 
-public class KareStrategyGenerator implements GeneratorStrategy {
+class KareStrategyGenerator implements GeneratorStrategy {
+
     @Override
     public Combination generate() {
         final List<CardType> cards = CardType.getAllCardsAsList();
