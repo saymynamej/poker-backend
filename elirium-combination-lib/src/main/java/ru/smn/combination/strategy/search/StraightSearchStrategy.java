@@ -17,6 +17,10 @@ public class StraightSearchStrategy implements SearchStrategy {
         final List<CardType> sortedCards = sortCardsByDesc(removeCardsWithSamePower(cards));
         final CombinationType straight = CombinationType.STRAIGHT;
 
+        if (sortedCards.size() < CardSizeData.COMBINATION_SIZE){
+            return Combination.empty();
+        }
+
         for (int i = 0; i < sortedCards.size() % 4; i++) {
             final List<CardType> cardTypes = sortedCards.subList(i, CardSizeData.COMBINATION_SIZE + i);
             if (CardUtils.isStrait(cardTypes)) {

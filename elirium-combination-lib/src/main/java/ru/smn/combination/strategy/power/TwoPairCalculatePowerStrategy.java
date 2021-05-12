@@ -9,9 +9,8 @@ import java.util.List;
 public class TwoPairCalculatePowerStrategy implements CalculatePowerStrategy {
     @Override
     public int calc(List<CardType> combination) {
-        final PowerType powerType = CardUtils.findPowerOfCardWithFilter(combination, (entry) -> entry.getValue() == 2)
-                .orElseThrow();
 
-        return powerType.getPowerAsInt();
+
+        return 0;
     }
 }

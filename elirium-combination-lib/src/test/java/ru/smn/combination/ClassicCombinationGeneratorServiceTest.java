@@ -72,4 +72,24 @@ public class ClassicCombinationGeneratorServiceTest {
         }
     }
 
+    @Test
+    public void shouldGenerateThreeCardsCombination() {
+        for (int i = 0; i < 100; i++) {
+            final Combination threeCards = combinationGeneratorService.generate(THREE_CARDS);
+            final Combination combination = combinationService.findCombination(threeCards.getCards());
+            Assertions.assertEquals(THREE_CARDS, combination.getCombinationType());
+            Assertions.assertEquals(CardSizeData.COMBINATION_SIZE, threeCards.getCards().size());
+        }
+    }
+
+    @Test
+    public void shouldGenerateTwoPairCombination() {
+        for (int i = 0; i < 100; i++) {
+            final Combination twoPair = combinationGeneratorService.generate(TWO_PAIR);
+            final Combination combination = combinationService.findCombination(twoPair.getCards());
+            Assertions.assertEquals(TWO_PAIR, combination.getCombinationType());
+            Assertions.assertEquals(CardSizeData.COMBINATION_SIZE, twoPair.getCards().size());
+        }
+    }
+
 }
