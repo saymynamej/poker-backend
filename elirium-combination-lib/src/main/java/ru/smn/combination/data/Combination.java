@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+import ru.smn.combination.assistant.PowerAssistant;
 
 import java.util.List;
 
@@ -21,6 +22,14 @@ public class Combination {
                 .power(null)
                 .cards(null)
                 .combinationType(null)
+                .build();
+    }
+
+    public static Combination of(CombinationType type, List<CardType> cards) {
+        return Combination.builder()
+                .combinationType(type)
+                .cards(cards)
+                .power(PowerAssistant.calc(cards, type))
                 .build();
     }
 

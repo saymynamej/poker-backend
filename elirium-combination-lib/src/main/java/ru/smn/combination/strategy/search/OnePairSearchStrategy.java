@@ -1,6 +1,5 @@
 package ru.smn.combination.strategy.search;
 
-import ru.smn.combination.assistant.PowerAssistant;
 import ru.smn.combination.data.CardSizeData;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
@@ -34,12 +33,6 @@ public class OnePairSearchStrategy implements SearchStrategy {
         final List<CardType> pairCombination = Stream.concat(pair.stream(), highCards.stream())
                 .collect(Collectors.toList());
 
-        final int power = PowerAssistant.calc(pairCombination, CombinationType.ONE_PAIR);
-
-        return Combination.of(
-                CombinationType.ONE_PAIR,
-                pairCombination,
-                power
-        );
+        return Combination.of(CombinationType.ONE_PAIR, pairCombination);
     }
 }

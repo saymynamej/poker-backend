@@ -1,13 +1,13 @@
 package ru.smn.combination.strategy.search;
 
-import ru.smn.combination.assistant.PowerAssistant;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
 
 import java.util.List;
 
-import static ru.smn.combination.utils.CardUtils.*;
+import static ru.smn.combination.utils.CardUtils.findFlushBySuit;
+import static ru.smn.combination.utils.CardUtils.sortCardsByDesc;
 
 public class FlushSearchStrategy implements SearchStrategy {
 
@@ -17,11 +17,9 @@ public class FlushSearchStrategy implements SearchStrategy {
             final List<CardType> flushBySuit = findFlushBySuit(cards, suitType);
             if (!flushBySuit.isEmpty()) {
                 final CombinationType flush = CombinationType.FLUSH;
-                final int power = PowerAssistant.calc(flushBySuit, flush);
                 return Combination.of(
                         flush,
-                        sortCardsByDesc(flushBySuit),
-                        power
+                        sortCardsByDesc(flushBySuit)
                 );
             }
         }

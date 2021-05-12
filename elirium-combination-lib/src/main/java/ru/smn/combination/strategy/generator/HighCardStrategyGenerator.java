@@ -1,6 +1,5 @@
 package ru.smn.combination.strategy.generator;
 
-import ru.smn.combination.assistant.PowerAssistant;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
@@ -27,8 +26,7 @@ public class HighCardStrategyGenerator implements GeneratorStrategy {
 
         return Combination.of(
                 highCard,
-                combinationCards,
-                PowerAssistant.calc(combinationCards, highCard)
+                combinationCards
         );
     }
 }

@@ -74,10 +74,6 @@ public enum CardType {
         this.suitType = suitType;
     }
 
-    public int getPowerAsInt() {
-        return power.getPowerAsInt();
-    }
-
     public static List<CardType> getAllCardsAsList() {
         return Arrays.stream(values())
                 .collect(Collectors.toList());
@@ -87,6 +83,10 @@ public enum CardType {
         return getAllCardsAsList().stream()
                 .filter(card -> !filter.contains(card))
                 .collect(Collectors.toList());
+    }
+
+    public int getPowerAsInt() {
+        return power.getPowerAsInt();
     }
 
     public enum SuitType {

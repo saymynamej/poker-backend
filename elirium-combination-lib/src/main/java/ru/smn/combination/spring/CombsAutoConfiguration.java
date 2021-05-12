@@ -16,7 +16,7 @@ public class CombsAutoConfiguration {
     }
 
     @Bean
-    public CombinationGeneratorService combinationGeneratorService(){
+    public CombinationGeneratorService combinationGeneratorService() {
         return new ClassicCombinationGeneratorService();
     }
 }

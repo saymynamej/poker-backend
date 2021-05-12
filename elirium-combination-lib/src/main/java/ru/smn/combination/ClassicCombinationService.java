@@ -26,7 +26,7 @@ public class ClassicCombinationService implements CombinationService {
 
         for (CombinationType combinationType : sortedCombinationTypes) {
             final Combination combination = SearchAssistant.find(combinationType, cards);
-            if (!combination.isEmpty()){
+            if (!combination.isEmpty()) {
                 return combination;
             }
         }

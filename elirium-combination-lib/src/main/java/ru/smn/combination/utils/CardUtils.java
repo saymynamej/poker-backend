@@ -8,7 +8,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static ru.smn.combination.data.CardSizeData.COMBINATION_SIZE;
-import static ru.smn.combination.data.CardSizeData.TWO_PAIR_SIZE;
 
 public class CardUtils {
 

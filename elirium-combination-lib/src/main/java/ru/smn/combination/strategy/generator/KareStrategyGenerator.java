@@ -1,6 +1,5 @@
 package ru.smn.combination.strategy.generator;
 
-import ru.smn.combination.assistant.PowerAssistant;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
@@ -24,12 +23,6 @@ public class KareStrategyGenerator implements GeneratorStrategy {
 
         kare.add(cards.get(random.nextInt(cards.size())));
 
-        final int power = PowerAssistant.calc(kare, CombinationType.KARE);
-
-        return Combination.of(
-                CombinationType.KARE,
-                kare,
-                power
-        );
+        return Combination.of(CombinationType.KARE, kare);
     }
 }

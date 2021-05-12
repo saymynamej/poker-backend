@@ -1,6 +1,5 @@
 package ru.smn.combination.strategy.search;
 
-import ru.smn.combination.assistant.PowerAssistant;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
@@ -32,12 +31,6 @@ public class TwoPairSearchStrategy implements SearchStrategy {
 
         twoPairs.add(findBiggerCardWithFilter(cards, twoPairs.get(0).getPower()));
 
-        final int power = PowerAssistant.calc(twoPairs, CombinationType.TWO_PAIR);
-
-        return Combination.of(
-                CombinationType.TWO_PAIR,
-                twoPairs,
-                power
-        );
+        return Combination.of(CombinationType.TWO_PAIR, twoPairs);
     }
 }

@@ -1,6 +1,5 @@
 package ru.smn.combination.strategy.search;
 
-import ru.smn.combination.assistant.PowerAssistant;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
@@ -49,12 +48,6 @@ public class FullHouseSearchStrategy implements SearchStrategy {
 
         final CombinationType fullHouse = CombinationType.FULL_HOUSE;
 
-        final int power = PowerAssistant.calc(combination, fullHouse);
-
-        return Combination.of(
-                fullHouse,
-                combination,
-                power
-        );
+        return Combination.of(fullHouse, combination);
     }
 }

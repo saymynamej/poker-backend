@@ -1,14 +1,6 @@
 package ru.smn.combination.strategy.generator;
 
-import ru.smn.combination.assistant.PowerAssistant;
-import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
-import ru.smn.combination.data.CombinationType;
-
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class OnePairStrategyGenerator implements GeneratorStrategy {
 

@@ -1,6 +1,5 @@
 package ru.smn.combination.strategy.search;
 
-import ru.smn.combination.assistant.PowerAssistant;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
@@ -39,13 +38,7 @@ public class ThreeCardsSearchStrategy implements SearchStrategy {
         final List<CardType> combination = Stream.concat(threeCards.stream(), highCards.stream())
                 .collect(Collectors.toList());
 
-        final int power = PowerAssistant.calc(combination, CombinationType.THREE_CARDS);
-
-        return Combination.of(
-                CombinationType.THREE_CARDS,
-                combination,
-                power
-        );
+        return Combination.of(CombinationType.THREE_CARDS, combination);
 
     }
 }

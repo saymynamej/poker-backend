@@ -1,6 +1,5 @@
 package ru.smn.combination.strategy.generator;
 
-import ru.smn.combination.assistant.PowerAssistant;
 import ru.smn.combination.data.CardType;
 import ru.smn.combination.data.Combination;
 import ru.smn.combination.data.CombinationType;
@@ -29,13 +28,7 @@ public class StraightFlushStrategyGenerator implements GeneratorStrategy {
 
         final List<CardType> straightFlush = suitCards.subList(start, start + 5);
 
-        final int power = PowerAssistant.calc(straightFlush, CombinationType.STRAIGHT_FLUSH);
-
-        return Combination.of(
-                CombinationType.STRAIGHT_FLUSH,
-                straightFlush,
-                power
-        );
+        return Combination.of(CombinationType.STRAIGHT_FLUSH, straightFlush);
     }
 
     private Combination generateWithAce(List<CardType> cards, CardType cardType) {
@@ -50,12 +43,7 @@ public class StraightFlushStrategyGenerator implements GeneratorStrategy {
 
         straightFlushWithAce.add(cardType);
 
-        final int power = PowerAssistant.calc(straightFlushWithAce, CombinationType.STRAIGHT_FLUSH);
 
-        return Combination.of(
-                CombinationType.STRAIGHT_FLUSH,
-                straightFlushWithAce,
-                power
-        );
+        return Combination.of(CombinationType.STRAIGHT_FLUSH, straightFlushWithAce);
     }
 }
